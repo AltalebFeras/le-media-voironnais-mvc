@@ -55,7 +55,7 @@ class ConfigRouter
                 session_start();
             }
             $_SESSION['error'] = 'Votre session est expirée! veuillez vous reconnecter.';
-            header('Location: ' . HOME_URL . 'signIn');
+            header('Location: ' . HOME_URL . 'connexion');
             exit();
         }
 

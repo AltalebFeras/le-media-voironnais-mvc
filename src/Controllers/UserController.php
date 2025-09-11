@@ -67,7 +67,7 @@ class UserController extends AbstractController
             return false;
         }
     }
-    public function treatmentSignUp()
+    public function treatmentInscription()
     {
         $firstName = isset($_POST['firstName']) ? htmlspecialchars(trim(ucfirst($_POST['firstName']))) : null;
         $lastName = isset($_POST['lastName']) ? htmlspecialchars(trim(ucfirst($_POST['lastName']))) : null;
@@ -144,14 +144,14 @@ class UserController extends AbstractController
             $signUp = $this->repo->signUp($user);
         } else {
             $errors['sendEmail'] = 'Une erreur s\'est produite lors de l\'envoi de l\'e-mail d\'activation. Veuillez réessayer plus tard.';
-            $this->returnAllErrors($errors, 'signUp');
+            $this->returnAllErrors($errors, 'inscription');
         }
         if ($signUp) {
             $_SESSION['success'] = 'Un e-mail d\'activation a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception et cliquer sur le lien d\'activation pour activer votre compte.';
-            $this->redirect('signIn');
+            $this->redirect('connexion');
         } else {
             $errors['signUp'] = 'Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer plus tard.';
-            $this->returnAllErrors($errors, 'signUp');
+            $this->returnAllErrors($errors, 'inscription');
         }
     }
 
@@ -188,7 +188,7 @@ class UserController extends AbstractController
 
 
 
-    public function treatmentSignIn()
+    public function treatmentConnexion()
     {
 
         $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : null;

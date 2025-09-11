@@ -7,7 +7,7 @@
   <!-- Alert Messages -->
   <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
-  <form class="card" action="<?= HOME_URL . './signIn' ?>" method="POST">
+  <form class="card" action="<?= HOME_URL . './connexion' ?>" method="POST">
     <div>
       <label for="email">Adresse e-mail:</label>
       <input type="email" id="email" name="email" placeholder="Entrez votre e-mail"
@@ -22,11 +22,11 @@
     <button type="submit" class="btn btnSubmit">Se connecter</button>
   </form>
   <div class="forgot-password-container">
-    <a class="linkNotDecorated link" href="<?= HOME_URL . './forget_my_password' ?>">Mot de passe oublié ?</a>
+    <a class="linkNotDecorated link" href="<?= HOME_URL . 'mdp_oublie' ?>">Mot de passe oublié ?</a>
   </div>
   <p>
     Pas encore de compte ?
-    <a href="<?= HOME_URL . './signUp' ?>" class="link">S'inscrire gratuitement</a>
+    <a href="<?= HOME_URL . 'inscription' ?>" class="link">S'inscrire gratuitement</a>
   </p>
 </main>
 

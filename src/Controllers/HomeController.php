@@ -8,22 +8,22 @@ class HomeController extends AbstractController
 {
     public function displayHomepage(): void
     {
-        $this->render('home/home');
+        $this->render('home/accueil');
     }
 
-    public function displayFormSignIn()
+    public function displayFormConnexion()
     {
         if (!isset($_GET['error'])) {
             unset($_SESSION['form_data']);
         }
-        $this->render('home/signIn');
+        $this->render('home/connexion');
     }
-    public function displayFormSignUp()
+    public function displayFormInscription()
     {
         if (!isset($_GET['error'])) {
             unset($_SESSION['form_data']);
         }
-        $this->render('home/signUp');
+        $this->render('home/inscription');
     }
     public function displayFormForgetPassword()
     {
@@ -50,7 +50,7 @@ class HomeController extends AbstractController
         session_destroy();
         session_start();
         $_SESSION['success'] = 'vous êtes désconnecté avec succès!';
-        $this->redirect('signIn');
+        $this->redirect('connexion');
     }
 
     public function page404(): void

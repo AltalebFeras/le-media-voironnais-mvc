@@ -37,7 +37,7 @@
     <button class="btn" id="submitBtn" type="submit">S'inscrire</button>
   </form>
   <div>
-    <a class="linkNotDecorated link" href="<?= HOME_URL . './signIn' ?>">Déjà inscrit ?</a>
+    <a class="linkNotDecorated link" href="<?= HOME_URL . 'connexion' ?>">Déjà inscrit ?</a>
   </div>
   <div>
     <a class="linkNotDecorated link" href="<?= HOME_URL  ?>">Retour à l'accueil</a>

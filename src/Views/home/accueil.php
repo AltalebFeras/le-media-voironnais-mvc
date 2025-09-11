@@ -3,7 +3,7 @@
 
 <main>
   <div class="flex-row">
-    <div class="card">
+    <div>
       <h1 class="">Bienvenue sur <span class="TIRSO">Le Media Voironnais</span></h1>
       <p>Votre plateforme collaborative pour la vie locale à Voiron et alentours.</p>
       <p class="description">

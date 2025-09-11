@@ -12,15 +12,18 @@ $userController = new UserController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
 $method = ConfigRouter::getMethod();
+
 // var_dump($_SERVER);
 $connectionSecured = isset($_SESSION['connected']) && $_SESSION['role'] === 'user' && ConfigRouter::checkConnection();
 $connectionSecuredAdmin = isset($_SESSION['connected']) && $_SESSION['role'] === 'admin' && ConfigRouter::checkConnection();
 $connectionSecuredSuperAdmin = isset($_SESSION['connected']) && $_SESSION['role'] === 'super_admin' && ConfigRouter::checkConnection();
+
 switch ($route) {
 
     case HOME_URL:
         $homeController->displayHomepage();
         break;
+
     case HOME_URL . 'connexion':
         if ($method === 'POST') {
             $userController->treatmentConnexion();
@@ -32,6 +35,7 @@ switch ($route) {
             }
         }
         break;
+
     case HOME_URL . 'inscription':
         if ($method === 'POST') {
             $userController->treatmentInscription();
@@ -43,6 +47,7 @@ switch ($route) {
             }
         }
         break;
+
     case HOME_URL . 'activate_mon_compte':
         if ($method === 'GET' && $_GET['token']) {
             $userController->activateAccount();
