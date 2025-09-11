@@ -118,6 +118,103 @@ final class Mail
         </html>";
     }
 
+    private function getSalutation(): string
+    {
+        $time = (int) date('H');
+        if ($time < 12) {
+            return 'Bonjour';
+        } elseif ($time < 16) {
+            return 'Bon après-midi';
+        }
+        return 'Bonsoir';
+    }
+
+    private function getSouhait(): string
+    {
+        $time = (int) date('H');
+        if ($time < 4 || $time >= 22) {
+            return 'Bonne nuit';
+        } elseif ($time < 12) {
+            return 'Bonne journée';
+        } elseif ($time < 16) {
+            return 'Bon après-midi';
+        }
+        return 'Bonne soirée';
+    }
+
+    /**
+     * Alternative template generator with salutation and souhait.
+     * Usage: $this->generateTemplateV2($subject, $body)
+     */
+    private function generateTemplateV2(string $subject, string $body): string
+    {
+        $salutation = $this->getSalutation();
+        $souhait = $this->getSouhait();
+        $currentYear = date('Y');
+        return <<<HTML
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{\$subject}</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .header { background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding: 40px 20px; text-align: center; }
+        .content { padding: 40px 30px;border-left: 5px solid #3B82F6; border-right: 5px solid #3B82F6; }
+        .footer { background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding: 30px 20px; text-align: center; }
+        .logo-container { display: inline-flex; align-items: center; }
+        .logo-svg { width: 32px; height: 32px; margin-right: 8px; }
+        .logo-text { font-size: 24px; font-weight: bold; color: #ffffff; margin: 0; }
+        .tagline { color: #ffffff; margin: 15px 0 0 0; font-size: 16px; opacity: 0.9; }
+        .greeting { color: #333333; font-size: 18px; font-weight: 600; margin: 0 0 25px 0; }
+        .content-body { color: #555555; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0; }
+        .closing { color: #333333; font-size: 16px; font-weight: 500; margin: 25px 0 0 0; }
+        .team-name { color: #ffffff; font-size: 20px; font-weight: 700; margin: 0; }
+        .team-tagline { color: #ffffff; font-size: 14px; margin: 8px 0 0 0; opacity: 0.9; }
+        .copyright { color: #ffffff; font-size: 12px; margin: 20px 0 0 0; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <a href="https://gosportif365.netlify.app/" style="text-decoration: none;">
+                <div class="logo-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="logo-svg" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 8V6a3 3 0 00-6 0v2" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M5 10v4a2 2 0 002 2h2" stroke="#F59E42" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M17 10h2a2 2 0 012 2v4a2 2 0 01-2 2h-2" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M9 16v2a2 2 0 002 2h0a2 2 0 002-2v-2m-4 0h4" stroke="#f63bc7ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <p class="logo-text">
+                        <span style="color: #EF4444;">Go</span><span style="color: #10B981;">Sportif</span><span style="color: #3B82F6;">365</span>
+                    </p>
+                </div>
+            </a>
+            <p class="tagline">Votre plateforme de défis sportifs</p>
+        </div>
+        <!-- Main Content Section -->
+        <div class="content">
+            <p class="greeting">{\$salutation},</p>
+            <div class="content-body">
+                {\$body}
+            </div>
+            <p class="closing">{\$souhait} !</p>
+        </div>
+        <!-- Footer Section -->
+        <div class="footer">
+            <p class="team-name">L'équipe GoSportif365</p>
+            <p class="team-tagline">Bougez, partagez, progressez !</p>
+            <p class="copyright">&copy; {\$currentYear} GoSportif365. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html>
+HTML;
+    }
+
     public function addAttachment($filePath)
     {
         try {
@@ -156,7 +253,7 @@ final class Mail
             // Generate the template with the subject and body
             $HOME_URL = HOME_URL;
             $DOMAIN = DOMAIN;
-            $logoPath = DOMAIN . HOME_URL . 'assets/imgs/logo.gif';
+            $logoPath = DOMAIN . HOME_URL . 'assets/images/logo/logo.png';
             $emailContent = $this->generateTemplate($HOME_URL, $DOMAIN, $logoPath, $subject, $body);
 
             // Recipients
