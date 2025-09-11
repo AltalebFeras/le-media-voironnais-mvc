@@ -4,7 +4,6 @@
       <a href="/"><img
           src="<?= DOMAIN . HOME_URL . 'assets/imgs/logo.png' ?>"
           alt="Logo"
-          width="60"
           height="60" />
       </a>
       <?php if (isset($_SESSION['connected'])) : ?>
