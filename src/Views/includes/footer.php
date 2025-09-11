@@ -1,0 +1,48 @@
+<footer class="custom-footer bg-dark text-white text-center mt-auto py-4">
+  <p>Suivez-nous sur les réseaux sociaux:</p>
+  <ul class="social-media-links">
+    <li>
+      <a
+        href="https://facebook.com"
+        target="_blank"
+        class="lienReseauxSociaux"><i class="fa-brands fa-facebook"></i></a>
+    </li>
+    <li>
+      <a
+        href="https://instagram.com"
+        target="_blank"
+        class="lienReseauxSociaux"><i class="fa-brands fa-instagram"></i></a>
+    </li>
+    <li>
+      <a
+        href="https://twitter.com"
+        target="_blank"
+        class="lienReseauxSociaux">
+        <i class="fa-brands fa-twitter"></i></a>
+    </li>
+  </ul>
+  <p>&copy; 2025 TIRSO. Tous droits réservés.</p>
+  <ul class="footer-links">
+    <li><a href="<?= HOME_URL . 'cgu' ?>">CGU</a></li>
+    <li><a href="<?= HOME_URL . 'mentions_legales' ?>">Mentions légales</a></li>
+  </ul>
+  <script src="<?= HOME_URL . 'assets/scripts/script.js' ?>"></script>
+  <?php
+  $route = $_SERVER['REDIRECT_URL'];
+
+  switch ($route) {
+
+    case HOME_URL . 'signIn':
+    case HOME_URL . 'signUp':
+    case HOME_URL . 'reset_my_password':
+    case HOME_URL . 'forget_my_password':
+      echo '  <script src="https://www.google.com/recaptcha/api.js"></script>';
+      break;
+    default:
+      break;
+  }
+  ?>
+</footer>
+</body>
+
+</html>

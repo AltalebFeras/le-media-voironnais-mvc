@@ -1,0 +1,73 @@
+image: php:8.3-cli
+
+stages:
+  - build
+  - test
+  - push
+  - deploy
+
+variables:
+  PHP_VERSION: "8.3"
+  DEPLOY_PATH: ""   # <-- it is the folder of the project on the server knowing that the FTP user is already in the root of the project which in this cas httpdocs folder so the path is relative to it
+  GITLAB_PROJECT_ID: "AltalebFeras/V2-Application-Creation-de-Groupes-en-MVC.git"
+
+
+before_script:
+  # Installe PHP et les dépendances requises
+  - apt-get update && apt-get install -y curl git unzip zip libzip-dev zlib1g-dev
+  - docker-php-ext-install zip
+  - pecl install xdebug && docker-php-ext-enable xdebug
+  - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  - php -m | grep -E 'xml|mbstring'
+  - apt-get install -y lftp
+  - export PATH="$PATH:/usr/local/bin"
+
+cache:
+  paths:
+    - vendor/
+    - ~/.composer/cache
+build:
+  stage: build
+  script:
+    - echo "Build en cours..."
+    - echo "La version de PHP est $PHP_VERSION"
+    - composer install --no-interaction --prefer-dist --optimize-autoloader
+  only:
+    - main
+
+test:
+  stage: test
+  script:
+    - echo "<?php // dummy config for CI" > config.php
+    - echo "Tests en cours..."
+    # - composer tests_unitaires
+  only:
+    - main
+
+
+push:
+  image: alpine:latest
+  stage: push
+  before_script: 
+    - apk add --no-cache git
+  script:
+    - echo "On pousse sur la branche main..."
+    - git config --global user.email "robot@cicd.gitlab"
+    - git config --global user.name "robot CICD"
+    - git push --force "https://gitlab-ci-token:${ACCESS_TOKEN}@gitlab.com/${GITLAB_PROJECT_ID}" HEAD:refs/heads/main
+  only:
+    - main
+
+
+deploy:
+  image: alpine:latest
+  stage: deploy
+  before_script:
+    - apk add --no-cache lftp openssh-client
+  script:
+    - echo "Déploiement en cours..."
+    - WORKDIR=$(pwd)
+    - echo "l'envirenment de travail est $WORKDIR"
+    - lftp ftp://${FTP_USER}:${FTP_PWD}@${FTP_HOST} -e "set ftp:ssl-allow no; set net:timeout 300; set net:max-retries 3; cd ${DEPLOY_PATH}; mirror -R -v --only-newer --delete --exclude .git/ --exclude .gitignore --exclude-glob '*.yml' --exclude-glob '*.disabled' --exclude vendor/ --exclude composer.json --exclude config.php --exclude composer.lock --exclude .editorconfig --exclude rector.php --exclude tests/ --exclude-glob '*.xml' --exclude src/Tests $WORKDIR/ ./; quit"
+  only:
+    - main
