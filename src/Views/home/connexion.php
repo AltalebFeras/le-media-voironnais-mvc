@@ -7,7 +7,7 @@
   <!-- Alert Messages -->
   <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
-  <form class="card" action="<?= HOME_URL . './connexion' ?>" method="POST">
+  <form class="card" action="<?= HOME_URL . 'connexion' ?>" method="POST">
     <div>
       <label for="email">Adresse e-mail:</label>
       <input type="email" id="email" name="email" placeholder="Entrez votre e-mail"
