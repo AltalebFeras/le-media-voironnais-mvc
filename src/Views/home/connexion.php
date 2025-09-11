@@ -2,7 +2,8 @@
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 <main>
   <h1>Connexion</h1>
-  <p>Veuillez vous connecter pour accéder à votre compte.</p>
+  <p>Connectez-vous pour accéder à votre espace personnel sur Le Media Voironnais.<br>
+  Créez, gérez vos événements, associations, entreprises et discutez avec la communauté locale !</p>
   <!-- Alert Messages -->
   <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
@@ -25,7 +26,7 @@
   </div>
   <p>
     Pas encore de compte ?
-    <a href="<?= HOME_URL . './signUp' ?>" class="link">s'inscrire</a>
+    <a href="<?= HOME_URL . './signUp' ?>" class="link">S'inscrire gratuitement</a>
   </p>
 </main>
 

@@ -7,8 +7,8 @@
     <div class="d-flex flex-wrap justify-content-center gap-3">
 
         <a href="<?= HOME_URL ?>" class="cardDashboard">
-            <h2>Home</h2>
-            <p>Retour à l'accueil.</p>
+            <h2>Accueil</h2>
+            <p>Retour à la page d'accueil du Media Voironnais.</p>
         </a>
         <a href="<?= HOME_URL . "all_lists" ?>" class="cardDashboard">
             <h2>Mes listes</h2>
@@ -21,7 +21,7 @@
 
         <a href="<?= HOME_URL . "my_account" ?>" class="cardDashboard">
             <h2>Mon compte</h2>
-            <p>Voir mon compte, faire des modifications, changer le mot de passe, ajouter des adresses, changer la photo de profil.</p>
+            <p>Voir et modifier mon profil, gérer mes événements, associations, entreprises, et accéder à la messagerie.</p>
         </a>
 
         <a href="<?= HOME_URL . "SignOut" ?>" class="cardDashboard">

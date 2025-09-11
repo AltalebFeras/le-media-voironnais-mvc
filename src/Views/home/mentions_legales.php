@@ -6,7 +6,7 @@
   <h2>Éditeur du site</h2>
   <p>
     Ce site est édité dans le cadre d’un projet pédagogique Simplon.co.
-    Responsable de la publication : AHMED,GEORGE, ET FERAS
+    Responsable de la publication : L'équipe Le Media Voironnais
   </p>
 
   <h2>Hébergement</h2>
@@ -17,7 +17,5 @@
 
   <p><em>Dernière mise à jour : 01/04/2025</em></p>
 </main>
-
-
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

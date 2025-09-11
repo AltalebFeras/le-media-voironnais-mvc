@@ -2,12 +2,11 @@
   <nav class="navbar">
     <div class="logo" style="display: flex; align-items: center;">
       <a href="/"><img
-          src="<?= DOMAIN . HOME_URL . 'assets/imgs/logo.gif' ?>"
+          src="<?= DOMAIN . HOME_URL . 'assets/imgs/logo.png' ?>"
           alt="Logo"
           width="60"
           height="60" />
       </a>
-      <p class="logo_paragraph" style="margin-right: 1rem;">TIRSO</p>
       <?php if (isset($_SESSION['connected'])) : ?>
         <a class="link" href="<?= HOME_URL . 'my_account' ?>">
           <img id="currentProfilePictureInNavbar" src="<?= $_SESSION['profilePicturePath'] ?>" alt="user profile image" width="44" height="44" style="margin-left: 1rem;">

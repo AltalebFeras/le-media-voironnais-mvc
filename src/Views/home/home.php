@@ -4,49 +4,43 @@
 <main>
   <div class="flex-row">
     <div>
-      <h1>Bienvenue sur <span class="TIRSO">TIRSO</span></h1>
-      <p>Votre plateforme de gestion de tirage au sort.</p>
+      <h1>Bienvenue sur <span class="TIRSO">Le Media Voironnais</span></h1>
+      <p>Votre plateforme collaborative pour la vie locale à Voiron et alentours.</p>
       <p class="description">
-        TIRSO est une application web qui vous permet de créer et de gérer
-        facilement des tirages au sort pour vos événements, concours ou
-        promotions.
+        Le Media Voironnais vous permet de créer et partager des événements publics, de rejoindre ou fonder des associations, d'enregistrer votre entreprise locale, et d'échanger avec d'autres membres via la messagerie intégrée.
       </p>
     </div>
     <div>
-      <img class="imgAccueil" src="./../assets/imgs/accueil.svg" alt="" />
+      <img class="imgAccueil" src="./../assets/imgs/accueil.svg" alt="Accueil Le Media Voironnais" />
     </div>
   </div>
   <div class="flex-row">
     <div>
       <div class="notes">
-        <h3>👥 Créer des groupes</h3>
+        <h3>🎉 Créez et partagez vos événements</h3>
         <p>
-          Regroupez vos utilisateurs par thématique, fonction, projet ou
-          intérêt. Une interface simple pour une organisation efficace.
+          Organisez des événements publics ou privés, invitez des participants, gérez les inscriptions et communiquez facilement avec vos invités.
         </p>
       </div>
       <div class="notes">
-        <h3><i class="fa-solid fa-lock"></i> Sécurisez vos données</h3>
+        <h3><i class="fa-solid fa-users"></i> Associations locales</h3>
         <p>
-          Vos données sont stockées de manière sécurisée. Vous pouvez
-          ajouter, modifier ou supprimer des utilisateurs dans vos listes.
+          Rejoignez ou créez une association, gérez vos membres, vos activités et vos communications en toute simplicité.
         </p>
       </div>
     </div>
     <div class="flex-row">
       <div>
         <div class="notes">
-          <h3><i class="fa-solid fa-list-check"></i> Listes</h3>
+          <h3><i class="fa-solid fa-building"></i> Entreprises du territoire</h3>
           <p>
-            Regroupez vos utilisateurs par thématique, fonction, projet ou
-            intérêt.
+            Valorisez votre entreprise locale, publiez vos actualités et connectez-vous avec la communauté voironnaise.
           </p>
         </div>
         <div class="notes">
-          <h3><i class="fa-solid fa-signal"></i> Mises à jour</h3>
+          <h3><i class="fa-solid fa-comments"></i> Messagerie instantanée</h3>
           <p>
-            Soyez informés dès qu’une mise à jour tombe. Restez informé en
-            temps réel.
+            Discutez avec d'autres membres, organisez vos groupes de discussion et restez informé en temps réel.
           </p>
         </div>
       </div>
@@ -54,29 +48,25 @@
   </div>
   <div class="reasons d-flex flex-wrap">
     <div>
-      <h2>Pourquoi nous choisir?</h2>
+      <h2>Pourquoi choisir Le Media Voironnais ?</h2>
       <ul>
         <li>
-          <strong>Interface intuitive :</strong> Une expérience fluide, même
-          pour les débutants.
+          <strong>Plateforme locale :</strong> Un espace dédié à la vie associative, entrepreneuriale et citoyenne de Voiron.
         </li>
         <li>
-          <strong>Collaboration facilitée :</strong> Travaillez à plusieurs
-          sur les mêmes groupes.
+          <strong>Communauté active :</strong> Participez à la dynamique locale, échangez et collaborez.
         </li>
         <li>
-          <strong>Sécurité avant tout :</strong> Vos données sont stockées
-          de manière sécurisée.
+          <strong>Outils complets :</strong> Gestion d'événements, associations, entreprises et messagerie intégrée.
         </li>
         <li>
-          <strong>Accessible partout :</strong> TIRSO fonctionne sur
-          ordinateur, tablette et mobile.
+          <strong>Accessible à tous :</strong> Inscription gratuite, interface intuitive, accessible sur tous vos appareils.
         </li>
       </ul>
     </div>
 
     <div class="mt">
-      <img class="imgAccueil" src="./../assets/imgs/accueil1.svg" alt="" />
+      <img class="imgAccueil" src="./../assets/imgs/accueil1.svg" alt="Communauté Le Media Voironnais" />
     </div>
   </div>
 </main>

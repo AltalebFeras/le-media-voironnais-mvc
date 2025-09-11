@@ -7,14 +7,13 @@
 
   <?php
   /** translation title */
-  $translations = [
+  $titles = [
     'accueil' => 'Accueil',
-    'signUp' => 'Inscription',
-    'signIn' => 'Connexion',
+    'inscription' => 'Inscription',
+    'connexion' => 'Connexion',
     'cgu' => 'CGU',
     'mentions_legales' => 'Mentions légales',
-    'forget_password' => 'Réinitialisation du mot de passe',
-    'reset_my_password' => 'Réinitialisation du mot de passe'
+    'dashboard' => 'Dashboard',
   ];
 
   $title = '';
@@ -22,16 +21,13 @@
   $title = $title[1];
 
   if (empty($title)) {
-    $title = 'Accueil';
-  } elseif (isset($translations[$title])) {
-    $title =  $translations[$title];
-    $title = ucfirst($title);
+    $title = 'Le Media Voironnais';
+  } elseif (isset($titles[$title])) {
+    $title =  $titles[$title];
+    $title = ucfirst($title) . ' - Le Media Voironnais';
   } else {
-    $title = ucfirst($title);
+    $title = ucfirst($title) . ' - Le Media Voironnais';
   }
-
-  // var_dump($_SERVER);
-  // die;
   ?>
   <title><?= $title ?></title>
 
@@ -40,7 +36,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="<?= HOME_URL . 'assets/favicon/favicon-32x32.png' ?>">
   <link rel="icon" type="image/png" sizes="16x16" href="<?= HOME_URL . 'assets/favicon/favicon-16x16.png' ?>">
   <link rel="manifest" href="<?= HOME_URL . 'assets/favicon/site.webmanifest' ?>">
-  <link rel="stylesheet" href="<?= HOME_URL . 'assets/styles/global.css' ?>">
+  <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/global.css' ?>">
 
   <link
     rel="stylesheet"
@@ -59,15 +55,12 @@
       break;
     case HOME_URL . 'signIn':
     case HOME_URL . 'signUp':
-      // case HOME_URL . 'reset_my_password':
-      // case HOME_URL . 'forget_my_password':
-      // echo '  <script src="https://www.google.com/recaptcha/api.js" async defer></script>';
       echo '<link rel="stylesheet" href="' . HOME_URL . 'assets/styles/auth.css">';
       break;
     case HOME_URL . 'dashboard':
       echo '<link rel="stylesheet" href="' . HOME_URL . 'assets/styles/dashboard.css">';
       break;
-       case HOME_URL . 'my_account':
+    case HOME_URL . 'my_account':
       echo '<link rel="stylesheet" href="' . HOME_URL . 'assets/styles/account.css">';
       break;
     case HOME_URL . 'list_operations':
