@@ -69,12 +69,12 @@ class UserController extends AbstractController
     }
     public function treatmentInscription()
     {
-        $firstName = isset($_POST['firstName']) ? htmlspecialchars(trim(ucfirst($_POST['firstName']))) : null;
-        $lastName = isset($_POST['lastName']) ? htmlspecialchars(trim(ucfirst($_POST['lastName']))) : null;
-        $email = isset($_POST['email']) ? htmlspecialchars(trim(strtolower($_POST['email']))) : null;
-        $password = isset($_POST['password']) ? htmlspecialchars(trim($_POST['password'])) : null;
-        $passwordConfirmation = isset($_POST['passwordConfirmation']) ? htmlspecialchars(trim($_POST['passwordConfirmation'])) : null;
-        $rgpd = isset($_POST['rgpd']) ? htmlspecialchars(trim($_POST['rgpd'])) : null;
+        $firstName = isset($_POST['firstName']) ? htmlentities(trim(ucfirst($_POST['firstName']))) : null;
+        $lastName = isset($_POST['lastName']) ? htmlentities(trim(ucfirst($_POST['lastName']))) : null;
+        $email = isset($_POST['email']) ? htmlentities(trim(strtolower($_POST['email']))) : null;
+        $password = isset($_POST['password']) ? trim($_POST['password']) : null;
+        $passwordConfirmation = isset($_POST['passwordConfirmation']) ? trim($_POST['passwordConfirmation']) : null;
+        $rgpd = isset($_POST['rgpd']) ? htmlentities(trim($_POST['rgpd'])) : null;
 
         $_SESSION['form_data'] = $_POST;
         $errors = [];
@@ -113,10 +113,10 @@ class UserController extends AbstractController
             $rgpdDate = date('Y-m-d H:i:s');
         }
         // Verify reCAPTCHA
-        $recaptchaStatus = $this->checkReCaptcha();
-        if ($recaptchaStatus === false) {
-            $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
-        }
+        // $recaptchaStatus = $this->checkReCaptcha();
+        // if ($recaptchaStatus === false) {
+        //     $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+        // }
 
         $emailExists = $this->repo->getUser($email);
 
@@ -124,7 +124,7 @@ class UserController extends AbstractController
             $errors['email'] = 'Cette adresse e-mail est déjà utilisée';
         }
         // If there are any validation errors, throw one Error with all errors
-        $this->returnAllErrors($errors, 'signUp');
+        $this->returnAllErrors($errors, 'inscription');
 
         $user = new User([
             'firstName' => $firstName,
@@ -175,14 +175,14 @@ class UserController extends AbstractController
                 $activateAccount = $this->repo->activateUser($userId);
                 if ($activateAccount) {
                     $_SESSION['success'] = 'Votre compte a été activé avec succès! Vous pouvez maintenant vous connecter.';
-                    $this->redirect('signIn');
+                    $this->redirect('connexion');
                 }
             } else {
                 throw new Exception('Le lien d\'activation est invalide ou a expiréeeeeeee.');
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('signIn', ['error' => 'true']);
+            $this->redirect('connexion', ['error' => 'true']);
         }
     }
 
@@ -218,7 +218,7 @@ class UserController extends AbstractController
             }
         }
 
-        $this->returnAllErrors($errors, 'signIn');
+        $this->returnAllErrors($errors, 'connexion');
 
 
         if ($user) {
@@ -310,7 +310,7 @@ class UserController extends AbstractController
             $mail->sendEmail('do_not_reply@feras.fr', 'feras', $user->getEmail(), $user->getFirstName(), $subject, $body);
 
             $_SESSION['success'] = 'Un e-mail de réinitialisation du mot de passe a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception et cliquer sur le lien pour réinitialiser votre mot de passe.';
-            $this->redirect('signIn');
+            $this->redirect('connexion');
         } else {
             $errors['email'] = 'Aucun compte trouvé avec cette adresse e-mail.';
             $this->returnAllErrors($errors, 'forget_my_password');
@@ -356,7 +356,7 @@ class UserController extends AbstractController
         $resetPassword = $this->repo->resetPassword($userId, $passwordHash);
         if ($resetPassword) {
             $_SESSION['success'] = 'Votre mot de passe a été réinitialisé avec succès! Vous pouvez maintenant vous connecter.';
-            $this->redirect('signIn');
+            $this->redirect('connexion');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de la réinitialisation du mot de passe. Veuillez réessayer plus tard.';
             header('Location: ' . HOME_URL . 'reset_my_password?token=' . $token . '&error=true');
@@ -497,7 +497,7 @@ class UserController extends AbstractController
         session_destroy();
         session_start();
         $_SESSION['success'] = 'Votre compte a été supprimé avec succès!';
-        $this->redirect('signIn');
+        $this->redirect('connexion');
     }
     public function editProfilePicture()
     {
