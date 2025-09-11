@@ -3,8 +3,8 @@
 
 <main>
   <div class="flex-row">
-    <div>
-      <h1>Bienvenue sur <span class="TIRSO">Le Media Voironnais</span></h1>
+    <div class="card">
+      <h1 class="">Bienvenue sur <span class="TIRSO">Le Media Voironnais</span></h1>
       <p>Votre plateforme collaborative pour la vie locale à Voiron et alentours.</p>
       <p class="description">
         Le Media Voironnais vous permet de créer et partager des événements publics, de rejoindre ou fonder des associations, d'enregistrer votre entreprise locale, et d'échanger avec d'autres membres via la messagerie intégrée.

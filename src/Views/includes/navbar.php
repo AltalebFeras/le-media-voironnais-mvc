@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="logo" style="display: flex; align-items: center;">
       <a href="/"><img
-          src="<?= DOMAIN . HOME_URL . 'assets/imgs/logo.png' ?>"
+          src="<?= DOMAIN . HOME_URL . 'assets/images/logo/logo.png' ?>"
           alt="Logo"
           height="60" />
       </a>
@@ -20,16 +20,13 @@
     <ul class="nav-links" id="nav-links">
       <li><a class="link" href="<?= HOME_URL  ?>">Accueil</a></li>
       <?php if (isset($_SESSION['connected'])) : ?>
-        <li>
-          <a class="link" href="<?= HOME_URL . 'all_lists' ?>">Mes listes</a>
-        </li>
         <li><a class="link" href="<?= HOME_URL . 'dashboard' ?>">Dashboard</a></li>
         <li>
-          <a class="btn linkNotDecorated signOut" href="<?= HOME_URL . 'signOut' ?>">Déconnexion</a>
+          <a class="btn linkNotDecorated signOut" href="<?= HOME_URL . 'deconnexion' ?>">Déconnexion</a>
         </li>
       <?php else : ?>
         <li>
-          <a class="btn linkNotDecorated" href="<?= HOME_URL . 'signIn' ?>">Connexion</a>
+          <a class="btn linkNotDecorated " href="<?= HOME_URL . 'connexion' ?>">Connexion</a>
         </li>
       <?php endif; ?>
     </ul>

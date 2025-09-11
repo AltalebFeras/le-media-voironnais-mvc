@@ -27,21 +27,6 @@
     <li><a href="<?= HOME_URL . 'mentions_legales' ?>">Mentions légales</a></li>
   </ul>
   <script src="<?= HOME_URL . 'assets/scripts/script.js' ?>"></script>
-  <?php
-  $route = $_SERVER['REDIRECT_URL'];
-
-  switch ($route) {
-
-    case HOME_URL . 'signIn':
-    case HOME_URL . 'signUp':
-    case HOME_URL . 'reset_my_password':
-    case HOME_URL . 'forget_my_password':
-      echo '  <script src="https://www.google.com/recaptcha/api.js"></script>';
-      break;
-    default:
-      break;
-  }
-  ?>
 </footer>
 </body>
 
