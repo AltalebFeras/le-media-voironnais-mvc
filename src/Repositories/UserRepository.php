@@ -34,7 +34,7 @@ class UserRepository
     public function signUp(User $user): User
     {
         try {
-            $query = 'INSERT INTO user (firstName, lastName, email, password, isActivated, token, profile_picture_path, rgpd_date, created_at, role_id) 
+            $query = 'INSERT INTO user (firstName, lastName, email, password, isActivated, token, avatar_path, rgpd_accepted_date, createdAt, idRole) 
             VALUES (:firstName, :lastName, :email, :password, :isActivated, :activationToken, :profilePicturePath, :rgpdDate, :createdAt, :roleId)';
 
             $req = $this->DBuser->prepare($query);

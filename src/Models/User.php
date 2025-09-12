@@ -7,40 +7,44 @@ use src\Services\Hydration;
 
 class User
 {
-    private int $userId;
+    private int $idUser;
+    private int $idRole;
     private string $firstName;
     private string $lastName;
     private string $email;
+    private string $phone;
     private string $password;
+    private string $avatarPath;
+    private string $bio;
+    private ?DateTime $dateOfBirth;
     private bool $isActivated;
+    private bool $isOnline;
+    private string $lastSeen;
+    private DateTime $rgpdAcceptedDate;
     private ?string $token;
-    private ?string $resetPasswordToken;
-    private string $profilePicturePath;
-    private DateTime $rgpdDate;
     private DateTime $createdAt;
     private ?DateTime $updatedAt;
     private ?DateTime $resetPasswordRequestTime;
-    private int $roleId;
-    private ?string $roleName = null;
+    
     use Hydration;
 
 
     /**
-     * Get the value of userId
+     * Get the value of idUser
      */
-    public function getUserId(): int
+    public function getIdUser(): int
     {
-        return $this->userId;
+        return $this->idUser;
     }
 
     /**
-     * Set the value of userId
+     * Set the value of idUser
      *
      * @return  self
      */
-    public function setUserId($userId)
+    public function setIdUser($idUser): static
     {
-        $this->userId = $userId;
+        $this->idUser = $idUser;
 
         return $this;
     }
