@@ -57,7 +57,7 @@ jobs:
         dry-run: false
         log-level: verbose
         dangerous-clean-slate: false
-        security: strict
+        security: loose
         exclude: |
           **/.git*
           **/.git*/**
