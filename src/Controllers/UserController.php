@@ -218,25 +218,29 @@ class UserController extends AbstractController
 
 
         if ($user) {
-
+            //   datetime string
+            $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
+            $this->repo->updateLastSeenAndSetUserOnline($user->getIdUser(), $lastSeen);
             $_SESSION['idUser'] = $user->getIdUser();
             $_SESSION['firstName'] = $user->getFirstName();
             $_SESSION['lastName'] = $user->getLastName();
             $_SESSION['email'] = $user->getEmail();
+            $_SESSION['phone'] = $user->getPhone();
             $_SESSION['avatarPath'] = $user->getAvatarPath();
+            $_SESSION['bio'] = $user->getBio();
+            $_SESSION['dateOfBirth'] = $user->getDateOfBirth();
             $_SESSION['isActivated'] = $user->getIsActivated();
+            $_SESSION['isOnline'] = $user->getIsOnline();
+            $_SESSION['lastSeen'] = $user->getLastSeen();
             $_SESSION['createdAt'] = $user->getCreatedAtFormatted();
             $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
             $_SESSION['role'] = $user->getRoleName();
 
             // Prevent session fixation  
             session_regenerate_id(true);
-
             $this->makeFingerprint();
 
             $_SESSION['connected'] = true;
-            $_SESSION['lastConnection'] = date('Y-m-d H:i:s');
-
             $_SESSION['success'] = 'Vous êtes connecté avec succès!';
             $this->redirect('dashboard');
         }

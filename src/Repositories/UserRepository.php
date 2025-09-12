@@ -102,6 +102,17 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
+    public function updateLastSeenAndSetUserOnline($idUser,$lastSeen): bool
+    {
+        try {
+            $query = 'UPDATE user SET lastSeen = :lastSeen, isOnline = 1 WHERE idUser = :idUser';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['idUser' => $idUser, 'lastSeen' => $lastSeen]);
+            return true;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
     public function getUserByResetPasswordToken($resetPasswordToken): ?User
     {
         try {
@@ -161,7 +172,7 @@ class UserRepository
                 'password' => $newPassword,
                 'idUser' => $idUser
             ]);
-            return true;    
+            return true;
         } catch (PDOException $e) {
             throw new Exception('An error occurred while updating password.');
         }
@@ -196,5 +207,4 @@ class UserRepository
             'idUser' => $idUser
         ]);
     }
-  
 }

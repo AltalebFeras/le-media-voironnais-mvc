@@ -19,7 +19,7 @@ class User
     private DateTime|string|null $dateOfBirth;
     private bool $isActivated;
     private bool $isOnline;
-    private ?string $lastSeen;
+    private DateTime|string|null $lastSeen;
     private DateTime|string $rgpdAcceptedDate;
     private ?string $token;
     private DateTime|string $createdAt;
@@ -438,26 +438,51 @@ class User
     /**
      * Get the value of lastSeen
      */
-    public function getLastSeen()
+    public function getLastSeen(): DateTime|string|null
     {
-        return $this->lastSeen;
+        if ($this->lastSeen === null) {
+            return null;
+        }
+        if (is_string($this->lastSeen)) {
+            return $this->lastSeen;
+        }
+        // Format the DateTime object to a string
+        return $this->lastSeen->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Get the value of lastSeen formatted
+     */
+    public function getLastSeenFormatted(): string|null
+    {
+        if ($this->lastSeen === null) {
+            return null;
+        }
+        if (is_string($this->lastSeen)) {
+            return $this->lastSeen;
+        }
+        // Format the DateTime object to a string
+        return $this->lastSeen->format('d/m/Y à H:i');
     }
 
     /**
      * Set the value of lastSeen
-     *
-     * @return  self
      */
-    public function setLastSeen($lastSeen)
+    public function setLastSeen(DateTime|string|null $lastSeen): self
     {
-        $this->lastSeen = $lastSeen;
-
+        if ($lastSeen === null) {
+            $this->lastSeen = null;
+        } elseif (is_string($lastSeen)) {
+            $this->lastSeen = new DateTime($lastSeen);
+        } elseif (is_a($lastSeen, DateTime::class)) {
+            $this->lastSeen = $lastSeen;
+        }
         return $this;
     }
 
     /**
      * Get the value of roleName
-     */ 
+     */
     public function getRoleName()
     {
         return $this->roleName;
@@ -467,10 +492,30 @@ class User
      * Set the value of roleName
      *
      * @return  self
-     */ 
+     */
     public function setRoleName($roleName)
     {
         $this->roleName = $roleName;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of phone
+     */ 
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Set the value of phone
+     *
+     * @return  self
+     */ 
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
 
         return $this;
     }
