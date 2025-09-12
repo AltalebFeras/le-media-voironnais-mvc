@@ -27,11 +27,11 @@ class HomeController extends AbstractController
     }
     public function displayFormForgetPassword()
     {
-        $this->render('home/forget_my_password');
+        $this->render('home/mdp_oublie');
     }
     public function displayFormResetPassword()
     {
-        $this->render('home/reset_my_password');
+        $this->render('home/reinit_mon_mot_de_passe');
     }
     public function terms_of_service()
     {

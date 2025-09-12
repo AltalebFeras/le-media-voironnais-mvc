@@ -5,7 +5,7 @@
   <h1 class="h1Password">Réinitialisation du mot de passe</h1>
   <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
-  <form class="card" action="<?= HOME_URL . 'forget_my_password' ?>" method="POST">
+  <form class="card" action="<?= HOME_URL . 'mdp_oublie' ?>" method="POST">
     <p>
       Veuillez entrer votre adresse e-mail pour réinitialiser votre mot de
       passe.

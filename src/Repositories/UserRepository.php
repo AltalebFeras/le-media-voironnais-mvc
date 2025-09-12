@@ -56,23 +56,12 @@ class UserRepository
             throw new Exception('An unexpected error occurred: ' . $e->getMessage());
         }
     }
-    public function saveUserToken($idUser, $token)
+    public function saveToken($idUser, $token): bool
     {
         try {
             $query = 'UPDATE user SET token = :token WHERE idUser = :idUser';
             $req = $this->DBuser->prepare($query);
             $req->execute(['token' => $token, 'idUser' => $idUser]);
-            return true;
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
-    }
-    public function saveResetPasswordToken($idUser, $resetPasswordToken): bool
-    {
-        try {
-            $query = 'UPDATE user SET resetPasswordToken = :resetPasswordToken WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
-            $req->execute(['resetPasswordToken' => $resetPasswordToken, 'idUser' => $idUser]);
             return true;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -108,29 +97,6 @@ class UserRepository
             $query = 'UPDATE user SET lastSeen = :lastSeen, isOnline = 1 WHERE idUser = :idUser';
             $req = $this->DBuser->prepare($query);
             $req->execute(['idUser' => $idUser, 'lastSeen' => $lastSeen]);
-            return true;
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
-    }
-    public function getUserByResetPasswordToken($resetPasswordToken): ?User
-    {
-        try {
-            $query  = 'SELECT * FROM user WHERE resetPasswordToken = :resetPasswordToken';
-            $req = $this->DBuser->prepare($query);
-            $req->execute(['resetPasswordToken' => $resetPasswordToken]);
-            $user = $req->fetchObject(User::class);
-            return $user !== false ? $user : null;
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
-    }
-    public function updateResetPasswordRequestTime($idUser, $resetPasswordRequestTime): bool
-    {
-        try {
-            $query = 'UPDATE user SET resetPasswordRequestTime = :resetPasswordRequestTime WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
-            $req->execute(['idUser' => $idUser, 'resetPasswordRequestTime' => $resetPasswordRequestTime]);
             return true;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -180,7 +146,7 @@ class UserRepository
     public function resetPassword($idUser, $passwordHash): bool
     {
         try {
-            $query = $this->DBuser->prepare('UPDATE user SET password = :password , resetPasswordToken = NULL WHERE idUser = :idUser');
+            $query = $this->DBuser->prepare('UPDATE user SET password = :password , token = NULL WHERE idUser = :idUser');
             $query->execute([
                 'password' => $passwordHash,
                 'idUser' => $idUser

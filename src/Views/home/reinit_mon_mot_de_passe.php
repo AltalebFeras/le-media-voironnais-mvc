@@ -5,7 +5,7 @@
     <h1 class="h1Password">Réinitialisation du mot de passe</h1>
     <!-- Alert Messages -->
   <?php include_once __DIR__ . '/../includes/messages.php'; ?>
-    <form action="<?= DOMAIN . HOME_URL . 'reset_my_password' ?>" method="POST">
+    <form action="<?= DOMAIN . HOME_URL . 'reinit_mon_mot_de_passe' ?>" method="POST">
         <input type="hidden" name="token" value="<?= htmlspecialchars($_GET['token'] ?? '') ?>">
         <p>
             Veuillez entrer votre nouveau mot de passe.

@@ -55,7 +55,7 @@ switch ($route) {
             $homeController->page404();
         }
         break;
-    case HOME_URL . 'forget_my_password':
+    case HOME_URL . 'mdp_oublie':
         if ($method === 'POST') {
             $userController->treatmentForgotMyPassword();
         } else {
@@ -66,7 +66,7 @@ switch ($route) {
             }
         }
         break;
-    case HOME_URL . 'reset_my_password':
+    case HOME_URL . 'reinit_mon_mot_de_passe':
         if ($method === 'POST') {
             $userController->treatmentResetPassword();
         } else {

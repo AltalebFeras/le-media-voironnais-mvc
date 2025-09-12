@@ -278,36 +278,21 @@ class UserController extends AbstractController
                 $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
             }
         }
-
-        $this->returnAllErrors($errors, 'forget_my_password');
         $user = $this->repo->getUser($email);
+        if ($user && $user->getIsActivated() === false) {
+            $errors['isActivated'] = 'Vous ne pouvez pas réinitialiser votre mot de passe avant d\'avoir activé votre compte.';
+        }
+
+        $this->returnAllErrors($errors, 'mdp_oublie');
 
         if ($user) {
             $idUser = $user->getIdUser();
 
-            // Check if the user has requested a password reset in the last 5 minutes
-            $lastRequest = $user->getResetPasswordRequestTime();
-            if ($lastRequest) {
-                $last = strtotime($lastRequest);
-                $now = time();
-                $waitSeconds = 300;
-                if ($now - $last < $waitSeconds) {
-                    $errors['time'] = 'Vous avez déjà demandé une réinitialisation récemment. Veuillez patienter cinq minutes avant de réessayer.';
-                    $this->returnAllErrors($errors, 'forget_my_password');
-                }
-            }
-
-            // if user has a reset password token, i use it, otherwise i generate a new one
-            $user->getResetPasswordToken() ? $resetPasswordToken = $user->getResetPasswordToken() : $resetPasswordToken = bin2hex(random_bytes(16));
-            $this->repo->saveResetPasswordToken($idUser, $resetPasswordToken);
-
-            // Update the last reset request time
-            $resetPasswordRequestTime = $user->setResetPasswordRequestTime(new DateTime());
-            $resetPasswordRequestTime = $user->getResetPasswordRequestTime();
-            $this->repo->updateResetPasswordRequestTime($idUser, $resetPasswordRequestTime);
+            $token = bin2hex(random_bytes(16));
+            $this->repo->saveToken($idUser, $token);
 
             // send password reset email (same as before)
-            $resetLink = DOMAIN . HOME_URL . "reset_my_password?token=$resetPasswordToken";
+            $resetLink = DOMAIN . HOME_URL . "reinit_mon_mot_de_passe?token=$token";
             $mail = new Mail();
             $subject = 'Réinitialisation de votre mot de passe';
             $body = "Bonjour " . $user->getFirstName() . " " . $user->getLastName() . ",<br><br>";
@@ -322,7 +307,7 @@ class UserController extends AbstractController
             $this->redirect('connexion');
         } else {
             $errors['email'] = 'Aucun compte trouvé avec cette adresse e-mail.';
-            $this->returnAllErrors($errors, 'forget_my_password');
+            $this->returnAllErrors($errors, 'mdp_oublie');
         }
     }
 
@@ -343,7 +328,7 @@ class UserController extends AbstractController
         if (empty($token) || !preg_match('/^[a-f0-9]{32}$/', $token)) {
             $errors['token'] = 'Le lien de réinitialisation du mot de passe est invalide ou a expiré.';
         }
-        $user = $this->repo->getUserByResetPasswordToken($token);
+        $user = $this->repo->getUserByToken($token);
 
         if (!$user) {
             $errors['token'] = 'Le lien de réinitialisation du mot de passe est invalide ou a expiré.';
@@ -359,7 +344,7 @@ class UserController extends AbstractController
         }
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
-            header('Location: ' . HOME_URL . 'reset_my_password?token=' . $token . '&error=true');
+            header('Location: ' . HOME_URL . 'reinit_mon_mot_de_passe?token=' . $token . '&error=true');
             exit();
         }
         $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
@@ -370,7 +355,7 @@ class UserController extends AbstractController
             $this->redirect('connexion');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de la réinitialisation du mot de passe. Veuillez réessayer plus tard.';
-            header('Location: ' . HOME_URL . 'reset_my_password?token=' . $token . '&error=true');
+            header('Location: ' . HOME_URL . 'reinit_mon_mot_de_passe?token=' . $token . '&error=true');
             exit();
         }
     }
