@@ -3,9 +3,7 @@
 namespace src\Controllers;
 
 use DateTime;
-use Error;
-use PDOException;
-use PHPMailer\PHPMailer\Exception;
+use Exception;
 use src\Abstracts\AbstractController;
 use src\Models\User;
 use src\Repositories\UserRepository;
@@ -162,7 +160,7 @@ class UserController extends AbstractController
             $token = isset($_GET['token']) ? htmlspecialchars(trim($_GET['token'])) : null;
 
             if (!$token || !preg_match('/^[a-f0-9]{32}$/', $token)) {
-                throw new Exception('Le lien d\'activation est invalide ou a expiré.');
+                throw new Exception('Le lien d\'activation est invalide ou votre compte a déjà été activé.');
             }
 
             if (strlen($token) !== 32 || !ctype_xdigit($token)) {
@@ -178,7 +176,7 @@ class UserController extends AbstractController
                     $this->redirect('connexion');
                 }
             } else {
-                throw new Exception('Le lien d\'activation est invalide ou a expiréeeeeeee.');
+                throw new Exception('Le lien d\'activation est invalide ou votre compte a déjà été activé.');
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
@@ -445,15 +443,15 @@ class UserController extends AbstractController
         $confirmPassword = isset($_POST['confirmPassword']) ? htmlspecialchars($_POST['confirmPassword']) : null;
         $errors = [];
         $_SESSION['form_data'] = $_POST;
-        // i check the current password
+        // Vérifie le mot de passe actuel
         $user = $this->repo->getUserById($idUser);
         if (!password_verify($currentPassword, $user->getPassword())) {
-            $errors['currentPassword'] = 'Current password is incorrect.';
+            $errors['currentPassword'] = 'Le mot de passe actuel est incorrect.';
         }
 
-        //  if new password matches confirm password
+        // Vérifie si le nouveau mot de passe correspond à la confirmation
         if ($newPassword !== $confirmPassword) {
-            $errors['confirmPassword'] = 'New passwords do not match.';
+            $errors['confirmPassword'] = 'Les nouveaux mots de passe ne correspondent pas.';
         }
         if (strlen($newPassword) < 8) {
             $errors['length'] = 'Le mot de passe doit contenir au moins 8 caractères.';
@@ -463,11 +461,11 @@ class UserController extends AbstractController
             header('Location: ' . HOME_URL . 'mon_compte?action=change_password&error=true');
             exit();
         }
-        // Hash the new password
+        // Hash du nouveau mot de passe
         $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
         $changePassword = $this->repo->updatePassword($idUser, $newPasswordHash);
         if ($changePassword) {
-            $_SESSION['success'] = 'Votre mot de passe a été changé avec succès!';
+            $_SESSION['success'] = 'Votre mot de passe a été changé avec succès !';
             header('Location: ' . HOME_URL . 'mon_compte');
             exit();
         } else {
