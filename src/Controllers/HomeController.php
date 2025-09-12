@@ -45,13 +45,7 @@ class HomeController extends AbstractController
     {
         $this->render('home/403');
     }
-    public function deconnexion(): void
-    {
-        session_destroy();
-        session_start();
-        $_SESSION['success'] = 'vous êtes désconnecté avec succès!';
-        $this->redirect('connexion');
-    }
+  
 
     public function page404(): void
     {

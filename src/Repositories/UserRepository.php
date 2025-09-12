@@ -56,6 +56,17 @@ class UserRepository
             throw new Exception('An unexpected error occurred: ' . $e->getMessage());
         }
     }
+    public function makeUserOffline($idUser): bool
+    {
+        try {
+            $query = 'UPDATE user SET isOnline = 0 WHERE idUser = :idUser';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['idUser' => $idUser]);
+            return true;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
     public function saveToken($idUser, $token): bool
     {
         try {

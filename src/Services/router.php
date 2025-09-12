@@ -128,7 +128,7 @@ switch ($route) {
         $homeController->mentions_legales();
         break;
     case HOME_URL . 'deconnexion':
-        $homeController->deconnexion();
+        $userController->deconnexion();
         break;
     case HOME_URL . '404':
         $homeController->page404();

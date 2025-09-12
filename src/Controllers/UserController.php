@@ -222,6 +222,7 @@ class UserController extends AbstractController
 
         $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
         $idUser = $user->getIdUser();
+
         $this->repo->updateLastSeenAndSetUserOnline($idUser, $lastSeen);
 
         if ($user) {
@@ -250,7 +251,17 @@ class UserController extends AbstractController
             $this->redirect('dashboard');
         }
     }
+    public function deconnexion(): void
+    {
+        $offline = $this->repo->makeUserOffline($_SESSION['idUser']);
+        if ($offline) {
+            session_destroy();
+            session_start();
 
+            $_SESSION['success'] = 'vous êtes désconnecté avec succès!';
+            $this->redirect('connexion');
+        }
+    }
     public function displayDashboard()
     {
         if (!isset($_GET['error'])) {
