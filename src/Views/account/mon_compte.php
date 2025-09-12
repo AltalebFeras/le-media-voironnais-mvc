@@ -4,7 +4,7 @@
 <main>
     <div class="flex-row justify-content-between">
         <h1 class="flex-row justify-content-center">Mon profil</h1>
-        <a href="<?= isset($_GET['action']) ? HOME_URL . 'my_account' : HOME_URL . 'dashboard' ?>" class="btn">
+        <a href="<?= isset($_GET['action']) ? HOME_URL . 'mon_compte' : HOME_URL . 'dashboard' ?>" class="btn">
             <i class="fa-solid fa-arrow-left fa-fade fa-xl" style="color:white;"></i>
         </a>
     </div>
@@ -15,7 +15,7 @@
             <div class="card">
 
                 <h3>Modifier mes infos</h3>
-                <form action="<?= HOME_URL . 'my_account?action=edit_profile' ?>" method="POST">
+                <form action="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" method="POST">
                     <div>
                         <label for="firstName">Prénom :</label>
                         <input type="text" id="firstName" name="firstName" placeholder="Entrez votre prénom"
@@ -41,7 +41,7 @@
         <?php elseif ($_GET['action'] === 'change_password') : ?>
             <div class="card">
                 <h3>Changer mon mot de passe</h3>
-                <form action="<?= HOME_URL . 'my_account?action=change_password' ?>" method="POST">
+                <form action="<?= HOME_URL . 'mon_compte?action=change_password' ?>" method="POST">
                     <div>
                         <label for="currentPassword">Mot de passe actuel :</label>
                         <input type="password" id="currentPassword" name="currentPassword" value="<?= $_SESSION['form_data']['currentPassword'] ?? ''; ?>" required />
@@ -63,7 +63,7 @@
             <div class="card">
                 <h3>Supprimer mon compte</h3>
                 <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
-                <form action="<?= HOME_URL . 'my_account?action=delete_account' ?>" method="POST">
+                <form action="<?= HOME_URL . 'mon_compte?action=delete_account' ?>" method="POST">
                     <div>
                         <label for="confirmDelete">Pour confirmer, tapez "je confirme" :</label>
                         <input type="text" id="confirmDelete" name="confirmDelete" value="<?= $_SESSION['form_data']['confirmDelete'] ?? ''; ?>" placeholder="je confirme" required />
@@ -85,13 +85,13 @@
                     <p>Mise à jour : <?= $_SESSION['updatedAt'] ?? 'Jamais' ?> </p>
                     <p>Role : <?= $_SESSION['roleName'] ?> </p>
                     <p>Dernière connexion : <?= (new DateTime($_SESSION['lastConnection']))->format('d/m/Y') . ' à ' . (new DateTime($_SESSION['lastConnection']))->format('H:i') ?> </p>
-                    <a href="<?= HOME_URL . 'my_account?action=edit_profile' ?>" class="btn linkNotDecorated">Modifier</a>
+                    <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated">Modifier</a>
                 </div>
 
                 <div class="account-profile-picture">
                     <img id="currentProfilePicture" src="<?= $_SESSION['profilePicturePath'] ?>" alt="user profile image" width="200" height="200">
                     <h5>Changer votre photo de profil</h5>
-                    <form method="post" action="<?= HOME_URL . 'my_account?action=edit_profile_picture' ?>" enctype="multipart/form-data">
+                    <form method="post" action="<?= HOME_URL . 'mon_compte?action=edit_profile_picture' ?>" enctype="multipart/form-data">
                         <label for="profilePicture" class="custom-file-label">
                             Sélectionnez une photo (PNG, JPG, JPEG, max 2 Mo)
                             <input type="file" id="profilePicture" name="profilePicture" accept="image/*" class="custom-file-input" required>
@@ -99,14 +99,14 @@
                         <button type="submit" class="btn">Changer</button>
                         <button type="button" id="cancelProfilePicture" class="btn" style="margin-left: 0.5rem; display:none;">Annuler</button>
                     </form>
-                    <form action="<?= HOME_URL . 'my_account?action=delete_profile_picture' ?>" method="post">
+                    <form action="<?= HOME_URL . 'mon_compte?action=delete_profile_picture' ?>" method="post">
                         <button type="submit" class="btn">Supprimer</button>
                     </form>
                 </div>
             </div>
             <div class="account-actions">
-                <a href="<?= HOME_URL . 'my_account?action=change_password' ?>" class="btn linkNotDecorated bg-info text-bold">Changer mon mot de passe</a>
-                <a href="<?= HOME_URL . 'my_account?action=delete_account' ?>" class="btn linkNotDecorated bg-danger text-bold">Supprimer mon compte</a>
+                <a href="<?= HOME_URL . 'mon_compte?action=change_password' ?>" class="btn linkNotDecorated bg-info text-bold">Changer mon mot de passe</a>
+                <a href="<?= HOME_URL . 'mon_compte?action=delete_account' ?>" class="btn linkNotDecorated bg-danger text-bold">Supprimer mon compte</a>
             </div>
         <?php endif; ?>
 

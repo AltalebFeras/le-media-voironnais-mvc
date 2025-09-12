@@ -7,8 +7,8 @@
           height="60" />
       </a>
       <?php if (isset($_SESSION['connected'])) : ?>
-        <a class="link" href="<?= HOME_URL . 'my_account' ?>">
-          <img id="currentProfilePictureInNavbar" src="<?= $_SESSION['profilePicturePath'] ?>" alt="user profile image" width="44" height="44" style="margin-left: 1rem;">
+        <a class="link" href="<?= HOME_URL . 'mon_compte' ?>">
+          <img id="currentProfilePictureInNavbar" src="<?= $_SESSION['avatarPath'] ?>" alt="user profile image" width="44" height="44" style="margin-left: 1rem;">
         </a>
       <?php endif; ?>
     </div>

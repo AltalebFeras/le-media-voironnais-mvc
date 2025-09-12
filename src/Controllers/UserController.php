@@ -50,7 +50,7 @@ class UserController extends AbstractController
     private function sendEmail($firstName, $lastName, $email, $activationToken): bool
     {
         $encrypting = new  Encrypt_decrypt();
-        $activationLink = DOMAIN . HOME_URL . 'activate_my_account?token=' . $activationToken . '&email=' . $encrypting->encryptId($email);
+        $activationLink = DOMAIN . HOME_URL . 'activer_mon_compte?token=' . $activationToken . '&email=' . $encrypting->encryptId($email);
 
         // activation email
         $mail = new Mail();
@@ -85,7 +85,7 @@ class UserController extends AbstractController
 
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $activationToken = bin2hex(random_bytes(16));
-        $profilePicturePath = DOMAIN . HOME_URL . 'assets/uploads/profilePictures/defaultProfile.png';
+        $profilePicturePath = DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
         $isActivated = false;
         $roleId = 2;
         $createdAt = date('Y-m-d H:i:s');
@@ -366,7 +366,7 @@ class UserController extends AbstractController
         if (!isset($_GET['error'])) {
             unset($_SESSION['form_data']);
         }
-        include_once __DIR__ . '/../Views/account/my_account.php';
+        include_once __DIR__ . '/../Views/account/mon_compte.php';
     }
     public function editProfile()
     {
@@ -406,7 +406,7 @@ class UserController extends AbstractController
             // If there are any validation errors, throw one Error with all errors
             if (!empty($errors)) {
                 $_SESSION['errors'] = $errors;
-                header('Location: ' . HOME_URL . 'my_account?action=edit_profile&error=true');
+                header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&error=true');
                 exit();
             }
 
@@ -427,13 +427,13 @@ class UserController extends AbstractController
 
                 unset($_SESSION['form_data']);
                 $_SESSION['success'] = 'Votre profil a été mis à jour avec succès!';
-                header('Location: ' . HOME_URL . 'my_account');
+                header('Location: ' . HOME_URL . 'mon_compte');
             } else {
                 throw new Exception("Aucune modification n’a été effectuée.");
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            header('Location: ' . HOME_URL . 'my_account?action=edit_profile&error=true');
+            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&error=true');
             exit();
         }
     }
@@ -460,7 +460,7 @@ class UserController extends AbstractController
         }
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
-            header('Location: ' . HOME_URL . 'my_account?action=change_password&error=true');
+            header('Location: ' . HOME_URL . 'mon_compte?action=change_password&error=true');
             exit();
         }
         // Hash the new password
@@ -468,11 +468,11 @@ class UserController extends AbstractController
         $changePassword = $this->repo->updatePassword($idUser, $newPasswordHash);
         if ($changePassword) {
             $_SESSION['success'] = 'Votre mot de passe a été changé avec succès!';
-            header('Location: ' . HOME_URL . 'my_account');
+            header('Location: ' . HOME_URL . 'mon_compte');
             exit();
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors du changement de mot de passe. Veuillez réessayer plus tard.';
-            header('Location: ' . HOME_URL . 'my_account?action=change_password&error=true');
+            header('Location: ' . HOME_URL . 'mon_compte?action=change_password&error=true');
             exit();
         }
     }
@@ -485,7 +485,7 @@ class UserController extends AbstractController
         // Validation the deleting account of the user connected by an his  ID and confirmDelete
         if (!$idUser || $confirmDelete !== 'je confirme') {
             $_SESSION['error'] = 'Texte de confirmation invalide!';
-            header('Location: ' . HOME_URL . 'my_account?action=delete_account&error=true');
+            header('Location: ' . HOME_URL . 'mon_compte?action=delete_account&error=true');
             exit();
         }
 
@@ -523,17 +523,17 @@ class UserController extends AbstractController
                 $_SESSION['avatarPath'] = $newProfilePicturePath;
 
                 $_SESSION['success'] = 'Votre photo de profil a été mise à jour avec succès!';
-                header('Location: ' . HOME_URL . 'my_account');
+                header('Location: ' . HOME_URL . 'mon_compte');
                 exit();
             } else {
                 $_SESSION['error'] = 'Une erreur s\'est produite lors du téléchargement de la photo de profil. Veuillez réessayer.';
-                header('Location: ' . HOME_URL . 'my_account?error=true');
+                header('Location: ' . HOME_URL . 'mon_compte?error=true');
                 exit();
             }
         } else {
 
             $_SESSION['error'] = 'Veuillez sélectionner une image à télécharger.';
-            header('Location: ' . HOME_URL . 'my_account?error=true');
+            header('Location: ' . HOME_URL . 'mon_compte?error=true');
             exit();
         }
     }
@@ -544,7 +544,7 @@ class UserController extends AbstractController
         // check if the current profile picture is not the default one
         if (!$currentPicturePath || strpos($currentPicturePath, HOME_URL . 'assets/uploads/profilePictures/defaultProfile.png') !== false) {
             $_SESSION['error'] = 'Vous ne pouvez pas supprimer la photo de profil par défaut.';
-            header('Location: ' . HOME_URL . 'my_account');
+            header('Location: ' . HOME_URL . 'mon_compte');
             exit();
         }
         // here we delete file from server if it's not the default picture
@@ -564,7 +564,7 @@ class UserController extends AbstractController
 
         // finally we redirect with success message
         $_SESSION['success'] = 'Votre photo de profil a été supprimée avec succès!';
-        header('Location: ' . HOME_URL . 'my_account');
+        header('Location: ' . HOME_URL . 'mon_compte');
         exit();
     }
 }

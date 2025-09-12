@@ -48,7 +48,7 @@ switch ($route) {
         }
         break;
 
-    case HOME_URL . 'activate_mon_compte':
+    case HOME_URL . 'activer_mon_compte':
         if ($method === 'GET' && $_GET['token']) {
             $userController->activateAccount();
         } else {
@@ -90,7 +90,7 @@ switch ($route) {
         }
         break;
 
-    case HOME_URL . 'my_account':
+    case HOME_URL . 'mon_compte':
 
         if ($method === 'POST' && $connectionSecured && $_GET['action']) {
 

@@ -19,7 +19,7 @@
             <p>Créer une nouvelle liste de courses.</p>
         </a>
 
-        <a href="<?= HOME_URL . "my_account" ?>" class="cardDashboard">
+        <a href="<?= HOME_URL . "mon_compte" ?>" class="cardDashboard">
             <h2>Mon compte</h2>
             <p>Voir et modifier mon profil, gérer mes événements, associations, entreprises, et accéder à la messagerie.</p>
         </a>
