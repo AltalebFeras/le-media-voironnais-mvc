@@ -44,7 +44,22 @@
                     <div>
                         <label for="dateOfBirth">Date de naissance :</label>
                         <input type="date" id="dateOfBirth" name="dateOfBirth"
-                            value="<?= isset($_SESSION['form_data']['dateOfBirth']) ? $_SESSION['form_data']['dateOfBirth'] : (isset($_SESSION['dateOfBirth']) && $_SESSION['dateOfBirth'] ? date('Y-m-d\TH:i', strtotime($_SESSION['dateOfBirth'])) : '') ?>" />
+                            value="<?php
+                                    // Prefer form_data if present
+                                    if (!empty($_SESSION['form_data']['dateOfBirth'])) {
+                                        echo htmlspecialchars($_SESSION['form_data']['dateOfBirth']);
+                                    } elseif (!empty($_SESSION['dateOfBirth'])) {
+                                        // Try to parse dd/mm/YYYY or dd/mm/YYYY à HH:ii
+                                        $dob = $_SESSION['dateOfBirth'];
+                                        if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})/', $dob, $matches)) {
+                                            // Convert to YYYY-MM-DD
+                                            echo $matches[3] . '-' . $matches[2] . '-' . $matches[1];
+                                        } else {
+                                            // Fallback: try strtotime
+                                            echo date('Y-m-d', strtotime($dob));
+                                        }
+                                    }
+                                    ?>" />
                     </div>
                     <div>
                         <button class="btn linkNotDecorated" type="submit">Modifier</button>
@@ -132,31 +147,31 @@
             <div class="account-info-container">
                 <div class="account-info-details">
                     <h3>Mes infos</h3>
-                    <p>Prénom : 
+                    <p>Prénom :
                         <?= $_SESSION['firstName'] ?>
                         <?php if (empty($_SESSION['firstName'])): ?>
                             <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
                         <?php endif; ?>
                     </p>
-                    <p>Nom : 
+                    <p>Nom :
                         <?= $_SESSION['lastName'] ?>
                     </p>
-                    <p>Email : 
+                    <p>Email :
                         <?= $_SESSION['email'] ?>
                     </p>
-                    <p>Téléphone : 
+                    <p>Téléphone :
                         <?= $_SESSION['phone'] ?? '' ?>
                         <?php if (empty($_SESSION['phone'])): ?>
                             <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=phone' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
                         <?php endif; ?>
                     </p>
-                    <p>Bio : 
+                    <p>Bio :
                         <?= $_SESSION['bio'] ?? '' ?>
                         <?php if (empty($_SESSION['bio'])): ?>
                             <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=bio' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
                         <?php endif; ?>
                     </p>
-                    <p>Date de naissance : 
+                    <p>Date de naissance :
                         <?= $_SESSION['dateOfBirth'] ?? '' ?>
                         <?php if (empty($_SESSION['dateOfBirth'])): ?>
                             <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=date_of_birth' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
@@ -164,12 +179,11 @@
                     </p>
                     <p>Compte valide : <?= $_SESSION['isActivated'] ? 'Oui' : 'Non' ?> </p>
                     <p>En ligne : <?= isset($_SESSION['isOnline']) ? ($_SESSION['isOnline'] ? 'Oui' : 'Non') : '' ?>
-                    <p>En ligne : <?=  $_SESSION['isOnline'] ?> </p>
                     </p>
                     <p>Date de création : <?= $_SESSION['createdAt'] ?> </p>
                     <p>Mise à jour : <?= $_SESSION['updatedAt'] ?? 'Jamais' ?> </p>
                     <p>Role : <?= $_SESSION['role'] ?> </p>
-                    <p>Dernière connexion : 
+                    <p>Dernière connexion :
                         <?php if (!empty($_SESSION['lastSeen'])): ?>
                             <?= $_SESSION['lastSeen'] ?>
                         <?php else: ?>
