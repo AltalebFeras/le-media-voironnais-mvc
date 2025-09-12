@@ -1,0 +1,73 @@
+name: Deploy to FTP Server
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Generate file checksums
+      run: |
+        echo "Generating checksums for deployment verification..."
+        find . -type f -not -path "./.git/*" -not -path "./node_modules/*" -exec sha256sum {} \; > checksums.txt
+        echo "Files to be deployed:"
+        ls -la
+        
+    - name: Check for case sensitivity issues
+      run: |
+        echo "Checking for potential case sensitivity conflicts..."
+        find . -type f -not -path "./.git/*" -not -path "./node_modules/*" | \
+        while read file; do
+          basename=$(basename "$file")
+          dirname=$(dirname "$file")
+          # Check if there are files with same name but different case
+          find "$dirname" -maxdepth 1 -type f -iname "$basename" | \
+          while read match; do
+            if [ "$file" != "$match" ]; then
+              echo "WARNING: Case conflict detected:"
+              echo "  File 1: $file"
+              echo "  File 2: $match"
+            fi
+          done
+        done
+
+    - name: Check Git changes
+      run: |
+        echo "Files changed in this commit:"
+        git diff --name-only HEAD~1 HEAD || echo "No previous commit to compare"
+        echo "All files with modification times:"
+        find . -type f -not -path "./.git/*" -not -path "./node_modules/*" -exec ls -la {} \;
+        
+    - name: Deploy to FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./
+        server-dir: /
+        state-name: .ftp-deploy-sync-state.json
+        dry-run: false
+        log-level: verbose
+        dangerous-clean-slate: false
+        security: strict
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          **/dist/**
+          **/build/**
+          **/vendor/**
+          .github/**
+          .vscode/**
+          README.md
+          .gitignore
+          checksums.txt
+          .ftp-deploy-sync-state.json
