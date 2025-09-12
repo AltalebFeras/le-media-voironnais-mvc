@@ -164,6 +164,7 @@
                     </p>
                     <p>Compte valide : <?= $_SESSION['isActivated'] ? 'Oui' : 'Non' ?> </p>
                     <p>En ligne : <?= isset($_SESSION['isOnline']) ? ($_SESSION['isOnline'] ? 'Oui' : 'Non') : '' ?>
+                    <p>En ligne : <?=  $_SESSION['isOnline'] ?> </p>
                     </p>
                     <p>Date de création : <?= $_SESSION['createdAt'] ?> </p>
                     <p>Mise à jour : <?= $_SESSION['updatedAt'] ?? 'Jamais' ?> </p>

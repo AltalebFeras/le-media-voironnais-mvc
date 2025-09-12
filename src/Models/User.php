@@ -410,7 +410,7 @@ class User
     /**
      * Get the value of isOnline
      */
-    public function getIsOnline()
+    public function getIsOnline(): bool
     {
         return $this->isOnline;
     }
@@ -451,11 +451,11 @@ class User
             return null;
         }
         if ($this->dateOfBirth instanceof DateTime) {
-            return $this->dateOfBirth->format('d/m/Y à H:i');
+            return $this->dateOfBirth->format('d/m/Y');
         }
         try {
             $dt = new DateTime($this->dateOfBirth);
-            return $dt->format('d/m/Y à H:i');
+            return $dt->format('d/m/Y');
         } catch (\Exception $e) {
             return $this->dateOfBirth;
         }

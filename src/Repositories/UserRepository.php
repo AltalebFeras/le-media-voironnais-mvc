@@ -127,12 +127,15 @@ class UserRepository
     public function updateUser($user): bool
     {
         try {
-            $query = 'UPDATE user SET firstName = :firstName, lastName = :lastName, email = :email, updatedAt = :updatedAt WHERE idUser = :idUser';
+            $query = 'UPDATE user SET firstName = :firstName, lastName = :lastName, email = :email, phone = :phone, bio = :bio, dateOfBirth = :dateOfBirth, updatedAt = :updatedAt WHERE idUser = :idUser';
             $req = $this->DBuser->prepare($query);
             $req->execute([
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
                 'email' => $user->getEmail(),
+                'phone' => $user->getPhone(),
+                'bio' => $user->getBio(),
+                'dateOfBirth' => $user->getDateOfBirth(),
                 'updatedAt' => $user->getUpdatedAt(),
                 'idUser' => $user->getIdUser()
             ]);

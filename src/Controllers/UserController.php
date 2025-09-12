@@ -198,7 +198,7 @@ class UserController extends AbstractController
             $errors['fields'] = 'Veuillez remplir tous les champs';
         }
         $user = $this->repo->getUser($email);
-
+      
         if (!$user) {
             $errors['email'] = 'L\'adresse e-mail est invalide ou le mot de passe est incorrect.';
         }
@@ -236,8 +236,8 @@ class UserController extends AbstractController
             $_SESSION['bio'] = $user->getBio();
             $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
             $_SESSION['isActivated'] = $user->getIsActivated();
-            $_SESSION['isOnline'] = $user->getIsOnline();
-            $_SESSION['lastSeen'] = $user->getLastSeenFormatted();
+            $_SESSION['isOnline'] = true;
+            $_SESSION['lastSeen'] = $lastSeen;
             $_SESSION['createdAt'] = $user->getCreatedAtFormatted();
             $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
             $_SESSION['role'] = $user->getRoleName();
@@ -264,9 +264,6 @@ class UserController extends AbstractController
     }
     public function displayDashboard()
     {
-        if (!isset($_GET['error'])) {
-            unset($_SESSION['form_data']);
-        }
         $this->render('dashboard/dashboard');
     }
 
@@ -445,6 +442,9 @@ class UserController extends AbstractController
                 'lastName' => $lastName,
                 'email' => $email,
                 'updatedAt' => $updatedAt,
+                'phone' => $phone,
+                'bio' => $bio,
+                'dateOfBirth' => $dateOfBirth,
             ]);
 
             $updateUser = $this->repo->updateUser($user);
@@ -452,7 +452,11 @@ class UserController extends AbstractController
                 $_SESSION['firstName'] = $user->getFirstName();
                 $_SESSION['lastName'] = $user->getLastName();
                 $_SESSION['email'] = $user->getEmail();
-                $_SESSION['updatedAt'] = $user->getUpdatedAt();
+                $_SESSION['phone'] = $user->getPhone();
+                $_SESSION['bio'] = $user->getBio();
+                $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
+                $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
+
 
                 unset($_SESSION['form_data']);
                 $_SESSION['success'] = 'Votre profil a été mis à jour avec succès!';
