@@ -254,17 +254,7 @@ class User
         return $this->createdAt->format('Y-m-d H:i:s');
     }
 
-    /**
-     * Get the value of createdAt formatted
-     */
-    public function getCreatedAtFormatted(): DateTime|string
-    {
-        if (is_string($this->createdAt)) {
-            return $this->createdAt;
-        }
-        // Format the DateTime object to a string
-        return $this->createdAt->format('d/m/Y à H:i');
-    }
+
 
     /**
      * Set the value of createdAt
@@ -297,22 +287,24 @@ class User
     }
 
     /**
-     * Get the value of updatedAt formatted
+     * Get the value of createdAt formatted
      */
-    public function getUpdatedAtFormatted(): string|null
+    public function getCreatedAtFormatted(): string|null
     {
-        if ($this->updatedAt === null) {
+        if ($this->createdAt === null) {
             return null;
         }
-        if (is_string($this->updatedAt)) {
-            return $this->updatedAt;
+        if ($this->createdAt instanceof DateTime) {
+            return $this->createdAt->format('d/m/Y à H:i');
         }
-        if (is_a($this->updatedAt, DateTime::class)) {
-            return $this->updatedAt->format('d/m/Y à H:i');
+        // If it's a string, try to parse it as a DateTime
+        try {
+            $dt = new DateTime($this->createdAt);
+            return $dt->format('d/m/Y à H:i');
+        } catch (\Exception $e) {
+            return $this->createdAt;
         }
-        return null;
     }
-
     /**
      * Set the value of updatedAt
      */
@@ -451,6 +443,25 @@ class User
     }
 
     /**
+     * Get the value of dateOfBirth formatted
+     */
+    public function getDateOfBirthFormatted(): string|null
+    {
+        if ($this->dateOfBirth === null) {
+            return null;
+        }
+        if ($this->dateOfBirth instanceof DateTime) {
+            return $this->dateOfBirth->format('d/m/Y à H:i');
+        }
+        try {
+            $dt = new DateTime($this->dateOfBirth);
+            return $dt->format('d/m/Y à H:i');
+        } catch (\Exception $e) {
+            return $this->dateOfBirth;
+        }
+    }
+
+    /**
      * Get the value of lastSeen formatted
      */
     public function getLastSeenFormatted(): string|null
@@ -458,11 +469,34 @@ class User
         if ($this->lastSeen === null) {
             return null;
         }
-        if (is_string($this->lastSeen)) {
+        if ($this->lastSeen instanceof DateTime) {
+            return $this->lastSeen->format('d/m/Y à H:i');
+        }
+        try {
+            $dt = new DateTime($this->lastSeen);
+            return $dt->format('d/m/Y à H:i');
+        } catch (\Exception $e) {
             return $this->lastSeen;
         }
-        // Format the DateTime object to a string
-        return $this->lastSeen->format('d/m/Y à H:i');
+    }
+
+    /**
+     * Get the value of updatedAt formatted
+     */
+    public function getUpdatedAtFormatted(): string|null
+    {
+        if ($this->updatedAt === null) {
+            return null;
+        }
+        if ($this->updatedAt instanceof DateTime) {
+            return $this->updatedAt->format('d/m/Y à H:i');
+        }
+        try {
+            $dt = new DateTime($this->updatedAt);
+            return $dt->format('d/m/Y à H:i');
+        } catch (\Exception $e) {
+            return $this->updatedAt;
+        }
     }
 
     /**

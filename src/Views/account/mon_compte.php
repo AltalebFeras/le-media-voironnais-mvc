@@ -78,14 +78,58 @@
             <div class="account-info-container">
                 <div class="account-info-details">
                     <h3>Mes infos</h3>
-                    <p>Prénom : <?= $_SESSION['firstName'] ?></p>
-                    <p>Nom : <?= $_SESSION['lastName']  ?> </p>
-                    <p>Email : <?= $_SESSION['email'] ?> </p>
+                    <p>Prénom : 
+                        <?= $_SESSION['firstName'] ?>
+                        <?php if (empty($_SESSION['firstName'])): ?>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                        <?php endif; ?>
+                    </p>
+                    <p>Nom : 
+                        <?= $_SESSION['lastName'] ?>
+                        <?php if (empty($_SESSION['lastName'])): ?>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                        <?php endif; ?>
+                    </p>
+                    <p>Email : 
+                        <?= $_SESSION['email'] ?>
+                        <?php if (empty($_SESSION['email'])): ?>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                        <?php endif; ?>
+                    </p>
+                    <p>Téléphone : 
+                        <?= $_SESSION['phone'] ?? '' ?>
+                        <?php if (empty($_SESSION['phone'])): ?>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                        <?php endif; ?>
+                    </p>
+                    <p>Bio : 
+                        <?= $_SESSION['bio'] ?? '' ?>
+                        <?php if (empty($_SESSION['bio'])): ?>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                        <?php endif; ?>
+                    </p>
+                    <p>Date de naissance : 
+                        <?= $_SESSION['dateOfBirth'] ?? '' ?>
+                        <?php if (empty($_SESSION['dateOfBirth'])): ?>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                        <?php endif; ?>
+                    </p>
                     <p>Compte valide : <?= $_SESSION['isActivated'] ? 'Oui' : 'Non' ?> </p>
+                    <p>En ligne : <?= isset($_SESSION['isOnline']) ? ($_SESSION['isOnline'] ? 'Oui' : 'Non') : '' ?>
+                        <?php if (!isset($_SESSION['isOnline'])): ?>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                        <?php endif; ?>
+                    </p>
                     <p>Date de création : <?= $_SESSION['createdAt'] ?> </p>
                     <p>Mise à jour : <?= $_SESSION['updatedAt'] ?? 'Jamais' ?> </p>
                     <p>Role : <?= $_SESSION['role'] ?> </p>
-                    <p>Dernière connexion : <?= (new DateTime($_SESSION['lastConnection']))->format('d/m/Y') . ' à ' . (new DateTime($_SESSION['lastConnection']))->format('H:i') ?> </p>
+                    <p>Dernière connexion : 
+                        <?php if (!empty($_SESSION['lastSeen'])): ?>
+                            <?= $_SESSION['lastSeen'] ?>
+                        <?php else: ?>
+                            Jamais
+                        <?php endif; ?>
+                    </p>
                     <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated">Modifier</a>
                 </div>
 

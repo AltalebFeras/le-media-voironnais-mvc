@@ -111,10 +111,13 @@ class UserController extends AbstractController
             $rgpdDate = date('Y-m-d H:i:s');
         }
         // Verify reCAPTCHA
-        // $recaptchaStatus = $this->checkReCaptcha();
-        // if ($recaptchaStatus === false) {
-        //     $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
-        // }
+        if (IS_PROD === TRUE) {
+            // Verify reCAPTCHA
+            $recaptchaStatus = $this->checkReCaptcha();
+            if ($recaptchaStatus === false) {
+                $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+            }
+        }
 
         $emailExists = $this->repo->getUser($email);
 
@@ -206,7 +209,8 @@ class UserController extends AbstractController
         if ($user && $user->getIsActivated() === false) {
             $errors['isActivated'] = 'Votre compte n\'est pas encore activé. Veuillez vérifier votre boîte de réception pour l\'e-mail d\'activation.';
         }
-     if (IS_PROD === TRUE) {
+
+        if (IS_PROD === TRUE) {
             // Verify reCAPTCHA
             $recaptchaStatus = $this->checkReCaptcha();
             if ($recaptchaStatus === false) {
@@ -216,22 +220,23 @@ class UserController extends AbstractController
 
         $this->returnAllErrors($errors, 'connexion');
 
+        $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
+        $idUser = $user->getIdUser();
+        $this->repo->updateLastSeenAndSetUserOnline($idUser, $lastSeen);
 
         if ($user) {
             //   datetime string
-            $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
-            $this->repo->updateLastSeenAndSetUserOnline($user->getIdUser(), $lastSeen);
-            $_SESSION['idUser'] = $user->getIdUser();
+            $_SESSION['idUser'] = $idUser;
             $_SESSION['firstName'] = $user->getFirstName();
             $_SESSION['lastName'] = $user->getLastName();
             $_SESSION['email'] = $user->getEmail();
             $_SESSION['phone'] = $user->getPhone();
             $_SESSION['avatarPath'] = $user->getAvatarPath();
             $_SESSION['bio'] = $user->getBio();
-            $_SESSION['dateOfBirth'] = $user->getDateOfBirth();
+            $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
             $_SESSION['isActivated'] = $user->getIsActivated();
             $_SESSION['isOnline'] = $user->getIsOnline();
-            $_SESSION['lastSeen'] = $user->getLastSeen();
+            $_SESSION['lastSeen'] = $user->getLastSeenFormatted();
             $_SESSION['createdAt'] = $user->getCreatedAtFormatted();
             $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
             $_SESSION['role'] = $user->getRoleName();
@@ -266,10 +271,14 @@ class UserController extends AbstractController
             $errors['email'] = 'L\'adresse e-mail est invalide!';
         }
         // Verify reCAPTCHA
-        $recaptchaStatus = $this->checkReCaptcha();
-        if ($recaptchaStatus === false) {
-            $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+        if (IS_PROD === TRUE) {
+            // Verify reCAPTCHA
+            $recaptchaStatus = $this->checkReCaptcha();
+            if ($recaptchaStatus === false) {
+                $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+            }
         }
+
         $this->returnAllErrors($errors, 'forget_my_password');
         $user = $this->repo->getUser($email);
 
@@ -341,11 +350,13 @@ class UserController extends AbstractController
         }
 
         // Verify reCAPTCHA
-        $recaptchaStatus = $this->checkReCaptcha();
-        if ($recaptchaStatus === false) {
-            $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+        if (IS_PROD === TRUE) {
+            // Verify reCAPTCHA
+            $recaptchaStatus = $this->checkReCaptcha();
+            if ($recaptchaStatus === false) {
+                $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+            }
         }
-
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
             header('Location: ' . HOME_URL . 'reset_my_password?token=' . $token . '&error=true');
