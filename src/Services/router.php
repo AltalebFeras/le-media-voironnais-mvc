@@ -127,8 +127,8 @@ switch ($route) {
     case HOME_URL . 'mentions_legales':
         $homeController->mentions_legales();
         break;
-    case HOME_URL . 'signOut':
-        $homeController->signOut();
+    case HOME_URL . 'deconnexion':
+        $homeController->deconnexion();
         break;
     case HOME_URL . '404':
         $homeController->page404();

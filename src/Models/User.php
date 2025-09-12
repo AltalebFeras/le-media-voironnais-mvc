@@ -25,6 +25,7 @@ class User
     private DateTime|string $createdAt;
     private DateTime|string|null $updatedAt;
     private DateTime|string|null $resetPasswordRequestTime;
+    private string $roleName;
 
     use Hydration;
 
@@ -450,6 +451,26 @@ class User
     public function setLastSeen($lastSeen)
     {
         $this->lastSeen = $lastSeen;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of roleName
+     */ 
+    public function getRoleName()
+    {
+        return $this->roleName;
+    }
+
+    /**
+     * Set the value of roleName
+     *
+     * @return  self
+     */ 
+    public function setRoleName($roleName)
+    {
+        $this->roleName = $roleName;
 
         return $this;
     }

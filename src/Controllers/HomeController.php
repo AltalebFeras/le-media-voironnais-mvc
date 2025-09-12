@@ -45,7 +45,7 @@ class HomeController extends AbstractController
     {
         $this->render('home/403');
     }
-    public function signOut(): void
+    public function deconnexion(): void
     {
         session_destroy();
         session_start();

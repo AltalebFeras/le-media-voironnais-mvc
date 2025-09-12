@@ -171,8 +171,8 @@ class UserController extends AbstractController
             $user = $this->repo->getUserByToken($token);
 
             if ($user) {
-                $userId = $user->getUserId();
-                $activateAccount = $this->repo->activateUser($userId);
+                $idUser = $user->getIdUser();
+                $activateAccount = $this->repo->activateUser($idUser);
                 if ($activateAccount) {
                     $_SESSION['success'] = 'Votre compte a été activé avec succès! Vous pouvez maintenant vous connecter.';
                     $this->redirect('connexion');
@@ -221,7 +221,7 @@ class UserController extends AbstractController
 
         if ($user) {
 
-            $_SESSION['userId'] = $user->getIdUser();
+            $_SESSION['idUser'] = $user->getIdUser();
             $_SESSION['firstName'] = $user->getFirstName();
             $_SESSION['lastName'] = $user->getLastName();
             $_SESSION['email'] = $user->getEmail();
@@ -229,7 +229,7 @@ class UserController extends AbstractController
             $_SESSION['isActivated'] = $user->getIsActivated();
             $_SESSION['createdAt'] = $user->getCreatedAtFormatted();
             $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
-            $_SESSION['roleName'] = $user->getRoleName();
+            $_SESSION['role'] = $user->getRoleName();
 
             // Prevent session fixation  
             session_regenerate_id(true);
@@ -272,7 +272,7 @@ class UserController extends AbstractController
         $user = $this->repo->getUser($email);
 
         if ($user) {
-            $userId = $user->getUserId();
+            $idUser = $user->getIdUser();
 
             // Check if the user has requested a password reset in the last 5 minutes
             $lastRequest = $user->getResetPasswordRequestTime();
@@ -288,12 +288,12 @@ class UserController extends AbstractController
 
             // if user has a reset password token, i use it, otherwise i generate a new one
             $user->getResetPasswordToken() ? $resetPasswordToken = $user->getResetPasswordToken() : $resetPasswordToken = bin2hex(random_bytes(16));
-            $this->repo->saveResetPasswordToken($userId, $resetPasswordToken);
+            $this->repo->saveResetPasswordToken($idUser, $resetPasswordToken);
 
             // Update the last reset request time
             $resetPasswordRequestTime = $user->setResetPasswordRequestTime(new DateTime());
             $resetPasswordRequestTime = $user->getResetPasswordRequestTime();
-            $this->repo->updateResetPasswordRequestTime($userId, $resetPasswordRequestTime);
+            $this->repo->updateResetPasswordRequestTime($idUser, $resetPasswordRequestTime);
 
             // send password reset email (same as before)
             $resetLink = DOMAIN . HOME_URL . "reset_my_password?token=$resetPasswordToken";
@@ -350,8 +350,8 @@ class UserController extends AbstractController
             exit();
         }
         $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
-        $userId = $user->getUserId();
-        $resetPassword = $this->repo->resetPassword($userId, $passwordHash);
+        $idUser = $user->getIdUser();
+        $resetPassword = $this->repo->resetPassword($idUser, $passwordHash);
         if ($resetPassword) {
             $_SESSION['success'] = 'Votre mot de passe a été réinitialisé avec succès! Vous pouvez maintenant vous connecter.';
             $this->redirect('connexion');
@@ -374,7 +374,7 @@ class UserController extends AbstractController
             $firstName = isset($_POST['firstName']) ? htmlspecialchars(trim(ucfirst($_POST['firstName']))) : null;
             $lastName = isset($_POST['lastName']) ? htmlspecialchars(trim(ucfirst($_POST['lastName']))) : null;
             $email = isset($_POST['email']) ? htmlspecialchars(trim(strtolower($_POST['email']))) : null;
-            $userId = $_SESSION['userId'];
+            $idUser = $_SESSION['idUser'];
             $updatedAt = new DateTime();
             $errors = [];
             $_SESSION['form_data'] =  $_POST;
@@ -400,7 +400,7 @@ class UserController extends AbstractController
 
             $user = $this->repo->getUser($email);
 
-            if ($user && $user->getUserId() !== $userId) {
+            if ($user && $user->getIdUser() !== $idUser) {
                 $errors['emailExist'] = 'Cette adresse e-mail est déjà utilisée';
             }
             // If there are any validation errors, throw one Error with all errors
@@ -411,7 +411,7 @@ class UserController extends AbstractController
             }
 
             $user = new User([
-                'idUser' => $userId,
+                'idUser' => $idUser,
                 'firstName' => $firstName,
                 'lastName' => $lastName,
                 'email' => $email,
@@ -439,14 +439,14 @@ class UserController extends AbstractController
     }
     public function changePassword()
     {
-        $userId = $_SESSION['userId'];
+        $idUser = $_SESSION['idUser'];
         $currentPassword = isset($_POST['currentPassword']) ? htmlspecialchars($_POST['currentPassword']) : null;
         $newPassword = isset($_POST['newPassword']) ? htmlspecialchars($_POST['newPassword']) : null;
         $confirmPassword = isset($_POST['confirmPassword']) ? htmlspecialchars($_POST['confirmPassword']) : null;
         $errors = [];
         $_SESSION['form_data'] = $_POST;
         // i check the current password
-        $user = $this->repo->getUserById($userId);
+        $user = $this->repo->getUserById($idUser);
         if (!password_verify($currentPassword, $user->getPassword())) {
             $errors['currentPassword'] = 'Current password is incorrect.';
         }
@@ -465,7 +465,7 @@ class UserController extends AbstractController
         }
         // Hash the new password
         $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
-        $changePassword = $this->repo->updatePassword($userId, $newPasswordHash);
+        $changePassword = $this->repo->updatePassword($idUser, $newPasswordHash);
         if ($changePassword) {
             $_SESSION['success'] = 'Votre mot de passe a été changé avec succès!';
             header('Location: ' . HOME_URL . 'my_account');
@@ -478,18 +478,18 @@ class UserController extends AbstractController
     }
     public function deleteAccount()
     {
-        $userId = $_SESSION['userId'];
+        $idUser = $_SESSION['idUser'];
         $confirmDelete = isset($_POST['confirmDelete']) ? htmlspecialchars(trim(strtolower($_POST['confirmDelete']))) : null;
         $_SESSION['form_data'] = $_POST;
 
         // Validation the deleting account of the user connected by an his  ID and confirmDelete
-        if (!$userId || $confirmDelete !== 'je confirme') {
+        if (!$idUser || $confirmDelete !== 'je confirme') {
             $_SESSION['error'] = 'Texte de confirmation invalide!';
             header('Location: ' . HOME_URL . 'my_account?action=delete_account&error=true');
             exit();
         }
 
-        $this->repo->deleteUser($userId);
+        $this->repo->deleteUser($idUser);
 
         // Log out the user and return success message
         session_destroy();
@@ -499,7 +499,7 @@ class UserController extends AbstractController
     }
     public function editProfilePicture()
     {
-        $userId = $_SESSION['userId'];
+        $idUser = $_SESSION['idUser'];
         $currentPicturePath = $_SESSION['avatarPath'] ?? null;
 
         // check if a file was uploaded
@@ -518,7 +518,7 @@ class UserController extends AbstractController
                     }
                 }
                 $newProfilePicturePath = DOMAIN . HOME_URL . 'assets/uploads/profilePictures/' . $fileName;
-                $this->repo->updateProfilePicture($userId, $newProfilePicturePath);
+                $this->repo->updateProfilePicture($idUser, $newProfilePicturePath);
 
                 $_SESSION['avatarPath'] = $newProfilePicturePath;
 
@@ -539,7 +539,7 @@ class UserController extends AbstractController
     }
     public function deleteProfilePicture()
     {
-        $userId = $_SESSION['userId'];
+        $idUser = $_SESSION['idUser'];
         $currentPicturePath = $_SESSION['avatarPath']   ?? null;
         // check if the current profile picture is not the default one
         if (!$currentPicturePath || strpos($currentPicturePath, HOME_URL . 'assets/uploads/profilePictures/defaultProfile.png') !== false) {
@@ -557,7 +557,7 @@ class UserController extends AbstractController
 
         // then we update profile picture path in the database to the default picture
         $defaultProfilePicturePath = DOMAIN . HOME_URL . 'assets/uploads/profilePictures/defaultProfile.png';
-        $this->repo->updateProfilePicture($userId, $defaultProfilePicturePath);
+        $this->repo->updateProfilePicture($idUser, $defaultProfilePicturePath);
 
         // we set default profile picture in session
         $_SESSION['avatarPath'] = $defaultProfilePicturePath;

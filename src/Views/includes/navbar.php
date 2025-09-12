@@ -32,3 +32,5 @@
     </ul>
   </nav>
 </header>
+
+<?php var_dump($_SESSION); ?>
