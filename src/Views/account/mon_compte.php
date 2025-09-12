@@ -84,7 +84,7 @@
                     <p>Compte valide : <?= $_SESSION['isActivated'] ? 'Oui' : 'Non' ?> </p>
                     <p>Date de création : <?= $_SESSION['createdAt'] ?> </p>
                     <p>Mise à jour : <?= $_SESSION['updatedAt'] ?? 'Jamais' ?> </p>
-                    <p>Role : <?= $_SESSION['roleName'] ?> </p>
+                    <p>Role : <?= $_SESSION['role'] ?> </p>
                     <p>Dernière connexion : <?= (new DateTime($_SESSION['lastConnection']))->format('d/m/Y') . ' à ' . (new DateTime($_SESSION['lastConnection']))->format('H:i') ?> </p>
                     <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated">Modifier</a>
                 </div>
