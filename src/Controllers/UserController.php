@@ -134,9 +134,9 @@ class UserController extends AbstractController
             'isActivated' => $isActivated,
             'token' => $activationToken,
             'createdAt' => $createdAt,
-            'profilePicturePath' => $profilePicturePath,
-            'roleId' => $roleId,
-            'rgpdDate' => $rgpdDate
+            'avatarPath' => $profilePicturePath,
+            'idRole' => $roleId,
+            'rgpdAcceptedDate' => $rgpdDate
         ]);
 
         $sendEmail = $this->sendEmail($firstName, $lastName, $email, $activationToken);
@@ -186,8 +186,6 @@ class UserController extends AbstractController
         }
     }
 
-
-
     public function treatmentConnexion()
     {
 
@@ -223,11 +221,11 @@ class UserController extends AbstractController
 
         if ($user) {
 
-            $_SESSION['userId'] = $user->getUserId();
+            $_SESSION['userId'] = $user->getIdUser();
             $_SESSION['firstName'] = $user->getFirstName();
             $_SESSION['lastName'] = $user->getLastName();
             $_SESSION['email'] = $user->getEmail();
-            $_SESSION['profilePicturePath'] = $user->getprofilePicturePath();
+            $_SESSION['avatarPath'] = $user->getAvatarPath();
             $_SESSION['isActivated'] = $user->getIsActivated();
             $_SESSION['createdAt'] = $user->getCreatedAtFormatted();
             $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
@@ -413,7 +411,7 @@ class UserController extends AbstractController
             }
 
             $user = new User([
-                'userId' => $userId,
+                'idUser' => $userId,
                 'firstName' => $firstName,
                 'lastName' => $lastName,
                 'email' => $email,
@@ -502,7 +500,7 @@ class UserController extends AbstractController
     public function editProfilePicture()
     {
         $userId = $_SESSION['userId'];
-        $currentPicturePath = $_SESSION['profilePicturePath'] ?? null;
+        $currentPicturePath = $_SESSION['avatarPath'] ?? null;
 
         // check if a file was uploaded
         if (!empty($_FILES) && isset($_FILES['profilePicture']) && $_FILES['profilePicture']['error'] == UPLOAD_ERR_OK) {
@@ -522,7 +520,7 @@ class UserController extends AbstractController
                 $newProfilePicturePath = DOMAIN . HOME_URL . 'assets/uploads/profilePictures/' . $fileName;
                 $this->repo->updateProfilePicture($userId, $newProfilePicturePath);
 
-                $_SESSION['profilePicturePath'] = $newProfilePicturePath;
+                $_SESSION['avatarPath'] = $newProfilePicturePath;
 
                 $_SESSION['success'] = 'Votre photo de profil a été mise à jour avec succès!';
                 header('Location: ' . HOME_URL . 'my_account');
@@ -542,7 +540,7 @@ class UserController extends AbstractController
     public function deleteProfilePicture()
     {
         $userId = $_SESSION['userId'];
-        $currentPicturePath = $_SESSION['profilePicturePath']   ?? null;
+        $currentPicturePath = $_SESSION['avatarPath']   ?? null;
         // check if the current profile picture is not the default one
         if (!$currentPicturePath || strpos($currentPicturePath, HOME_URL . 'assets/uploads/profilePictures/defaultProfile.png') !== false) {
             $_SESSION['error'] = 'Vous ne pouvez pas supprimer la photo de profil par défaut.';
@@ -562,7 +560,7 @@ class UserController extends AbstractController
         $this->repo->updateProfilePicture($userId, $defaultProfilePicturePath);
 
         // we set default profile picture in session
-        $_SESSION['profilePicturePath'] = $defaultProfilePicturePath;
+        $_SESSION['avatarPath'] = $defaultProfilePicturePath;
 
         // finally we redirect with success message
         $_SESSION['success'] = 'Votre photo de profil a été supprimée avec succès!';

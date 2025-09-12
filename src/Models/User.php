@@ -12,20 +12,20 @@ class User
     private string $firstName;
     private string $lastName;
     private string $email;
-    private string $phone;
+    private ?string $phone;
     private string $password;
-    private string $avatarPath;
-    private string $bio;
-    private ?DateTime $dateOfBirth;
+    private ?string $avatarPath;
+    private ?string $bio;
+    private DateTime|string|null $dateOfBirth;
     private bool $isActivated;
     private bool $isOnline;
-    private string $lastSeen;
-    private DateTime $rgpdAcceptedDate;
+    private ?string $lastSeen;
+    private DateTime|string $rgpdAcceptedDate;
     private ?string $token;
-    private DateTime $createdAt;
-    private ?DateTime $updatedAt;
-    private ?DateTime $resetPasswordRequestTime;
-    
+    private DateTime|string $createdAt;
+    private DateTime|string|null $updatedAt;
+    private DateTime|string|null $resetPasswordRequestTime;
+
     use Hydration;
 
 
@@ -169,96 +169,75 @@ class User
         return $this;
     }
 
-
     /**
-     * Get the value of profilePicture
+     * Get the value of avatarPath
      */
-    public function getProfilePicturePath(): string
+    public function getAvatarPath(): string
     {
-        return $this->profilePicturePath;
+        return $this->avatarPath;
     }
 
     /**
-     * Set the value of profilePicture
+     * Set the value of avatarPath
+     *
+     * @return  self
      */
-    public function setProfilePicturePath(string $profilePicturePath): self
+    public function setAvatarPath(string $avatarPath): self
     {
-        $this->profilePicturePath = $profilePicturePath;
-
+        $this->avatarPath = $avatarPath;
         return $this;
     }
 
     /**
-     * Get the value of resetPasswordToken
+     * Get the value of idRole
      */
-    public function getResetPasswordToken(): ?string
+    public function getIdRole(): int
     {
-        return $this->resetPasswordToken;
+        return $this->idRole;
     }
 
     /**
-     * Set the value of resetPasswordToken
+     * Set the value of idRole
+     *
+     * @return  self
      */
-    public function setResetPasswordToken(?string $resetPasswordToken): self
+    public function setIdRole(int $idRole): self
     {
-        $this->resetPasswordToken = $resetPasswordToken;
-
+        $this->idRole = $idRole;
         return $this;
     }
 
     /**
-     * Get the value of roleId
+     * Get the value of rgpdAcceptedDate
      */
-    public function getRoleId(): int
+    public function getRgpdAcceptedDate(): DateTime|string
     {
-        return $this->roleId;
-    }
-
-    /**
-     * Set the value of roleId
-     */
-    public function setRoleId(int $roleId): self
-    {
-        $this->roleId = $roleId;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of rgpdDate
-     */
-    public function getRgpdDate(): DateTime|string
-    {
-        if (is_string($this->rgpdDate)) {
-            return $this->rgpdDate;
+        if (is_string($this->rgpdAcceptedDate)) {
+            return $this->rgpdAcceptedDate;
         }
-        // Format the DateTime object to a string
-        return $this->rgpdDate->format('Y-m-d H:i:s');
+        return $this->rgpdAcceptedDate->format('Y-m-d H:i:s');
     }
 
     /**
-     * Get the value of rgpdDate formatted
+     * Get the value of rgpdAcceptedDate formatted
      */
-    public function getRgpdDateFormatted(): DateTime|string
+    public function getRgpdAcceptedDateFormatted(): DateTime|string
     {
-        if (is_string($this->rgpdDate)) {
-            return $this->rgpdDate;
+        if (is_string($this->rgpdAcceptedDate)) {
+            return $this->rgpdAcceptedDate;
         }
-        // Format the DateTime object to a string
-        return $this->rgpdDate->format('d/m/Y à H:i');
+        return $this->rgpdAcceptedDate->format('d/m/Y à H:i');
     }
 
     /**
-     * Set the value of rgpdDate
+     * Set the value of rgpdAcceptedDate
      */
-    public function setRgpdDate(DateTime|string $rgpdDate): self
+    public function setRgpdAcceptedDate(DateTime|string|null $rgpdAcceptedDate): self
     {
-
-        if (is_string($rgpdDate)) {
-            $rgpdDate = new DateTime($rgpdDate);
+        if (is_string($rgpdAcceptedDate)) {
+            $rgpdAcceptedDate = new DateTime($rgpdAcceptedDate);
         }
-        $this->rgpdDate = $rgpdDate;
-
+        $this->rgpdAcceptedDate = $rgpdAcceptedDate;
         return $this;
     }
 
@@ -384,7 +363,7 @@ class User
     /**
      * Set the value of lastResetPasswordTime
      */
-    public function setResetPasswordRequestTime(mixed $resetPasswordRequestTime): self
+    public function setResetPasswordRequestTime(mixed $resetPasswordRequestTime): void
     {
         if ($resetPasswordRequestTime === null) {
             $this->resetPasswordRequestTime = null;
@@ -393,24 +372,85 @@ class User
         } elseif (is_a($resetPasswordRequestTime, DateTime::class)) {
             $this->resetPasswordRequestTime = $resetPasswordRequestTime;
         }
-        return $this;
     }
+
     /**
-     * Get the value of roleName
+     * Get the value of bio
      */
-    public function getRoleName(): ?string
+    public function getBio()
     {
-        return $this->roleName;
+        return $this->bio;
     }
+
     /**
-     * Set the value of roleName
+     * Set the value of bio
      *
      * @return  self
      */
-
-    public function setRoleName(?string $roleName): self
+    public function setBio($bio)
     {
-        $this->roleName = $roleName;
+        $this->bio = $bio;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of dateOfBirth
+     */
+    public function getDateOfBirth()
+    {
+        return $this->dateOfBirth;
+    }
+
+    /**
+     * Set the value of dateOfBirth
+     *
+     * @return  self
+     */
+    public function setDateOfBirth($dateOfBirth)
+    {
+        $this->dateOfBirth = $dateOfBirth;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of isOnline
+     */
+    public function getIsOnline()
+    {
+        return $this->isOnline;
+    }
+
+    /**
+     * Set the value of isOnline
+     *
+     * @return  self
+     */
+    public function setIsOnline($isOnline)
+    {
+        $this->isOnline = $isOnline;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of lastSeen
+     */
+    public function getLastSeen()
+    {
+        return $this->lastSeen;
+    }
+
+    /**
+     * Set the value of lastSeen
+     *
+     * @return  self
+     */
+    public function setLastSeen($lastSeen)
+    {
+        $this->lastSeen = $lastSeen;
+
         return $this;
     }
 }
