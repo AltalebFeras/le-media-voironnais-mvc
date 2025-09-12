@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `association` (
   UNIQUE KEY `UQ_idAssociation` (`idAssociation`),
   KEY `idx_association_user` (`idUser`),
   KEY `idx_association_active` (`isActive`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `association`
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `association_invitation` (
   UNIQUE KEY `unique_association_user_invitation` (`idAssociation`,`idUser`),
   KEY `FK_user_TO_association_invitation_user` (`idUser`),
   KEY `FK_user_TO_association_invitation_inviter` (`idInviter`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `association_invitation`
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `chat` (
   KEY `idx_chat_event` (`idEvenement`),
   KEY `idx_chat_association` (`idAssociation`),
   KEY `idx_chat_last_message` (`lastMessageAt`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `chat`
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `chat_participant` (
   PRIMARY KEY (`idChatParticipant`),
   UNIQUE KEY `unique_chat_user_participant` (`idChat`,`idUser`),
   KEY `FK_user_TO_chat_participant` (`idUser`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `chat_participant`
@@ -195,7 +195,7 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   KEY `idx_entreprise_user` (`idUser`),
   KEY `idx_entreprise_active` (`isActive`),
   KEY `idx_entreprise_status` (`status`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `entreprise`
@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   KEY `idx_evenement_public` (`isPublic`),
   KEY `idx_evenement_association` (`idAssociation`),
   KEY `idx_evenement_category` (`idEventCategory`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `evenement`
@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `event_category` (
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idEventCategory`),
   UNIQUE KEY `UQ_idEventCategory` (`idEventCategory`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `event_category`
@@ -321,7 +321,7 @@ CREATE TABLE IF NOT EXISTS `event_image` (
   PRIMARY KEY (`idEventImage`),
   UNIQUE KEY `UQ_idEventImage` (`idEventImage`),
   KEY `FK_evenement_TO_event_image` (`idEvenement`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `event_image`
@@ -354,7 +354,7 @@ CREATE TABLE IF NOT EXISTS `event_invitation` (
   UNIQUE KEY `unique_event_user_invitation` (`idEvenement`,`idUser`),
   KEY `FK_user_TO_event_invitation_user` (`idUser`),
   KEY `FK_user_TO_event_invitation_inviter` (`idInviter`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `event_invitation`
@@ -388,7 +388,7 @@ CREATE TABLE IF NOT EXISTS `event_participant` (
   KEY `idx_event_participant_evenement` (`idEvenement`),
   KEY `idx_event_participant_user` (`idUser`),
   KEY `idx_event_participant_status` (`status`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `event_participant`
@@ -435,7 +435,7 @@ CREATE TABLE IF NOT EXISTS `message` (
   KEY `idx_message_chat` (`idChat`),
   KEY `idx_message_sender` (`idSender`),
   KEY `idx_message_sent_at` (`sentAt`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `message`
@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `message_status` (
   PRIMARY KEY (`idMessageStatus`),
   UNIQUE KEY `unique_message_user_status` (`idMessage`,`idUser`),
   KEY `FK_user_TO_message_status` (`idUser`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `message_status`
@@ -497,7 +497,7 @@ CREATE TABLE IF NOT EXISTS `notification` (
   KEY `idx_notification_user` (`idUser`),
   KEY `idx_notification_read` (`isRead`),
   KEY `idx_notification_created` (`createdAt`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `notification`
@@ -524,7 +524,7 @@ CREATE TABLE IF NOT EXISTS `role` (
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idRole`),
   UNIQUE KEY `UQ_idRole` (`idRole`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `role`
@@ -567,7 +567,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_user_email` (`email`(250)),
   KEY `idx_user_online` (`isOnline`),
   KEY `idx_user_last_seen` (`lastSeen`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `user`
@@ -612,7 +612,7 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   PRIMARY KEY (`idUserAssociation`),
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `user_association`
@@ -643,7 +643,7 @@ CREATE TABLE IF NOT EXISTS `ville` (
   `region` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`idVille`),
   UNIQUE KEY `UQ_idVille` (`idVille`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 ;
 
 --
 -- Dumping data for table `ville`
