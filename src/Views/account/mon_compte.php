@@ -12,7 +12,7 @@
     <?php include_once __DIR__ . '/../includes/messages.php'; ?>
     <div class="flex-row justify-content-around">
 
-        <?php if ($_GET['action'] === 'edit_profile') : ?>
+        <?php if ($_GET['action'] === 'edit_profile' && !isset($_GET['field'])) : ?>
             <div class="card">
 
                 <h3>Modifier mes infos</h3>
@@ -33,12 +33,66 @@
                             value="<?= htmlspecialchars($_SESSION['form_data']['email'] ? $_SESSION['form_data']['email'] : $_SESSION['email']) ?>" required />
                     </div>
                     <div>
+                        <label for="phone">Téléphone :</label>
+                        <input type="text" id="phone" name="phone" placeholder="Entrez votre téléphone"
+                            value="<?= htmlspecialchars($_SESSION['form_data']['phone'] ?? $_SESSION['phone'] ?? '') ?>" />
+                    </div>
+                    <div>
+                        <label for="bio">Bio :</label>
+                        <textarea id="bio" name="bio" placeholder="Entrez votre bio"><?= htmlspecialchars($_SESSION['form_data']['bio'] ?? $_SESSION['bio'] ?? '') ?></textarea>
+                    </div>
+                    <div>
+                        <label for="dateOfBirth">Date de naissance :</label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth"
+                            value="<?= isset($_SESSION['form_data']['dateOfBirth']) ? $_SESSION['form_data']['dateOfBirth'] : (isset($_SESSION['dateOfBirth']) && $_SESSION['dateOfBirth'] ? date('Y-m-d\TH:i', strtotime($_SESSION['dateOfBirth'])) : '') ?>" />
+                    </div>
+                    <div>
                         <button class="btn linkNotDecorated" type="submit">Modifier</button>
                     </div>
                 </form>
 
             </div>
-
+        <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'phone') : ?>
+            <div class="card">
+                <h3>Modifier mon numéro de téléphone</h3>
+                <form action="<?= HOME_URL . 'mon_compte?action=edit_profile&field=phone' ?>" method="POST">
+                    <div>
+                        <label for="phone">Téléphone :</label>
+                        <input type="text" id="phone" name="phone" placeholder="Entrez votre téléphone"
+                            value="<?= htmlspecialchars($_SESSION['form_data']['phone'] ?? $_SESSION['phone'] ?? '') ?>" required />
+                    </div>
+                    <div>
+                        <button class="btn linkNotDecorated" type="submit">Modifier</button>
+                    </div>
+                </form>
+            </div>
+        <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'bio') : ?>
+            <div class="card">
+                <h3>Modifier ma bio</h3>
+                <form action="<?= HOME_URL . 'mon_compte?action=edit_profile&field=bio' ?>" method="POST">
+                    <div>
+                        <label for="bio">Bio :</label>
+                        <textarea id="bio" name="bio" placeholder="Entrez votre bio"><?= htmlspecialchars($_SESSION['form_data']['bio'] ?? $_SESSION['bio'] ?? '') ?></textarea>
+                    </div>
+                    <div>
+                        <button class="btn linkNotDecorated" type="submit">Modifier</button>
+                    </div>
+                </form>
+            </div>
+        <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'date_of_birth') : ?>
+            <div class="card">
+                <h3>Modifier ma date de naissance</h3>
+                <form action="<?= HOME_URL . 'mon_compte?action=edit_profile&field=date_of_birth' ?>" method="POST">
+                    <div>
+                        <label for="dateOfBirth">Date de naissance :</label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth"
+                            value="<?= isset($_SESSION['form_data']['dateOfBirth']) ? $_SESSION['form_data']['dateOfBirth'] : (isset($_SESSION['dateOfBirth']) && $_SESSION['dateOfBirth'] ? date('Y-m-d\TH:i', strtotime($_SESSION['dateOfBirth'])) : '') ?>" />
+                    </div>
+                    <div>
+                        <button class="btn linkNotDecorated" type="submit">Modifier</button>
+                    </div>
+                </form>
+            </div>
         <?php elseif ($_GET['action'] === 'change_password') : ?>
             <div class="card">
                 <h3>Changer mon mot de passe</h3>
@@ -86,39 +140,30 @@
                     </p>
                     <p>Nom : 
                         <?= $_SESSION['lastName'] ?>
-                        <?php if (empty($_SESSION['lastName'])): ?>
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
-                        <?php endif; ?>
                     </p>
                     <p>Email : 
                         <?= $_SESSION['email'] ?>
-                        <?php if (empty($_SESSION['email'])): ?>
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
-                        <?php endif; ?>
                     </p>
                     <p>Téléphone : 
                         <?= $_SESSION['phone'] ?? '' ?>
                         <?php if (empty($_SESSION['phone'])): ?>
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=phone' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
                         <?php endif; ?>
                     </p>
                     <p>Bio : 
                         <?= $_SESSION['bio'] ?? '' ?>
                         <?php if (empty($_SESSION['bio'])): ?>
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=bio' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
                         <?php endif; ?>
                     </p>
                     <p>Date de naissance : 
                         <?= $_SESSION['dateOfBirth'] ?? '' ?>
                         <?php if (empty($_SESSION['dateOfBirth'])): ?>
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=date_of_birth' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
                         <?php endif; ?>
                     </p>
                     <p>Compte valide : <?= $_SESSION['isActivated'] ? 'Oui' : 'Non' ?> </p>
                     <p>En ligne : <?= isset($_SESSION['isOnline']) ? ($_SESSION['isOnline'] ? 'Oui' : 'Non') : '' ?>
-                        <?php if (!isset($_SESSION['isOnline'])): ?>
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
-                        <?php endif; ?>
                     </p>
                     <p>Date de création : <?= $_SESSION['createdAt'] ?> </p>
                     <p>Mise à jour : <?= $_SESSION['updatedAt'] ?? 'Jamais' ?> </p>

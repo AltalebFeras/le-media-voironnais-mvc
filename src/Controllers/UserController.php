@@ -389,6 +389,9 @@ class UserController extends AbstractController
             $email = isset($_POST['email']) ? htmlspecialchars(trim(strtolower($_POST['email']))) : null;
             $idUser = $_SESSION['idUser'];
             $updatedAt = new DateTime();
+            $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
+            $bio = isset($_POST['bio']) ? htmlspecialchars(trim($_POST['bio'])) : null;
+            $dateOfBirth = isset($_POST['dateOfBirth']) ? htmlspecialchars(trim($_POST['dateOfBirth'])) : null;
             $errors = [];
             $_SESSION['form_data'] =  $_POST;
 
@@ -410,6 +413,23 @@ class UserController extends AbstractController
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors['email'] = 'L\'adresse e-mail est invalide';
             }
+            if ($phone) {
+                if (!preg_match('/^\+?[0-9]{7,15}$/', $phone)) {
+                    $errors['phone'] = 'Le numéro de téléphone est invalide. Il doit contenir entre 7 et 15 chiffres et peut commencer par un +.';
+                }
+            }
+            //  validate dateOfBirth if provided and not in the future and less than 13 years from now
+
+            if ($dateOfBirth) {
+                $dob = DateTime::createFromFormat('Y-m-d', $dateOfBirth);
+                $now = new DateTime();
+                $minDate = (new DateTime())->modify('-120 years'); // Minimum age 120 years
+                $maxDate = (new DateTime())->modify('-16 years'); // Minimum age 16 years
+                if (!$dob || $dob > $now || $dob < $minDate || $dob > $maxDate) {
+                    $errors['dateOfBirth'] = 'La date de naissance est invalide. Vous devez avoir au moins 16 ans.';
+                }
+            }
+
 
             $user = $this->repo->getUser($email);
 
