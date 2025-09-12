@@ -1,10 +1,11 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/dashboard.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
-<main>
-    <h1>Dashboard</h1>
+<main class="dashboard-container">
+    <h1 class="dashboard-title">Tableau de bord</h1>
     <?php include_once __DIR__ . '/../includes/messages.php'; ?>
-    <div class="d-flex flex-wrap justify-content-center gap-3">
+    <div class="dashboard-grid">
 
         <a href="<?= HOME_URL ?>" class="cardDashboard">
             <h2>Accueil</h2>
@@ -18,19 +19,16 @@
             <h2>Créer une nouvelle liste</h2>
             <p>Créer une nouvelle liste de courses.</p>
         </a>
-
         <a href="<?= HOME_URL . "mon_compte" ?>" class="cardDashboard">
             <h2>Mon compte</h2>
             <p>Voir et modifier mon profil, gérer mes événements, associations, entreprises, et accéder à la messagerie.</p>
         </a>
-
-        <a href="<?= HOME_URL . "SignOut" ?>" class="cardDashboard">
+        <a href="<?= HOME_URL . "deconnexion" ?>" class="cardDashboard">
             <h2>Se déconnecter</h2>
             <p>Déconnexion de votre compte.</p>
         </a>
 
     </div>
-
 </main>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

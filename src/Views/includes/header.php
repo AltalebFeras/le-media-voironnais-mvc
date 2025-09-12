@@ -37,6 +37,3 @@
   <link rel="icon" type="image/png" sizes="16x16" href="<?= HOME_URL . 'assets/favicon/favicon-16x16.png' ?>">
   <link rel="manifest" href="<?= HOME_URL . 'assets/favicon/site.webmanifest' ?>">
   <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/global.css' ?>">
-  
-</head>
-<body>

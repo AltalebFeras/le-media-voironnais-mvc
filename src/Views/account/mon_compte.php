@@ -1,11 +1,12 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/mon_compte.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <main>
     <div class="flex-row justify-content-between">
         <h1 class="flex-row justify-content-center">Mon profil</h1>
-        <a href="<?= isset($_GET['action']) ? HOME_URL . 'mon_compte' : HOME_URL . 'dashboard' ?>" class="btn">
-            <i class="fa-solid fa-arrow-left fa-fade fa-xl" style="color:white;"></i>
+        <a href="<?= isset($_GET['action']) ? HOME_URL . 'mon_compte' : HOME_URL . 'dashboard' ?>" class="">
+            <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
     <?php include_once __DIR__ . '/../includes/messages.php'; ?>
@@ -89,7 +90,7 @@
                 </div>
 
                 <div class="account-profile-picture">
-                    <img id="currentProfilePicture" src="<?= $_SESSION['profilePicturePath'] ?>" alt="user profile image" width="200" height="200">
+                    <img id="currentProfilePicture" src="<?= $_SESSION['avatarPath'] ?>" alt="user profile image" width="200" height="200">
                     <h5>Changer votre photo de profil</h5>
                     <form method="post" action="<?= HOME_URL . 'mon_compte?action=edit_profile_picture' ?>" enctype="multipart/form-data">
                         <label for="profilePicture" class="custom-file-label">
@@ -109,6 +110,6 @@
                 <a href="<?= HOME_URL . 'mon_compte?action=delete_account' ?>" class="btn linkNotDecorated bg-danger text-bold">Supprimer mon compte</a>
             </div>
         <?php endif; ?>
-
 </main>
+<?php include_once __DIR__ . '/../includes/footer.php'; ?>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
