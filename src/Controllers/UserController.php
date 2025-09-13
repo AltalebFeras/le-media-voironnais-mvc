@@ -88,7 +88,6 @@ class UserController extends AbstractController
         $roleId = 2;
         $createdAt = date('Y-m-d H:i:s');
 
-
         if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($passwordConfirmation) || !$rgpd) {
             $errors['global'] = 'Veuillez remplir tous les champs';
         }
@@ -233,6 +232,7 @@ class UserController extends AbstractController
             $_SESSION['email'] = $user->getEmail();
             $_SESSION['phone'] = $user->getPhone();
             $_SESSION['avatarPath'] = $user->getAvatarPath();
+            $_SESSION['bannerPath'] = $user->getBannerPath();
             $_SESSION['bio'] = $user->getBio();
             $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
             $_SESSION['isActivated'] = $user->getIsActivated();
@@ -544,13 +544,13 @@ class UserController extends AbstractController
             // make the move the uploaded file to the target directory
             if (move_uploaded_file($_FILES['profilePicture']['tmp_name'], $uploadFile)) {
                 // then delete the old profile picture from the server if it's not the default picture
-                if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/uploads/profilePicture/defaultProfile.png') === false) {
-                    $oldFilePath = str_replace(HOME_URL . 'assets/uploads/', __DIR__ . '/../../public/assets/uploads/', $currentPicturePath);
+                if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') === false) {
+                    $oldFilePath = str_replace(HOME_URL . 'assets/images/uploads/avatars/', __DIR__ . '/../../public/assets/images/uploads/avatars/', $currentPicturePath);
                     if (file_exists($oldFilePath)) {
                         unlink($oldFilePath); // here delete the old file from the server
                     }
                 }
-                $newProfilePicturePath = DOMAIN . HOME_URL . 'assets/uploads/profilePictures/' . $fileName;
+                $newProfilePicturePath = DOMAIN . HOME_URL . 'assets/images/uploads/avatars/' . $fileName;
                 $this->repo->updateProfilePicture($idUser, $newProfilePicturePath);
 
                 $_SESSION['avatarPath'] = $newProfilePicturePath;
@@ -575,21 +575,21 @@ class UserController extends AbstractController
         $idUser = $_SESSION['idUser'];
         $currentPicturePath = $_SESSION['avatarPath']   ?? null;
         // check if the current profile picture is not the default one
-        if (!$currentPicturePath || strpos($currentPicturePath, HOME_URL . 'assets/uploads/profilePictures/defaultProfile.png') !== false) {
+        if (!$currentPicturePath || strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') !== false) {
             $_SESSION['error'] = 'Vous ne pouvez pas supprimer la photo de profil par défaut.';
             header('Location: ' . HOME_URL . 'mon_compte');
             exit();
         }
         // here we delete file from server if it's not the default picture
-        if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/uploads/profilePictures/defaultProfile.png') === false) {
-            $filePath = str_replace(DOMAIN . HOME_URL . 'assets/uploads/', __DIR__ . '/../../public/assets/uploads/', $currentPicturePath);
+        if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') === false) {
+            $filePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/avatars/', __DIR__ . '/../../public/assets/images/uploads/avatars/', $currentPicturePath);
             if (file_exists($filePath)) {
                 unlink($filePath);
             }
         }
 
         // then we update profile picture path in the database to the default picture
-        $defaultProfilePicturePath = DOMAIN . HOME_URL . 'assets/uploads/profilePictures/defaultProfile.png';
+        $defaultProfilePicturePath = DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
         $this->repo->updateProfilePicture($idUser, $defaultProfilePicturePath);
 
         // we set default profile picture in session

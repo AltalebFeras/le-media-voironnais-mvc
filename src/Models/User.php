@@ -15,6 +15,7 @@ class User
     private ?string $phone;
     private string $password;
     private ?string $avatarPath;
+    private ?string $bannerPath;
     private ?string $bio;
     private DateTime|string|null $dateOfBirth;
     private bool $isActivated;
@@ -186,6 +187,26 @@ class User
     public function setAvatarPath(string $avatarPath): self
     {
         $this->avatarPath = $avatarPath;
+        return $this;
+    }
+
+    /**
+     * Get the value of bannerPath
+     */
+    public function getBannerPath(): ?string
+    {
+        return $this->bannerPath;
+    }
+
+    /**
+     * Set the value of bannerPath
+     *
+     * @return  self
+     */
+    public function setBannerPath(?string $bannerPath): self
+    {
+        $this->bannerPath = $bannerPath;
+
         return $this;
     }
 
