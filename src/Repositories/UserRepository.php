@@ -187,4 +187,12 @@ class UserRepository
             'idUser' => $idUser
         ]);
     }
+    public function updateBanner($idUser, $bannerPath)
+    {
+        $query = $this->DBuser->prepare('UPDATE user SET bannerPath = :bannerPath WHERE idUser = :idUser');
+        $query->execute([
+            'bannerPath' => $bannerPath,
+            'idUser' => $idUser
+        ]);
+    }
 }

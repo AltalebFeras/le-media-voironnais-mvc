@@ -3,6 +3,31 @@
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <main>
+    <!-- Banner Section -->
+    <div class="account-banner-section">
+        <div class="account-banner-wrapper">
+            <?php if (!empty($_SESSION['bannerPath'])): ?>
+                <img id="currentBanner" src="<?= $_SESSION['bannerPath'] ?>" alt="Banner" class="account-banner-img">
+            <?php else: ?>
+                <div id="currentBanner" class="account-banner-placeholder">Aucune bannière</div>
+            <?php endif; ?>
+            <img id="bannerPreview" style="display:none; max-width:100%; max-height:180px; border-radius:10px; margin:0.5rem 0;">
+        </div>
+        <form method="post" action="<?= HOME_URL . 'mon_compte?action=edit_banner' ?>" enctype="multipart/form-data" class="account-banner-form">
+            <label class="custom-file-label" for="bannerInput">
+                Sélectionner une bannière (PNG, JPG, max 2 Mo)
+                <input type="file" id="bannerInput" name="banner" accept="image/*" class="custom-file-input" required>
+            </label>
+            <button type="submit" class="btn" id="bannerSubmitBtn" disabled>Ajouter/Changer</button>
+            <button type="button" id="cancelBannerBtn" class="btn" style="display:none;">Annuler</button>
+        </form>
+        <?php if (!empty($_SESSION['bannerPath'])): ?>
+            <form method="post" action="<?= HOME_URL . 'mon_compte?action=delete_banner' ?>" class="account-banner-form">
+                <button type="submit" class="btn bg-danger">Supprimer la bannière</button>
+            </form>
+        <?php endif; ?>
+    </div>
+
     <div class="flex-row justify-content-between">
         <h1 class="flex-row justify-content-center">Mon profil</h1>
         <a href="<?= isset($_GET['action']) ? HOME_URL . 'mon_compte' : HOME_URL . 'dashboard' ?>" class="">

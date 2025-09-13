@@ -535,19 +535,24 @@ class UserController extends AbstractController
         $idUser = $_SESSION['idUser'];
         $currentPicturePath = $_SESSION['avatarPath'] ?? null;
 
+        // Use the correct avatars directory for both upload and reference
+        $uploadDir = __DIR__ . '/../../public/assets/images/uploads/avatars/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
         // check if a file was uploaded
         if (!empty($_FILES) && isset($_FILES['profilePicture']) && $_FILES['profilePicture']['error'] == UPLOAD_ERR_OK) {
-            $uploadDir = __DIR__ . '/../../public/assets/uploads/profilePictures/';
             $fileName = uniqid() . '_' . basename($_FILES['profilePicture']['name']);
             $uploadFile = "{$uploadDir}{$fileName}";
 
-            // make the move the uploaded file to the target directory
+            // move the uploaded file to the target directory
             if (move_uploaded_file($_FILES['profilePicture']['tmp_name'], $uploadFile)) {
-                // then delete the old profile picture from the server if it's not the default picture
+                // delete the old profile picture from the server if it's not the default picture
                 if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') === false) {
-                    $oldFilePath = str_replace(HOME_URL . 'assets/images/uploads/avatars/', __DIR__ . '/../../public/assets/images/uploads/avatars/', $currentPicturePath);
+                    $oldFilePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/avatars/', __DIR__ . '/../../public/assets/images/uploads/avatars/', $currentPicturePath);
                     if (file_exists($oldFilePath)) {
-                        unlink($oldFilePath); // here delete the old file from the server
+                        unlink($oldFilePath);
                     }
                 }
                 $newProfilePicturePath = DOMAIN . HOME_URL . 'assets/images/uploads/avatars/' . $fileName;
@@ -564,7 +569,6 @@ class UserController extends AbstractController
                 exit();
             }
         } else {
-
             $_SESSION['error'] = 'Veuillez sélectionner une image à télécharger.';
             header('Location: ' . HOME_URL . 'mon_compte?error=true');
             exit();
@@ -597,6 +601,71 @@ class UserController extends AbstractController
 
         // finally we redirect with success message
         $_SESSION['success'] = 'Votre photo de profil a été supprimée avec succès!';
+        header('Location: ' . HOME_URL . 'mon_compte');
+        exit();
+    }
+    public function editBanner()
+    {
+        $idUser = $_SESSION['idUser'];
+        $currentBannerPath = $_SESSION['bannerPath'] ?? null;
+
+        if (!empty($_FILES) && isset($_FILES['banner']) && $_FILES['banner']['error'] == UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../public/assets/images/uploads/banners/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            $fileName = uniqid() . '_' . basename($_FILES['banner']['name']);
+            $uploadFile = "{$uploadDir}{$fileName}";
+
+            // Move uploaded file
+            if (move_uploaded_file($_FILES['banner']['tmp_name'], $uploadFile)) {
+                // Delete old banner if not empty
+                if ($currentBannerPath && strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.png') === false) {
+                    $oldFilePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/banners/', __DIR__ . '/../../public/assets/images/uploads/banners/', $currentBannerPath);
+                    if (file_exists($oldFilePath)) {
+                        unlink($oldFilePath);
+                    }
+                }
+                $newBannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/' . $fileName;
+                $this->repo->updateBanner($idUser, $newBannerPath);
+
+                $_SESSION['bannerPath'] = $newBannerPath;
+                $_SESSION['success'] = 'Votre bannière a été mise à jour avec succès!';
+                header('Location: ' . HOME_URL . 'mon_compte');
+                exit();
+            } else {
+                $_SESSION['error'] = 'Erreur lors du téléchargement de la bannière.';
+                header('Location: ' . HOME_URL . 'mon_compte?error=true');
+                exit();
+            }
+        } else {
+            $_SESSION['error'] = 'Veuillez sélectionner une image à télécharger.';
+            header('Location: ' . HOME_URL . 'mon_compte?error=true');
+            exit();
+        }
+    }
+
+    public function deleteBanner()
+    {
+        $idUser = $_SESSION['idUser'];
+        $currentBannerPath = $_SESSION['bannerPath'] ?? null;
+        if (!$currentBannerPath || strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.png') !== false) {
+            $_SESSION['error'] = 'Aucune bannière à supprimer.';
+            header('Location: ' . HOME_URL . 'mon_compte');
+            exit();
+        }
+        // Delete file from server
+        if ($currentBannerPath) {
+            $filePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/banners/', __DIR__ . '/../../public/assets/images/uploads/banners/', $currentBannerPath);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+        // Set default banner in DB and session
+        $defaultBannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
+        $this->repo->updateBanner($idUser, $defaultBannerPath);
+        $_SESSION['bannerPath'] = $defaultBannerPath;
+        $_SESSION['success'] = 'Votre bannière a été supprimée avec succès!';
         header('Location: ' . HOME_URL . 'mon_compte');
         exit();
     }

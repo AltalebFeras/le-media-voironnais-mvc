@@ -91,9 +91,7 @@ switch ($route) {
         break;
 
     case HOME_URL . 'mon_compte':
-
         if ($method === 'POST' && $connectionSecured && $_GET['action']) {
-
             switch ($_GET['action']) {
                 case 'delete_account':
                     $userController->deleteAccount();
@@ -109,6 +107,12 @@ switch ($route) {
                     break;
                 case 'delete_profile_picture':
                     $userController->deleteProfilePicture();
+                    break;
+                case 'edit_banner':
+                    $userController->editBanner();
+                    break;
+                case 'delete_banner':
+                    $userController->deleteBanner();
                     break;
                 default:
                     $homeController->page403();

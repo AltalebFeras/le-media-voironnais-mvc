@@ -245,3 +245,44 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+// Banner upload preview and cancel
+document.addEventListener('DOMContentLoaded', function () {
+    const bannerInput = document.getElementById('bannerInput');
+    const bannerPreview = document.getElementById('bannerPreview');
+    const bannerSubmitBtn = document.getElementById('bannerSubmitBtn');
+    const cancelBannerBtn = document.getElementById('cancelBannerBtn');
+    const currentBanner = document.getElementById('currentBanner');
+
+    if (bannerInput && bannerSubmitBtn) {
+        bannerSubmitBtn.disabled = true;
+        bannerInput.addEventListener('change', function () {
+            if (bannerInput.files && bannerInput.files[0]) {
+                bannerSubmitBtn.disabled = false;
+                if (cancelBannerBtn) cancelBannerBtn.style.display = 'inline-block';
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    bannerPreview.src = e.target.result;
+                    bannerPreview.style.display = 'block';
+                    if (currentBanner && currentBanner.tagName === 'IMG') currentBanner.style.display = 'none';
+                    if (currentBanner && currentBanner.classList.contains('account-banner-placeholder')) currentBanner.style.display = 'none';
+                };
+                reader.readAsDataURL(bannerInput.files[0]);
+            } else {
+                bannerSubmitBtn.disabled = true;
+                bannerPreview.style.display = 'none';
+                if (currentBanner) currentBanner.style.display = '';
+                if (cancelBannerBtn) cancelBannerBtn.style.display = 'none';
+            }
+        });
+    }
+    if (cancelBannerBtn && bannerInput && bannerPreview && currentBanner) {
+        cancelBannerBtn.addEventListener('click', function () {
+            bannerInput.value = '';
+            bannerPreview.style.display = 'none';
+            bannerSubmitBtn.disabled = true;
+            if (currentBanner) currentBanner.style.display = '';
+            cancelBannerBtn.style.display = 'none';
+        });
+    }
+});
