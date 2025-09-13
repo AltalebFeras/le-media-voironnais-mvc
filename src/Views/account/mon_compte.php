@@ -108,44 +108,44 @@
                 </form>
 
             </div>
-        <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'phone') : ?>
+        <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'phone' && empty($_SESSION['phone'])) : ?>
             <div class="card">
-                <h3>Modifier mon numéro de téléphone</h3>
-                <form action="<?= HOME_URL . 'mon_compte?action=edit_profile&field=phone' ?>" method="POST">
+                <h3>Ajouter mon numéro de téléphone</h3>
+                <form action="<?= HOME_URL . 'mon_compte?action=add_phone' ?>" method="POST">
                     <div>
                         <label for="phone">Téléphone :</label>
                         <input type="text" id="phone" name="phone" placeholder="Entrez votre téléphone"
                             value="<?= htmlspecialchars($_SESSION['form_data']['phone'] ?? $_SESSION['phone'] ?? '') ?>" required />
                     </div>
                     <div>
-                        <button class="btn linkNotDecorated" type="submit">Modifier</button>
+                        <button class="btn linkNotDecorated" type="submit">Ajouter</button>
                     </div>
                 </form>
             </div>
-        <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'bio') : ?>
+        <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'bio' && empty($_SESSION['bio'])) : ?>
             <div class="card">
-                <h3>Modifier ma bio</h3>
-                <form action="<?= HOME_URL . 'mon_compte?action=edit_profile&field=bio' ?>" method="POST">
+                <h3>Ajouter ma bio</h3>
+                <form action="<?= HOME_URL . 'mon_compte?action=add_bio' ?>" method="POST">
                     <div>
                         <label for="bio">Bio :</label>
                         <textarea id="bio" name="bio" placeholder="Entrez votre bio"><?= htmlspecialchars($_SESSION['form_data']['bio'] ?? $_SESSION['bio'] ?? '') ?></textarea>
                     </div>
                     <div>
-                        <button class="btn linkNotDecorated" type="submit">Modifier</button>
+                        <button class="btn linkNotDecorated" type="submit">Ajouter</button>
                     </div>
                 </form>
             </div>
-        <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'date_of_birth') : ?>
+        <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'date_of_birth' && empty($_SESSION['dateOfBirth'])) : ?>
             <div class="card">
-                <h3>Modifier ma date de naissance</h3>
-                <form action="<?= HOME_URL . 'mon_compte?action=edit_profile&field=date_of_birth' ?>" method="POST">
+                <h3>Ajouter ma date de naissance</h3>
+                <form action="<?= HOME_URL . 'mon_compte?action=add_date_of_birth' ?>" method="POST">
                     <div>
                         <label for="dateOfBirth">Date de naissance :</label>
                         <input type="date" id="dateOfBirth" name="dateOfBirth"
                             value="<?= isset($_SESSION['form_data']['dateOfBirth']) ? $_SESSION['form_data']['dateOfBirth'] : (isset($_SESSION['dateOfBirth']) && $_SESSION['dateOfBirth'] ? date('Y-m-d\TH:i', strtotime($_SESSION['dateOfBirth'])) : '') ?>" />
                     </div>
                     <div>
-                        <button class="btn linkNotDecorated" type="submit">Modifier</button>
+                        <button class="btn linkNotDecorated" type="submit">Ajouter</button>
                     </div>
                 </form>
             </div>
@@ -190,9 +190,6 @@
                     <h3>Mes infos</h3>
                     <p>Prénom :
                         <?= $_SESSION['firstName'] ?>
-                        <?php if (empty($_SESSION['firstName'])): ?>
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
-                        <?php endif; ?>
                     </p>
                     <p>Nom :
                         <?= $_SESSION['lastName'] ?>
@@ -234,7 +231,7 @@
                     <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated">Modifier</a>
                 </div>
 
-                
+
             </div>
             <div class="account-actions">
                 <a href="<?= HOME_URL . 'mon_compte?action=change_password' ?>" class="btn linkNotDecorated bg-info text-bold">Changer mon mot de passe</a>
@@ -242,5 +239,4 @@
             </div>
         <?php endif; ?>
 </main>
-<?php include_once __DIR__ . '/../includes/footer.php'; ?>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

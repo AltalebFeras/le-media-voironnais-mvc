@@ -174,7 +174,7 @@ class User
     /**
      * Get the value of avatarPath
      */
-    public function getAvatarPath(): string
+    public function getAvatarPath(): string|null 
     {
         return $this->avatarPath;
     }

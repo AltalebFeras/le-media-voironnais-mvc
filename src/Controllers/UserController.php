@@ -13,9 +13,9 @@ use src\Services\Mail;
 class UserController extends AbstractController
 {
     protected $repo;
-    public function __construct($repo = null)
+    public function __construct()
     {
-        $this->repo = $repo ?? new UserRepository();
+        $this->repo = new UserRepository();
     }
     /**
      * Generate a unique fingerprint for the machine connected to the server.
@@ -83,7 +83,6 @@ class UserController extends AbstractController
 
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $activationToken = bin2hex(random_bytes(16));
-        $profilePicturePath = DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
         $isActivated = false;
         $roleId = 2;
         $createdAt = date('Y-m-d H:i:s');
@@ -126,18 +125,16 @@ class UserController extends AbstractController
         // If there are any validation errors, throw one Error with all errors
         $this->returnAllErrors($errors, 'inscription');
 
-        $user = new User([
-            'firstName' => $firstName,
-            'lastName' => $lastName,
-            'email' => $email,
-            'password' => $passwordHash,
-            'isActivated' => $isActivated,
-            'token' => $activationToken,
-            'createdAt' => $createdAt,
-            'avatarPath' => $profilePicturePath,
-            'idRole' => $roleId,
-            'rgpdAcceptedDate' => $rgpdDate
-        ]);
+        $user = new User();
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
+        $user->setEmail($email);
+        $user->setPassword($passwordHash);
+        $user->setIsActivated($isActivated);
+        $user->setToken($activationToken);
+        $user->setCreatedAt($createdAt);
+        $user->setIdRole($roleId);
+        $user->setRgpdAcceptedDate($rgpdDate);
 
         $sendEmail = $this->sendEmail($firstName, $lastName, $email, $activationToken);
         if ($sendEmail) {
@@ -197,7 +194,7 @@ class UserController extends AbstractController
             $errors['fields'] = 'Veuillez remplir tous les champs';
         }
         $user = $this->repo->getUser($email);
-      
+
         if (!$user) {
             $errors['email'] = 'L\'adresse e-mail est invalide ou le mot de passe est incorrect.';
         }
@@ -369,9 +366,6 @@ class UserController extends AbstractController
     }
     public function displayMyAccount()
     {
-        if (!isset($_GET['error'])) {
-            unset($_SESSION['form_data']);
-        }
         include_once __DIR__ . '/../Views/account/mon_compte.php';
     }
     public function editProfile()
@@ -380,11 +374,11 @@ class UserController extends AbstractController
             $firstName = isset($_POST['firstName']) ? htmlspecialchars(trim(ucfirst($_POST['firstName']))) : null;
             $lastName = isset($_POST['lastName']) ? htmlspecialchars(trim(ucfirst($_POST['lastName']))) : null;
             $email = isset($_POST['email']) ? htmlspecialchars(trim(strtolower($_POST['email']))) : null;
-            $idUser = $_SESSION['idUser'];
             $updatedAt = new DateTime();
             $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
             $bio = isset($_POST['bio']) ? htmlspecialchars(trim($_POST['bio'])) : null;
             $dateOfBirth = isset($_POST['dateOfBirth']) ? htmlspecialchars(trim($_POST['dateOfBirth'])) : null;
+            $idUser = $_SESSION['idUser'];
             $errors = [];
             $_SESSION['form_data'] =  $_POST;
 
@@ -424,9 +418,9 @@ class UserController extends AbstractController
             }
 
 
-            $user = $this->repo->getUser($email);
+            $user = $this->repo->getUserById($_SESSION['idUser']);
 
-            if ($user && $user->getIdUser() !== $idUser) {
+            if ($user && $user->getEmail() !== $email) {
                 $errors['emailExist'] = 'Cette adresse e-mail est déjà utilisée';
             }
             // If there are any validation errors, throw one Error with all errors
@@ -436,16 +430,14 @@ class UserController extends AbstractController
                 exit();
             }
 
-            $user = new User([
-                'idUser' => $idUser,
-                'firstName' => $firstName,
-                'lastName' => $lastName,
-                'email' => $email,
-                'updatedAt' => $updatedAt,
-                'phone' => $phone,
-                'bio' => $bio,
-                'dateOfBirth' => $dateOfBirth,
-            ]);
+            $user = new User();
+            $user->setFirstName($firstName);
+            $user->setLastName($lastName);
+            $user->setEmail($email);
+            $user->setUpdatedAt($updatedAt->format('Y-m-d H:i:s'));
+            $user->setPhone($phone);
+            $user->setBio($bio);
+            $user->setDateOfBirth($dateOfBirth);
 
             $updateUser = $this->repo->updateUser($user);
             if ($updateUser) {
@@ -457,8 +449,6 @@ class UserController extends AbstractController
                 $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
                 $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
 
-
-                unset($_SESSION['form_data']);
                 $_SESSION['success'] = 'Votre profil a été mis à jour avec succès!';
                 header('Location: ' . HOME_URL . 'mon_compte');
             } else {
@@ -470,6 +460,122 @@ class UserController extends AbstractController
             exit();
         }
     }
+    // add here the methods for this      case 'add_phone':
+    //     $userController->addPhone();
+    //     break;
+    // case 'add_bio':
+    //     $userController->addBio();
+    //     break;
+    // case 'add_date_of_birth':
+    //     $userController->addDateOfBirth();
+    //     break;
+
+    public function addPhone()
+    {
+        $idUser = $_SESSION['idUser'];
+        $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
+
+        if (!$phone) {
+            $errors['empty'] = 'Veuillez entrer un numéro de téléphone.';
+        }
+        if ($phone) {
+            if (!preg_match('/^\+?[0-9]{7,15}$/', $phone)) {
+                $errors['phone'] = 'Le numéro de téléphone est invalide. Il doit contenir entre 7 et 15 chiffres et peut commencer par un +.';
+            }
+        }
+        // If there are any validation errors, throw one Error with all errors
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=phone&error=true');
+            exit();
+        }
+
+        $user = $this->repo->getUserById($idUser);
+        $user->setPhone($phone);
+        $addPhone = $this->repo->updateUserPhone($user);
+        if ($addPhone) {
+            $_SESSION['phone'] = $user->getPhone();
+            $_SESSION['success'] = 'Votre numéro de téléphone a été ajouté avec succès.';
+            header('Location: ' . HOME_URL . 'mon_compte');
+            exit();
+        } else {
+            $_SESSION['error'] = 'Une erreur s\'est produite lors de l\'ajout de votre numéro de téléphone. Veuillez réessayer plus tard.';
+            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=phone&error=true');
+            exit();
+        }
+    }
+    public function addBio()
+    {
+        $idUser = $_SESSION['idUser'];
+        $bio = isset($_POST['bio']) ? htmlspecialchars(trim($_POST['bio'])) : null;
+
+        if (!$bio) {
+            $errors['empty'] = 'Veuillez entrer une biographie.';
+        }
+        if (strlen($bio) > 500) {
+            $errors['length'] = 'La biographie ne doit pas dépasser 500 caractères.';
+        }
+        // If there are any validation errors, throw one Error with all errors
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=bio&error=true');
+            exit();
+        }
+
+        $user = $this->repo->getUserById($idUser);
+        $user->setBio($bio);
+        $addBio = $this->repo->updateUserBio($user);
+        if ($addBio) {
+            $_SESSION['bio'] = $user->getBio();
+            $_SESSION['success'] = 'Votre biographie a été ajoutée avec succès.';
+            header('Location: ' . HOME_URL . 'mon_compte');
+            exit();
+        } else {
+            $_SESSION['error'] = 'Une erreur s\'est produite lors de l\'ajout de votre biographie. Veuillez réessayer plus tard.';
+            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=bio&error=true');
+            exit();
+        }
+    }
+    public function addDateOfBirth()
+    {
+        $idUser = $_SESSION['idUser'];
+        $dateOfBirth = isset($_POST['dateOfBirth']) ? htmlspecialchars(trim($_POST['dateOfBirth'])) : null;
+        $errors = [];
+
+        if (!$dateOfBirth) {
+            $errors['empty'] = 'Veuillez entrer une date de naissance.';
+        }
+        if ($dateOfBirth) {
+            $dob = DateTime::createFromFormat('Y-m-d', $dateOfBirth);
+            $now = new DateTime();
+            $minDate = (new DateTime())->modify('-120 years'); // Minimum age 120 years
+            $maxDate = (new DateTime())->modify('-16 years'); // Minimum age 16 years
+            if (!$dob || $dob > $now || $dob < $minDate || $dob > $maxDate) {
+                $errors['dateOfBirth'] = 'La date de naissance est invalide. Vous devez avoir au moins 16 ans.';
+            }
+        }
+        // If there are any validation errors, throw one Error with all errors
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=date_of_birth&error=true');
+            exit();
+        }
+
+        $user = $this->repo->getUserById($idUser);
+        $user->setDateOfBirth($dateOfBirth);
+        $addDateOfBirth = $this->repo->updateUserDateOfBirth($user);
+        if ($addDateOfBirth) {
+            $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
+            $_SESSION['success'] = 'Votre date de naissance a été ajoutée avec succès.';
+            header('Location: ' . HOME_URL . 'mon_compte');
+            exit();
+        } else {
+            $_SESSION['error'] = 'Une erreur s\'est produite lors de l\'ajout de votre date de naissance. Veuillez réessayer plus tard.';
+            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=date_of_birth&error=true');
+            exit();
+        }
+    }
+
     public function changePassword()
     {
         $idUser = $_SESSION['idUser'];
@@ -580,7 +686,7 @@ class UserController extends AbstractController
         $currentPicturePath = $_SESSION['avatarPath']   ?? null;
         // check if the current profile picture is not the default one
         if (!$currentPicturePath || strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') !== false) {
-            $_SESSION['error'] = 'Vous ne pouvez pas supprimer la photo de profil par défaut.';
+            $_SESSION['error'] = 'Aucun avatar à supprimer.';
             header('Location: ' . HOME_URL . 'mon_compte');
             exit();
         }
@@ -620,7 +726,7 @@ class UserController extends AbstractController
             // Move uploaded file
             if (move_uploaded_file($_FILES['banner']['tmp_name'], $uploadFile)) {
                 // Delete old banner if not empty
-                if ($currentBannerPath && strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.png') === false) {
+                if ($currentBannerPath && strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') === false) {
                     $oldFilePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/banners/', __DIR__ . '/../../public/assets/images/uploads/banners/', $currentBannerPath);
                     if (file_exists($oldFilePath)) {
                         unlink($oldFilePath);
@@ -649,7 +755,7 @@ class UserController extends AbstractController
     {
         $idUser = $_SESSION['idUser'];
         $currentBannerPath = $_SESSION['bannerPath'] ?? null;
-        if (!$currentBannerPath || strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.png') !== false) {
+        if (!$currentBannerPath || strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') !== false) {
             $_SESSION['error'] = 'Aucune bannière à supprimer.';
             header('Location: ' . HOME_URL . 'mon_compte');
             exit();
@@ -661,8 +767,7 @@ class UserController extends AbstractController
                 unlink($filePath);
             }
         }
-        // Set default banner in DB and session
-        $defaultBannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
+        $defaultBannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.jpg';
         $this->repo->updateBanner($idUser, $defaultBannerPath);
         $_SESSION['bannerPath'] = $defaultBannerPath;
         $_SESSION['success'] = 'Votre bannière a été supprimée avec succès!';

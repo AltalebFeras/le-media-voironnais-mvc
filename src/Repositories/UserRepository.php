@@ -34,8 +34,8 @@ class UserRepository
     public function signUp(User $user): User
     {
         try {
-            $query = 'INSERT INTO user (firstName, lastName, email, password, isActivated, token, avatarPath, rgpdAcceptedDate, createdAt, idRole) 
-            VALUES (:firstName, :lastName, :email, :password, :isActivated, :token, :avatarPath, :rgpdAcceptedDate, :createdAt, :idRole)';
+            $query = 'INSERT INTO user (firstName, lastName, email, password, isActivated, token, rgpdAcceptedDate, createdAt, idRole) 
+            VALUES (:firstName, :lastName, :email, :password, :isActivated, :token, :rgpdAcceptedDate, :createdAt, :idRole)';
 
             $req = $this->DBuser->prepare($query);
             $req->execute([
@@ -45,7 +45,6 @@ class UserRepository
                 'password' => $user->getPassword(),
                 'isActivated' => $user->getIsActivated(),
                 'token' => $user->getToken(),
-                'avatarPath' => $user->getAvatarPath(),
                 'createdAt' => $user->getCreatedAt(),
                 'rgpdAcceptedDate' => $user->getRgpdAcceptedDate(),
                 'idRole' => $user->getIdRole()
@@ -102,7 +101,7 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
-    public function updateLastSeenAndSetUserOnline($idUser,$lastSeen): bool
+    public function updateLastSeenAndSetUserOnline($idUser, $lastSeen): bool
     {
         try {
             $query = 'UPDATE user SET lastSeen = :lastSeen, isOnline = 1 WHERE idUser = :idUser';
@@ -142,6 +141,46 @@ class UserRepository
             return true;
         } catch (PDOException $e) {
             throw new Exception('An error occurred while updating user details.');
+        }
+    }
+    public function updateUserPhone($user): bool
+    {
+        try {
+            $query = 'UPDATE user SET phone = :phone WHERE idUser = :idUser';
+            $req = $this->DBuser->prepare($query);
+            $req->execute([
+                'phone' => $user->getPhone(),
+                'idUser' => $user->getIdUser()
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            throw new Exception('An error occurred while updating user phone.');
+        }
+    }
+    public function updateUserBio($user): bool
+    {
+        try {
+            $query = $this->DBuser->prepare('UPDATE user SET bio = :bio WHERE idUser = :idUser');
+            $query->execute([
+                'bio' => $user->getBio(),
+                'idUser' => $user->getIdUser()
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            throw new Exception('An error occurred while updating bio.');
+        }
+    }
+    public function updateUserDateOfBirth($user): bool
+    {
+        try {
+            $query = $this->DBuser->prepare('UPDATE user SET dateOfBirth = :dateOfBirth WHERE idUser = :idUser');
+            $query->execute([
+                'dateOfBirth' => $user->getDateOfBirth(),
+                'idUser' => $user->getIdUser()
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            throw new Exception('An error occurred while updating date of birth.');
         }
     }
     public function updatePassword($idUser, $newPassword): bool

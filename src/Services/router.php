@@ -102,6 +102,15 @@ switch ($route) {
                 case 'edit_profile':
                     $userController->editProfile();
                     break;
+                case 'add_phone':
+                    $userController->addPhone();
+                    break;
+                case 'add_bio':
+                    $userController->addBio();
+                    break;
+                case 'add_date_of_birth':
+                    $userController->addDateOfBirth();
+                    break;
                 case 'edit_profile_picture':
                     $userController->editProfilePicture();
                     break;
