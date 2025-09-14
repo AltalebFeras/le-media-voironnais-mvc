@@ -45,27 +45,8 @@ class UserController extends AbstractController
      * @param mixed $activationToken
      * @return bool
      */
-    private function sendEmail($firstName, $lastName, $email, $activationToken): bool
-    {
-        $encrypting = new  Encrypt_decrypt();
-        $activationLink = DOMAIN . HOME_URL . 'activer_mon_compte?token=' . $activationToken . '&email=' . $encrypting->encryptId($email);
 
-        // activation email
-        $mail = new Mail();
-        $subject = 'Activation de votre compte';
-        $body = "Bonjour {$firstName} {$lastName},<br><br>";
-        $body .= "Veuillez cliquer sur le lien ci-dessous pour activer votre compte:<br>";
-        $body .= "<a href='$activationLink'>Click here</a><br><br>";
-        $body .= "<br><br>Merci,<br>L'équipe de support.";
-
-        $sendEmail = $mail->sendEmail('account-activation@feras.fr', 'feras', $email, $lastName, $subject, $body);
-        if ($sendEmail) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    public function treatmentInscription()
+    public function treatmentInscription(): void
     {
         $firstName = isset($_POST['firstName']) ? htmlentities(trim(ucfirst($_POST['firstName']))) : null;
         $lastName = isset($_POST['lastName']) ? htmlentities(trim(ucfirst($_POST['lastName']))) : null;
@@ -136,7 +117,14 @@ class UserController extends AbstractController
         $user->setIdRole($roleId);
         $user->setRgpdAcceptedDate($rgpdDate);
 
-        $sendEmail = $this->sendEmail($firstName, $lastName, $email, $activationToken);
+        
+        $activationLink = DOMAIN . HOME_URL . 'activer_mon_compte?token=' . $activationToken;
+        $subject = 'Activation de votre compte';
+        $body = "Veuillez cliquer sur le lien ci-dessous pour activer votre compte:<br>";
+        $body .= "<a href='$activationLink'>Cliquez ici</a><br><br>";
+        
+        $mail = new Mail();
+        $sendEmail = $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email, $firstName, $subject, $body);
         if ($sendEmail) {
             $signUp = $this->repo->signUp($user);
         } else {
