@@ -218,8 +218,8 @@ class UserController extends AbstractController
             $_SESSION['lastName'] = $user->getLastName();
             $_SESSION['email'] = $user->getEmail();
             $_SESSION['phone'] = $user->getPhone();
-            $_SESSION['avatarPath'] = $user->getAvatarPath();
-            $_SESSION['bannerPath'] = $user->getBannerPath();
+            $_SESSION['avatarPath'] = $user->getAvatarPath() ?? DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
+            $_SESSION['bannerPath'] = $user->getBannerPath() ?? DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.jpg';
             $_SESSION['bio'] = $user->getBio();
             $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
             $_SESSION['isActivated'] = $user->getIsActivated();
