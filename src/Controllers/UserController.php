@@ -373,7 +373,6 @@ class UserController extends AbstractController
         try {
             $firstName = isset($_POST['firstName']) ? htmlspecialchars(trim(ucfirst($_POST['firstName']))) : null;
             $lastName = isset($_POST['lastName']) ? htmlspecialchars(trim(ucfirst($_POST['lastName']))) : null;
-            $email = isset($_POST['email']) ? htmlspecialchars(trim(strtolower($_POST['email']))) : null;
             $updatedAt = new DateTime();
             $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
             $bio = isset($_POST['bio']) ? htmlspecialchars(trim($_POST['bio'])) : null;
@@ -382,7 +381,7 @@ class UserController extends AbstractController
             $errors = [];
             $_SESSION['form_data'] =  $_POST;
 
-            if (empty($firstName) || empty($lastName) || empty($email)) {
+            if (empty($firstName) || empty($lastName)) {
                 $errors['fields'] = 'Veuillez remplir tous les champs';
             }
             if (strlen($firstName) < 3 || strlen($lastName) < 3) {
@@ -394,12 +393,7 @@ class UserController extends AbstractController
             if (!preg_match('/^[A-Za-zÀ-ÿ\s\-]+$/', $lastName)) {
                 $errors['lastName'] = 'Le nom ne doit contenir que des lettres';
             }
-            if (strlen($email) < 5 || strlen($email) > 255) {
-                $errors['emailLength'] = 'L\'adresse e-mail doit contenir entre 5 et 255 caractères';
-            }
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors['email'] = 'L\'adresse e-mail est invalide';
-            }
+
             if ($phone) {
                 if (!preg_match('/^\+?[0-9]{7,15}$/', $phone)) {
                     $errors['phone'] = 'Le numéro de téléphone est invalide. Il doit contenir entre 7 et 15 chiffres et peut commencer par un +.';
@@ -420,30 +414,24 @@ class UserController extends AbstractController
 
             $user = $this->repo->getUserById($_SESSION['idUser']);
 
-            if ($user && $user->getEmail() !== $email) {
-                $errors['emailExist'] = 'Cette adresse e-mail est déjà utilisée';
-            }
-            // If there are any validation errors, throw one Error with all errors
-            if (!empty($errors)) {
-                $_SESSION['errors'] = $errors;
-                header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&error=true');
-                exit();
-            }
+
+            $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&error=true');
+
 
             $user = new User();
+            $user->setIdUser($idUser);
             $user->setFirstName($firstName);
             $user->setLastName($lastName);
-            $user->setEmail($email);
             $user->setUpdatedAt($updatedAt->format('Y-m-d H:i:s'));
             $user->setPhone($phone);
             $user->setBio($bio);
             $user->setDateOfBirth($dateOfBirth);
 
             $updateUser = $this->repo->updateUser($user);
+
             if ($updateUser) {
                 $_SESSION['firstName'] = $user->getFirstName();
                 $_SESSION['lastName'] = $user->getLastName();
-                $_SESSION['email'] = $user->getEmail();
                 $_SESSION['phone'] = $user->getPhone();
                 $_SESSION['bio'] = $user->getBio();
                 $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
@@ -460,20 +448,49 @@ class UserController extends AbstractController
             exit();
         }
     }
-    // add here the methods for this      case 'add_phone':
-    //     $userController->addPhone();
-    //     break;
-    // case 'add_bio':
-    //     $userController->addBio();
-    //     break;
-    // case 'add_date_of_birth':
-    //     $userController->addDateOfBirth();
-    //     break;
+    public function modifyEmail()
+    {
+        $idUser = $_SESSION['idUser'];
+        $email = isset($_POST['email']) ? htmlspecialchars(trim(strtolower($_POST['email']))) : null;
+        $_SESSION['form_data'] =  $_POST;
+        $errors = [];
+
+        if (!$email) {
+            $errors['empty'] = 'Veuillez entrer une adresse e-mail.';
+        }
+        if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'L\'adresse e-mail est invalide.';
+        }
+
+        $user = $this->repo->getUserById($idUser);
+        if ($user && $user->getEmail() !== $email) {
+            $errors['emailExist'] = 'Cette adresse e-mail est déjà utilisée';
+        }
+        $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&field=email&error=true');
+        // send conformation email with code of six numbers to new email address
+        $authCode = rand(100000, 999999);
+        while ($this->repo->getUserByAuthCode($authCode)) {
+            $authCode = rand(100000, 999999);
+        }
+        $this->repo->saveAuthCode($idUser, $authCode);
+        $mail = new Mail();
+        $subject = 'Confirmation de votre nouvelle adresse e-mail';
+        $body = "Bonjour " . $user->getFirstName() . " " . $user->getLastName() . ",<br><br>";
+        $body .= "Veuillez utiliser le code ci-dessous pour confirmer votre nouvelle adresse e-mail:<br>";
+        $body .= "<h2>$authCode</h2><br><br>";
+        $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email,$_SESSION['firstName'], $subject, $body);
+        $_SESSION['newEmail'] = $email;
+        $_SESSION['success'] = 'Un code de confirmation a été envoyé à votre nouvelle adresse e-mail. Veuillez vérifier votre boîte de réception et entrer le code pour confirmer votre nouvelle adresse e-mail.';
+        header('Location: ' . HOME_URL . 'mon_compte?action=confirm_new_email');
+        exit();
+    }
 
     public function addPhone()
     {
         $idUser = $_SESSION['idUser'];
         $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
+        $_SESSION['form_data'] =  $_POST;
+        $errors = [];
 
         if (!$phone) {
             $errors['empty'] = 'Veuillez entrer un numéro de téléphone.';
@@ -484,11 +501,8 @@ class UserController extends AbstractController
             }
         }
         // If there are any validation errors, throw one Error with all errors
-        if (!empty($errors)) {
-            $_SESSION['errors'] = $errors;
-            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=phone&error=true');
-            exit();
-        }
+        $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&field=phone&error=true');
+
 
         $user = $this->repo->getUserById($idUser);
         $user->setPhone($phone);
@@ -508,6 +522,8 @@ class UserController extends AbstractController
     {
         $idUser = $_SESSION['idUser'];
         $bio = isset($_POST['bio']) ? htmlspecialchars(trim($_POST['bio'])) : null;
+        $_SESSION['form_data'] =  $_POST;
+        $errors = [];
 
         if (!$bio) {
             $errors['empty'] = 'Veuillez entrer une biographie.';
@@ -516,11 +532,8 @@ class UserController extends AbstractController
             $errors['length'] = 'La biographie ne doit pas dépasser 500 caractères.';
         }
         // If there are any validation errors, throw one Error with all errors
-        if (!empty($errors)) {
-            $_SESSION['errors'] = $errors;
-            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=bio&error=true');
-            exit();
-        }
+
+        $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&field=bio&error=true');
 
         $user = $this->repo->getUserById($idUser);
         $user->setBio($bio);
@@ -540,6 +553,7 @@ class UserController extends AbstractController
     {
         $idUser = $_SESSION['idUser'];
         $dateOfBirth = isset($_POST['dateOfBirth']) ? htmlspecialchars(trim($_POST['dateOfBirth'])) : null;
+        $_SESSION['form_data'] =  $_POST;
         $errors = [];
 
         if (!$dateOfBirth) {
@@ -555,11 +569,8 @@ class UserController extends AbstractController
             }
         }
         // If there are any validation errors, throw one Error with all errors
-        if (!empty($errors)) {
-            $_SESSION['errors'] = $errors;
-            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=date_of_birth&error=true');
-            exit();
-        }
+
+        $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&field=date_of_birth&error=true');
 
         $user = $this->repo->getUserById($idUser);
         $user->setDateOfBirth($dateOfBirth);
@@ -597,11 +608,9 @@ class UserController extends AbstractController
         if (strlen($newPassword) < 8) {
             $errors['length'] = 'Le mot de passe doit contenir au moins 8 caractères.';
         }
-        if (!empty($errors)) {
-            $_SESSION['errors'] = $errors;
-            header('Location: ' . HOME_URL . 'mon_compte?action=change_password&error=true');
-            exit();
-        }
+
+        // If there are any validation errors, throw one Error with all errors
+        $this->returnAllErrors($errors, 'mon_compte?action=change_password&error=true');
         // Hash du nouveau mot de passe
         $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
         $changePassword = $this->repo->updatePassword($idUser, $newPasswordHash);

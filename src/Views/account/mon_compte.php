@@ -69,11 +69,6 @@
                             value="<?= htmlspecialchars($_SESSION['form_data']['lastName'] ? $_SESSION['form_data']['lastName'] : $_SESSION['lastName']) ?>" required />
                     </div>
                     <div>
-                        <label for="email">Adresse e-mail :</label>
-                        <input type="email" id="email" name="email" placeholder="Entrez votre e-mail"
-                            value="<?= htmlspecialchars($_SESSION['form_data']['email'] ? $_SESSION['form_data']['email'] : $_SESSION['email']) ?>" required />
-                    </div>
-                    <div>
                         <label for="phone">Téléphone :</label>
                         <input type="text" id="phone" name="phone" placeholder="Entrez votre téléphone"
                             value="<?= htmlspecialchars($_SESSION['form_data']['phone'] ?? $_SESSION['phone'] ?? '') ?>" />
@@ -119,6 +114,20 @@
                     </div>
                     <div>
                         <button class="btn linkNotDecorated" type="submit">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+            <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'email') : ?>
+            <div class="card">
+                <h3>Modifier mon adresse e-mail</h3>
+                <form action="<?= HOME_URL . 'mon_compte?action=edit_email' ?>" method="POST">
+                    <div>
+                        <label for="email">Adresse e-mail :</label>
+                        <input type="email" id="email" name="email" placeholder="Entrez votre e-mail"
+                            value="<?= htmlspecialchars($_SESSION['form_data']['email'] ?? $_SESSION['email'] ?? '') ?>" required />
+                    </div>
+                    <div>
+                        <button class="btn linkNotDecorated" type="submit">Modifier</button>
                     </div>
                 </form>
             </div>
@@ -195,7 +204,8 @@
                         <?= $_SESSION['lastName'] ?>
                     </p>
                     <p>Email :
-                        <?= $_SESSION['email'] ?>
+                        <?= $_SESSION['email'] ?> --
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=email' ?>" class=" linkNotDecorated btn-add">Modifier</a>
                     </p>
                     <p>Téléphone :
                         <?= $_SESSION['phone'] ?? '' ?>

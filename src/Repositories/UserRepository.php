@@ -19,6 +19,30 @@ class UserRepository
 
         require_once __DIR__ . '/../../config.php';
     }
+    public function getUser($email): ?User
+    {
+        try {
+            $query = 'SELECT u.*, r.name AS roleName FROM user u JOIN role r ON u.idRole = r.idRole WHERE u.email = :email';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['email' => $email]);
+            $user = $req->fetchObject(User::class);
+            return $user !== false ? $user : null;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+    public function getUserByToken($token): ?User
+    {
+        try {
+            $query  = 'SELECT * FROM user WHERE token = :token';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['token' => $token]);
+            $user = $req->fetchObject(User::class);
+            return $user !== false ? $user : null;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
     public function getUserById($idUser): ?User
     {
         try {
@@ -31,6 +55,19 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
+    public function getUserByAuthCode($authCode): ?User
+    {
+        try {
+            $query = 'SELECT * FROM user WHERE authCode = :authCode';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['authCode' => $authCode]);
+            $user = $req->fetchObject(User::class);
+            return $user !== false ? $user : null;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public function signUp(User $user): User
     {
         try {
@@ -77,30 +114,18 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
-    public function getUser($email): ?User
+    public function saveAuthCode($idUser, $authCode): bool
     {
         try {
-            $query = 'SELECT u.*, r.name AS roleName FROM user u JOIN role r ON u.idRole = r.idRole WHERE u.email = :email';
+            $query = 'UPDATE user SET authCode = :authCode WHERE idUser = :idUser';
             $req = $this->DBuser->prepare($query);
-            $req->execute(['email' => $email]);
-            $user = $req->fetchObject(User::class);
-            return $user !== false ? $user : null;
+            $req->execute(['authCode' => $authCode, 'idUser' => $idUser]);
+            return true;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
-    public function getUserByToken($token): ?User
-    {
-        try {
-            $query  = 'SELECT * FROM user WHERE token = :token';
-            $req = $this->DBuser->prepare($query);
-            $req->execute(['token' => $token]);
-            $user = $req->fetchObject(User::class);
-            return $user !== false ? $user : null;
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
-        }
-    }
+
     public function updateLastSeenAndSetUserOnline($idUser, $lastSeen): bool
     {
         try {
@@ -126,12 +151,11 @@ class UserRepository
     public function updateUser($user): bool
     {
         try {
-            $query = 'UPDATE user SET firstName = :firstName, lastName = :lastName, email = :email, phone = :phone, bio = :bio, dateOfBirth = :dateOfBirth, updatedAt = :updatedAt WHERE idUser = :idUser';
+            $query = 'UPDATE user SET firstName = :firstName, lastName = :lastName, phone = :phone, bio = :bio, dateOfBirth = :dateOfBirth, updatedAt = :updatedAt WHERE idUser = :idUser';
             $req = $this->DBuser->prepare($query);
             $req->execute([
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
-                'email' => $user->getEmail(),
                 'phone' => $user->getPhone(),
                 'bio' => $user->getBio(),
                 'dateOfBirth' => $user->getDateOfBirth(),

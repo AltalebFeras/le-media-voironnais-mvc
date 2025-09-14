@@ -40,7 +40,7 @@ abstract class AbstractRepository
     $stmt = $this->DB->prepare($sql);
     $stmt->execute();
 
-    return $stmt->fetchAll(PDO::FETCH_CLASS, "src\\Entities\\{$this->class}");
+    return $stmt->fetchAll(PDO::FETCH_CLASS, "src\\Models\\{$this->class}");
   }
 
   /**
@@ -57,7 +57,7 @@ abstract class AbstractRepository
     $stmt->bindParam(':id', $id);
     $stmt->execute();
 
-    return $stmt->fetchObject("src\\Entities\\{$this->class}");
+    return $stmt->fetchObject("src\\Models\\{$this->class}");
   }
 
 
