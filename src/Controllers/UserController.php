@@ -448,7 +448,7 @@ class UserController extends AbstractController
             exit();
         }
     }
-    public function modifyEmail()
+    public function editEmail()
     {
         $idUser = $_SESSION['idUser'];
         $email = isset($_POST['email']) ? htmlspecialchars(trim(strtolower($_POST['email']))) : null;
@@ -463,10 +463,19 @@ class UserController extends AbstractController
         }
 
         $user = $this->repo->getUserById($idUser);
-        if ($user && $user->getEmail() !== $email) {
+
+        // Check if the new email is already used by another user
+        $existingUser = $this->repo->getUser($email);
+        if ($existingUser && $existingUser->getIdUser() != $idUser) {
             $errors['emailExist'] = 'Cette adresse e-mail est déjà utilisée';
         }
+
+        if ($user && $user->getEmail() === $email) {
+            $errors['sameEmail'] = 'Veuillez entrer une nouvelle adresse e-mail différente de l\'ancienne.';
+        }
+
         $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&field=email&error=true');
+
         // send conformation email with code of six numbers to new email address
         $authCode = rand(100000, 999999);
         while ($this->repo->getUserByAuthCode($authCode)) {
@@ -478,10 +487,71 @@ class UserController extends AbstractController
         $body = "Bonjour " . $user->getFirstName() . " " . $user->getLastName() . ",<br><br>";
         $body .= "Veuillez utiliser le code ci-dessous pour confirmer votre nouvelle adresse e-mail:<br>";
         $body .= "<h2>$authCode</h2><br><br>";
-        $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email,$_SESSION['firstName'], $subject, $body);
+        $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email, $_SESSION['firstName'], $subject, $body);
         $_SESSION['newEmail'] = $email;
         $_SESSION['success'] = 'Un code de confirmation a été envoyé à votre nouvelle adresse e-mail. Veuillez vérifier votre boîte de réception et entrer le code pour confirmer votre nouvelle adresse e-mail.';
         header('Location: ' . HOME_URL . 'mon_compte?action=confirm_new_email');
+        exit();
+    }
+
+    public function validateNewEmail()
+    {
+        try {
+            $idUser = $_SESSION['idUser'];
+            $authCode = isset($_POST['authCode']) ? htmlspecialchars(trim($_POST['authCode'])) : null;
+            $_SESSION['form_data'] = $_POST;
+            $errors = [];
+
+            if (!$authCode) {
+                $errors['empty'] = 'Veuillez entrer le code de confirmation.';
+            }
+            if ($authCode && !preg_match('/^[0-9]{6}$/', $authCode)) {
+                $errors['code'] = 'Le code de confirmation est invalide.';
+            }
+            $this->returnAllErrors($errors, 'mon_compte?action=confirm_new_email&error=true');
+
+            $user = $this->repo->getUserById($idUser);
+            if (!$user) {
+                throw new Exception('Utilisateur introuvable.');
+            }
+
+            $savedCode = $user->getAuthCode();
+            if ($savedCode && $savedCode == $authCode) {
+                $newEmail = $_SESSION['newEmail'] ?? null;
+                if (!$newEmail) {
+                    throw new Exception('Nouvelle adresse e-mail manquante.');
+                }
+                $updateEmail = $this->repo->updateUserEmail($idUser, $newEmail);
+                if ($updateEmail) {
+                    unset($_SESSION['newEmail']);
+                    $this->repo->clearAuthCode($idUser);
+                    $_SESSION['email'] = $newEmail;
+                    $_SESSION['success'] = 'Votre adresse e-mail a été mise à jour avec succès!';
+                    header('Location: ' . HOME_URL . 'mon_compte');
+                    exit();
+                } else {
+                    throw new Exception('Une erreur s\'est produite lors de la mise à jour de votre adresse e-mail. Veuillez réessayer plus tard.');
+                }
+            } else {
+                $errors['code'] = 'Le code de confirmation est incorrect.';
+                $this->returnAllErrors($errors, 'mon_compte?action=confirm_new_email&error=true');
+            }
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            header('Location: ' . HOME_URL . 'mon_compte?action=confirm_new_email&error=true');
+            exit();
+        }
+    }
+
+    public function cancelEmailChange()
+    {
+        $idUser = $_SESSION['idUser'];
+        $this->repo->clearAuthCode($idUser);
+        if (isset($_SESSION['newEmail'])) {
+            unset($_SESSION['newEmail']);
+        }
+        $_SESSION['success'] = 'Le changement d\'adresse e-mail a été annulé avec succès.';
+        header('Location: ' . HOME_URL . 'mon_compte');
         exit();
     }
 

@@ -117,14 +117,17 @@
                     </div>
                 </form>
             </div>
-            <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'email') : ?>
+        <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'email') : ?>
             <div class="card">
                 <h3>Modifier mon adresse e-mail</h3>
                 <form action="<?= HOME_URL . 'mon_compte?action=edit_email' ?>" method="POST">
+                    <p>Votre adresse e-mail actuelle est : <span class="text-bold">
+                            <?= htmlspecialchars($_SESSION['email']) ?>
+                        </span></p>
                     <div>
                         <label for="email">Adresse e-mail :</label>
                         <input type="email" id="email" name="email" placeholder="Entrez votre e-mail"
-                            value="<?= htmlspecialchars($_SESSION['form_data']['email'] ?? $_SESSION['email'] ?? '') ?>" required />
+                            value="<?= htmlspecialchars($_SESSION['form_data']['email'] ?? '') ?>" required />
                     </div>
                     <div>
                         <button class="btn linkNotDecorated" type="submit">Modifier</button>
@@ -204,9 +207,37 @@
                         <?= $_SESSION['lastName'] ?>
                     </p>
                     <p>Email :
-                        <?= $_SESSION['email'] ?> --
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=email' ?>" class=" linkNotDecorated btn-add">Modifier</a>
+                        <?= $_SESSION['email'] ?> 
+                        <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=email' ?>" class=" linkNotDecorated btn">Modifier</a>
                     </p>
+                    <?php if (isset($_SESSION['newEmail'])): ?>
+                        <div class="card">
+
+                            <p>
+                                <strong>Nouvelle adresse e-mail :</strong> <?= $_SESSION['newEmail'] ?>
+                            </p>
+                            <div>
+                                <h6>Validation</h6>
+
+                                <form action="<?= HOME_URL . 'mon_compte?action=validate_new_email' ?>" method="POST">
+                                    <div>
+                                        <label for="authCode">Code de confirmation :</label>
+                                        <input type="text" id="authCode" name="authCode" placeholder="Entrez le code reçu par e-mail" value="<?= $_SESSION['form_data']['authCode'] ?? ''; ?>" required />
+                                    </div>
+                                    <div>
+                                        <button class="btn linkNotDecorated" type="submit">Valider</button>
+                                    </div>
+                                </form>
+                                <div class="d-flex flex-column pt gap-2">
+                                    <form action="<?= HOME_URL . 'mon_compte?action=cancel_email_change' ?>" method="POST">
+                                        <div>
+                                            <button class="btn linkNotDecorated bg-danger" type="submit">Annuler la modification d'e-mail</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                     <p>Téléphone :
                         <?= $_SESSION['phone'] ?? '' ?>
                         <?php if (empty($_SESSION['phone'])): ?>

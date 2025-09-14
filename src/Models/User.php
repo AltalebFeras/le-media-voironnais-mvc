@@ -22,6 +22,7 @@ class User
     private bool $isOnline;
     private DateTime|string|null $lastSeen;
     private DateTime|string $rgpdAcceptedDate;
+    private ?string $authCode;
     private ?string $token;
     private DateTime|string $createdAt;
     private DateTime|string|null $updatedAt;
@@ -571,6 +572,26 @@ class User
     public function setPhone($phone)
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of authCode
+     */ 
+    public function getAuthCode(): string|null
+    {
+        return $this->authCode;
+    }
+
+    /**
+     * Set the value of authCode
+     *
+     * @return  self
+     */ 
+    public function setAuthCode($authCode): static
+    {
+        $this->authCode = $authCode;
 
         return $this;
     }

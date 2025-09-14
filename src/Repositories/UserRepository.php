@@ -167,6 +167,29 @@ class UserRepository
             throw new Exception('An error occurred while updating user details.');
         }
     }
+    public function updateUserEmail($idUser, $newEmail): bool
+    {
+        try {
+            $query = 'UPDATE user SET email = :email WHERE idUser = :idUser';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['email' => $newEmail, 'idUser' => $idUser]);
+            return true;
+        } catch (PDOException $e) {
+            throw new Exception('An error occurred while updating user email.');
+        }
+    }
+
+    public function clearAuthCode($idUser): bool
+    {
+        try {
+            $query = 'UPDATE user SET authCode = NULL WHERE idUser = :idUser';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['idUser' => $idUser]);
+            return true;
+        } catch (PDOException $e) {
+            throw new Exception('An error occurred while clearing auth code.');
+        }
+    }
     public function updateUserPhone($user): bool
     {
         try {

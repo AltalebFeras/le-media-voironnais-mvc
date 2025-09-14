@@ -111,6 +111,15 @@ switch ($route) {
                 case 'add_date_of_birth':
                     $userController->addDateOfBirth();
                     break;
+                case 'edit_email':
+                    $userController->editEmail();
+                    break;
+                case 'validate_new_email':
+                    $userController->validateNewEmail();
+                    break;
+                case 'cancel_email_change':
+                    $userController->cancelEmailChange();
+                    break;
                 case 'edit_profile_picture':
                     $userController->editProfilePicture();
                     break;
