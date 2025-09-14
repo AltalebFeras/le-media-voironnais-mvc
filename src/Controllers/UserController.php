@@ -62,16 +62,15 @@ class UserController extends AbstractController
             $errors[] = 'Les mots de passe ne correspondent pas';
         }
 
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $activationToken = bin2hex(random_bytes(16));
         $isActivated = false;
         $roleId = 2;
         $createdAt = date('Y-m-d H:i:s');
-
+        
         if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($passwordConfirmation) || !$rgpd) {
             $errors['global'] = 'Veuillez remplir tous les champs';
         }
-
+        
         if (strlen($firstName) < 3 || strlen($lastName) < 3) {
             $errors['fullName'] = 'Le prénom et le nom doivent contenir au moins 3 caractères';
         }
@@ -97,15 +96,17 @@ class UserController extends AbstractController
                 $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
             }
         }
-
+        
         $emailExists = $this->repo->getUser($email);
-
+        
         if ($emailExists) {
             $errors['email'] = 'Cette adresse e-mail est déjà utilisée';
         }
         // If there are any validation errors, throw one Error with all errors
         $this->returnAllErrors($errors, 'inscription');
-
+        // Use SEL as a pepper: append the secret to the plaintext before hashing
+        $passwordHash = password_hash($password . SEL, PASSWORD_DEFAULT);
+        
         $user = new User();
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
@@ -186,7 +187,8 @@ class UserController extends AbstractController
         if (!$user) {
             $errors['email'] = 'L\'adresse e-mail est invalide ou le mot de passe est incorrect.';
         }
-        if ($user && !password_verify($password, $user->getPassword())) {
+        // verify using the same pepper (SEL) that was used when hashing
+        if ($user && !password_verify($password . SEL, $user->getPassword())) {
             $errors['password'] = 'L\'adresse e-mail est invalide ou le mot de passe est incorrect.';
         }
 
@@ -342,7 +344,8 @@ class UserController extends AbstractController
             header('Location: ' . HOME_URL . 'reinit_mon_mot_de_passe?token=' . $token . '&error=true');
             exit();
         }
-        $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+        // Hash new password with pepper
+        $passwordHash = password_hash($newPassword . SEL, PASSWORD_DEFAULT);
         $idUser = $user->getIdUser();
         $resetPassword = $this->repo->resetPassword($idUser, $passwordHash);
         if ($resetPassword) {
@@ -656,7 +659,8 @@ class UserController extends AbstractController
         $_SESSION['form_data'] = $_POST;
         // Vérifie le mot de passe actuel
         $user = $this->repo->getUserById($idUser);
-        if (!password_verify($currentPassword, $user->getPassword())) {
+        // verify current password using pepper
+        if (!password_verify($currentPassword . SEL, $user->getPassword())) {
             $errors['currentPassword'] = 'Le mot de passe actuel est incorrect.';
         }
 
@@ -671,7 +675,7 @@ class UserController extends AbstractController
         // If there are any validation errors, throw one Error with all errors
         $this->returnAllErrors($errors, 'mon_compte?action=change_password&error=true');
         // Hash du nouveau mot de passe
-        $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $newPasswordHash = password_hash($newPassword . SEL, PASSWORD_DEFAULT);
         $changePassword = $this->repo->updatePassword($idUser, $newPasswordHash);
         if ($changePassword) {
             $_SESSION['success'] = 'Votre mot de passe a été changé avec succès !';
