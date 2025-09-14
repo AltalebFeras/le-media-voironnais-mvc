@@ -43,8 +43,6 @@
     <a class="linkNotDecorated link" href="<?= HOME_URL  ?>">Retour à l'accueil</a>
   </div>
 </main>
-<script>
 
-</script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

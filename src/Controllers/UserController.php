@@ -45,27 +45,8 @@ class UserController extends AbstractController
      * @param mixed $activationToken
      * @return bool
      */
-    private function sendEmail($firstName, $lastName, $email, $activationToken): bool
-    {
-        $encrypting = new  Encrypt_decrypt();
-        $activationLink = DOMAIN . HOME_URL . 'activer_mon_compte?token=' . $activationToken . '&email=' . $encrypting->encryptId($email);
 
-        // activation email
-        $mail = new Mail();
-        $subject = 'Activation de votre compte';
-        $body = "Bonjour {$firstName} {$lastName},<br><br>";
-        $body .= "Veuillez cliquer sur le lien ci-dessous pour activer votre compte:<br>";
-        $body .= "<a href='$activationLink'>Click here</a><br><br>";
-        $body .= "<br><br>Merci,<br>L'équipe de support.";
-
-        $sendEmail = $mail->sendEmail('account-activation@feras.fr', 'feras', $email, $lastName, $subject, $body);
-        if ($sendEmail) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    public function treatmentInscription()
+    public function treatmentInscription(): void
     {
         $firstName = isset($_POST['firstName']) ? htmlentities(trim(ucfirst($_POST['firstName']))) : null;
         $lastName = isset($_POST['lastName']) ? htmlentities(trim(ucfirst($_POST['lastName']))) : null;
@@ -81,16 +62,15 @@ class UserController extends AbstractController
             $errors[] = 'Les mots de passe ne correspondent pas';
         }
 
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         $activationToken = bin2hex(random_bytes(16));
         $isActivated = false;
         $roleId = 2;
         $createdAt = date('Y-m-d H:i:s');
-
+        
         if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($passwordConfirmation) || !$rgpd) {
             $errors['global'] = 'Veuillez remplir tous les champs';
         }
-
+        
         if (strlen($firstName) < 3 || strlen($lastName) < 3) {
             $errors['fullName'] = 'Le prénom et le nom doivent contenir au moins 3 caractères';
         }
@@ -116,15 +96,17 @@ class UserController extends AbstractController
                 $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
             }
         }
-
+        
         $emailExists = $this->repo->getUser($email);
-
+        
         if ($emailExists) {
             $errors['email'] = 'Cette adresse e-mail est déjà utilisée';
         }
         // If there are any validation errors, throw one Error with all errors
         $this->returnAllErrors($errors, 'inscription');
-
+        // Use SEL as a pepper: append the secret to the plaintext before hashing
+        $passwordHash = password_hash($password . SEL, PASSWORD_DEFAULT);
+        
         $user = new User();
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
@@ -136,7 +118,14 @@ class UserController extends AbstractController
         $user->setIdRole($roleId);
         $user->setRgpdAcceptedDate($rgpdDate);
 
-        $sendEmail = $this->sendEmail($firstName, $lastName, $email, $activationToken);
+
+        $mail = new Mail();
+        $activationLink = DOMAIN . HOME_URL . 'activer_mon_compte?token=' . $activationToken;
+        $subject = 'Activation de votre compte';
+        $body = "Veuillez cliquer sur le lien ci-dessous pour activer votre compte:<br>";
+        $body .= "<a href='$activationLink'>Cliquez ici</a><br><br>";
+
+        $sendEmail = $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email, $firstName, $subject, $body);
         if ($sendEmail) {
             $signUp = $this->repo->signUp($user);
         } else {
@@ -198,7 +187,8 @@ class UserController extends AbstractController
         if (!$user) {
             $errors['email'] = 'L\'adresse e-mail est invalide ou le mot de passe est incorrect.';
         }
-        if ($user && !password_verify($password, $user->getPassword())) {
+        // verify using the same pepper (SEL) that was used when hashing
+        if ($user && !password_verify($password . SEL, $user->getPassword())) {
             $errors['password'] = 'L\'adresse e-mail est invalide ou le mot de passe est incorrect.';
         }
 
@@ -250,14 +240,18 @@ class UserController extends AbstractController
     }
     public function deconnexion(): void
     {
-        $offline = $this->repo->makeUserOffline($_SESSION['idUser']);
-        if ($offline) {
-            session_destroy();
-            session_start();
-
-            $_SESSION['success'] = 'vous êtes désconnecté avec succès!';
-            $this->redirect('connexion');
+        if (isset($_SESSION['newEmail'])) {
+            $idUser = $_SESSION['idUser'];
+            $this->repo->clearAuthCode($idUser);
         }
+        if (isset($_SESSION['isOnline'])) {
+            $this->repo->makeUserOffline($_SESSION['idUser']);
+        }
+        session_destroy();
+        session_start();
+
+        $_SESSION['success'] = 'vous êtes désconnecté avec succès!';
+        $this->redirect('connexion');
     }
     public function displayDashboard()
     {
@@ -300,13 +294,11 @@ class UserController extends AbstractController
             $resetLink = DOMAIN . HOME_URL . "reinit_mon_mot_de_passe?token=$token";
             $mail = new Mail();
             $subject = 'Réinitialisation de votre mot de passe';
-            $body = "Bonjour " . $user->getFirstName() . " " . $user->getLastName() . ",<br><br>";
-            $body .= "Veuillez cliquer sur le lien ci-dessous pour réinitialiser votre mot de passe:<br>";
+            $body = "Veuillez cliquer sur le lien ci-dessous pour réinitialiser votre mot de passe:<br>";
             $body .= "<br><br>";
             $body .= "<a href='$resetLink'>Réinitialiser le mot de passe</a><br><br>";
-            $body .= "<br><br>Merci,<br>L'équipe de support.";
 
-            $mail->sendEmail('do_not_reply@feras.fr', 'feras', $user->getEmail(), $user->getFirstName(), $subject, $body);
+            $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $user->getEmail(), $user->getFirstName(), $subject, $body);
 
             $_SESSION['success'] = 'Un e-mail de réinitialisation du mot de passe a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception et cliquer sur le lien pour réinitialiser votre mot de passe.';
             $this->redirect('connexion');
@@ -352,7 +344,8 @@ class UserController extends AbstractController
             header('Location: ' . HOME_URL . 'reinit_mon_mot_de_passe?token=' . $token . '&error=true');
             exit();
         }
-        $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+        // Hash new password with pepper
+        $passwordHash = password_hash($newPassword . SEL, PASSWORD_DEFAULT);
         $idUser = $user->getIdUser();
         $resetPassword = $this->repo->resetPassword($idUser, $passwordHash);
         if ($resetPassword) {
@@ -484,8 +477,7 @@ class UserController extends AbstractController
         $this->repo->saveAuthCode($idUser, $authCode);
         $mail = new Mail();
         $subject = 'Confirmation de votre nouvelle adresse e-mail';
-        $body = "Bonjour " . $user->getFirstName() . " " . $user->getLastName() . ",<br><br>";
-        $body .= "Veuillez utiliser le code ci-dessous pour confirmer votre nouvelle adresse e-mail:<br>";
+        $body = "Veuillez utiliser le code ci-dessous pour confirmer votre nouvelle adresse e-mail:<br>";
         $body .= "<h2>$authCode</h2><br><br>";
         $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email, $_SESSION['firstName'], $subject, $body);
         $_SESSION['newEmail'] = $email;
@@ -667,7 +659,8 @@ class UserController extends AbstractController
         $_SESSION['form_data'] = $_POST;
         // Vérifie le mot de passe actuel
         $user = $this->repo->getUserById($idUser);
-        if (!password_verify($currentPassword, $user->getPassword())) {
+        // verify current password using pepper
+        if (!password_verify($currentPassword . SEL, $user->getPassword())) {
             $errors['currentPassword'] = 'Le mot de passe actuel est incorrect.';
         }
 
@@ -682,7 +675,7 @@ class UserController extends AbstractController
         // If there are any validation errors, throw one Error with all errors
         $this->returnAllErrors($errors, 'mon_compte?action=change_password&error=true');
         // Hash du nouveau mot de passe
-        $newPasswordHash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $newPasswordHash = password_hash($newPassword . SEL, PASSWORD_DEFAULT);
         $changePassword = $this->repo->updatePassword($idUser, $newPasswordHash);
         if ($changePassword) {
             $_SESSION['success'] = 'Votre mot de passe a été changé avec succès !';
