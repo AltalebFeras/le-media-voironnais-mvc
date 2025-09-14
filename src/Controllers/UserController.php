@@ -649,11 +649,33 @@ class UserController extends AbstractController
 
         // check if a file was uploaded
         if (!empty($_FILES) && isset($_FILES['profilePicture']) && $_FILES['profilePicture']['error'] == UPLOAD_ERR_OK) {
-            $fileName = uniqid() . '_' . basename($_FILES['profilePicture']['name']);
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            $maxFileSize = 10 * 1024 * 1024; // 10MB (adjust as needed)
+
+            $fileTmpPath = $_FILES['profilePicture']['tmp_name'];
+            $fileNameOriginal = $_FILES['profilePicture']['name'];
+            $fileSize = $_FILES['profilePicture']['size'];
+            $fileType = mime_content_type($fileTmpPath);
+            $fileExtension = strtolower(pathinfo($fileNameOriginal, PATHINFO_EXTENSION));
+
+            // Validate file type and size
+            if (!in_array($fileType, $allowedMimeTypes) || !in_array($fileExtension, $allowedExtensions)) {
+                $_SESSION['error'] = 'Format de fichier non autorisé. Veuillez télécharger une image (jpg, jpeg, png, gif, webp).';
+                header('Location: ' . HOME_URL . 'mon_compte?error=true');
+                exit();
+            }
+            if ($fileSize > $maxFileSize) {
+                $_SESSION['error'] = 'La taille de l\'image ne doit pas dépasser ' . ($maxFileSize / (1024 * 1024)) . ' Mo.';
+                header('Location: ' . HOME_URL . 'mon_compte?error=true');
+                exit();
+            }
+
+            $fileName = uniqid() . '_' . basename($fileNameOriginal);
             $uploadFile = "{$uploadDir}{$fileName}";
 
             // move the uploaded file to the target directory
-            if (move_uploaded_file($_FILES['profilePicture']['tmp_name'], $uploadFile)) {
+            if (move_uploaded_file($fileTmpPath, $uploadFile)) {
                 // delete the old profile picture from the server if it's not the default picture
                 if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') === false) {
                     $oldFilePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/avatars/', __DIR__ . '/../../public/assets/images/uploads/avatars/', $currentPicturePath);
@@ -715,35 +737,123 @@ class UserController extends AbstractController
         $idUser = $_SESSION['idUser'];
         $currentBannerPath = $_SESSION['bannerPath'] ?? null;
 
-        if (!empty($_FILES) && isset($_FILES['banner']) && $_FILES['banner']['error'] == UPLOAD_ERR_OK) {
+        if (!empty($_FILES) && isset($_FILES['banner'])) {
+            // Handle upload errors
+            if ($_FILES['banner']['error'] !== UPLOAD_ERR_OK) {
+                $errorMsg = 'Erreur lors du téléchargement de la bannière.';
+                switch ($_FILES['banner']['error']) {
+                    case UPLOAD_ERR_INI_SIZE:
+                    case UPLOAD_ERR_FORM_SIZE:
+                        $errorMsg = "Le fichier est trop volumineux. Limite serveur : " . ini_get('upload_max_filesize') . ".";
+                        break;
+                    case UPLOAD_ERR_PARTIAL:
+                        $errorMsg = "Le fichier n'a été que partiellement téléchargé.";
+                        break;
+                    case UPLOAD_ERR_NO_FILE:
+                        $errorMsg = "Aucun fichier n'a été téléchargé.";
+                        break;
+                    case UPLOAD_ERR_NO_TMP_DIR:
+                        $errorMsg = "Dossier temporaire manquant.";
+                        break;
+                    case UPLOAD_ERR_CANT_WRITE:
+                        $errorMsg = "Échec de l'écriture du fichier sur le disque.";
+                        break;
+                    case UPLOAD_ERR_EXTENSION:
+                        $errorMsg = "Une extension PHP a arrêté le téléchargement du fichier.";
+                        break;
+                }
+                $_SESSION['error'] = $errorMsg;
+                header('Location: ' . HOME_URL . 'mon_compte?error=true');
+                exit();
+            }
+
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            $maxFileSize = 5 * 1024 * 1024; // 5MB
+
             $uploadDir = __DIR__ . '/../../public/assets/images/uploads/banners/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
-            $fileName = uniqid() . '_' . basename($_FILES['banner']['name']);
-            $uploadFile = "{$uploadDir}{$fileName}";
 
-            // Move uploaded file
-            if (move_uploaded_file($_FILES['banner']['tmp_name'], $uploadFile)) {
-                // Delete old banner if not empty
-                if ($currentBannerPath && strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') === false) {
-                    $oldFilePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/banners/', __DIR__ . '/../../public/assets/images/uploads/banners/', $currentBannerPath);
-                    if (file_exists($oldFilePath)) {
-                        unlink($oldFilePath);
-                    }
-                }
-                $newBannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/' . $fileName;
-                $this->repo->updateBanner($idUser, $newBannerPath);
+            $fileTmpPath = $_FILES['banner']['tmp_name'];
+            $fileNameOriginal = $_FILES['banner']['name'];
+            $fileSize = $_FILES['banner']['size'];
+            $fileType = mime_content_type($fileTmpPath);
+            $fileExtension = strtolower(pathinfo($fileNameOriginal, PATHINFO_EXTENSION));
 
-                $_SESSION['bannerPath'] = $newBannerPath;
-                $_SESSION['success'] = 'Votre bannière a été mise à jour avec succès!';
-                header('Location: ' . HOME_URL . 'mon_compte');
-                exit();
-            } else {
-                $_SESSION['error'] = 'Erreur lors du téléchargement de la bannière.';
+            // Check if file is actually uploaded
+            if (!is_uploaded_file($fileTmpPath)) {
+                $_SESSION['error'] = 'Le fichier n\'a pas été téléchargé correctement.';
                 header('Location: ' . HOME_URL . 'mon_compte?error=true');
                 exit();
             }
+
+            // Validate file type and size
+            if (!in_array($fileType, $allowedMimeTypes) || !in_array($fileExtension, $allowedExtensions)) {
+                $_SESSION['error'] = 'Format de fichier non autorisé. Veuillez télécharger une image (jpg, jpeg, png, gif, webp).';
+                header('Location: ' . HOME_URL . 'mon_compte?error=true');
+                exit();
+            }
+            if ($fileSize > $maxFileSize) {
+                $_SESSION['error'] = 'La taille de l\'image ne doit pas dépasser 2 Mo.';
+                header('Location: ' . HOME_URL . 'mon_compte?error=true');
+                exit();
+            }
+
+            $fileName = uniqid() . '_' . basename($fileNameOriginal);
+            $uploadFile = "{$uploadDir}{$fileName}";
+
+            // Handle EXIF orientation for JPEG images
+            if ($fileExtension === 'jpg' || $fileExtension === 'jpeg') {
+                $image = @imagecreatefromjpeg($fileTmpPath);
+                if ($image && function_exists('exif_read_data')) {
+                    $exif = @exif_read_data($fileTmpPath);
+                    if (!empty($exif['Orientation'])) {
+                        switch ($exif['Orientation']) {
+                            case 3:
+                                $image = imagerotate($image, 180, 0);
+                                break;
+                            case 6:
+                                $image = imagerotate($image, -90, 0);
+                                break;
+                            case 8:
+                                $image = imagerotate($image, 90, 0);
+                                break;
+                        }
+                    }
+                }
+                if ($image) {
+                    imagejpeg($image, $uploadFile, 90);
+                    imagedestroy($image);
+                } else {
+                    $_SESSION['error'] = 'Impossible de traiter l\'image JPEG.';
+                    header('Location: ' . HOME_URL . 'mon_compte?error=true');
+                    exit();
+                }
+            } else {
+                // Move uploaded file for non-JPEG images
+                if (!move_uploaded_file($fileTmpPath, $uploadFile)) {
+                    $_SESSION['error'] = 'Erreur lors du déplacement du fichier téléchargé.';
+                    header('Location: ' . HOME_URL . 'mon_compte?error=true');
+                    exit();
+                }
+            }
+
+            // Delete old banner if not empty
+            if ($currentBannerPath && strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') === false) {
+                $oldFilePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/banners/', __DIR__ . '/../../public/assets/images/uploads/banners/', $currentBannerPath);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+            $newBannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/' . $fileName;
+            $this->repo->updateBanner($idUser, $newBannerPath);
+
+            $_SESSION['bannerPath'] = $newBannerPath;
+            $_SESSION['success'] = 'Votre bannière a été mise à jour avec succès!';
+            header('Location: ' . HOME_URL . 'mon_compte');
+            exit();
         } else {
             $_SESSION['error'] = 'Veuillez sélectionner une image à télécharger.';
             header('Location: ' . HOME_URL . 'mon_compte?error=true');
