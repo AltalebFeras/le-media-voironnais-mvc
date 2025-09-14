@@ -15,8 +15,8 @@ $method = ConfigRouter::getMethod();
 
 // var_dump($_SERVER);
 $connectionSecured = isset($_SESSION['connected']) && $_SESSION['role'] === 'user' && ConfigRouter::checkConnection();
-$connectionSecuredAdmin = isset($_SESSION['connected']) && $_SESSION['role'] === 'admin' && ConfigRouter::checkConnection();
-$connectionSecuredSuperAdmin = isset($_SESSION['connected']) && $_SESSION['role'] === 'super_admin' && ConfigRouter::checkConnection();
+$connectionSecuredAdmin = isset($_SESSION['connectedAdmin']) && $_SESSION['role'] === 'admin' && ConfigRouter::checkConnection();
+$connectionSecuredSuperAdmin = isset($_SESSION['connectedSuperAdmin']) && $_SESSION['role'] === 'super_admin' && ConfigRouter::checkConnection();
 
 switch ($route) {
 

@@ -64,7 +64,7 @@ class UserController extends AbstractController
 
         $activationToken = bin2hex(random_bytes(16));
         $isActivated = false;
-        $roleId = 2;
+        $roleId = 3; // Default role FOR 'user'
         $createdAt = date('Y-m-d H:i:s');
         
         if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($passwordConfirmation) || !$rgpd) {
@@ -227,15 +227,25 @@ class UserController extends AbstractController
             $_SESSION['lastSeen'] = $lastSeen;
             $_SESSION['createdAt'] = $user->getCreatedAtFormatted();
             $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
-            $_SESSION['role'] = $user->getRoleName();
-
+            
             // Prevent session fixation  
             session_regenerate_id(true);
             $this->makeFingerprint();
-
+            
             $_SESSION['connected'] = true;
-            $_SESSION['success'] = 'Vous êtes connecté avec succès!';
-            $this->redirect('dashboard');
+            $_SESSION['role'] = $user->getRoleName();
+            if ($_SESSION['role'] === 'admin') {
+                $_SESSION['success'] = 'Vous êtes connecté en tant qu\'administrateur!';
+                $this->redirect('dashboard_admin');
+            }
+            if ($_SESSION['role'] === 'super_admin') {
+                $_SESSION['success'] = 'Vous êtes connecté en tant que super administrateur!';
+                $this->redirect('dashboard_super_admin');
+            }
+            else {
+                $_SESSION['success'] = 'Vous êtes connecté avec succès!';
+                $this->redirect('dashboard');
+            }
         }
     }
     public function deconnexion(): void
