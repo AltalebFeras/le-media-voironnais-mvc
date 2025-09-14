@@ -117,13 +117,13 @@ class UserController extends AbstractController
         $user->setIdRole($roleId);
         $user->setRgpdAcceptedDate($rgpdDate);
 
-        
+
+        $mail = new Mail();
         $activationLink = DOMAIN . HOME_URL . 'activer_mon_compte?token=' . $activationToken;
         $subject = 'Activation de votre compte';
         $body = "Veuillez cliquer sur le lien ci-dessous pour activer votre compte:<br>";
         $body .= "<a href='$activationLink'>Cliquez ici</a><br><br>";
-        
-        $mail = new Mail();
+
         $sendEmail = $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email, $firstName, $subject, $body);
         if ($sendEmail) {
             $signUp = $this->repo->signUp($user);
@@ -238,14 +238,18 @@ class UserController extends AbstractController
     }
     public function deconnexion(): void
     {
-        $offline = $this->repo->makeUserOffline($_SESSION['idUser']);
-        if ($offline) {
-            session_destroy();
-            session_start();
-
-            $_SESSION['success'] = 'vous êtes désconnecté avec succès!';
-            $this->redirect('connexion');
+        if (isset($_SESSION['newEmail'])) {
+            $idUser = $_SESSION['idUser'];
+            $this->repo->clearAuthCode($idUser);
         }
+        if (isset($_SESSION['isOnline'])) {
+            $this->repo->makeUserOffline($_SESSION['idUser']);
+        }
+        session_destroy();
+        session_start();
+
+        $_SESSION['success'] = 'vous êtes désconnecté avec succès!';
+        $this->redirect('connexion');
     }
     public function displayDashboard()
     {
@@ -288,13 +292,11 @@ class UserController extends AbstractController
             $resetLink = DOMAIN . HOME_URL . "reinit_mon_mot_de_passe?token=$token";
             $mail = new Mail();
             $subject = 'Réinitialisation de votre mot de passe';
-            $body = "Bonjour " . $user->getFirstName() . " " . $user->getLastName() . ",<br><br>";
-            $body .= "Veuillez cliquer sur le lien ci-dessous pour réinitialiser votre mot de passe:<br>";
+            $body = "Veuillez cliquer sur le lien ci-dessous pour réinitialiser votre mot de passe:<br>";
             $body .= "<br><br>";
             $body .= "<a href='$resetLink'>Réinitialiser le mot de passe</a><br><br>";
-            $body .= "<br><br>Merci,<br>L'équipe de support.";
 
-            $mail->sendEmail('do_not_reply@feras.fr', 'feras', $user->getEmail(), $user->getFirstName(), $subject, $body);
+            $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $user->getEmail(), $user->getFirstName(), $subject, $body);
 
             $_SESSION['success'] = 'Un e-mail de réinitialisation du mot de passe a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception et cliquer sur le lien pour réinitialiser votre mot de passe.';
             $this->redirect('connexion');
@@ -472,8 +474,7 @@ class UserController extends AbstractController
         $this->repo->saveAuthCode($idUser, $authCode);
         $mail = new Mail();
         $subject = 'Confirmation de votre nouvelle adresse e-mail';
-        $body = "Bonjour " . $user->getFirstName() . " " . $user->getLastName() . ",<br><br>";
-        $body .= "Veuillez utiliser le code ci-dessous pour confirmer votre nouvelle adresse e-mail:<br>";
+        $body = "Veuillez utiliser le code ci-dessous pour confirmer votre nouvelle adresse e-mail:<br>";
         $body .= "<h2>$authCode</h2><br><br>";
         $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email, $_SESSION['firstName'], $subject, $body);
         $_SESSION['newEmail'] = $email;
