@@ -21,5 +21,10 @@ class AdminController extends AbstractController
     {
         $this->render('admin/dashboard_admin');
     }
+    public function displayAllUsers()
+    {
+        $allUsers = $this->repo->findAllUsers();
+        $this->render('admin/all_users', ['allUsers' => $allUsers]);
+    }
 }
     

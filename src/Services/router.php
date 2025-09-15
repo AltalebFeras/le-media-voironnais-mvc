@@ -18,6 +18,7 @@ $connectionSecuredAdmin = isset($_SESSION['connectedAdmin']) && $_SESSION['role'
 $connectionSecuredSuperAdmin = isset($_SESSION['connectedSuperAdmin']) && $_SESSION['role'] === 'super_admin' && ConfigRouter::checkConnection();
 
 switch ($route) {
+    // Public routes
 
     case HOME_URL:
         $homeController->displayHomepage();
@@ -80,6 +81,7 @@ switch ($route) {
             }
         }
         break;
+    // User routes
 
     case HOME_URL . 'dashboard':
         if ($connectionSecured) {
@@ -141,10 +143,30 @@ switch ($route) {
             $homeController->page404();
         }
         break;
-    
+    // Admin routes
+
     case HOME_URL . 'dashboard_admin':
         if ($connectionSecuredAdmin) {
             $adminController->displayAdminDashboard();
+        } else {
+            $homeController->displayHomepage();
+        }
+        break;
+    case HOME_URL . 'tous_les_utilisateurs':
+        if ($connectionSecuredAdmin && $method === 'POST') {
+            switch ($_GET['action']) {
+                case 'delete_user':
+                    $adminController->deleteUser();
+                    break;
+                case 'change_user_role':
+                    $adminController->changeUserRole();
+                    break;
+                default:
+                    $homeController->page403();
+                    break;
+            }
+        } elseif ($connectionSecuredAdmin && $method === 'GET') {
+            $adminController->displayAllUsers();
         } else {
             $homeController->displayHomepage();
         }
