@@ -55,7 +55,7 @@ abstract class AbstractController
     {
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
-            $this->redirect($route, ['error' => 'true']);
+            $this->redirect($route);
         } else {
             unset($_SESSION['errors']);
         }

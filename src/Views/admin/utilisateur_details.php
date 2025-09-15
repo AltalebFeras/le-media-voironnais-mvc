@@ -6,31 +6,65 @@
     <div class="container py-4">
 
         <h1>Détails de l'utilisateur</h1>
-        <?php include_once __DIR__ . '/../includes/messages.php'; ?>
-
+        
         <?php if (isset($user) && is_array($user)): ?>
+            <?php include_once __DIR__ . '/../includes/messages.php'; ?>
             <?php
-            // Sanitize user data for display
-            $id = htmlspecialchars($user['id'] ?? '');
+            // Sanitize user data for display and create safe URL/id values
+            $rawId = $user['id'] ?? '';
+            $id = htmlspecialchars($rawId);
+            $idUrl = urlencode($rawId);
+
             $firstName = htmlspecialchars($user['firstName'] ?? '');
             $lastName = htmlspecialchars($user['lastName'] ?? '');
             $email = htmlspecialchars($user['email'] ?? '');
             $phone = htmlspecialchars($user['phone'] ?? '');
             $roleName = htmlspecialchars($user['roleName'] ?? '');
-            $avatarPath = !empty($user['avatarPath']) ? htmlspecialchars($user['avatarPath']) : (DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png');
-            $bannerPath = !empty($user['bannerPath']) ? htmlspecialchars($user['bannerPath']) : null;
-            $bio = htmlspecialchars($user['bio'] ?? '');
-            $dateOfBirth = !empty($user['dateOfBirth']) ? (new DateTime($user['dateOfBirth']))->format('d/m/Y') : 'Non renseignée';
+            $bioRaw = $user['bio'] ?? '';
+            $bio = htmlspecialchars($bioRaw);
+
+            // Helper to safely format dates (avoids warnings on invalid/empty values)
+            $formatDate = function($value, $format = 'd/m/Y à H:i', $default = 'Jamais') {
+                if (empty($value)) return $default;
+                try {
+                    $dt = new DateTime($value);
+                    return $dt->format($format);
+                } catch (Exception $e) {
+                    return $default;
+                }
+            };
+
+            // Avatar/banner: accept absolute URLs or root-relative paths; otherwise prepend HOME_URL
+            $avatarPathRaw = $user['avatarPath'] ?? '';
+            if (!empty($avatarPathRaw) && (strpos($avatarPathRaw, 'http') === 0 || strpos($avatarPathRaw, '/') === 0)) {
+                $avatarPath = htmlspecialchars($avatarPathRaw);
+            } elseif (!empty($avatarPathRaw)) {
+                $avatarPath = htmlspecialchars(HOME_URL . ltrim($avatarPathRaw, '/'));
+            } else {
+                $avatarPath = htmlspecialchars(HOME_URL . 'assets/images/uploads/avatars/default_avatar.png');
+            }
+
+            $bannerPathRaw = $user['bannerPath'] ?? '';
+            if (!empty($bannerPathRaw) && (strpos($bannerPathRaw, 'http') === 0 || strpos($bannerPathRaw, '/') === 0)) {
+                $bannerPath = htmlspecialchars($bannerPathRaw);
+            } elseif (!empty($bannerPathRaw)) {
+                $bannerPath = htmlspecialchars(HOME_URL . ltrim($bannerPathRaw, '/'));
+            } else {
+                $bannerPath = null;
+            }
+
+            $dateOfBirth = $formatDate($user['dateOfBirth'] ?? null, 'd/m/Y', 'Non renseignée');
             $isActivated = isset($user['isActivated']) ? ((int)$user['isActivated'] === 1 ? 'Oui' : 'Non') : 'Inconnu';
             $isBanned = isset($user['isBanned']) ? ((int)$user['isBanned'] === 1 ? 'Oui' : 'Non') : 'Inconnu';
             $isOnline = isset($user['isOnline']) ? ((int)$user['isOnline'] === 1 ? 'Oui' : 'Non') : 'Inconnu';
-            $lastSeen = !empty($user['lastSeen']) ? (new DateTime($user['lastSeen']))->format('d/m/Y à H:i') : 'Jamais';
-            $rgpdAcceptedDate = !empty($user['rgpdAcceptedDate']) ? (new DateTime($user['rgpdAcceptedDate']))->format('d/m/Y à H:i') : 'Jamais';
-            $createdAt = !empty($user['createdAt']) ? (new DateTime($user['createdAt']))->format('d/m/Y à H:i') : 'Inconnu';
-            $updatedAt = !empty($user['updatedAt']) ? (new DateTime($user['updatedAt']))->format('d/m/Y à H:i') : 'Jamais';
-            $emailChangedAt = !empty($user['emailChangedAt']) ? (new DateTime($user['emailChangedAt']))->format('d/m/Y à H:i') : 'Jamais';
-            $passwordResetAt = !empty($user['passwordResetAt']) ? (new DateTime($user['passwordResetAt']))->format('d/m/Y à H:i') : 'Jamais';
-            $deletedAt = !empty($user['deletedAt']) ? (new DateTime($user['deletedAt']))->format('d/m/Y à H:i') : 'N/A';
+
+            $lastSeen = $formatDate($user['lastSeen'] ?? null);
+            $rgpdAcceptedDate = $formatDate($user['rgpdAcceptedDate'] ?? null);
+            $createdAt = $formatDate($user['createdAt'] ?? null, 'd/m/Y à H:i', 'Inconnu');
+            $updatedAt = $formatDate($user['updatedAt'] ?? null);
+            $emailChangedAt = $formatDate($user['emailChangedAt'] ?? null);
+            $passwordResetAt = $formatDate($user['passwordResetAt'] ?? null);
+            $deletedAt = $formatDate($user['deletedAt'] ?? null, 'd/m/Y à H:i', 'N/A');
             ?>
 
             <div class="user-panel">
@@ -63,17 +97,17 @@
 
                     <!-- block/unblock form -->
                     <?php if ((int)($user['isBanned'] ?? 0) === 1): ?>
-                        <form method="POST" action="<?= HOME_URL . 'admin/utilisateur_details?id=' . $id . '&action=unblock'; ?>">
+                        <form method="POST" action="<?= HOME_URL . 'admin/utilisateur_details?id=' . $idUrl . '&action=unblock'; ?>">
                             <button type="submit" class="btn btn-success">Débannir l'utilisateur</button>
                         </form>
                     <?php else: ?>
-                        <form method="POST" action="<?= HOME_URL . 'admin/utilisateur_details?id=' . $id . '&action=block'; ?>" onsubmit="return confirm('Confirmer le bannissement de cet utilisateur ?');">
+                        <form method="POST" action="<?= HOME_URL . 'admin/utilisateur_details?id=' . $idUrl . '&action=block'; ?>" onsubmit="return confirm('Confirmer le bannissement de cet utilisateur ?');">
                             <button type="submit" class="btn btn-danger">Bannir l'utilisateur</button>
                         </form>
                     <?php endif; ?>
 
                     <!-- email form -->
-                    <form method="POST" action="<?= HOME_URL . 'admin/utilisateur_details?id=' . $id . '&action=send_email'; ?>">
+                    <form method="POST" action="<?= HOME_URL . 'admin/utilisateur_details?id=' . $idUrl . '&action=send_email'; ?>">
                         <h4>Envoyer un email</h4>
                         <label>Sujet</label>
                         <input type="text" name="subject" required placeholder="Sujet de l'email">
