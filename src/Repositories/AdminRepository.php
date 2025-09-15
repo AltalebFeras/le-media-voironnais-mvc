@@ -71,4 +71,12 @@ class AdminRepository
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         return $user ?: null;
     }
+    public function setBannedStatus(int $id, bool $banned): bool
+    {
+        $sql = "UPDATE `user` SET isBanned = :isBanned, updatedAt = NOW() WHERE idUser = :id";
+        $stmt = $this->DBuser->prepare($sql);
+        $stmt->bindValue(':isBanned', $banned ? 1 : 0, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }

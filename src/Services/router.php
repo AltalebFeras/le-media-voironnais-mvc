@@ -163,13 +163,29 @@ switch ($route) {
         }
         break;
 
-        case HOME_URL . 'admin/utilisateur_details':
-            if ($connectionSecuredAdmin && $method === 'GET' && isset($_GET['id']) && is_numeric($_GET['id'])) {
-                $adminController->displayUserById((int)$_GET['id']);
-            } else {
-                $homeController->page404();
+    case HOME_URL . 'admin/utilisateur_details':
+        if ($connectionSecuredAdmin && $method === 'POST' && isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['action'])) {
+            // POST action for block/unblock/send_email
+            switch ($_GET['action']) {
+                case 'block':
+                    $adminController->blockUser((int)$_GET['id']);
+                    break;
+                case 'unblock':
+                    $adminController->unblockUser((int)$_GET['id']);
+                    break;
+                case 'send_email':
+                    $adminController->sendEmailToUser((int)$_GET['id']);
+                    break;
+                default:
+                    $homeController->page404();
+                    exit;
             }
-            break;
+        } elseif ($connectionSecuredAdmin && $method === 'GET' && isset($_GET['id']) && is_numeric($_GET['id'])) {
+            $adminController->displayUserById((int)$_GET['id']);
+        } else {
+            $homeController->page404();
+        }
+        break;
 
     case HOME_URL . 'cgu':
         $homeController->terms_of_service();

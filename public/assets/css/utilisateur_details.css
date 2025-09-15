@@ -1,0 +1,164 @@
+.user-panel {
+	display: flex;
+	gap: 24px;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	/* allow wrapping on small screens */
+}
+
+.user-info {
+	flex: 1;
+	padding: 16px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	background: #fff;
+	min-width: 260px;
+	box-sizing: border-box;
+}
+
+.user-actions {
+	width: 320px;
+	max-width: 100%;
+	/* ensure it shrinks on small screens */
+	padding: 16px;
+	border: 1px solid #eee;
+	border-radius: 6px;
+	background: #fafafa;
+	box-sizing: border-box;
+}
+
+.user-actions form {
+	margin-bottom: 16px;
+}
+
+.btn {
+	display: inline-block;
+	padding: 8px 12px;
+	border-radius: 4px;
+	text-decoration: none;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.btn-danger {
+	background: #e74c3c;
+	color: #fff;
+	border: none;
+}
+
+.btn-success {
+	background: #2ecc71;
+	color: #fff;
+	border: none;
+}
+
+.btn-secondary {
+	background: #3498db;
+	color: #fff;
+	border: none;
+}
+
+.msg {
+	padding: 10px;
+	border-radius: 4px;
+	margin-bottom: 12px;
+}
+
+.msg-success {
+	background: #e6ffed;
+	border: 1px solid #b6f0c9;
+	color: #065f2d;
+}
+
+.msg-error {
+	background: #ffecec;
+	border: 1px solid #f5c2c2;
+	color: #7a1b1b;
+}
+
+textarea {
+	width: 100%;
+	min-height: 120px;
+	box-sizing: border-box;
+}
+
+input[type="text"],
+input[type="email"] {
+	width: 100%;
+	padding: 8px;
+	box-sizing: border-box;
+}
+
+/* Banner and avatar */
+.banner img {
+	width: 100%;
+	height: auto;
+	border-radius: 6px;
+	display: block;
+}
+
+.avatar img {
+	width: 96px;
+	height: 96px;
+	object-fit: cover;
+	border-radius: 50%;
+}
+
+/* Make forms / buttons full width on small screens */
+@media (max-width: 768px) {
+	.user-panel {
+		gap: 12px;
+	}
+
+	.user-info {
+		order: 1;
+	}
+
+	.user-actions {
+		order: 2;
+		width: 100%;
+	}
+
+	.avatar img {
+		width: 72px;
+		height: 72px;
+	}
+
+	.user-panel h2 {
+		font-size: 1.25rem;
+	}
+
+	.user-actions .btn {
+		width: 100%;
+		text-align: center;
+		padding: 10px;
+	}
+
+	.user-actions form label {
+		display: block;
+		margin-top: 8px;
+		font-weight: 600;
+	}
+
+	.user-info p,
+	.user-info h3 {
+		margin-top: 8px;
+	}
+}
+
+/* Fine tune for very small devices */
+@media (max-width: 420px) {
+	.container {
+		padding-left: 12px;
+		padding-right: 12px;
+	}
+
+	.avatar img {
+		width: 64px;
+		height: 64px;
+	}
+
+	textarea {
+		min-height: 100px;
+	}
+}
