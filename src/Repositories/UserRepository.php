@@ -14,10 +14,7 @@ class UserRepository
 
     public function __construct()
     {
-        $database = new Database();
-        $this->DBuser = $database->getDB();
-
-        require_once __DIR__ . '/../../config.php';
+        $this->DBuser = Database::getInstance()->getDB();
     }
     public function getUser($email): ?User
     {
