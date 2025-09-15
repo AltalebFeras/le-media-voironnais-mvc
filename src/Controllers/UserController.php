@@ -63,22 +63,21 @@ class UserController extends AbstractController
         }
 
         $activationToken = bin2hex(random_bytes(16));
-        $isActivated = false;
         $roleId = 3; // Default role FOR 'user'
         $createdAt = date('Y-m-d H:i:s');
-        
+
         if (empty($firstName) || empty($lastName) || empty($email) || empty($password) || empty($passwordConfirmation) || !$rgpd) {
             $errors['global'] = 'Veuillez remplir tous les champs';
         }
-        
+
         if (strlen($firstName) < 3 || strlen($lastName) < 3) {
             $errors['fullName'] = 'Le prénom et le nom doivent contenir au moins 3 caractères';
         }
         if (!preg_match('/^[A-Za-zÀ-ÿ\s\-]+$/', $firstName)) {
             $errors['firstName'] = 'Le prénom ne doit contenir que des lettres';
         }
-        if (strlen($password) < 4) {
-            $errors['password'] = 'Le mot de passe doit contenir au moins 4 caractères';
+        if (strlen($password) < 8) {
+            $errors['password'] = 'Le mot de passe doit contenir au moins 8 caractères';
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'L\'adresse e-mail est invalide';
@@ -96,9 +95,9 @@ class UserController extends AbstractController
                 $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
             }
         }
-        
+
         $emailExists = $this->repo->getUser($email);
-        
+
         if ($emailExists) {
             $errors['email'] = 'Cette adresse e-mail est déjà utilisée';
         }
@@ -106,13 +105,15 @@ class UserController extends AbstractController
         $this->returnAllErrors($errors, 'inscription');
         // Use SEL as a pepper: append the secret to the plaintext before hashing
         $passwordHash = password_hash($password . SEL, PASSWORD_DEFAULT);
-        
+
         $user = new User();
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
         $user->setEmail($email);
         $user->setPassword($passwordHash);
-        $user->setIsActivated($isActivated);
+        $user->setIsActivated(false);
+        $user->setIsBanned(false);
+        $user->setIsDeleted(false);
         $user->setToken($activationToken);
         $user->setCreatedAt($createdAt);
         $user->setIdRole($roleId);
@@ -195,7 +196,9 @@ class UserController extends AbstractController
         if ($user && $user->getIsActivated() === false) {
             $errors['isActivated'] = 'Votre compte n\'est pas encore activé. Veuillez vérifier votre boîte de réception pour l\'e-mail d\'activation.';
         }
-
+        if ($user && $user->getIsBanned() === true) {
+            $errors['isBanned'] = 'Votre compte a été banni. Veuillez contacter le support pour plus d\'informations.';
+        }
         if (IS_PROD === TRUE) {
             // Verify reCAPTCHA
             $recaptchaStatus = $this->checkReCaptcha();
@@ -203,7 +206,9 @@ class UserController extends AbstractController
                 $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
             }
         }
-
+        if ($user && $user->getIsDeleted() === true) {
+            $errors['isDeleted'] = 'Votre compte a été supprimé, Veuillez contacter le support.';
+        }
         $this->returnAllErrors($errors, 'connexion');
 
         $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
@@ -227,11 +232,11 @@ class UserController extends AbstractController
             $_SESSION['lastSeen'] = $lastSeen;
             $_SESSION['createdAt'] = $user->getCreatedAtFormatted();
             $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
-            
+
             // Prevent session fixation  
             session_regenerate_id(true);
             $this->makeFingerprint();
-            
+
             $_SESSION['connected'] = true;
             $_SESSION['role'] = $user->getRoleName();
             if ($_SESSION['role'] === 'admin') {
@@ -241,8 +246,7 @@ class UserController extends AbstractController
             if ($_SESSION['role'] === 'super_admin') {
                 $_SESSION['success'] = 'Vous êtes connecté en tant que super administrateur!';
                 $this->redirect('dashboard_super_admin');
-            }
-            else {
+            } else {
                 $_SESSION['success'] = 'Vous êtes connecté avec succès!';
                 $this->redirect('dashboard');
             }
@@ -292,13 +296,29 @@ class UserController extends AbstractController
             $errors['isActivated'] = 'Vous ne pouvez pas réinitialiser votre mot de passe avant d\'avoir activé votre compte.';
         }
 
+        if ($user && $user->getIsDeleted() === true) {
+            $errors['isDeleted'] = 'Votre compte a été supprimé, Veuillez contacter le support.';
+        }
+        // verify the last time of the reset password at least 15 minutes ago 
+        if ($user) {
+            $lastReset = $user->getPasswordResetAt();
+            if ($lastReset) {
+                $lastResetDateTime = new DateTime($lastReset);
+                $now = new DateTime();
+                $interval = $now->getTimestamp() - $lastResetDateTime->getTimestamp();
+                if ($interval < 3600) { // 3600 seconds = 1 hour
+                    $errors['tooManyRequests'] = 'Une demande de réinitialisation du mot de passe a déjà été effectuée récemment. Veuillez réessayer plus tard.';
+                }
+            }
+        }
+
         $this->returnAllErrors($errors, 'mdp_oublie');
 
         if ($user) {
             $idUser = $user->getIdUser();
 
             $token = bin2hex(random_bytes(16));
-            $this->repo->saveToken($idUser, $token);
+            $this->repo->saveTokenAndUpdatePasswordResetAt($idUser, $token, (new DateTime())->format('Y-m-d H:i:s'));
 
             // send password reset email (same as before)
             $resetLink = DOMAIN . HOME_URL . "reinit_mon_mot_de_passe?token=$token";
@@ -476,7 +496,25 @@ class UserController extends AbstractController
         if ($user && $user->getEmail() === $email) {
             $errors['sameEmail'] = 'Veuillez entrer une nouvelle adresse e-mail différente de l\'ancienne.';
         }
-
+        // verify reCAPTCHA
+        if (IS_PROD === TRUE) {
+            $recaptchaStatus = $this->checkReCaptcha();
+            if ($recaptchaStatus === false) {
+                $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+            }
+        } 
+        // verify the last time of the email change at least 30 days ago
+        if ($user) {
+            $lastEmailChange = $user->getEmailChangedAt();
+            if ($lastEmailChange) {
+                $lastEmailChangeDateTime = new DateTime($lastEmailChange);
+                $now = new DateTime();
+                $interval = $now->getTimestamp() - $lastEmailChangeDateTime->getTimestamp();
+                if ($interval < 2592000) { // 2592000 seconds = 30 days
+                    $errors['tooManyRequests'] = 'Une demande de changement d\'adresse e-mail a déjà été effectuée récemment. Veuillez réessayer plus tard.';
+                }
+            }
+        }
         $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&field=email&error=true');
 
         // send conformation email with code of six numbers to new email address
@@ -484,12 +522,12 @@ class UserController extends AbstractController
         while ($this->repo->getUserByAuthCode($authCode)) {
             $authCode = rand(100000, 999999);
         }
-        $this->repo->saveAuthCode($idUser, $authCode);
+        $this->repo->saveAuthCodeAndUpdateEmailChangeAt($idUser, $authCode, (new DateTime())->format('Y-m-d H:i:s'));
         $mail = new Mail();
         $subject = 'Confirmation de votre nouvelle adresse e-mail';
         $body = "Veuillez utiliser le code ci-dessous pour confirmer votre nouvelle adresse e-mail:<br>";
         $body .= "<h2>$authCode</h2><br><br>";
-        $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email, $_SESSION['firstName'], $subject, $body);
+        $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $_SESSION['email'], $_SESSION['firstName'], $subject, $body);
         $_SESSION['newEmail'] = $email;
         $_SESSION['success'] = 'Un code de confirmation a été envoyé à votre nouvelle adresse e-mail. Veuillez vérifier votre boîte de réception et entrer le code pour confirmer votre nouvelle adresse e-mail.';
         header('Location: ' . HOME_URL . 'mon_compte?action=confirm_new_email');

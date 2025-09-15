@@ -19,6 +19,8 @@ class User
     private ?string $bio;
     private DateTime|string|null $dateOfBirth;
     private bool $isActivated;
+    private bool $isBanned;
+    private bool $isDeleted;
     private bool $isOnline;
     private DateTime|string|null $lastSeen;
     private DateTime|string $rgpdAcceptedDate;
@@ -26,7 +28,8 @@ class User
     private ?string $token;
     private DateTime|string $createdAt;
     private DateTime|string|null $updatedAt;
-    private DateTime|string|null $resetPasswordRequestTime;
+    private DateTime|string|null $emailChangedAt;
+    private DateTime|string|null $passwordResetAt;
     private string $roleName;
 
     use Hydration;
@@ -175,7 +178,7 @@ class User
     /**
      * Get the value of avatarPath
      */
-    public function getAvatarPath(): string|null 
+    public function getAvatarPath(): string|null
     {
         return $this->avatarPath;
     }
@@ -341,19 +344,70 @@ class User
         }
         return $this;
     }
+
+
+    /**
+     * Get the value of emailChangedAt
+     */
+    public function getEmailChangedAt(): DateTime|string|null
+    {
+        if ($this->emailChangedAt === null) {
+            return null;
+        }
+        if (is_string($this->emailChangedAt)) {
+            return $this->emailChangedAt;
+        }
+        if (is_a($this->emailChangedAt, DateTime::class)) {
+            return $this->emailChangedAt->format('Y-m-d H:i:s');
+        }
+        return null;
+    }
+    /**
+     * Get the value of emailChangedAt formatted
+     */
+    public function getEmailChangedAtFormatted(): string|null
+    {
+        if ($this->emailChangedAt === null) {
+            return null;
+        }
+        if ($this->emailChangedAt instanceof DateTime) {
+            return $this->emailChangedAt->format('d/m/Y à H:i');
+        }
+        // If it's a string, try to parse it as a DateTime
+        try {
+            $dt = new DateTime($this->emailChangedAt);
+            return $dt->format('d/m/Y à H:i');
+        } catch (\Exception $e) {
+            return $this->emailChangedAt;
+        }
+    }
+    /**
+     * Set the value of emailChangedAt
+     */
+    public function setEmailChangedAt(mixed $emailChangedAt): void
+    {
+        if ($emailChangedAt === null) {
+            $this->emailChangedAt = null;
+        } elseif (is_string($emailChangedAt)) {
+            $this->emailChangedAt = new DateTime($emailChangedAt);
+        } elseif (is_a($emailChangedAt, DateTime::class)) {
+            $this->emailChangedAt = $emailChangedAt;
+        }
+    }
+
     /**
      * Get the value of lastResetPasswordTime
      */
-    public function getResetPasswordRequestTime(): DateTime|string|null
+    public function getPasswordResetAt(): DateTime|string|null
     {
-        if ($this->resetPasswordRequestTime === null) {
+        if ($this->passwordResetAt === null) {
             return null;
         }
-        if (is_string($this->resetPasswordRequestTime)) {
-            return $this->resetPasswordRequestTime;
+        if (is_string($this->passwordResetAt)) {
+            return $this->passwordResetAt;
         }
-        if (is_a($this->resetPasswordRequestTime, DateTime::class)) {
-            return $this->resetPasswordRequestTime->format('Y-m-d H:i:s');
+        if (is_a($this->passwordResetAt, DateTime::class)) {
+            return $this->passwordResetAt->format('Y-m-d H:i:s');
         }
         return null;
     }
@@ -361,16 +415,16 @@ class User
     /**
      * Get the value of lastResetPasswordTime formatted
      */
-    public function getResetPasswordRequestTimeFormatted(): string|null
+    public function getPasswordResetAtFormatted(): string|null
     {
-        if ($this->resetPasswordRequestTime === null) {
+        if ($this->passwordResetAt === null) {
             return null;
         }
-        if (is_string($this->resetPasswordRequestTime)) {
-            return $this->resetPasswordRequestTime;
+        if (is_string($this->passwordResetAt)) {
+            return $this->passwordResetAt;
         }
-        if (is_a($this->resetPasswordRequestTime, DateTime::class)) {
-            return $this->resetPasswordRequestTime->format('d/m/Y à H:i');
+        if (is_a($this->passwordResetAt, DateTime::class)) {
+            return $this->passwordResetAt->format('d/m/Y à H:i');
         }
         return null;
     }
@@ -378,14 +432,14 @@ class User
     /**
      * Set the value of lastResetPasswordTime
      */
-    public function setResetPasswordRequestTime(mixed $resetPasswordRequestTime): void
+    public function setPasswordResetAt(mixed $passwordResetAt): void
     {
-        if ($resetPasswordRequestTime === null) {
-            $this->resetPasswordRequestTime = null;
-        } elseif (is_string($resetPasswordRequestTime)) {
-            $this->resetPasswordRequestTime = new DateTime($resetPasswordRequestTime);
-        } elseif (is_a($resetPasswordRequestTime, DateTime::class)) {
-            $this->resetPasswordRequestTime = $resetPasswordRequestTime;
+        if ($passwordResetAt === null) {
+            $this->passwordResetAt = null;
+        } elseif (is_string($passwordResetAt)) {
+            $this->passwordResetAt = new DateTime($passwordResetAt);
+        } elseif (is_a($passwordResetAt, DateTime::class)) {
+            $this->passwordResetAt = $passwordResetAt;
         }
     }
 
@@ -558,7 +612,7 @@ class User
 
     /**
      * Get the value of phone
-     */ 
+     */
     public function getPhone()
     {
         return $this->phone;
@@ -568,7 +622,7 @@ class User
      * Set the value of phone
      *
      * @return  self
-     */ 
+     */
     public function setPhone($phone)
     {
         $this->phone = $phone;
@@ -578,7 +632,7 @@ class User
 
     /**
      * Get the value of authCode
-     */ 
+     */
     public function getAuthCode(): string|null
     {
         return $this->authCode;
@@ -588,10 +642,50 @@ class User
      * Set the value of authCode
      *
      * @return  self
-     */ 
+     */
     public function setAuthCode($authCode): static
     {
         $this->authCode = $authCode;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of isDeleted
+     */
+    public function getIsDeleted()
+    {
+        return $this->isDeleted;
+    }
+
+    /**
+     * Set the value of isDeleted
+     *
+     * @return  self
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of isBanned
+     */ 
+    public function getIsBanned()
+    {
+        return $this->isBanned;
+    }
+
+    /**
+     * Set the value of isBanned
+     *
+     * @return  self
+     */ 
+    public function setIsBanned($isBanned)
+    {
+        $this->isBanned = $isBanned;
 
         return $this;
     }

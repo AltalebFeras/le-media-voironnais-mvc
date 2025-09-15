@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 14, 2025 at 09:29 PM
+-- Generation Time: Sep 15, 2025 at 08:19 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -555,6 +555,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `bio` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `dateOfBirth` date DEFAULT NULL,
   `isActivated` tinyint(1) NOT NULL DEFAULT '0',
+  `isBanned` tinyint NOT NULL DEFAULT '0',
+  `isDeleted` tinyint NOT NULL DEFAULT '0',
   `isOnline` tinyint(1) NOT NULL DEFAULT '0',
   `lastSeen` datetime DEFAULT NULL,
   `rgpdAcceptedDate` datetime NOT NULL,
@@ -562,6 +564,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT NULL,
+  `emailChangedAt` datetime DEFAULT NULL,
+  `passwordResetAt` datetime DEFAULT NULL,
+  `deletedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`idUser`),
   UNIQUE KEY `UQ_idUser` (`idUser`),
   UNIQUE KEY `UQ_email` (`email`(191)),
@@ -571,34 +576,34 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_user_email` (`email`(250)),
   KEY `idx_user_online` (`isOnline`),
   KEY `idx_user_last_seen` (`lastSeen`)
-) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`) VALUES
-(1, 3, 'Alice', 'Durand', 'alice@example.com', '+33 6 12 34 56 78', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, 'Admin of the platform', '1988-05-12', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(2, 3, 'Bruno', 'Martin', 'bruno@example.com', '+33 6 98 76 54 32', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, 'Association manager', '1992-11-03', 1, 1, '2025-09-11 12:00:01', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(3, 3, 'Camille', 'Lefevre', 'camille@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1995-02-21', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(4, 3, 'David', 'Bernard', 'david.bernard@example.com', '+33 6 01 02 03 04', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1985-03-14', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(5, 3, 'Eva', 'Rossi', 'eva.rossi@example.com', '+33 6 05 06 07 08', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1990-07-09', 1, 1, '2025-09-11 12:00:01', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(6, 3, 'Farid', 'Lambert', 'farid.lambert@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1993-12-01', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(7, 3, 'Gilles', 'Moreau', 'gilles.moreau@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, 'Sport volunteer', '1982-09-30', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(8, 3, 'Hana', 'Petit', 'hana.petit@example.com', '+33 6 11 22 33 44', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1998-05-25', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(9, 3, 'Ibrahim', 'Garcia', 'ibrahim.garcia@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1987-01-20', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(10, 3, 'Jade', 'Fournier', 'jade.fournier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1999-04-04', 1, 1, '2025-09-11 12:00:01', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(11, 3, 'Karim', 'Lopez', 'karim.lopez@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1991-02-17', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(12, 3, 'Laura', 'Garnier', 'laura.garnier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1994-08-11', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(13, 3, 'Mika', 'Chevalier', 'mika.chevalier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1986-10-10', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(14, 3, 'Nora', 'Robert', 'nora.robert@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1997-06-06', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(15, 3, 'Olivier', 'Marchand', 'olivier.marchand@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1984-03-03', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(16, 3, 'Paula', 'Guyot', 'paula.guyot@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1996-01-29', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(17, 3, 'Quentin', 'Colin', 'quentin.colin@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1993-09-19', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(18, 3, 'Rania', 'Da Silva', 'rania.silva@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1990-12-24', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(19, 3, 'Sophie', 'Charpentier', 'sophie.charpentier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1989-07-07', 1, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(20, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL),
-(21, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', NULL, '$2y$10$31nh/DUwRghAHEiZk047JuZdaGV.eif81hgajG71TIbcxWV0ANY9K', NULL, NULL, 'ssssssssssssssssssssssssssssssssssssssssssss', NULL, 1, 1, '2025-09-14 21:48:20', '2025-09-14 20:55:01', NULL, NULL, '2025-09-14 20:55:01', NULL);
+INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
+(1, 3, 'Alice', 'Durand', 'alice@example.com', '+33 6 12 34 56 78', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, 'Admin of the platform', '1988-05-12', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(2, 3, 'Bruno', 'Martin', 'bruno@example.com', '+33 6 98 76 54 32', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, 'Association manager', '1992-11-03', 1, 0, 0, 1, '2025-09-11 12:00:01', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(3, 3, 'Camille', 'Lefevre', 'camille@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1995-02-21', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(4, 3, 'David', 'Bernard', 'david.bernard@example.com', '+33 6 01 02 03 04', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1985-03-14', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(5, 3, 'Eva', 'Rossi', 'eva.rossi@example.com', '+33 6 05 06 07 08', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1990-07-09', 1, 0, 0, 1, '2025-09-11 12:00:01', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(6, 3, 'Farid', 'Lambert', 'farid.lambert@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1993-12-01', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(7, 3, 'Gilles', 'Moreau', 'gilles.moreau@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, 'Sport volunteer', '1982-09-30', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(8, 3, 'Hana', 'Petit', 'hana.petit@example.com', '+33 6 11 22 33 44', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1998-05-25', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(9, 3, 'Ibrahim', 'Garcia', 'ibrahim.garcia@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1987-01-20', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(10, 3, 'Jade', 'Fournier', 'jade.fournier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1999-04-04', 1, 0, 0, 1, '2025-09-11 12:00:01', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(11, 3, 'Karim', 'Lopez', 'karim.lopez@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1991-02-17', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(12, 3, 'Laura', 'Garnier', 'laura.garnier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1994-08-11', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(13, 3, 'Mika', 'Chevalier', 'mika.chevalier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1986-10-10', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(14, 3, 'Nora', 'Robert', 'nora.robert@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1997-06-06', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(15, 3, 'Olivier', 'Marchand', 'olivier.marchand@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1984-03-03', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(16, 3, 'Paula', 'Guyot', 'paula.guyot@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1996-01-29', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(17, 3, 'Quentin', 'Colin', 'quentin.colin@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1993-09-19', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(18, 3, 'Rania', 'Da Silva', 'rania.silva@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1990-12-24', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(19, 3, 'Sophie', 'Charpentier', 'sophie.charpentier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1989-07-07', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(20, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
+(27, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', NULL, '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-15 10:07:00', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', NULL, '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL);
 
 -- --------------------------------------------------------
 

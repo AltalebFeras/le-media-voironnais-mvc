@@ -71,8 +71,8 @@ class UserRepository
     public function signUp(User $user): User
     {
         try {
-            $query = 'INSERT INTO user (firstName, lastName, email, password, isActivated, token, rgpdAcceptedDate, createdAt, idRole) 
-            VALUES (:firstName, :lastName, :email, :password, :isActivated, :token, :rgpdAcceptedDate, :createdAt, :idRole)';
+            $query = 'INSERT INTO user (firstName, lastName, email, password, isActivated, isBanned, isDeleted, token, rgpdAcceptedDate, createdAt, idRole) 
+            VALUES (:firstName, :lastName, :email, :password, :isActivated, :isBanned, :isDeleted, :token, :rgpdAcceptedDate, :createdAt, :idRole)';
 
             $req = $this->DBuser->prepare($query);
             $req->execute([
@@ -81,6 +81,8 @@ class UserRepository
                 'email' => $user->getEmail(),
                 'password' => $user->getPassword(),
                 'isActivated' => $user->getIsActivated(),
+                'isBanned' => $user->getIsBanned(),
+                'isDeleted' => $user->getIsDeleted(),
                 'token' => $user->getToken(),
                 'createdAt' => $user->getCreatedAt(),
                 'rgpdAcceptedDate' => $user->getRgpdAcceptedDate(),
@@ -103,23 +105,23 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
-    public function saveToken($idUser, $token): bool
+    public function saveTokenAndUpdatePasswordResetAt($idUser, $token, $passwordResetAt): bool
     {
         try {
-            $query = 'UPDATE user SET token = :token WHERE idUser = :idUser';
+            $query = 'UPDATE user SET token = :token, passwordResetAt = :passwordResetAt WHERE idUser = :idUser';
             $req = $this->DBuser->prepare($query);
-            $req->execute(['token' => $token, 'idUser' => $idUser]);
+            $req->execute(['token' => $token, 'passwordResetAt' => $passwordResetAt, 'idUser' => $idUser]);
             return true;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
-    public function saveAuthCode($idUser, $authCode): bool
+    public function saveAuthCodeAndUpdateEmailChangeAt($idUser, $authCode, $emailChangedAt): bool
     {
         try {
-            $query = 'UPDATE user SET authCode = :authCode WHERE idUser = :idUser';
+            $query = 'UPDATE user SET authCode = :authCode, emailChangedAt = :emailChangedAt WHERE idUser = :idUser';
             $req = $this->DBuser->prepare($query);
-            $req->execute(['authCode' => $authCode, 'idUser' => $idUser]);
+            $req->execute(['authCode' => $authCode, 'emailChangedAt' => $emailChangedAt, 'idUser' => $idUser]);
             return true;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
