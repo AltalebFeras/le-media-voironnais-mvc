@@ -11,7 +11,7 @@
             <h2>Accueil</h2>
             <p>Retour à la page d'accueil du Media Voironnais.</p>
         </a>
-        <a href="<?= HOME_URL . "tous_les_utilisateurs" ?>" class="cardDashboard">
+        <a href="<?= HOME_URL . "admin/tous_les_utilisateurs" ?>" class="cardDashboard">
             <h2>Tous les utilisateurs</h2>
             <p>Voir tous les utilisateurs.</p>
         </a>

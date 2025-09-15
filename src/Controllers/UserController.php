@@ -241,13 +241,13 @@ class UserController extends AbstractController
             if ($_SESSION['role'] === 'admin') {
                 $_SESSION['connectedAdmin'] = true;
                 $_SESSION['success'] = 'Vous êtes connecté en tant qu\'administrateur!';
-                $this->redirect('dashboard_admin');
+                $this->redirect('admin/dashboard_admin');
                 exit();
             }
             if ($_SESSION['role'] === 'super_admin') {
                 $_SESSION['connectedSuperAdmin'] = true;
                 $_SESSION['success'] = 'Vous êtes connecté en tant que super administrateur!';
-                $this->redirect('dashboard_super_admin');
+                $this->redirect('admin/dashboard_super_admin');
             } else {
                 $_SESSION['connected'] = true;
                 $_SESSION['success'] = 'Vous êtes connecté avec succès!';

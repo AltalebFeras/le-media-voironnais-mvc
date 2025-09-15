@@ -22,7 +22,7 @@
       <ul class="nav-links" id="nav-links">
         <li><a class="link" href="<?= HOME_URL  ?>">Accueil</a></li>
         <?php if (isset($_SESSION['connectedAdmin'])) : ?>
-          <li><a class="link" href="<?= HOME_URL . 'dashboard_admin' ?>">Dashboard</a></li>
+          <li><a class="link" href="<?= HOME_URL . 'admin/dashboard_admin' ?>">Dashboard</a></li>
           <li>
             <a class="btn linkNotDecorated deconnexion" href="<?= HOME_URL . 'deconnexion' ?>">Déconnexion</a>
           </li>

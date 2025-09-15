@@ -2,20 +2,15 @@
 
 namespace src\Controllers;
 
-use DateTime;
-use Exception;
 use src\Abstracts\AbstractController;
-use src\Models\User;
-use src\Repositories\UserRepository;
-use src\Services\Encrypt_decrypt;
-use src\Services\Mail;
+use src\Repositories\AdminRepository;
 
 class AdminController extends AbstractController
 {
     protected $repo;
     public function __construct()
     {
-        $this->repo = new UserRepository();
+        $this->repo = new AdminRepository();
     }
     public function displayAdminDashboard()
     {
@@ -23,8 +18,19 @@ class AdminController extends AbstractController
     }
     public function displayAllUsers()
     {
-        $allUsers = $this->repo->findAllUsers();
-        $this->render('admin/all_users', ['allUsers' => $allUsers]);
+        // Récupérer tous les utilisateurs avec des paginations
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $usersPerPage = 12;
+        $allUsers = $this->repo->findAllUsers($currentPage, $usersPerPage);
+        $totalUsers = $this->repo->countUsers();
+        $totalPages = (int)ceil($totalUsers / $usersPerPage);
+        
+        $this->render('admin/tous_les_utilisateurs', [
+            'allUsers' => $allUsers,
+            'currentPage' => $currentPage,
+            'usersPerPage' => $usersPerPage,
+            'totalUsers' => $totalUsers,
+            'totalPages' => $totalPages
+        ]);
     }
 }
-    

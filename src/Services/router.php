@@ -145,19 +145,23 @@ switch ($route) {
         break;
     // Admin routes
 
-    case HOME_URL . 'dashboard_admin':
+    case HOME_URL . 'admin/dashboard_admin':
         if ($connectionSecuredAdmin) {
             $adminController->displayAdminDashboard();
         } else {
             $homeController->displayHomepage();
         }
         break;
-    case HOME_URL . 'tous_les_utilisateurs':
+    case HOME_URL . 'admin/tous_les_utilisateurs':
         if ($connectionSecuredAdmin && $method === 'POST') {
             switch ($_GET['action']) {
-                case 'delete_user':
-                    $adminController->deleteUser();
+                case 'block_user':
+                    $adminController->blockUser();
                     break;
+                case 'unblock_user':
+                    $adminController->unblockUser();
+                    break;
+
                 case 'change_user_role':
                     $adminController->changeUserRole();
                     break;
