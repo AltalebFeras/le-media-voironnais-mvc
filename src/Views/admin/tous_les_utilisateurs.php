@@ -59,7 +59,7 @@
  						<div class="created">Inscrit le: <?= (new DateTime($created))->format('d/m/Y à H:i'); ?></div>
 
  						<div class="actions">
- 							<a href="/admin/user.php?id=<?= $id; ?>" class="btn btn-info linkNotDecorated" aria-label="Voir détails utilisateur <?= $id; ?>">Voir détails</a>
+ 							<a href="<?= HOME_URL . 'admin/utilisateur_details?id=' . $id; ?>" class="btn btn-info linkNotDecorated" aria-label="Voir détails utilisateur <?= $id; ?>">Voir détails</a>
  						</div>
  					</article>
  				<?php endforeach; ?>

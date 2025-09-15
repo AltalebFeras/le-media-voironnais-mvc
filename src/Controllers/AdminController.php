@@ -33,4 +33,22 @@ class AdminController extends AbstractController
             'totalPages' => $totalPages
         ]);
     }
+
+    public function displayUserById(int $id)
+    {   
+        $idUser = (int)$_GET['id'] ? htmlspecialchars($_GET['id']) : null;
+        $errors = [];
+        if (!$idUser) {
+            $errors[] = "ID utilisateur manquant ou invalide.";
+        }
+        $user = $this->repo->findById($idUser);
+        if (!$user) {
+            $errors[] = "Utilisateur non trouvé.";
+        }
+        $this->returnAllErrors($errors, 'admin/utilisateur_details?id=' . $idUser . '&error=true');
+
+        // var_dump($user);
+        // die;
+        $this->render('admin/utilisateur_details', ['user' => $user]);
+    }
 }

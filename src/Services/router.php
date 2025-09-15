@@ -152,29 +152,24 @@ switch ($route) {
             $homeController->displayHomepage();
         }
         break;
+
     case HOME_URL . 'admin/tous_les_utilisateurs':
         if ($connectionSecuredAdmin && $method === 'POST') {
-            switch ($_GET['action']) {
-                case 'block_user':
-                    $adminController->blockUser();
-                    break;
-                case 'unblock_user':
-                    $adminController->unblockUser();
-                    break;
-
-                case 'change_user_role':
-                    $adminController->changeUserRole();
-                    break;
-                default:
-                    $homeController->page403();
-                    break;
-            }
+            // Handle any POST actions for user management here if needed
         } elseif ($connectionSecuredAdmin && $method === 'GET') {
             $adminController->displayAllUsers();
         } else {
             $homeController->displayHomepage();
         }
         break;
+
+        case HOME_URL . 'admin/utilisateur_details':
+            if ($connectionSecuredAdmin && $method === 'GET' && isset($_GET['id']) && is_numeric($_GET['id'])) {
+                $adminController->displayUserById((int)$_GET['id']);
+            } else {
+                $homeController->page404();
+            }
+            break;
 
     case HOME_URL . 'cgu':
         $homeController->terms_of_service();
