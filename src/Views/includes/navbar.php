@@ -1,4 +1,5 @@
 </head>
+
 <body>
   <header>
     <nav class="navbar">
@@ -27,9 +28,13 @@
             <a class="btn linkNotDecorated deconnexion" href="<?= HOME_URL . 'deconnexion' ?>">Déconnexion</a>
           </li>
         <?php else : ?>
-          <li>
-            <a class="btn linkNotDecorated " href="<?= HOME_URL . 'connexion' ?>">Connexion</a>
-          </li>
+          <?php if (isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])) : ?>
+            <li><a class="link" href="<?= HOME_URL . 'admin/dashboard_admin' ?>">Retour au Dashboard</a></li>
+          <?php else: ?>
+            <li>
+              <a class="btn linkNotDecorated " href="<?= HOME_URL . 'connexion' ?>">Connexion</a>
+            </li>
+          <?php endif; ?>
         <?php endif; ?>
       </ul>
     </nav>

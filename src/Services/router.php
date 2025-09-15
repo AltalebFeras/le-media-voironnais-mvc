@@ -30,6 +30,10 @@ switch ($route) {
         } else {
             if ($connectionSecured) {
                 $userController->displayDashboard();
+            } elseif ($connectionSecuredAdmin) {
+                $adminController->displayAdminDashboard();
+            } elseif ($connectionSecuredSuperAdmin) {
+                $adminController->displayAdminDashboard();
             } else {
                 $homeController->displayFormConnexion();
             }
@@ -42,6 +46,10 @@ switch ($route) {
         } else {
             if ($connectionSecured) {
                 $userController->displayDashboard();
+            } elseif ($connectionSecuredAdmin) {
+                $adminController->displayAdminDashboard();
+            } elseif ($connectionSecuredSuperAdmin) {
+                $adminController->displayAdminDashboard();
             } else {
                 $homeController->displayFormInscription();
             }
