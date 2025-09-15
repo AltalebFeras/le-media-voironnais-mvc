@@ -1,14 +1,13 @@
 <?php
 
-use src\Controllers\ListController;
+use src\Controllers\AdminController;
 use src\Controllers\HomeController;
-use src\Controllers\PersonController;
-use src\Controllers\TirageController;
 use src\Controllers\UserController;
 use src\Services\ConfigRouter;
 
 $homeController = new HomeController();
 $userController = new UserController();
+$adminController = new AdminController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
 $method = ConfigRouter::getMethod();
@@ -91,7 +90,7 @@ switch ($route) {
         break;
 
     case HOME_URL . 'mon_compte':
-        if ($method === 'POST' && $connectionSecured && $_GET['action']) {
+        if ($method === 'POST' && $_GET['action'] && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
             switch ($_GET['action']) {
                 case 'delete_account':
                     $userController->deleteAccount();
@@ -136,10 +135,18 @@ switch ($route) {
                     $homeController->page403();
                     break;
             }
-        } elseif ($method === 'GET' && $connectionSecured) {
+        } elseif ($method === 'GET' && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
             $userController->displayMyAccount();
         } else {
             $homeController->page404();
+        }
+        break;
+    
+    case HOME_URL . 'dashboard_admin':
+        if ($connectionSecuredAdmin) {
+            $adminController->displayAdminDashboard();
+        } else {
+            $homeController->displayHomepage();
         }
         break;
 

@@ -237,16 +237,19 @@ class UserController extends AbstractController
             session_regenerate_id(true);
             $this->makeFingerprint();
 
-            $_SESSION['connected'] = true;
             $_SESSION['role'] = $user->getRoleName();
             if ($_SESSION['role'] === 'admin') {
+                $_SESSION['connectedAdmin'] = true;
                 $_SESSION['success'] = 'Vous êtes connecté en tant qu\'administrateur!';
                 $this->redirect('dashboard_admin');
+                exit();
             }
             if ($_SESSION['role'] === 'super_admin') {
+                $_SESSION['connectedSuperAdmin'] = true;
                 $_SESSION['success'] = 'Vous êtes connecté en tant que super administrateur!';
                 $this->redirect('dashboard_super_admin');
             } else {
+                $_SESSION['connected'] = true;
                 $_SESSION['success'] = 'Vous êtes connecté avec succès!';
                 $this->redirect('dashboard');
             }
@@ -747,9 +750,21 @@ class UserController extends AbstractController
             header('Location: ' . HOME_URL . 'mon_compte?action=delete_account&error=true');
             exit();
         }
-
-        $this->repo->deleteUser($idUser);
-
+        $deletedAt = (new DateTime())->format('Y-m-d H:i:s');
+        $deleteUser = $this->repo->deleteUser($idUser , $deletedAt);
+        if (!$deleteUser) {
+            $_SESSION['error'] = 'Une erreur s\'est produite lors de la suppression de votre compte. Veuillez réessayer plus tard.';
+            header('Location: ' . HOME_URL . 'mon_compte?action=delete_account&error=true');
+            exit();
+        }
+       
+        // Send confirmation email of account deletion
+        if($deleteUser) {
+            $mail = new Mail(); 
+            $subject = 'Confirmation de la suppression de votre compte';
+            $body = "Votre compte a été supprimé avec succès. Si vous souhaitez réactiver votre compte, veuillez contacter le support dans les 6 mois suivant la suppression.<br>";
+            $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $_SESSION['email'], $_SESSION['firstName'], $subject, $body);  
+        }
         // Log out the user and return success message
         session_destroy();
         session_start();

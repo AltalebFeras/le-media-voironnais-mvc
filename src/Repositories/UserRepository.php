@@ -258,11 +258,12 @@ class UserRepository
             throw new Exception('An error occurred while resetting password.');
         }
     }
-    public function deleteUser($idUser)
+    public function deleteUser($idUser, $deletedAt): bool
     {
         try {
-            $query = $this->DBuser->prepare('DELETE FROM user WHERE idUser = :idUser');
-            $query->execute(['idUser' => $idUser]);
+            $query = $this->DBuser->prepare('UPDATE user SET isDeleted = 1, isOnline = 0, authCode = NULL ,token = NULL, deletedAt = :deletedAt WHERE idUser = :idUser');
+            $query->execute(['idUser' => $idUser, 'deletedAt' => $deletedAt]);
+            return true;
         } catch (PDOException $e) {
             throw new Exception('Un erreur est survenu lors de la suppression du compte utilisateur.');
         }
