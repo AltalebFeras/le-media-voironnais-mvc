@@ -24,10 +24,10 @@ class EntrepriseController extends AbstractController
     {
         
         try {
-            $idUser = $_SESSION['user_id'];
+            $idUser = $_SESSION['idUser'];
             $entreprises = $this->repo->getUserEntreprises($idUser);
             
-            $this->render('entreprise/mes-entreprises', [
+            $this->render('entreprise/mes_entreprises', [
                 'entreprises' => $entreprises,
                 'title' => 'Mes entreprises'
             ]);
@@ -57,8 +57,8 @@ class EntrepriseController extends AbstractController
     {
         
         try {
-            $idUser = $_SESSION['user_id'];
-            
+            $idUser = $_SESSION['idUser'];
+
             // Validate form data
             $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS);
             $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -124,7 +124,7 @@ class EntrepriseController extends AbstractController
     {
         
         try {
-            $idUser = $_SESSION['user_id'];
+            $idUser = $_SESSION['idUser'];
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
             
             if (!$entreprise) {
@@ -153,7 +153,7 @@ class EntrepriseController extends AbstractController
     {
         
         try {
-            $idUser = $_SESSION['user_id'];
+            $idUser = $_SESSION['idUser'];
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
             
             if (!$entreprise) {
@@ -226,7 +226,7 @@ class EntrepriseController extends AbstractController
     {
         
         try {
-            $idUser = $_SESSION['user_id'];
+            $idUser = $_SESSION['idUser'];
             
             // Check if user is the owner of the company
             if (!$this->repo->isEntrepriseOwner($idEntreprise, $idUser)) {

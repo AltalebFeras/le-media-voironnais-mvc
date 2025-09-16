@@ -24,10 +24,10 @@ class AssociationController extends AbstractController
     {
         
         try {
-            $idUser = $_SESSION['user_id'];
+            $idUser = $_SESSION['idUser'];
             $associations = $this->repo->getUserAssociations($idUser);
             
-            $this->render('association/mes-associations', [
+            $this->render('association/mes_associations', [
                 'associations' => $associations,
                 'title' => 'Mes associations'
             ]);
@@ -57,8 +57,8 @@ class AssociationController extends AbstractController
     {
         
         try {
-            $idUser = $_SESSION['user_id'];
-            
+            $idUser = $_SESSION['idUser'];
+
             // Validate form data
             $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS);
             $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -114,7 +114,8 @@ class AssociationController extends AbstractController
     public function showEditForm()
     {
         try {
-            $idUser = $_SESSION['user_id'];
+            $idAssociation = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+            $idUser = $_SESSION['idUser'];
             $association = $this->repo->getAssociationById($idAssociation);
             
             if (!$association) {
@@ -143,7 +144,7 @@ class AssociationController extends AbstractController
     {
         
         try {
-            $idUser = $_SESSION['user_id'];
+            $idUser = $_SESSION['idUser'];
             $association = $this->repo->getAssociationById($idAssociation);
             
             if (!$association) {
@@ -212,7 +213,7 @@ class AssociationController extends AbstractController
     {
         
         try {
-            $idUser = $_SESSION['user_id'];
+            $idUser = $_SESSION['idUser'];
             
             // Check if user is the owner of the association
             if (!$this->repo->isAssociationOwner($idAssociation, $idUser)) {

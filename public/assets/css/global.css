@@ -207,13 +207,7 @@ label {
     color: #1a2636;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="datetime-local"],
-input[type="date"],
-input[type="number"],
-input[type="file"] {
+input {
     border: 1.5px solid #3a7ca5;
     border-radius: 10px;
     width: 100%;
@@ -223,11 +217,7 @@ input[type="file"] {
     transition: border 0.2s;
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="number"]:focus,
-input[type="file"]:focus {
+input:focus {
     border: 1.5px solid #f76e11;
     outline: none;
 }
