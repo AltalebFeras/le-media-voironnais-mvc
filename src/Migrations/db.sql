@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 16, 2025 at 08:40 AM
+-- Generation Time: Sep 16, 2025 at 09:06 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -39,25 +39,28 @@ CREATE TABLE IF NOT EXISTS `association` (
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `isActive` tinyint(1) NOT NULL DEFAULT '1',
+  `isPublic` tinyint NOT NULL DEFAULT '0',
   `idUser` int NOT NULL,
+  `idVille` int NOT NULL DEFAULT '14329',
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`idAssociation`),
   UNIQUE KEY `UQ_idAssociation` (`idAssociation`),
   KEY `idx_association_user` (`idUser`),
-  KEY `idx_association_active` (`isActive`)
+  KEY `idx_association_active` (`isActive`),
+  KEY `idx_association_ville` (`idVille`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `association`
 --
 
-INSERT INTO `association` (`idAssociation`, `name`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `isActive`, `idUser`, `createdAt`, `updatedAt`) VALUES
-(1, 'Culture Voiron', 'Association culturelle locale', '/images/logo/culture.png', '/images/banners/culture.jpg', '1 Rue de la Culture, Voiron', '+33 4 12 34 56 78', 'contact@culture-voiron.fr', 'https://culture-voiron.fr', 1, 2, '2025-09-11 12:00:01', NULL),
-(2, 'Sports Voironnais', 'Promotion des activités sportives', '/images/logo/sports.png', '/images/banners/sports.jpg', '10 Avenue du Sport, Voiron', '+33 4 87 65 43 21', 'contact@sports-voironnais.fr', 'https://sports-voironnais.fr', 1, 2, '2025-09-11 12:00:01', NULL),
-(3, 'Jeux & Esports Voiron', 'Gaming et esports locaux', '/images/logo/esports.png', '/images/banners/esports.jpg', '3 Rue des Jeux, Voiron', NULL, 'contact@jeux-voiron.fr', NULL, 1, 4, '2025-09-11 12:00:01', NULL),
-(4, 'Photographie Voiron', 'Club de photo', '/images/logo/photo.png', '/images/banners/photo.jpg', '8 Rue des Artistes, Voiron', NULL, 'hello@photo-voiron.fr', NULL, 1, 5, '2025-09-11 12:00:01', NULL),
-(5, 'Théâtre Amateur', 'Troupe de théâtre amateur', '/images/logo/theatre.png', '/images/banners/theatre.jpg', '12 Rue du Théâtre, Voiron', NULL, 'contact@theatre-amateur.fr', NULL, 1, 6, '2025-09-11 12:00:01', NULL);
+INSERT INTO `association` (`idAssociation`, `name`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `isActive`, `isPublic`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
+(1, 'Culture Voiron', 'Association culturelle locale', '/images/logo/culture.png', '/images/banners/culture.jpg', '1 Rue de la Culture, Voiron', '+33 4 12 34 56 78', 'contact@culture-voiron.fr', 'https://culture-voiron.fr', 1, 0, 2, 14329, '2025-09-11 12:00:01', NULL),
+(2, 'Sports Voironnais', 'Promotion des activités sportives', '/images/logo/sports.png', '/images/banners/sports.jpg', '10 Avenue du Sport, Voiron', '+33 4 87 65 43 21', 'contact@sports-voironnais.fr', 'https://sports-voironnais.fr', 1, 0, 2, 14329, '2025-09-11 12:00:01', NULL),
+(3, 'Jeux & Esports Voiron', 'Gaming et esports locaux', '/images/logo/esports.png', '/images/banners/esports.jpg', '3 Rue des Jeux, Voiron', NULL, 'contact@jeux-voiron.fr', NULL, 1, 0, 4, 14329, '2025-09-11 12:00:01', NULL),
+(4, 'Photographie Voiron', 'Club de photo', '/images/logo/photo.png', '/images/banners/photo.jpg', '8 Rue des Artistes, Voiron', NULL, 'hello@photo-voiron.fr', NULL, 1, 0, 5, 14329, '2025-09-11 12:00:01', NULL),
+(5, 'Théâtre Amateur', 'Troupe de théâtre amateur', '/images/logo/theatre.png', '/images/banners/theatre.jpg', '12 Rue du Théâtre, Voiron', NULL, 'contact@theatre-amateur.fr', NULL, 1, 0, 6, 14329, '2025-09-11 12:00:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -187,31 +190,34 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   `siret` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `status` enum('brouillon','actif','suspendu') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'actif',
   `isActive` tinyint(1) NOT NULL DEFAULT '0',
+  `isPublic` tinyint NOT NULL DEFAULT '0',
   `idUser` int NOT NULL,
+  `idVille` int NOT NULL DEFAULT '14329',
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`idEntreprise`),
   UNIQUE KEY `UQ_idEntreprise` (`idEntreprise`),
   KEY `idx_entreprise_user` (`idUser`),
   KEY `idx_entreprise_active` (`isActive`),
-  KEY `idx_entreprise_status` (`status`)
+  KEY `idx_entreprise_status` (`status`),
+  KEY `idx_entreprise_ville` (`idVille`)
 ) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `entreprise`
 --
 
-INSERT INTO `entreprise` (`idEntreprise`, `name`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `status`, `isActive`, `idUser`, `createdAt`, `updatedAt`) VALUES
-(1, 'Tech Voiron SARL', 'Solutions logicielles locales', '/images/logo/techvoiron.png', '/images/banners/techvoiron.jpg', '25 Rue des Alpes, Voiron', '+33 4 11 22 33 44', 'contact@techvoiron.fr', 'https://techvoiron.fr', '12345678901234', 'actif', 1, 1, '2025-09-11 12:00:01', NULL),
-(2, 'Boulangerie Dupont', 'Artisan boulanger-pâtissier', '/images/logo/dupont.png', '/images/banners/dupont.jpg', '7 Place du Marché, Voiron', '+33 4 55 66 77 88', 'bonjour@boulangerie-dupont.fr', NULL, '98765432109876', 'brouillon', 0, 2, '2025-09-11 12:00:01', NULL),
-(3, 'Menuiserie Martin', 'Menuiserie et agencement', '/images/logo/menuiserie.png', NULL, '15 Rue du Bois, Voiron', NULL, 'contact@menuiserie-martin.fr', NULL, '11223344556677', 'actif', 1, 7, '2025-09-11 12:00:01', NULL),
-(4, 'AutoVoiron', 'Garage automobile', '/images/logo/auto.png', '/images/banners/auto.jpg', '2 Avenue du Garage, Voiron', NULL, 'contact@autovoiron.fr', 'https://autovoiron.fr', '22334455667788', 'actif', 1, 8, '2025-09-11 12:00:01', NULL),
-(5, 'Librairie des Alpes', 'Librairie indépendante', '/images/logo/librairie.png', '/images/banners/librairie.jpg', '30 Rue des Livres, Voiron', NULL, 'bonjour@librairie-alpes.fr', NULL, '33445566778899', 'brouillon', 0, 9, '2025-09-11 12:00:01', NULL),
-(6, 'Fleuriste Rose', 'Fleuriste et déco', '/images/logo/fleuriste.png', NULL, '9 Rue des Fleurs, Voiron', NULL, 'contact@fleuristerose.fr', NULL, '44556677889900', 'actif', 1, 10, '2025-09-11 12:00:01', NULL),
-(7, 'Pizzeria Napoli', 'Restaurant italien', '/images/logo/pizzeria.png', '/images/banners/pizzeria.jpg', '21 Rue de Rome, Voiron', NULL, 'ciao@pizzeria-napoli.fr', 'https://pizzeria-napoli.fr', '55667788990011', 'suspendu', 0, 11, '2025-09-11 12:00:01', NULL),
-(8, 'Studio Yoga', 'Cours de yoga', '/images/logo/yoga.png', '/images/banners/yoga.jpg', '5 Rue Zen, Voiron', NULL, 'namaste@yogastudio.fr', NULL, '66778899001122', 'actif', 1, 12, '2025-09-11 12:00:01', NULL),
-(9, 'Coiffure Élégance', 'Salon de coiffure', '/images/logo/coiffure.png', NULL, '17 Rue de la Beauté, Voiron', NULL, 'rdv@coiffure-elegance.fr', NULL, '77889900112233', 'actif', 1, 13, '2025-09-11 12:00:01', NULL),
-(10, 'Tech Conseil', 'Conseil IT', '/images/logo/techconseil.png', '/images/banners/techconseil.jpg', '50 Rue du Numérique, Voiron', NULL, 'hello@techconseil.fr', 'https://techconseil.fr', '88990011223344', 'brouillon', 0, 14, '2025-09-11 12:00:01', NULL);
+INSERT INTO `entreprise` (`idEntreprise`, `name`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `status`, `isActive`, `isPublic`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
+(1, 'Tech Voiron SARL', 'Solutions logicielles locales', '/images/logo/techvoiron.png', '/images/banners/techvoiron.jpg', '25 Rue des Alpes, Voiron', '+33 4 11 22 33 44', 'contact@techvoiron.fr', 'https://techvoiron.fr', '12345678901234', 'actif', 1, 0, 1, 14329, '2025-09-11 12:00:01', NULL),
+(2, 'Boulangerie Dupont', 'Artisan boulanger-pâtissier', '/images/logo/dupont.png', '/images/banners/dupont.jpg', '7 Place du Marché, Voiron', '+33 4 55 66 77 88', 'bonjour@boulangerie-dupont.fr', NULL, '98765432109876', 'brouillon', 0, 0, 2, 14329, '2025-09-11 12:00:01', NULL),
+(3, 'Menuiserie Martin', 'Menuiserie et agencement', '/images/logo/menuiserie.png', NULL, '15 Rue du Bois, Voiron', NULL, 'contact@menuiserie-martin.fr', NULL, '11223344556677', 'actif', 1, 0, 7, 14329, '2025-09-11 12:00:01', NULL),
+(4, 'AutoVoiron', 'Garage automobile', '/images/logo/auto.png', '/images/banners/auto.jpg', '2 Avenue du Garage, Voiron', NULL, 'contact@autovoiron.fr', 'https://autovoiron.fr', '22334455667788', 'actif', 1, 0, 8, 14329, '2025-09-11 12:00:01', NULL),
+(5, 'Librairie des Alpes', 'Librairie indépendante', '/images/logo/librairie.png', '/images/banners/librairie.jpg', '30 Rue des Livres, Voiron', NULL, 'bonjour@librairie-alpes.fr', NULL, '33445566778899', 'brouillon', 0, 0, 9, 14329, '2025-09-11 12:00:01', NULL),
+(6, 'Fleuriste Rose', 'Fleuriste et déco', '/images/logo/fleuriste.png', NULL, '9 Rue des Fleurs, Voiron', NULL, 'contact@fleuristerose.fr', NULL, '44556677889900', 'actif', 1, 0, 10, 14329, '2025-09-11 12:00:01', NULL),
+(7, 'Pizzeria Napoli', 'Restaurant italien', '/images/logo/pizzeria.png', '/images/banners/pizzeria.jpg', '21 Rue de Rome, Voiron', NULL, 'ciao@pizzeria-napoli.fr', 'https://pizzeria-napoli.fr', '55667788990011', 'suspendu', 0, 0, 11, 14329, '2025-09-11 12:00:01', NULL),
+(8, 'Studio Yoga', 'Cours de yoga', '/images/logo/yoga.png', '/images/banners/yoga.jpg', '5 Rue Zen, Voiron', NULL, 'namaste@yogastudio.fr', NULL, '66778899001122', 'actif', 1, 0, 12, 14329, '2025-09-11 12:00:01', NULL),
+(9, 'Coiffure Élégance', 'Salon de coiffure', '/images/logo/coiffure.png', NULL, '17 Rue de la Beauté, Voiron', NULL, 'rdv@coiffure-elegance.fr', NULL, '77889900112233', 'actif', 1, 0, 13, 14329, '2025-09-11 12:00:01', NULL),
+(10, 'Tech Conseil', 'Conseil IT', '/images/logo/techconseil.png', '/images/banners/techconseil.jpg', '50 Rue du Numérique, Voiron', NULL, 'hello@techconseil.fr', 'https://techconseil.fr', '88990011223344', 'brouillon', 0, 0, 14, 14329, '2025-09-11 12:00:01', NULL);
 
 -- --------------------------------------------------------
 

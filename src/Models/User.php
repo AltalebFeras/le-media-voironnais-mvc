@@ -78,7 +78,7 @@ class User
     /**
      * Get the value of lastName
      */
-    public function getLastName()
+    public function getLastName(): string
     {
         return $this->lastName;
     }
@@ -88,7 +88,7 @@ class User
      *
      * @return  self
      */
-    public function setLastName($lastName)
+    public function setLastName($lastName): static
     {
         $this->lastName = $lastName;
 
@@ -98,7 +98,7 @@ class User
     /**
      * Get the value of email
      */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -108,7 +108,7 @@ class User
      *
      * @return  self
      */
-    public function setEmail($email)
+    public function setEmail($email): static
     {
         $this->email = $email;
 
@@ -118,7 +118,7 @@ class User
     /**
      * Get the value of password
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -128,7 +128,7 @@ class User
      *
      * @return  self
      */
-    public function setPassword($password)
+    public function setPassword($password): static
     {
         $this->password = $password;
 
@@ -138,7 +138,7 @@ class User
     /**
      * Get the value of isActivated
      */
-    public function getIsActivated()
+    public function getIsActivated(): bool
     {
         return $this->isActivated;
     }
@@ -148,7 +148,7 @@ class User
      *
      * @return  self
      */
-    public function setIsActivated($isActivated)
+    public function setIsActivated($isActivated): static
     {
         $this->isActivated = $isActivated;
 
@@ -158,7 +158,7 @@ class User
     /**
      * Get the value of token
      */
-    public function getToken()
+    public function getToken(): string|null
     {
         return $this->token;
     }
@@ -168,7 +168,7 @@ class User
      *
      * @return  self
      */
-    public function setToken($token)
+    public function setToken($token): static
     {
         $this->token = $token;
 
@@ -290,7 +290,6 @@ class User
             $createdAt = new DateTime($createdAt);
         }
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
@@ -333,7 +332,7 @@ class User
     /**
      * Set the value of updatedAt
      */
-    public function setUpdatedAt(mixed $updatedAt): self
+    public function setUpdatedAt(DateTime|string|null $updatedAt): self
     {
         if ($updatedAt === null) {
             $this->updatedAt = null;
@@ -384,7 +383,7 @@ class User
     /**
      * Set the value of emailChangedAt
      */
-    public function setEmailChangedAt(mixed $emailChangedAt): void
+    public function setEmailChangedAt(DateTime|string|null $emailChangedAt): self
     {
         if ($emailChangedAt === null) {
             $this->emailChangedAt = null;
@@ -393,6 +392,7 @@ class User
         } elseif (is_a($emailChangedAt, DateTime::class)) {
             $this->emailChangedAt = $emailChangedAt;
         }
+        return $this;
     }
 
     /**
@@ -432,7 +432,7 @@ class User
     /**
      * Set the value of lastResetPasswordTime
      */
-    public function setPasswordResetAt(mixed $passwordResetAt): void
+    public function setPasswordResetAt(DateTime|string|null $passwordResetAt): self
     {
         if ($passwordResetAt === null) {
             $this->passwordResetAt = null;
@@ -441,12 +441,13 @@ class User
         } elseif (is_a($passwordResetAt, DateTime::class)) {
             $this->passwordResetAt = $passwordResetAt;
         }
+        return $this;
     }
 
     /**
      * Get the value of bio
      */
-    public function getBio()
+    public function getBio(): string|null
     {
         return $this->bio;
     }
@@ -456,7 +457,7 @@ class User
      *
      * @return  self
      */
-    public function setBio($bio)
+    public function setBio($bio): static
     {
         $this->bio = $bio;
 
@@ -466,20 +467,49 @@ class User
     /**
      * Get the value of dateOfBirth
      */
-    public function getDateOfBirth()
+    public function getDateOfBirth(): DateTime|string|null
     {
-        return $this->dateOfBirth;
+        if ($this->dateOfBirth === null) {
+            return null;
+        }
+        if (is_string($this->dateOfBirth)) {
+            return $this->dateOfBirth;
+        }
+        // Format the DateTime object to a string
+        return $this->dateOfBirth->format('Y-m-d');
+    }
+    
+    /**
+     * Get the value of dateOfBirth formatted
+     */
+    public function getDateOfBirthFormatted(): string|null
+    {
+        if ($this->dateOfBirth === null) {
+            return null;
+        }
+        if ($this->dateOfBirth instanceof DateTime) {
+            return $this->dateOfBirth->format('d/m/Y');
+        }
+        try {
+            $dt = new DateTime($this->dateOfBirth);
+            return $dt->format('d/m/Y');
+        } catch (\Exception $e) {
+            return $this->dateOfBirth;
+        }
     }
 
     /**
      * Set the value of dateOfBirth
-     *
-     * @return  self
      */
-    public function setDateOfBirth($dateOfBirth)
+    public function setDateOfBirth(DateTime|string|null $dateOfBirth): self
     {
-        $this->dateOfBirth = $dateOfBirth;
-
+        if ($dateOfBirth === null) {
+            $this->dateOfBirth = null;
+        } elseif (is_string($dateOfBirth)) {
+            $this->dateOfBirth = new DateTime($dateOfBirth);
+        } elseif (is_a($dateOfBirth, DateTime::class)) {
+            $this->dateOfBirth = $dateOfBirth;
+        }
         return $this;
     }
 
@@ -516,25 +546,6 @@ class User
         }
         // Format the DateTime object to a string
         return $this->lastSeen->format('Y-m-d H:i:s');
-    }
-
-    /**
-     * Get the value of dateOfBirth formatted
-     */
-    public function getDateOfBirthFormatted(): string|null
-    {
-        if ($this->dateOfBirth === null) {
-            return null;
-        }
-        if ($this->dateOfBirth instanceof DateTime) {
-            return $this->dateOfBirth->format('d/m/Y');
-        }
-        try {
-            $dt = new DateTime($this->dateOfBirth);
-            return $dt->format('d/m/Y');
-        } catch (\Exception $e) {
-            return $this->dateOfBirth;
-        }
     }
 
     /**

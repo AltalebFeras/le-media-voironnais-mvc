@@ -10,11 +10,11 @@ use DateTime;
 
 class EntrepriseController extends AbstractController
 {
-    private $entrepriseRepository;
+    private $repo;
 
     public function __construct()
     {
-        $this->entrepriseRepository = new EntrepriseRepository();
+        $this->repo = new EntrepriseRepository();
     }
 
     /**
@@ -22,11 +22,10 @@ class EntrepriseController extends AbstractController
      */
     public function mesEntreprises()
     {
-        $this->requireAuthentication();
         
         try {
             $idUser = $_SESSION['user_id'];
-            $entreprises = $this->entrepriseRepository->getUserEntreprises($idUser);
+            $entreprises = $this->repo->getUserEntreprises($idUser);
             
             $this->render('entreprise/mes-entreprises', [
                 'entreprises' => $entreprises,
@@ -45,7 +44,6 @@ class EntrepriseController extends AbstractController
      */
     public function showAddForm()
     {
-        $this->requireAuthentication();
         
         $this->render('entreprise/ajouter', [
             'title' => 'Ajouter une entreprise'
@@ -57,7 +55,6 @@ class EntrepriseController extends AbstractController
      */
     public function addEntreprise()
     {
-        $this->requireAuthentication();
         
         try {
             $idUser = $_SESSION['user_id'];
@@ -107,7 +104,7 @@ class EntrepriseController extends AbstractController
                 $entreprise->setBannerPath($bannerPath);
             }
             
-            $this->entrepriseRepository->createEntreprise($entreprise);
+            $this->repo->createEntreprise($entreprise);
             
             $_SESSION['success'] = "L'entreprise a été créée avec succès";
             $this->redirect('/mes-entreprises');
@@ -125,11 +122,10 @@ class EntrepriseController extends AbstractController
      */
     public function showEditForm($idEntreprise)
     {
-        $this->requireAuthentication();
         
         try {
             $idUser = $_SESSION['user_id'];
-            $entreprise = $this->entrepriseRepository->getEntrepriseById($idEntreprise);
+            $entreprise = $this->repo->getEntrepriseById($idEntreprise);
             
             if (!$entreprise) {
                 throw new Exception("L'entreprise demandée n'existe pas");
@@ -155,11 +151,10 @@ class EntrepriseController extends AbstractController
      */
     public function updateEntreprise($idEntreprise)
     {
-        $this->requireAuthentication();
         
         try {
             $idUser = $_SESSION['user_id'];
-            $entreprise = $this->entrepriseRepository->getEntrepriseById($idEntreprise);
+            $entreprise = $this->repo->getEntrepriseById($idEntreprise);
             
             if (!$entreprise) {
                 throw new Exception("L'entreprise demandée n'existe pas");
@@ -201,17 +196,17 @@ class EntrepriseController extends AbstractController
             if (!empty($_FILES['logo']['name'])) {
                 $logoPath = $this->handleImageUpload('logo', 'entreprises/logos');
                 $entreprise->setLogoPath($logoPath);
-                $this->entrepriseRepository->updateLogo($idEntreprise, $logoPath);
+                $this->repo->updateLogo($idEntreprise, $logoPath);
             }
             
             // Handle banner upload if present
             if (!empty($_FILES['banner']['name'])) {
                 $bannerPath = $this->handleImageUpload('banner', 'entreprises/banners');
                 $entreprise->setBannerPath($bannerPath);
-                $this->entrepriseRepository->updateBanner($idEntreprise, $bannerPath);
+                $this->repo->updateBanner($idEntreprise, $bannerPath);
             }
             
-            $this->entrepriseRepository->updateEntreprise($entreprise);
+            $this->repo->updateEntreprise($entreprise);
             
             $_SESSION['success'] = "L'entreprise a été mise à jour avec succès";
             $this->redirect('/mes-entreprises');
@@ -229,17 +224,16 @@ class EntrepriseController extends AbstractController
      */
     public function deleteEntreprise($idEntreprise)
     {
-        $this->requireAuthentication();
         
         try {
             $idUser = $_SESSION['user_id'];
             
             // Check if user is the owner of the company
-            if (!$this->entrepriseRepository->isEntrepriseOwner($idEntreprise, $idUser)) {
+            if (!$this->repo->isEntrepriseOwner($idEntreprise, $idUser)) {
                 throw new Exception("Vous n'avez pas l'autorisation de supprimer cette entreprise");
             }
             
-            $this->entrepriseRepository->deleteEntreprise($idEntreprise);
+            $this->repo->deleteEntreprise($idEntreprise);
             
             $_SESSION['success'] = "L'entreprise a été supprimée avec succès";
         } catch (Exception $e) {

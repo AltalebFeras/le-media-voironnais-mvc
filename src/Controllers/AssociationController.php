@@ -10,11 +10,11 @@ use DateTime;
 
 class AssociationController extends AbstractController
 {
-    private $associationRepository;
+    private $repo;
 
     public function __construct()
     {
-        $this->associationRepository = new AssociationRepository();
+        $this->repo = new AssociationRepository();
     }
 
     /**
@@ -25,7 +25,7 @@ class AssociationController extends AbstractController
         
         try {
             $idUser = $_SESSION['user_id'];
-            $associations = $this->associationRepository->getUserAssociations($idUser);
+            $associations = $this->repo->getUserAssociations($idUser);
             
             $this->render('association/mes-associations', [
                 'associations' => $associations,
@@ -95,7 +95,7 @@ class AssociationController extends AbstractController
                 $association->setBannerPath($bannerPath);
             }
             
-            $this->associationRepository->createAssociation($association);
+            $this->repo->createAssociation($association);
             
             $_SESSION['success'] = "L'association a été créée avec succès";
             $this->redirect('/mes-associations');
@@ -115,7 +115,7 @@ class AssociationController extends AbstractController
     {
         try {
             $idUser = $_SESSION['user_id'];
-            $association = $this->associationRepository->getAssociationById($idAssociation);
+            $association = $this->repo->getAssociationById($idAssociation);
             
             if (!$association) {
                 throw new Exception("L'association demandée n'existe pas");
@@ -144,7 +144,7 @@ class AssociationController extends AbstractController
         
         try {
             $idUser = $_SESSION['user_id'];
-            $association = $this->associationRepository->getAssociationById($idAssociation);
+            $association = $this->repo->getAssociationById($idAssociation);
             
             if (!$association) {
                 throw new Exception("L'association demandée n'existe pas");
@@ -182,17 +182,17 @@ class AssociationController extends AbstractController
             if (!empty($_FILES['logo']['name'])) {
                 $logoPath = $this->handleImageUpload('logo', 'associations/logos');
                 $association->setLogoPath($logoPath);
-                $this->associationRepository->updateLogo($idAssociation, $logoPath);
+                $this->repo->updateLogo($idAssociation, $logoPath);
             }
             
             // Handle banner upload if present
             if (!empty($_FILES['banner']['name'])) {
                 $bannerPath = $this->handleImageUpload('banner', 'associations/banners');
                 $association->setBannerPath($bannerPath);
-                $this->associationRepository->updateBanner($idAssociation, $bannerPath);
+                $this->repo->updateBanner($idAssociation, $bannerPath);
             }
             
-            $this->associationRepository->updateAssociation($association);
+            $this->repo->updateAssociation($association);
             
             $_SESSION['success'] = "L'association a été mise à jour avec succès";
             $this->redirect('/mes-associations');
@@ -215,11 +215,11 @@ class AssociationController extends AbstractController
             $idUser = $_SESSION['user_id'];
             
             // Check if user is the owner of the association
-            if (!$this->associationRepository->isAssociationOwner($idAssociation, $idUser)) {
+            if (!$this->repo->isAssociationOwner($idAssociation, $idUser)) {
                 throw new Exception("Vous n'avez pas l'autorisation de supprimer cette association");
             }
             
-            $this->associationRepository->deleteAssociation($idAssociation);
+            $this->repo->deleteAssociation($idAssociation);
             
             $_SESSION['success'] = "L'association a été supprimée avec succès";
         } catch (Exception $e) {
