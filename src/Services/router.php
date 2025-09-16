@@ -3,11 +3,15 @@
 use src\Controllers\AdminController;
 use src\Controllers\HomeController;
 use src\Controllers\UserController;
+use src\Controllers\AssociationController;
+use src\Controllers\EntrepriseController;
 use src\Services\ConfigRouter;
 
 $homeController = new HomeController();
 $userController = new UserController();
 $adminController = new AdminController();
+$associationController = new AssociationController();
+$entrepriseController = new EntrepriseController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
 $method = ConfigRouter::getMethod();
@@ -96,6 +100,57 @@ switch ($route) {
             $userController->displayDashboard();
         } else {
             $homeController->displayHomepage();
+        }
+        break;
+    // Association routes
+    case HOME_URL . 'mes_associations':
+        $associationController->mesAssociations();
+        break;
+    case HOME_URL . 'association/ajouter':
+        if ($method === 'POST') {
+            $associationController->addAssociation();
+        } else {
+            $associationController->showAddForm();
+        }
+        break;
+    case HOME_URL . 'association/modifier':
+        if ($method === 'POST') {
+            $associationController->updateAssociation($id);
+        } else {
+            $associationController->showEditForm($id);
+        }
+        break;
+    case HOME_URL . 'association/supprimer':
+        if ($method === 'POST') {
+            $associationController->deleteAssociation($id);
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    // Entreprise routes
+    case HOME_URL . 'mes_entreprises':
+        $entrepriseController->mesEntreprises();
+        break;
+    case HOME_URL . 'entreprise/ajouter':
+        if ($method === 'POST') {
+            $entrepriseController->addEntreprise();
+        } else {
+            $entrepriseController->showAddForm();
+        }
+        break;
+    case HOME_URL . 'entreprise/modifier':
+        if ($method === 'POST') {
+            $entrepriseController->updateEntreprise($id);
+        } else {
+            $entrepriseController->showEditForm($id);
+        }
+        break;
+    case HOME_URL . 'entreprise/supprimer':
+        if ($method === 'POST') {
+            $entrepriseController->deleteEntreprise($id);
+        } else {
+            $homeController->page404();
         }
         break;
 

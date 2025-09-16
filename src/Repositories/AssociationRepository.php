@@ -1,0 +1,215 @@
+<?php
+
+namespace src\Repositories;
+
+use Exception;
+use PDO;
+use PDOException;
+use src\Models\Association;
+use src\Services\Database;
+
+class AssociationRepository
+{
+    private $DB;
+
+    public function __construct()
+    {
+        $this->DB = Database::getInstance()->getDB();
+    }
+
+    /**
+     * Get associations for a specific user
+     */
+    public function getUserAssociations($idUser): array
+    {
+        try {
+            // Get associations where user is owner or member
+            $query = "SELECT a.* FROM association a 
+                      LEFT JOIN user_association ua ON a.idAssociation = ua.idAssociation 
+                      WHERE a.idUser = :idUser OR (ua.idUser = :idUser AND ua.isActive = 1)
+                      GROUP BY a.idAssociation";
+            
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idUser' => $idUser]);
+            
+            $associations = [];
+            while ($row = $stmt->fetchObject(Association::class)) {
+                $associations[] = $row;
+            }
+            
+            return $associations;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching user associations: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get a specific association by ID
+     */
+    public function getAssociationById($idAssociation): ?Association
+    {
+        try {
+            $query = "SELECT * FROM association WHERE idAssociation = :idAssociation";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idAssociation' => $idAssociation]);
+            
+            $association = $stmt->fetchObject(Association::class);
+            return $association !== false ? $association : null;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching association: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Create a new association
+     */
+    public function createAssociation(Association $association): Association
+    {
+        try {
+            $query = "INSERT INTO association 
+                     (name, description, logoPath, bannerPath, address, phone, email, website, isActive, idUser, createdAt) 
+                     VALUES 
+                     (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :isActive, :idUser, :createdAt)";
+            
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute([
+                'name' => $association->getName(),
+                'description' => $association->getDescription(),
+                'logoPath' => $association->getLogoPath(),
+                'bannerPath' => $association->getBannerPath(),
+                'address' => $association->getAddress(),
+                'phone' => $association->getPhone(),
+                'email' => $association->getEmail(),
+                'website' => $association->getWebsite(),
+                'isActive' => $association->getIsActive(),
+                'idUser' => $association->getIdUser(),
+                'createdAt' => $association->getCreatedAt()
+            ]);
+            
+            $association->setIdAssociation($this->DB->lastInsertId());
+            return $association;
+        } catch (Exception $e) {
+            throw new Exception("Error creating association: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update an existing association
+     */
+    public function updateAssociation(Association $association): bool
+    {
+        try {
+            $query = "UPDATE association SET 
+                     name = :name, 
+                     description = :description,
+                     address = :address, 
+                     phone = :phone, 
+                     email = :email, 
+                     website = :website, 
+                     isActive = :isActive,
+                     updatedAt = :updatedAt
+                     WHERE idAssociation = :idAssociation";
+            
+            $stmt = $this->DB->prepare($query);
+            $result = $stmt->execute([
+                'name' => $association->getName(),
+                'description' => $association->getDescription(),
+                'address' => $association->getAddress(),
+                'phone' => $association->getPhone(),
+                'email' => $association->getEmail(),
+                'website' => $association->getWebsite(),
+                'isActive' => $association->getIsActive(),
+                'updatedAt' => $association->getUpdatedAt(),
+                'idAssociation' => $association->getIdAssociation()
+            ]);
+            
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception("Error updating association: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Delete an association
+     */
+    public function deleteAssociation($idAssociation): bool
+    {
+        try {
+            // First delete related records in user_association
+            $query = "DELETE FROM user_association WHERE idAssociation = :idAssociation";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idAssociation' => $idAssociation]);
+            
+            // Then delete related records in association_invitation
+            $query = "DELETE FROM association_invitation WHERE idAssociation = :idAssociation";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idAssociation' => $idAssociation]);
+            
+            // Finally delete the association
+            $query = "DELETE FROM association WHERE idAssociation = :idAssociation";
+            $stmt = $this->DB->prepare($query);
+            $result = $stmt->execute(['idAssociation' => $idAssociation]);
+            
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception("Error deleting association: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update association logo
+     */
+    public function updateLogo($idAssociation, $logoPath): bool
+    {
+        try {
+            $query = "UPDATE association SET logoPath = :logoPath WHERE idAssociation = :idAssociation";
+            $stmt = $this->DB->prepare($query);
+            $result = $stmt->execute([
+                'logoPath' => $logoPath,
+                'idAssociation' => $idAssociation
+            ]);
+            
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception("Error updating association logo: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update association banner
+     */
+    public function updateBanner($idAssociation, $bannerPath): bool
+    {
+        try {
+            $query = "UPDATE association SET bannerPath = :bannerPath WHERE idAssociation = :idAssociation";
+            $stmt = $this->DB->prepare($query);
+            $result = $stmt->execute([
+                'bannerPath' => $bannerPath,
+                'idAssociation' => $idAssociation
+            ]);
+            
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception("Error updating association banner: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Check if user is the owner of an association
+     */
+    public function isAssociationOwner($idAssociation, $idUser): bool
+    {
+        try {
+            $query = "SELECT COUNT(*) FROM association WHERE idAssociation = :idAssociation AND idUser = :idUser";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute([
+                'idAssociation' => $idAssociation,
+                'idUser' => $idUser
+            ]);
+            
+            return (int)$stmt->fetchColumn() > 0;
+        } catch (Exception $e) {
+            throw new Exception("Error checking association ownership: " . $e->getMessage());
+        }
+    }
+}
