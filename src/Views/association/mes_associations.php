@@ -37,23 +37,32 @@
                                 <?php endif; ?>
                                 <h5><?= htmlspecialchars($association->getName()) ?></h5>
                             </div>
-
-                            <p>
-                                <?= htmlspecialchars($association->getDescription() ?? 'Aucune description') ?>
-                            </p>
-
+                            
                             <div>
-                                <?php if ($association->getIsActive()): ?>
-                                    <span class="text-success">Active</span>
-                                <?php else: ?>
-                                    <span class="text-muted">Inactive</span>
-                                <?php endif; ?>
+                                <p>
+                                    <strong>Statut:</strong>
+                                    <?php if ($association->getIsActive()): ?>
+                                        <span class="text-success">Active</span>
+                                    <?php else: ?>
+                                        <span class="text-muted">Inactive</span>
+                                    <?php endif; ?>
+                                    |
+                                    <strong>Visibilité:</strong>
+                                    <?php if ($association->getIsPublic()): ?>
+                                        <span class="text-success">Publique</span>
+                                    <?php else: ?>
+                                        <span class="text-muted">Privée</span>
+                                    <?php endif; ?>
+                                </p>
                             </div>
                         </div>
 
                         <div>
                             <?php if ($association->getIdUser() == $_SESSION['user_id']): ?>
                                 <div class="flex-row justify-content-between mt">
+                                    <a href="/association/voir/<?= $association->getIdAssociation() ?>" class="btn">
+                                        Voir détails
+                                    </a>
                                     <a href="/association/modifier/<?= $association->getIdAssociation() ?>" class="btn">
                                         Modifier
                                     </a>
@@ -63,7 +72,12 @@
                                     </button>
                                 </div>
                             <?php else: ?>
-                                <p class="text-muted">Vous êtes membre de cette association</p>
+                                <div class="flex-row justify-content-between mt">
+                                    <a href="<?= HOME_URL . 'mes_associations?action=voir&id=' . $association->getIdAssociation() ?>" class="btn">
+                                        Voir détails
+                                    </a>
+                                    <p class="text-muted">Vous êtes membre de cette association</p>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </div>

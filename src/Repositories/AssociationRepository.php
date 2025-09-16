@@ -60,6 +60,19 @@ class AssociationRepository
         }
     }
 
+    public function getVillesByCp($cp)
+    {
+        try {
+            $query = "SELECT idVille, ville_nom_reel, ville_code_postal FROM ville WHERE ville_code_postal = :cp";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['cp' => $cp]);
+            
+            $villes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $villes;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching villes by CP: " . $e->getMessage());
+        }
+    }
     /**
      * Create a new association
      */

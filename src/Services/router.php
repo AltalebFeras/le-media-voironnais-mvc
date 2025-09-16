@@ -104,8 +104,10 @@ switch ($route) {
         break;
     // Association routes
     case HOME_URL . 'mes_associations':
-        if ($method === 'GET' && $connectionSecured) {
+        if ($method === 'GET' && $connectionSecured && !isset($_GET['action'])) {
             $associationController->mesAssociations();
+        } else if ($method === 'GET' && $connectionSecured && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['id'])) {
+            $associationController->displayAssociationDetails();
         } else {
             $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
