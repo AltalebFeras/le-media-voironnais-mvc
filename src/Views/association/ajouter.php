@@ -170,6 +170,7 @@
                         villeSelect.appendChild(option);
                     });
                     villeSelect.disabled = false;
+                    villeSelect.style.backgroundColor = '#6ed3cf'; // Green background
                     
                     // If there's only one city, select it by default
                     if (response.data.length === 1) {
@@ -179,6 +180,7 @@
                 } else {
                     villeSelect.innerHTML = '<option value="">Aucune ville trouvée</option>';
                     villeSelect.disabled = true;
+                    villeSelect.style.backgroundColor = '#f5c2c7'; // Red background
                 }
             }
 
@@ -186,6 +188,7 @@
                 villeSelect.innerHTML = '<option value="">Sélectionnez une ville</option>';
                 villeSelect.disabled = true;
                 idVilleInput.value = '';
+                villeSelect.style.backgroundColor = ''; // Reset background
             }
         });
     </script>
