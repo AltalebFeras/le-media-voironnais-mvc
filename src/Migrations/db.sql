@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 15, 2025 at 08:19 AM
+-- Generation Time: Sep 16, 2025 at 08:40 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -576,7 +576,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_user_email` (`email`(250)),
   KEY `idx_user_online` (`isOnline`),
   KEY `idx_user_last_seen` (`lastSeen`)
-) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
@@ -602,8 +602,9 @@ INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone
 (17, 3, 'Quentin', 'Colin', 'quentin.colin@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1993-09-19', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
 (18, 3, 'Rania', 'Da Silva', 'rania.silva@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1990-12-24', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
 (19, 3, 'Sophie', 'Charpentier', 'sophie.charpentier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1989-07-07', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(20, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(27, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', NULL, '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-15 10:07:00', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', NULL, '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL);
+(20, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
+(27, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 1, 0, 0, '2025-09-15 15:48:21', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', '2025-09-15 17:21:00', '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL),
+(28, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-15 17:10:21', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL);
 
 -- --------------------------------------------------------
 
