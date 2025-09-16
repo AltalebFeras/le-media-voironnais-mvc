@@ -30,6 +30,29 @@
                                 value="<?= isset($formData['address']) ? htmlspecialchars($formData['address']) : '' ?>">
                         </div>
 
+                        <!-- New postal code and city fields -->
+                        <div class="flex-row">
+                            <div class="max-width-50">
+                                <div>
+                                    <label for="codePostal">Code postal</label>
+                                    <input type="text" id="codePostal" name="codePostal" maxlength="5" 
+                                           value="<?= isset($formData['codePostal']) ? htmlspecialchars($formData['codePostal']) : '' ?>">
+                                    <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
+                                </div>
+                            </div>
+                            <div class="max-width-50">
+                                <div>
+                                    <label for="ville">Ville</label>
+                                    <select id="ville" name="ville" disabled>
+                                        <option value="">Sélectionnez une ville</option>
+                                    </select>
+                                    <input type="hidden" id="idVille" name="idVille" 
+                                           value="<?= isset($formData['idVille']) ? htmlspecialchars($formData['idVille']) : '' ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End of new fields -->
+
                         <div class="flex-row">
                             <div class="max-width-50">
                                 <div>
@@ -84,5 +107,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Add JavaScript for handling city selection -->
+   
 </main>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

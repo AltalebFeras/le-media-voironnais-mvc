@@ -102,6 +102,15 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+
+    case HOME_URL . 'villes':
+        if ($method === 'POST' && $connectionSecured) {
+            $associationController->getVilles();
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette pagess.'];
+            $homeController->displayAuth();
+        }
+        break;
     // Association routes
     case HOME_URL . 'mes_associations':
         if ($method === 'GET' && $connectionSecured && !isset($_GET['action'])) {
@@ -109,7 +118,7 @@ switch ($route) {
         } else if ($method === 'GET' && $connectionSecured && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['id'])) {
             $associationController->displayAssociationDetails();
         } else {
-            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;
@@ -119,7 +128,7 @@ switch ($route) {
         } elseif ($connectionSecured && $method === 'GET') {
             $associationController->showAddForm();
         } else {
-            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;
@@ -129,7 +138,7 @@ switch ($route) {
         } elseif ($connectionSecured && $method === 'GET') {
             $associationController->showEditForm();
         } else {
-            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;
@@ -146,7 +155,7 @@ switch ($route) {
         if ($method === 'GET' && $connectionSecured) {
             $entrepriseController->mesEntreprises();
         } else {
-            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;
@@ -156,7 +165,7 @@ switch ($route) {
         } elseif ($connectionSecured && $method === 'GET') {
             $entrepriseController->showAddForm();
         } else {
-            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;
@@ -226,7 +235,7 @@ switch ($route) {
         } elseif ($method === 'GET' && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
             $userController->displayMyAccount();
         } else {
-            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;
@@ -236,7 +245,7 @@ switch ($route) {
         if ($connectionSecuredAdmin) {
             $adminController->displayAdminDashboard();
         } else {
-            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;
@@ -247,7 +256,7 @@ switch ($route) {
         } elseif ($connectionSecuredAdmin && $method === 'GET') {
             $adminController->displayAllUsers();
         } else {
-            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;
@@ -272,7 +281,7 @@ switch ($route) {
         } elseif ($connectionSecuredAdmin && $method === 'GET' && isset($_GET['id']) && is_numeric($_GET['id'])) {
             $adminController->displayUserById();
         } else {
-            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;

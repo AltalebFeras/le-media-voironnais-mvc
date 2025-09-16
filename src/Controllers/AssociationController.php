@@ -73,7 +73,7 @@ class AssociationController extends AbstractController
             ]);
         }
     }
-    public function getVille()
+    public function getVilles()
     {
         try {
             header('Content-Type: application/json');
@@ -105,6 +105,7 @@ class AssociationController extends AbstractController
             $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
             $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : null;
             $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
+            $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
 
             if (empty($name)) {
                 throw new Exception("Le nom de l'association est obligatoire");
@@ -120,6 +121,7 @@ class AssociationController extends AbstractController
                 ->setWebsite($website)
                 ->setIsActive(1)
                 ->setIdUser($idUser)
+                ->setIdVille($idVille)
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'));
 
             // Handle logo upload if present

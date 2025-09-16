@@ -80,9 +80,9 @@ class AssociationRepository
     {
         try {
             $query = "INSERT INTO association 
-                     (name, description, logoPath, bannerPath, address, phone, email, website, isActive, idUser, createdAt) 
+                     (name, description, logoPath, bannerPath, address, phone, email, website, isActive, idUser, idVille, createdAt) 
                      VALUES 
-                     (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :isActive, :idUser, :createdAt)";
+                     (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :isActive, :idUser, :idVille, :createdAt)";
             
             $stmt = $this->DB->prepare($query);
             $stmt->execute([
@@ -96,6 +96,7 @@ class AssociationRepository
                 'website' => $association->getWebsite(),
                 'isActive' => $association->getIsActive(),
                 'idUser' => $association->getIdUser(),
+                'idVille' => $association->getIdVille(),
                 'createdAt' => $association->getCreatedAt()
             ]);
             
