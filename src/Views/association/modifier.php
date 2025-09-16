@@ -3,7 +3,7 @@
 <main>
     <div class="flex-row justify-content-between">
         <h1>Modifier l'association</h1>
-        <a href="<?=HOME_URL . 'mes_associations' ?>" class="">
+        <a href="<?=HOME_URL . 'mes_associations?action=voir&id=' . $association->getIdAssociation() ?>" class="">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
@@ -29,6 +29,32 @@
                             <label for="address">Adresse</label>
                             <input type="text" id="address" name="address"
                                 value="<?= htmlspecialchars($association->getAddress() ?? '') ?>">
+                        </div>
+
+                        <!-- Postal code and city fields -->
+                        <div class="flex-row">
+                            <div class="max-width-50">
+                                <div>
+                                    <label for="codePostal">Code postal</label>
+                                    <input type="text" id="codePostal" name="codePostal" maxlength="5" 
+                                           value="<?= $ville ? htmlspecialchars($ville['ville_code_postal']) : '' ?>">
+                                    <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
+                                </div>
+                            </div>
+                            <div class="max-width-50">
+                                <div>
+                                    <label for="ville">Ville</label>
+                                    <select id="ville" name="ville">
+                                        <?php if ($ville): ?>
+                                            <option value="<?= $ville['ville_nom_reel'] ?>" selected><?= htmlspecialchars($ville['ville_nom_reel']) ?></option>
+                                        <?php else: ?>
+                                            <option value="">Sélectionnez une ville</option>
+                                        <?php endif; ?>
+                                    </select>
+                                    <input type="hidden" id="idVille" name="idVille" 
+                                           value="<?= $association->getIdVille() ?>">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="flex-row">
@@ -100,7 +126,7 @@
                     </div>
 
                     <div class="flex-row justify-content-between mt">
-                        <a href="/mes-associations" class="btn">Annuler</a>
+                        <a href="<?= HOME_URL . 'mes_associations?action=voir&id=' . $association->getIdAssociation() ?>" class="btn">Annuler</a>
                         <button type="submit" class="btn">Enregistrer les modifications</button>
                     </div>
                 </div>
@@ -116,4 +142,5 @@
         </div>
     </div>
 </main>
+<script src="<?= HOME_URL . 'assets/javascript/villes.js' ?>"></script>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

@@ -26,7 +26,7 @@ class AssociationRepository
             // Get associations where user is owner or member
             $query = "SELECT a.* FROM association a 
                       LEFT JOIN user_association ua ON a.idAssociation = ua.idAssociation 
-                      WHERE a.idUser = :idUser OR (ua.idUser = :idUser AND ua.isActive = 1)
+                      WHERE a.idUser = :idUser OR (ua.idUser = :idUser AND ua.isActive = 1 AND a.isDeleted = 0)
                       GROUP BY a.idAssociation";
 
             $stmt = $this->DB->prepare($query);
@@ -166,6 +166,9 @@ class AssociationRepository
                      email = :email, 
                      website = :website, 
                      isActive = :isActive,
+                     idVille = :idVille,
+                     logoPath = :logoPath,
+                     bannerPath = :bannerPath,
                      updatedAt = :updatedAt
                      WHERE idAssociation = :idAssociation";
 
@@ -178,6 +181,9 @@ class AssociationRepository
                 'email' => $association->getEmail(),
                 'website' => $association->getWebsite(),
                 'isActive' => $association->getIsActive(),
+                'idVille' => $association->getIdVille(),
+                'logoPath' => $association->getLogoPath(),
+                'bannerPath' => $association->getBannerPath(),
                 'updatedAt' => $association->getUpdatedAt(),
                 'idAssociation' => $association->getIdAssociation()
             ]);
@@ -187,11 +193,24 @@ class AssociationRepository
             throw new Exception("Error updating association: " . $e->getMessage());
         }
     }
+//  make  association isDeleted  true 
+
+public function deleteAssociation($idAssociation , $idUser): bool
+{
+    try {
+        $query = "UPDATE association SET isDeleted = 1 WHERE idAssociation = :idAssociation AND idUser = :idUser";
+        $stmt = $this->DB->prepare($query);
+        $stmt->execute(['idAssociation' => $idAssociation, 'idUser' => $idUser]);
+        return $stmt->rowCount() > 0;
+    } catch (Exception $e) {
+        throw new Exception("Error deleting association definitively: " . $e->getMessage());
+    }
+}
 
     /**
-     * Delete an association
+     * Delete an association definitively
      */
-    public function deleteAssociation($idAssociation): bool
+    public function deleteAssociationDefinitive($idAssociation): bool
     {
         try {
             // First delete related records in user_association
@@ -270,5 +289,51 @@ class AssociationRepository
         } catch (Exception $e) {
             throw new Exception("Error checking association ownership: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Get ville information by ID
+     */
+    public function getVilleById($idVille): ?array
+    {
+        try {
+            $query = "SELECT idVille, ville_nom_reel, ville_code_postal FROM ville WHERE idVille = :idVille";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idVille' => $idVille]);
+
+            $ville = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $ville !== false ? $ville : null;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching ville: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get association members with their roles
+     */
+    public function getAssociationMembers($idAssociation): array
+    {
+        try {
+            $query = "SELECT u.idUser, u.firstName, u.lastName, u.email, ua.role, ua.joinedAt, ua.isActive
+                      FROM user_association ua 
+                      JOIN user u ON ua.idUser = u.idUser 
+                      WHERE ua.idAssociation = :idAssociation AND ua.isActive = 1
+                      ORDER BY ua.role DESC, u.lastName ASC";
+
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idAssociation' => $idAssociation]);
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            throw new Exception("Error fetching association members: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Find association by ID (alias for getAssociationById for consistency)
+     */
+    public function findAssociationById($idAssociation): ?Association
+    {
+        return $this->getAssociationById($idAssociation);
     }
 }

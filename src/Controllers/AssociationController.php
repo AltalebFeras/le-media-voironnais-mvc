@@ -44,33 +44,46 @@ class AssociationController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $idAssociation = isset($_GET['id']) ? (int)$_GET['id'] : null;
             $errors = [];
-            $associationRepository = new AssociationRepository();
-            $association = $associationRepository->findAssociationById($idAssociation);
+            $association = $this->repo->getAssociationById($idAssociation);
 
-            // Check if association exists and user has access to it
             if (!$association) {
                 $errors['association'] = "L'association demandée n'existe pas";
             }
 
-            // Check if user is owner or member of the association, or if association is public
-            $isOwner = $association->getIdUser() == $idUser;
-            $members = $this->repo->getAssociationMembers($idAssociation);
+            $isOwner = $association ? $association->getIdUser() == $idUser : false;
+            $members = [];
+            $ville = null;
 
-            if (!$isOwner) {
-                $errors['access'] = "Vous n'avez pas accès à cette association";
+            if ($association) {
+                $members = $this->repo->getAssociationMembers($idAssociation);
+                $ville = $this->repo->getVilleById($association->getIdVille());
+
+                // Check if user has access (owner or member or public association)
+                $isMember = false;
+                foreach ($members as $member) {
+                    if ($member['idUser'] == $idUser) {
+                        $isMember = true;
+                        break;
+                    }
+                }
+
+                if (!$isOwner && !$isMember && !$association->getIsPublic()) {
+                    $errors['access'] = "Vous n'avez pas accès à cette association";
+                }
             }
-            $this->returnAllErrors($errors, 'associationmes_associations?error=true');
+
+            $this->returnAllErrors($errors, 'mes_associations?error=true');
 
             $this->render('association/voir_association', [
                 'association' => $association,
+                'members' => $members,
+                'ville' => $ville,
                 'isOwner' => $isOwner,
-                'isMember' => $isMember
+                'isMember' => $isMember ?? false
             ]);
         } catch (Exception $e) {
-            $this->render('error', [
-                'message' => $e->getMessage(),
-                'title' => 'Erreur'
-            ]);
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_associations');
         }
     }
     public function getVilles()
@@ -200,7 +213,10 @@ class AssociationController extends AbstractController
     public function showEditForm()
     {
         try {
-            $idAssociation = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+            // Handle URL segments for /association/modifier/{id}
+            $idAssociation = isset($_GET['id']) ? (int)$_GET['id'] : null;
+
+
             $idUser = $_SESSION['idUser'];
             $association = $this->repo->getAssociationById($idAssociation);
 
@@ -208,13 +224,15 @@ class AssociationController extends AbstractController
                 throw new Exception("L'association demandée n'existe pas");
             }
 
-            // Check if user is the owner of the association
             if ($association->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette association");
             }
 
+            $ville = $this->repo->getVilleById($association->getIdVille());
+
             $this->render('association/modifier', [
                 'association' => $association,
+                'ville' => $ville,
                 'title' => 'Modifier l\'association'
             ]);
         } catch (Exception $e) {
@@ -228,8 +246,14 @@ class AssociationController extends AbstractController
      */
     public function updateAssociation()
     {
-
         try {
+            $idAssociation = null;
+            $idAssociation = isset($_GET['id']) ? (int)$_GET['id'] : null;
+
+            if (!$idAssociation) {
+                throw new Exception("ID d'association invalide");
+            }
+
             $idUser = $_SESSION['idUser'];
             $association = $this->repo->getAssociationById($idAssociation);
 
@@ -237,25 +261,62 @@ class AssociationController extends AbstractController
                 throw new Exception("L'association demandée n'existe pas");
             }
 
-            // Check if user is the owner of the association
             if ($association->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette association");
             }
 
-            // Validate form data
-            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS);
-            $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_SPECIAL_CHARS);
-            $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_SPECIAL_CHARS);
-            $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_SPECIAL_CHARS);
-            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-            $website = filter_input(INPUT_POST, 'website', FILTER_SANITIZE_URL);
+            // Get form data with same validation as addAssociation
+            $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : null;
+            $description = isset($_POST['description']) ? htmlspecialchars(trim($_POST['description'])) : null;
+            $address = isset($_POST['address']) ? htmlspecialchars(trim($_POST['address'])) : null;
+            $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
+            $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : null;
+            $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
+            $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
             $isActive = isset($_POST['isActive']) ? 1 : 0;
 
+            $errors = [];
+
             if (empty($name)) {
-                throw new Exception("Le nom de l'association est obligatoire");
+                $errors['name'] = "Le nom de l'association est obligatoire";
             }
 
-            // Update association
+            if ($idVille == null) {
+                $errors['ville'] = "La ville est obligatoire";
+            }
+
+            // Check if name exists for other associations of this user
+            $existingAssociation = $this->repo->getAssociationByNameForThisUser($name, $idUser);
+            if ($existingAssociation && $existingAssociation->getIdAssociation() != $idAssociation) {
+                $errors['name'] = "Vous avez déjà une association avec ce nom";
+            }
+
+            $existingVille = $this->repo->isVilleExists($idVille);
+            if (!$existingVille) {
+                $errors['idVille'] = "La ville sélectionnée est invalide";
+            }
+
+            if (!empty($description) && strlen($description) < 10) {
+                $errors['description'] = "La description doit contenir au moins 10 caractères";
+            }
+
+            if (!empty($address) && strlen($address) < 5) {
+                $errors['address'] = "L'adresse doit contenir au moins 5 caractères";
+            }
+
+            if (!empty($phone) && !preg_match('/^\+?[0-9\s\-]{7,20}$/', $phone)) {
+                $errors['phone'] = "Le numéro de téléphone est invalide";
+            }
+
+            if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors['email'] = "L'email est invalide";
+            }
+
+            if (!empty($website) && !filter_var($website, FILTER_VALIDATE_URL)) {
+                $errors['website'] = "Le site web est invalide";
+            }
+
+            // Update association data
             $association->setName($name)
                 ->setDescription($description)
                 ->setAddress($address)
@@ -263,32 +324,30 @@ class AssociationController extends AbstractController
                 ->setEmail($email)
                 ->setWebsite($website)
                 ->setIsActive($isActive)
+                ->setIdVille($idVille)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
 
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {
-                $logoPath = $this->handleImageUpload('logo', 'associations/logos');
+                $logoPath = $this->handleImageUpload('logo', 'logos');
                 $association->setLogoPath($logoPath);
-                $this->repo->updateLogo($idAssociation, $logoPath);
             }
 
             // Handle banner upload if present
             if (!empty($_FILES['banner']['name'])) {
-                $bannerPath = $this->handleImageUpload('banner', 'associations/banners');
+                $bannerPath = $this->handleImageUpload('banner', 'banners');
                 $association->setBannerPath($bannerPath);
-                $this->repo->updateBanner($idAssociation, $bannerPath);
             }
+
+            $this->returnAllErrors($errors, 'association/modifier/' . $idAssociation . '?error=true');
 
             $this->repo->updateAssociation($association);
 
             $_SESSION['success'] = "L'association a été mise à jour avec succès";
             $this->redirect('mes_associations');
         } catch (Exception $e) {
-            $this->render('association/modifier', [
-                'association' => $association,
-                'error' => $e->getMessage(),
-                'title' => 'Modifier l\'association'
-            ]);
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('association/modifier/' . ($idAssociation ?? ''));
         }
     }
 
@@ -297,17 +356,18 @@ class AssociationController extends AbstractController
      */
     public function deleteAssociation()
     {
-
         try {
+            $idAssociation = isset($_GET['id']) ? htmlspecialchars($_GET['id']) : null;
+            if (!$idAssociation) {
+                throw new Exception("ID d'association invalide");
+            }
             $idUser = $_SESSION['idUser'];
 
-            // Check if user is the owner of the association
             if (!$this->repo->isAssociationOwner($idAssociation, $idUser)) {
                 throw new Exception("Vous n'avez pas l'autorisation de supprimer cette association");
             }
 
-            $this->repo->deleteAssociation($idAssociation);
-
+            $this->repo->deleteAssociation($idAssociation, $idUser);
             $_SESSION['success'] = "L'association a été supprimée avec succès";
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();

@@ -113,10 +113,16 @@ switch ($route) {
         break;
     // Association routes
     case HOME_URL . 'mes_associations':
-        if ($method === 'GET' && $connectionSecured && !isset($_GET['action'])) {
-            $associationController->mesAssociations();
-        } else if ($method === 'GET' && $connectionSecured && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['id'])) {
-            $associationController->displayAssociationDetails();
+        if ($connectionSecured) {
+            if ($method === 'GET' && !isset($_GET['action']) && !isset($_GET['id'])) {
+                $associationController->mesAssociations();
+            } else if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['id'])) {
+                $associationController->displayAssociationDetails();
+            } else if ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+                $associationController->deleteAssociation();
+            } elseif ($method === 'GET') {
+                $homeController->page404();
+            }
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
@@ -133,20 +139,17 @@ switch ($route) {
         }
         break;
     case HOME_URL . 'association/modifier':
-        if ($method === 'POST' && $connectionSecured) {
-            $associationController->updateAssociation();
-        } elseif ($connectionSecured && $method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'modifier' && isset($_GET['id'])) {
-            $associationController->showEditForm();
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $associationController->updateAssociation();
+            } elseif ($method === 'GET' && isset($_GET['id'])) {
+                $associationController->showEditForm();
+            } else {
+                $homeController->page404();
+            }
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
-        }
-        break;
-    case HOME_URL . 'association/supprimer':
-        if ($method === 'POST' && $connectionSecured) {
-            $associationController->deleteAssociation();
-        } else {
-            $homeController->page404();
         }
         break;
 
