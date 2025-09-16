@@ -120,7 +120,7 @@ class EntrepriseController extends AbstractController
     /**
      * Show form to edit a company
      */
-    public function showEditForm($idEntreprise)
+    public function showEditForm()
     {
         
         try {
@@ -149,7 +149,7 @@ class EntrepriseController extends AbstractController
     /**
      * Process edit company form
      */
-    public function updateEntreprise($idEntreprise)
+    public function updateEntreprise()
     {
         
         try {
@@ -222,7 +222,7 @@ class EntrepriseController extends AbstractController
     /**
      * Delete a company
      */
-    public function deleteEntreprise($idEntreprise)
+    public function deleteEntreprise()
     {
         
         try {

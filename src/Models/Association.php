@@ -18,6 +18,7 @@ class Association
     private ?string $website;
     private bool $isActive;
     private bool $isPublic;
+    private bool $isDeleted;
     private int $idUser;
     private int $idVille;
     private DateTime|string $createdAt;
@@ -260,6 +261,26 @@ class Association
     public function setIsPublic($isPublic): static
     {
         $this->isPublic = $isPublic;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of isDeleted
+     */ 
+    public function getIsDeleted()
+    {
+        return $this->isDeleted;
+    }
+
+    /**
+     * Set the value of isDeleted
+     *
+     * @return  self
+     */ 
+    public function setIsDeleted($isDeleted)
+    {
+        $this->isDeleted = $isDeleted;
 
         return $this;
     }

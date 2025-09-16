@@ -39,7 +39,7 @@ switch ($route) {
             } elseif ($connectionSecuredSuperAdmin) {
                 $adminController->displayAdminDashboard();
             } else {
-                $homeController->displayFormConnexion();
+                $homeController->displayAuth();
             }
         }
         break;
@@ -99,30 +99,41 @@ switch ($route) {
         if ($connectionSecured) {
             $userController->displayDashboard();
         } else {
-            $homeController->displayHomepage();
+            $homeController->displayAuth();
         }
         break;
     // Association routes
     case HOME_URL . 'mes_associations':
-        $associationController->mesAssociations();
+        if ($method === 'GET' && $connectionSecured) {
+            $associationController->mesAssociations();
+        } else {
+            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
         break;
     case HOME_URL . 'association/ajouter':
-        if ($method === 'POST') {
+        if ($method === 'POST' && $connectionSecured) {
             $associationController->addAssociation();
-        } else {
+        } elseif ($connectionSecured && $method === 'GET') {
             $associationController->showAddForm();
+        } else {
+            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
         }
         break;
     case HOME_URL . 'association/modifier':
-        if ($method === 'POST') {
-            $associationController->updateAssociation($id);
+        if ($method === 'POST' && $connectionSecured) {
+            $associationController->updateAssociation();
+        } elseif ($connectionSecured && $method === 'GET') {
+            $associationController->showEditForm();
         } else {
-            $associationController->showEditForm($id);
+            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
         }
         break;
     case HOME_URL . 'association/supprimer':
-        if ($method === 'POST') {
-            $associationController->deleteAssociation($id);
+        if ($method === 'POST' && $connectionSecured) {
+            $associationController->deleteAssociation();
         } else {
             $homeController->page404();
         }
@@ -130,25 +141,35 @@ switch ($route) {
 
     // Entreprise routes
     case HOME_URL . 'mes_entreprises':
-        $entrepriseController->mesEntreprises();
+        if ($method === 'GET' && $connectionSecured) {
+            $entrepriseController->mesEntreprises();
+        } else {
+            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
         break;
     case HOME_URL . 'entreprise/ajouter':
-        if ($method === 'POST') {
+        if ($method === 'POST' && $connectionSecured) {
             $entrepriseController->addEntreprise();
-        } else {
+        } elseif ($connectionSecured && $method === 'GET') {
             $entrepriseController->showAddForm();
+        } else {
+            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
         }
         break;
     case HOME_URL . 'entreprise/modifier':
-        if ($method === 'POST') {
-            $entrepriseController->updateEntreprise($id);
+        if ($method === 'POST' && $connectionSecured) {
+            $entrepriseController->updateEntreprise();
+        } elseif ($connectionSecured && $method === 'GET') {
+            $entrepriseController->showEditForm();
         } else {
-            $entrepriseController->showEditForm($id);
+            $entrepriseController->showEditForm();
         }
         break;
     case HOME_URL . 'entreprise/supprimer':
-        if ($method === 'POST') {
-            $entrepriseController->deleteEntreprise($id);
+        if ($method === 'POST' && $connectionSecured) {
+            $entrepriseController->deleteEntreprise();
         } else {
             $homeController->page404();
         }
@@ -203,7 +224,8 @@ switch ($route) {
         } elseif ($method === 'GET' && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
             $userController->displayMyAccount();
         } else {
-            $homeController->page404();
+            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
         }
         break;
     // Admin routes
@@ -212,7 +234,8 @@ switch ($route) {
         if ($connectionSecuredAdmin) {
             $adminController->displayAdminDashboard();
         } else {
-            $homeController->displayHomepage();
+            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
         }
         break;
 
@@ -222,7 +245,8 @@ switch ($route) {
         } elseif ($connectionSecuredAdmin && $method === 'GET') {
             $adminController->displayAllUsers();
         } else {
-            $homeController->displayHomepage();
+            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
         }
         break;
 
@@ -246,7 +270,8 @@ switch ($route) {
         } elseif ($connectionSecuredAdmin && $method === 'GET' && isset($_GET['id']) && is_numeric($_GET['id'])) {
             $adminController->displayUserById();
         } else {
-            $homeController->page404();
+            $_SESSION['error'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
         }
         break;
 

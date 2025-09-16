@@ -11,7 +11,7 @@ class HomeController extends AbstractController
         $this->render('home/accueil');
     }
 
-    public function displayFormConnexion()
+    public function displayAuth()
     {
         if (!isset($_GET['error'])) {
             unset($_SESSION['form_data']);

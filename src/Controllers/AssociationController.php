@@ -111,7 +111,7 @@ class AssociationController extends AbstractController
     /**
      * Show form to edit an association
      */
-    public function showEditForm($idAssociation)
+    public function showEditForm()
     {
         try {
             $idUser = $_SESSION['user_id'];
@@ -139,7 +139,7 @@ class AssociationController extends AbstractController
     /**
      * Process edit association form
      */
-    public function updateAssociation($idAssociation)
+    public function updateAssociation()
     {
         
         try {
@@ -208,7 +208,7 @@ class AssociationController extends AbstractController
     /**
      * Delete an association
      */
-    public function deleteAssociation($idAssociation)
+    public function deleteAssociation()
     {
         
         try {
