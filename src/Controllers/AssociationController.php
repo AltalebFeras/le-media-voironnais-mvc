@@ -77,14 +77,17 @@ class AssociationController extends AbstractController
     {
         try {
             header('Content-Type: application/json');
+
+            // Get the raw JSON input
+            $input = json_decode(file_get_contents('php://input'), true);
             
-            $cp = isset($_POST['cp']) ? htmlspecialchars(trim($_POST['cp'])) : null;
-            if (!$cp) {
+            $codePostal = isset($input['codePostal']) ? htmlspecialchars(trim($input['codePostal'])) : null;
+            if (!$codePostal) {
                 throw new Exception("Le code postal est requis");
             }
             
-            $villes = $this->repo->getVillesByCp($cp);
-            echo json_encode($villes);
+            $villes = $this->repo->getVillesByCp($codePostal);
+            echo json_encode(['succes' => true , 'data' => $villes]);
         } catch (Exception $e) {
             echo json_encode(['error' => $e->getMessage()]);    
         }

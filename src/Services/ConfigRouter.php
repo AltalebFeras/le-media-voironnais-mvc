@@ -39,11 +39,11 @@ class ConfigRouter
     public static function checkConnection(): bool
     {
         $runningServerData = [
-            'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+            // 'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT'] ?? '',
             'REMOTE_ADDR' => $_SERVER['REMOTE_ADDR'] ?? '',
-            'HTTP_ACCEPT_LANGUAGE' => $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '',
-            'HTTP_ACCEPT_ENCODING' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
-            'HTTP_ACCEPT' => $_SERVER['HTTP_ACCEPT'] ?? '',
+            // 'HTTP_ACCEPT_LANGUAGE' => $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '',
+            // 'HTTP_ACCEPT_ENCODING' => $_SERVER['HTTP_ACCEPT_ENCODING'] ?? '',
+            // 'HTTP_ACCEPT' => $_SERVER['HTTP_ACCEPT'] ?? '',
         ];
         // Create a fingerprint based on the server data
         $actualFingerprint = hash('sha256', json_encode($runningServerData));

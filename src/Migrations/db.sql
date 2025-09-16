@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 16, 2025 at 09:35 AM
+-- Generation Time: Sep 16, 2025 at 05:15 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -57,8 +57,8 @@ CREATE TABLE IF NOT EXISTS `association` (
 --
 
 INSERT INTO `association` (`idAssociation`, `name`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `isActive`, `isPublic`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
-(1, 'Culture Voiron', 'Association culturelle locale', '/images/logo/culture.png', '/images/banners/culture.jpg', '1 Rue de la Culture, Voiron', '+33 4 12 34 56 78', 'contact@culture-voiron.fr', 'https://culture-voiron.fr', 1, 0, 0, 2, 14329, '2025-09-11 12:00:01', NULL),
-(2, 'Sports Voironnais', 'Promotion des activités sportives', '/images/logo/sports.png', '/images/banners/sports.jpg', '10 Avenue du Sport, Voiron', '+33 4 87 65 43 21', 'contact@sports-voironnais.fr', 'https://sports-voironnais.fr', 1, 0, 0, 2, 14329, '2025-09-11 12:00:01', NULL),
+(1, 'Culture Voiron', 'Association culturelle locale', '/images/logo/culture.png', '/images/banners/culture.jpg', '1 Rue de la Culture, Voiron', '+33 4 12 34 56 78', 'contact@culture-voiron.fr', 'https://culture-voiron.fr', 1, 0, 0, 27, 14329, '2025-09-11 12:00:01', NULL),
+(2, 'Sports Voironnais', 'Promotion des activités sportives', '/images/logo/sports.png', '/images/banners/sports.jpg', '10 Avenue du Sport, Voiron', '+33 4 87 65 43 21', 'contact@sports-voironnais.fr', 'https://sports-voironnais.fr', 1, 0, 0, 27, 14329, '2025-09-11 12:00:01', NULL),
 (3, 'Jeux & Esports Voiron', 'Gaming et esports locaux', '/images/logo/esports.png', '/images/banners/esports.jpg', '3 Rue des Jeux, Voiron', NULL, 'contact@jeux-voiron.fr', NULL, 1, 0, 0, 4, 14329, '2025-09-11 12:00:01', NULL),
 (4, 'Photographie Voiron', 'Club de photo', '/images/logo/photo.png', '/images/banners/photo.jpg', '8 Rue des Artistes, Voiron', NULL, 'hello@photo-voiron.fr', NULL, 1, 0, 0, 5, 14329, '2025-09-11 12:00:01', NULL),
 (5, 'Théâtre Amateur', 'Troupe de théâtre amateur', '/images/logo/theatre.png', '/images/banners/theatre.jpg', '12 Rue du Théâtre, Voiron', NULL, 'contact@theatre-amateur.fr', NULL, 1, 0, 0, 6, 14329, '2025-09-11 12:00:01', NULL);
@@ -612,8 +612,8 @@ INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone
 (18, 3, 'Rania', 'Da Silva', 'rania.silva@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1990-12-24', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
 (19, 3, 'Sophie', 'Charpentier', 'sophie.charpentier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1989-07-07', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
 (20, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(27, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 1, 0, 0, '2025-09-15 15:48:21', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', '2025-09-15 17:21:00', '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL),
-(28, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-15 17:10:21', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL);
+(27, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-16 19:09:13', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', '2025-09-16 11:37:06', '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL),
+(28, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-16 11:37:02', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -756,7 +756,8 @@ INSERT INTO `ville` (`idVille`, `ville_departement`, `ville_slug`, `ville_nom`, 
 (14502, '38', 'hieres-sur-amby', 'HIERES-SUR-AMBY', 'hieres sur amby', 'Hières-sur-Amby', '38118', '190', '38190', 1200, 5.28333, 45.8, '3286', '50886', '+51738', '454751', 193, 429),
 (14503, '38', 'bresson', 'BRESSON', 'bresson', 'Bresson', '38320', '057', '38057', 700, 5.75, 45.1333, '3792', '50152', '+54458', '450811', 228, 533),
 (14504, '38', 'montalieu-vercieu', 'MONTALIEU-VERCIEU', 'montalieu vercieu', 'Montalieu-Vercieu', '38390', '247', '38247', 2900, 5.4, 45.8167, '3408', '50905', '+52413', '454851', 200, 347),
-(14505, '38', 'grenoble', 'GRENOBLE', 'grenoble', 'Grenoble', '38000-38100', '185', '38185', 156700, 5.71667, 45.1667, '3766', '50208', '+54335', '451113', 204, 600),
+(38000, '38', 'grenoble-38000', 'GRENOBLE-38000', 'grenoble 38000', 'Grenoble-38000', '38000', '185', '38185', 156700, 5.71667, 45.1667, '3766', '50208', '+54335', '451113', 204, 600),
+(38100, '38', 'grenoble-38100', 'GRENOBLE-38100', 'grenoble 38100', 'Grenoble-38100', '38100', '999', '99999', 99999, 9.71667, 59.1667, '9999', '99999', '+99999', '999999', 999, 999),
 (14506, '38', 'varces-allieres-et-risset', 'VARCES-ALLIERES-ET-RISSET', 'varces allieres et risset', 'Varces-Allières-et-Risset', '38760', '524', '38524', 6500, 5.68195, 45.0867, '3717', '50096', '+54055', '450512', 247, 1960),
 (14507, '38', 'brangues', 'BRANGUES', 'brangues', 'Brangues', '38510', '055', '38055', 600, 5.53333, 45.7, '3550', '50770', '+53152', '454135', 204, 236),
 (14508, '38', 'saint-simeon-de-bressieux', 'SAINT-SIMEON-DE-BRESSIEUX', 'saint simeon de bressieux', 'Saint-Siméon-de-Bressieux', '38870', '457', '38457', 2700, 5.25, 45.3333, '3250', '50365', '+51542', '451942', 337, 627),
