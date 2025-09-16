@@ -16,18 +16,18 @@
                         <div>
                             <label for="name">Nom de l'association *</label>
                             <input type="text" id="name" name="name"
-                                value="<?= isset($formData['name']) ? htmlspecialchars($formData['name']) : '' ?>" required>
+                                value="<?= isset($_SESSION['form_data']['name']) ? htmlspecialchars($_SESSION['form_data']['name']) : '' ?>"  >
                         </div>
 
                         <div>
                             <label for="description">Description</label>
-                            <textarea id="description" name="description" rows="4"><?= isset($formData['description']) ? htmlspecialchars($formData['description']) : '' ?></textarea>
+                            <textarea id="description" name="description" rows="4"><?= isset($_SESSION['form_data']['description']) ? htmlspecialchars($_SESSION['form_data']['description']) : '' ?></textarea>
                         </div>
 
                         <div>
                             <label for="address">Adresse</label>
                             <input type="text" id="address" name="address"
-                                value="<?= isset($formData['address']) ? htmlspecialchars($formData['address']) : '' ?>">
+                                value="<?= isset($_SESSION['form_data']['address']) ? htmlspecialchars($_SESSION['form_data']['address']) : '' ?>">
                         </div>
 
                         <!-- New postal code and city fields -->
@@ -36,7 +36,7 @@
                                 <div>
                                     <label for="codePostal">Code postal</label>
                                     <input type="text" id="codePostal" name="codePostal" maxlength="5" 
-                                           value="<?= isset($formData['codePostal']) ? htmlspecialchars($formData['codePostal']) : '' ?>">
+                                           value="<?= isset($_SESSION['form_data']['codePostal']) ? htmlspecialchars($_SESSION['form_data']['codePostal']) : '' ?>">
                                     <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
                                 </div>
                             </div>
@@ -47,7 +47,7 @@
                                         <option value="">Sélectionnez une ville</option>
                                     </select>
                                     <input type="hidden" id="idVille" name="idVille" 
-                                           value="<?= isset($formData['idVille']) ? htmlspecialchars($formData['idVille']) : '' ?>">
+                                           value="">
                                 </div>
                             </div>
                         </div>
@@ -58,14 +58,14 @@
                                 <div>
                                     <label for="phone">Téléphone</label>
                                     <input type="tel" id="phone" name="phone"
-                                        value="<?= isset($formData['phone']) ? htmlspecialchars($formData['phone']) : '' ?>">
+                                        value="<?= isset($_SESSION['form_data']['phone']) ? htmlspecialchars($_SESSION['form_data']['phone']) : '' ?>">
                                 </div>
                             </div>
                             <div class="max-width-50">
                                 <div>
                                     <label for="email">Email</label>
                                     <input type="email" id="email" name="email"
-                                        value="<?= isset($formData['email']) ? htmlspecialchars($formData['email']) : '' ?>">
+                                        value="<?= isset($_SESSION['form_data']['email']) ? htmlspecialchars($_SESSION['form_data']['email']) : '' ?>">
                                 </div>
                             </div>
                         </div>
@@ -74,7 +74,7 @@
                             <label for="website">Site web</label>
                             <input type="url" id="website" name="website"
                                 placeholder="https://example.com"
-                                value="<?= isset($formData['website']) ? htmlspecialchars($formData['website']) : '' ?>">
+                                value="<?= isset($_SESSION['form_data']['website']) ? htmlspecialchars($_SESSION['form_data']['website']) : '' ?>">
                         </div>
 
                         <div>
@@ -107,96 +107,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Add JavaScript for handling city selection -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const codePostalInput = document.getElementById('codePostal');
-            const villeSelect = document.getElementById('ville');
-            const idVilleInput = document.getElementById('idVille');
-
-            // Check if postal code already has 5 digits on page load
-            const initialCodePostal = codePostalInput.value.trim();
-            if (initialCodePostal.length === 5 && /^\d{5}$/.test(initialCodePostal)) {
-                fetchVilles(initialCodePostal);
-            }
-
-            codePostalInput.addEventListener('input', function() {
-                const codePostal = this.value.trim();
-                
-                // Check if we have exactly 5 digits
-                if (codePostal.length === 5 && /^\d{5}$/.test(codePostal)) {
-                    fetchVilles(codePostal);
-                } else {
-                    // Reset the city select if postal code is not valid
-                    resetVilleSelect();
-                }
-            });
-
-            villeSelect.addEventListener('change', function() {
-                // Update the hidden idVille field when a city is selected
-                const selectedOption = this.options[this.selectedIndex];
-                idVilleInput.value = selectedOption.value;
-            });
-
-            async function fetchVilles(codePostal) {
-                // Show loading state
-                villeSelect.innerHTML = '<option value="">Chargement...</option>';
-                villeSelect.disabled = true;
-
-                try {
-                    const response = await fetch('http://le-media-voironnais/villes', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            codePostal: codePostal
-                        })
-                    });
-
-                    const data = await response.json();
-                    populateVilleSelect(data);
-                } catch (error) {
-                    console.error('Error fetching cities:', error);
-                    villeSelect.innerHTML = '<option value="">Erreur lors du chargement</option>';
-                    villeSelect.disabled = true;
-                }
-            }
-
-            function populateVilleSelect(response) {
-                villeSelect.innerHTML = '<option value="">Sélectionnez une ville</option>';
-                
-                // Check if the response has success and data
-                if (response && response.succes && response.data && response.data.length > 0) {
-                    response.data.forEach(city => {
-                        const option = document.createElement('option');
-                        option.value = city.idVille;
-                        option.textContent = city.ville_nom_reel;
-                        villeSelect.appendChild(option);
-                    });
-                    villeSelect.disabled = false;
-                    villeSelect.style.backgroundColor = '#6ed3cf'; // Green background
-                    
-                    // If there's only one city, select it by default
-                    if (response.data.length === 1) {
-                        villeSelect.value = response.data[0].idVille;
-                        idVilleInput.value = response.data[0].idVille;
-                    }
-                } else {
-                    villeSelect.innerHTML = '<option value="">Aucune ville trouvée</option>';
-                    villeSelect.disabled = true;
-                    villeSelect.style.backgroundColor = '#f5c2c7'; // Red background
-                }
-            }
-
-            function resetVilleSelect() {
-                villeSelect.innerHTML = '<option value="">Sélectionnez une ville</option>';
-                villeSelect.disabled = true;
-                idVilleInput.value = '';
-                villeSelect.style.backgroundColor = ''; // Reset background
-            }
-        });
-    </script>
 </main>
+  <script src="<?= HOME_URL . 'assets/javascript/villes.js' ?>"></script>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

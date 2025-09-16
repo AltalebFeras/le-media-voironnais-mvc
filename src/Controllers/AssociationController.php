@@ -41,31 +41,31 @@ class AssociationController extends AbstractController
     public function displayAssociationDetails()
     {
         try {
-        $idUser = $_SESSION['idUser'];
-        $idAssociation = isset($_GET['id']) ? (int)$_GET['id'] : null;
-        $errors = [];
-        $associationRepository = new AssociationRepository();
-        $association = $associationRepository->findAssociationById($idAssociation);
+            $idUser = $_SESSION['idUser'];
+            $idAssociation = isset($_GET['id']) ? (int)$_GET['id'] : null;
+            $errors = [];
+            $associationRepository = new AssociationRepository();
+            $association = $associationRepository->findAssociationById($idAssociation);
 
-        // Check if association exists and user has access to it
-        if (!$association) {
-            $errors['association'] = "L'association demandée n'existe pas";
-        }
+            // Check if association exists and user has access to it
+            if (!$association) {
+                $errors['association'] = "L'association demandée n'existe pas";
+            }
 
-        // Check if user is owner or member of the association, or if association is public
-        $isOwner = $association->getIdUser() == $idUser;
-        $members = $this->repo->getAssociationMembers($idAssociation);
+            // Check if user is owner or member of the association, or if association is public
+            $isOwner = $association->getIdUser() == $idUser;
+            $members = $this->repo->getAssociationMembers($idAssociation);
 
-        if (!$isOwner) {
-            $errors['access'] = "Vous n'avez pas accès à cette association";
-        }
-        $this->returnAllErrors($errors, 'associationmes_associations?error=true');
+            if (!$isOwner) {
+                $errors['access'] = "Vous n'avez pas accès à cette association";
+            }
+            $this->returnAllErrors($errors, 'associationmes_associations?error=true');
 
-        $this->render('association/voir_association', [
-            'association' => $association,
-            'isOwner' => $isOwner,
-            'isMember' => $isMember
-        ]);
+            $this->render('association/voir_association', [
+                'association' => $association,
+                'isOwner' => $isOwner,
+                'isMember' => $isMember
+            ]);
         } catch (Exception $e) {
             $this->render('error', [
                 'message' => $e->getMessage(),
@@ -80,16 +80,16 @@ class AssociationController extends AbstractController
 
             // Get the raw JSON input
             $input = json_decode(file_get_contents('php://input'), true);
-            
+
             $codePostal = isset($input['codePostal']) ? htmlspecialchars(trim($input['codePostal'])) : null;
             if (!$codePostal) {
                 throw new Exception("Le code postal est requis");
             }
-            
+
             $villes = $this->repo->getVillesByCp($codePostal);
-            echo json_encode(['succes' => true , 'data' => $villes]);
+            echo json_encode(['succes' => true, 'data' => $villes]);
         } catch (Exception $e) {
-            echo json_encode(['error' => $e->getMessage()]);    
+            echo json_encode(['error' => $e->getMessage()]);
         }
     }
     public function showAddForm()
@@ -110,7 +110,7 @@ class AssociationController extends AbstractController
             $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
 
-            $_SESSION['formData'] = $_POST;
+            $_SESSION['form_data'] = $_POST;
             $errors = [];
             if (empty($name)) {
                 $errors['name'] = "Le nom de l'association est obligatoire";
@@ -125,6 +125,8 @@ class AssociationController extends AbstractController
                 ->setEmail($email)
                 ->setWebsite($website)
                 ->setIsActive(1)
+                ->setLogoPath(null)
+                ->setBannerPath(null)
                 ->setIdUser($idUser)
                 ->setIdVille($idVille)
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'));
@@ -134,7 +136,7 @@ class AssociationController extends AbstractController
                 $logoPath = $this->handleImageUpload('logo', 'logos');
                 $association->setLogoPath($logoPath);
             }
-
+           
             // Handle banner upload if present
             if (!empty($_FILES['banner']['name'])) {
                 $bannerPath = $this->handleImageUpload('banner', 'banners');
@@ -149,7 +151,7 @@ class AssociationController extends AbstractController
             $this->render('association/ajouter', [
                 'error' => $e->getMessage(),
                 'title' => 'Ajouter une association',
-                'formData' => $_POST
+                'form_data' => $_POST
             ]);
         }
     }
@@ -338,7 +340,7 @@ class AssociationController extends AbstractController
         if (!in_array($fileType, $allowedMimeTypes) || !in_array($fileExtension, $allowedExtensions)) {
             throw new Exception('Format de fichier non autorisé. Veuillez télécharger une image (jpg, jpeg, png, gif, webp).');
         }
-        
+
         if ($fileSize > $maxFileSize) {
             throw new Exception('La taille de l\'image ne doit pas dépasser 5 Mo.');
         }
