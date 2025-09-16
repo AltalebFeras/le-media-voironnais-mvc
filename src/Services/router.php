@@ -135,7 +135,7 @@ switch ($route) {
     case HOME_URL . 'association/modifier':
         if ($method === 'POST' && $connectionSecured) {
             $associationController->updateAssociation();
-        } elseif ($connectionSecured && $method === 'GET') {
+        } elseif ($connectionSecured && $method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'modifier' && isset($_GET['id'])) {
             $associationController->showEditForm();
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
