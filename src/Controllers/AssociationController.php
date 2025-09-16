@@ -59,7 +59,7 @@ class AssociationController extends AbstractController
         if (!$isOwner) {
             $errors['access'] = "Vous n'avez pas accès à cette association";
         }
-        $this->returnAllErrors($errors, 'association/mes-associations?error=true');
+        $this->returnAllErrors($errors, 'associationmes_associations?error=true');
 
         $this->render('association/voir_association', [
             'association' => $association,
@@ -110,8 +110,10 @@ class AssociationController extends AbstractController
             $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
 
+            $_SESSION['formData'] = $_POST;
+            $errors = [];
             if (empty($name)) {
-                throw new Exception("Le nom de l'association est obligatoire");
+                $errors['name'] = "Le nom de l'association est obligatoire";
             }
 
             // Create new association
@@ -129,20 +131,20 @@ class AssociationController extends AbstractController
 
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {
-                $logoPath = $this->handleImageUpload('logo', 'associations/logos');
+                $logoPath = $this->handleImageUpload('logo', 'logos');
                 $association->setLogoPath($logoPath);
             }
 
             // Handle banner upload if present
             if (!empty($_FILES['banner']['name'])) {
-                $bannerPath = $this->handleImageUpload('banner', 'associations/banners');
+                $bannerPath = $this->handleImageUpload('banner', 'banners');
                 $association->setBannerPath($bannerPath);
             }
-
+            $this->returnAllErrors($errors, 'association/ajouter?error=true&');
             $this->repo->createAssociation($association);
 
             $_SESSION['success'] = "L'association a été créée avec succès";
-            $this->redirect('/mes-associations');
+            $this->redirect('mes_associations');
         } catch (Exception $e) {
             $this->render('association/ajouter', [
                 'error' => $e->getMessage(),
@@ -177,7 +179,7 @@ class AssociationController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('/mes-associations');
+            $this->redirect('mes_associations');
         }
     }
 
@@ -240,7 +242,7 @@ class AssociationController extends AbstractController
             $this->repo->updateAssociation($association);
 
             $_SESSION['success'] = "L'association a été mise à jour avec succès";
-            $this->redirect('/mes-associations');
+            $this->redirect('mes_associations');
         } catch (Exception $e) {
             $this->render('association/modifier', [
                 'association' => $association,
@@ -271,7 +273,7 @@ class AssociationController extends AbstractController
             $_SESSION['error'] = $e->getMessage();
         }
 
-        $this->redirect('/mes-associations');
+        $this->redirect('mes_associations');
     }
 
 
@@ -279,35 +281,103 @@ class AssociationController extends AbstractController
     /**
      * Handle image upload
      */
-    private function handleImageUpload($fileInputName, $directory)
+    public function handleImageUpload($fileInputName, $directory)
     {
-        $targetDir = __DIR__ . "/../../public/uploads/{$directory}/";
-
-        // Create directory if it doesn't exist
-        if (!file_exists($targetDir)) {
-            mkdir($targetDir, 0777, true);
+        if (!isset($_FILES[$fileInputName]) || empty($_FILES[$fileInputName]['name'])) {
+            throw new Exception("Aucun fichier n'a été sélectionné.");
         }
 
-        $fileName = uniqid() . '_' . basename($_FILES[$fileInputName]['name']);
-        $targetFile = $targetDir . $fileName;
-
-        // Check file type
-        $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-
-        if (!in_array($imageFileType, $allowedTypes)) {
-            throw new Exception("Seuls les fichiers JPG, JPEG, PNG et GIF sont autorisés");
+        // Handle upload errors
+        if ($_FILES[$fileInputName]['error'] !== UPLOAD_ERR_OK) {
+            $errorMsg = 'Erreur lors du téléchargement de l\'image.';
+            switch ($_FILES[$fileInputName]['error']) {
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                    $errorMsg = "Le fichier est trop volumineux. Limite serveur : " . ini_get('upload_max_filesize') . ".";
+                    break;
+                case UPLOAD_ERR_PARTIAL:
+                    $errorMsg = "Le fichier n'a été que partiellement téléchargé.";
+                    break;
+                case UPLOAD_ERR_NO_FILE:
+                    $errorMsg = "Aucun fichier n'a été téléchargé.";
+                    break;
+                case UPLOAD_ERR_NO_TMP_DIR:
+                    $errorMsg = "Dossier temporaire manquant.";
+                    break;
+                case UPLOAD_ERR_CANT_WRITE:
+                    $errorMsg = "Échec de l'écriture du fichier sur le disque.";
+                    break;
+                case UPLOAD_ERR_EXTENSION:
+                    $errorMsg = "Une extension PHP a arrêté le téléchargement du fichier.";
+                    break;
+            }
+            throw new Exception($errorMsg);
         }
 
-        // Check file size (5MB max)
-        if ($_FILES[$fileInputName]['size'] > 5000000) {
-            throw new Exception("Le fichier est trop volumineux (maximum 5MB)");
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $maxFileSize = 5 * 1024 * 1024; // 5MB
+
+        $uploadDir = __DIR__ . "/../../public/uploads/{$directory}/";
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
         }
 
-        if (move_uploaded_file($_FILES[$fileInputName]['tmp_name'], $targetFile)) {
-            return "/uploads/{$directory}/" . $fileName;
+        $fileTmpPath = $_FILES[$fileInputName]['tmp_name'];
+        $fileNameOriginal = $_FILES[$fileInputName]['name'];
+        $fileSize = $_FILES[$fileInputName]['size'];
+        $fileType = mime_content_type($fileTmpPath);
+        $fileExtension = strtolower(pathinfo($fileNameOriginal, PATHINFO_EXTENSION));
+
+        // Check if file is actually uploaded
+        if (!is_uploaded_file($fileTmpPath)) {
+            throw new Exception('Le fichier n\'a pas été téléchargé correctement.');
+        }
+
+        // Validate file type and size
+        if (!in_array($fileType, $allowedMimeTypes) || !in_array($fileExtension, $allowedExtensions)) {
+            throw new Exception('Format de fichier non autorisé. Veuillez télécharger une image (jpg, jpeg, png, gif, webp).');
+        }
+        
+        if ($fileSize > $maxFileSize) {
+            throw new Exception('La taille de l\'image ne doit pas dépasser 5 Mo.');
+        }
+
+        $fileName = uniqid() . '_' . basename($fileNameOriginal);
+        $uploadFile = "{$uploadDir}{$fileName}";
+
+        // Handle EXIF orientation for JPEG images
+        if ($fileExtension === 'jpg' || $fileExtension === 'jpeg') {
+            $image = @imagecreatefromjpeg($fileTmpPath);
+            if ($image && function_exists('exif_read_data')) {
+                $exif = @exif_read_data($fileTmpPath);
+                if (!empty($exif['Orientation'])) {
+                    switch ($exif['Orientation']) {
+                        case 3:
+                            $image = imagerotate($image, 180, 0);
+                            break;
+                        case 6:
+                            $image = imagerotate($image, -90, 0);
+                            break;
+                        case 8:
+                            $image = imagerotate($image, 90, 0);
+                            break;
+                    }
+                }
+            }
+            if ($image) {
+                imagejpeg($image, $uploadFile, 90);
+                imagedestroy($image);
+            } else {
+                throw new Exception('Impossible de traiter l\'image JPEG.');
+            }
         } else {
-            throw new Exception("Une erreur est survenue lors de l'upload de l'image");
+            // Move uploaded file for non-JPEG images
+            if (!move_uploaded_file($fileTmpPath, $uploadFile)) {
+                throw new Exception('Erreur lors du déplacement du fichier téléchargé.');
+            }
         }
+
+        return "/uploads/{$directory}/" . $fileName;
     }
 }

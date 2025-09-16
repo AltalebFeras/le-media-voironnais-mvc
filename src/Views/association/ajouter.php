@@ -115,6 +115,12 @@
             const villeSelect = document.getElementById('ville');
             const idVilleInput = document.getElementById('idVille');
 
+            // Check if postal code already has 5 digits on page load
+            const initialCodePostal = codePostalInput.value.trim();
+            if (initialCodePostal.length === 5 && /^\d{5}$/.test(initialCodePostal)) {
+                fetchVilles(initialCodePostal);
+            }
+
             codePostalInput.addEventListener('input', function() {
                 const codePostal = this.value.trim();
                 
