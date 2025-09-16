@@ -16,6 +16,7 @@
             Ajouter une association
         </a>
     </div>
+    <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
     <?php if (empty($associations)): ?>
         <div class="custom-alert custom-alert-success">

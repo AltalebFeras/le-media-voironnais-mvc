@@ -180,19 +180,14 @@ class AssociationController extends AbstractController
             $this->returnAllErrors($errors, 'association/ajouter?error=true&');
             $create_association = $this->repo->createAssociation($association);
             if ($create_association) {
-                $joinedAt = (new DateTime())->format('Y-m-d H:i:s');
-                $idUser = $_SESSION['idUser'];
-                $idAssociation = $create_association->getIdAssociation();
-                $declareRole = $this->repo->declareTheRoleOfTheAssociationCreator($idUser, $idAssociation , $joinedAt);
-                if($declareRole === false){
-                    throw new Exception("Une erreur est survenue lors de l'affectation du rôle de créateur");
-                }
                 $_SESSION['success'] = "L'association a été créée avec succès";
                 $this->redirect('mes_associations');
+            } else {
+                throw new Exception("Une erreur est survenue lors de la création de l'association");
             }
         } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
             $this->render('association/ajouter', [
-                'error' => $e->getMessage(),
                 'title' => 'Ajouter une association',
                 'form_data' => $_POST
             ]);

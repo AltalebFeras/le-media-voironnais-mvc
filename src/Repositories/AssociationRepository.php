@@ -28,15 +28,15 @@ class AssociationRepository
                       LEFT JOIN user_association ua ON a.idAssociation = ua.idAssociation 
                       WHERE a.idUser = :idUser OR (ua.idUser = :idUser AND ua.isActive = 1)
                       GROUP BY a.idAssociation";
-            
+
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['idUser' => $idUser]);
-            
+
             $associations = [];
             while ($row = $stmt->fetchObject(Association::class)) {
                 $associations[] = $row;
             }
-            
+
             return $associations;
         } catch (Exception $e) {
             throw new Exception("Error fetching user associations: " . $e->getMessage());
@@ -52,7 +52,7 @@ class AssociationRepository
             $query = "SELECT * FROM association WHERE idAssociation = :idAssociation";
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['idAssociation' => $idAssociation]);
-            
+
             $association = $stmt->fetchObject(Association::class);
             return $association !== false ? $association : null;
         } catch (Exception $e) {
@@ -66,7 +66,7 @@ class AssociationRepository
             $query = "SELECT idVille, ville_nom_reel, ville_code_postal FROM ville WHERE ville_code_postal = :cp";
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['cp' => $cp]);
-            
+
             $villes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $villes;
         } catch (Exception $e) {
@@ -74,16 +74,20 @@ class AssociationRepository
         }
     }
     /**
-     * Create a new association
+     * Create a new association and declare the creator as admin
      */
     public function createAssociation(Association $association): Association
     {
         try {
+            // Start transaction for both operations
+            $this->DB->beginTransaction();
+
+            // Create association
             $query = "INSERT INTO association 
                      (name, description, logoPath, bannerPath, address, phone, email, website, isActive, idUser, idVille, createdAt) 
                      VALUES 
                      (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :isActive, :idUser, :idVille, :createdAt)";
-            
+
             $stmt = $this->DB->prepare($query);
             $stmt->execute([
                 'name' => $association->getName(),
@@ -99,29 +103,26 @@ class AssociationRepository
                 'idVille' => $association->getIdVille(),
                 'createdAt' => $association->getCreatedAt()
             ]);
-            
-            $association->setIdAssociation($this->DB->lastInsertId());
-            return $association;
-        } catch (Exception $e) {
-            throw new Exception("Error creating association: " . $e->getMessage());
-        }
-    }
-    /**
-     * Declare the role of the association creator as 'admin' in user_association table
-     */
-    public function declareTheRoleOfTheAssociationCreator($idUser, $idAssociation , $joinedAt): bool
-    {
-        try {
+
+            $idAssociation = $this->DB->lastInsertId();
+            $association->setIdAssociation($idAssociation);
+
+            // Declare the creator as admin in user_association table
             $query = "INSERT INTO user_association (idUser, idAssociation, role, isActive, joinedAt) 
                       VALUES (:idUser, :idAssociation, 'admin', 1, :joinedAt)";
             $stmt = $this->DB->prepare($query);
-            return $stmt->execute([
-                'idUser' => $idUser,
+            $stmt->execute([
+                'idUser' => $association->getIdUser(),
                 'idAssociation' => $idAssociation,
-                'joinedAt' => $joinedAt
+                'joinedAt' => $association->getCreatedAt()
             ]);
+
+            $this->DB->commit();
+
+            return $association;
         } catch (Exception $e) {
-            throw new Exception("Error declaring association creator role: " . $e->getMessage());
+            $this->DB->rollback();
+            throw new Exception("Error creating association: " . $e->getMessage());
         }
     }
     public function getAssociationByNameForThisUser($name, $idUser): ?Association
@@ -133,7 +134,7 @@ class AssociationRepository
                 'name' => $name,
                 'idUser' => $idUser
             ]);
-            
+
             $association = $stmt->fetchObject(Association::class);
             return $association !== false ? $association : null;
         } catch (Exception $e) {
@@ -167,7 +168,7 @@ class AssociationRepository
                      isActive = :isActive,
                      updatedAt = :updatedAt
                      WHERE idAssociation = :idAssociation";
-            
+
             $stmt = $this->DB->prepare($query);
             $result = $stmt->execute([
                 'name' => $association->getName(),
@@ -180,7 +181,7 @@ class AssociationRepository
                 'updatedAt' => $association->getUpdatedAt(),
                 'idAssociation' => $association->getIdAssociation()
             ]);
-            
+
             return $result;
         } catch (Exception $e) {
             throw new Exception("Error updating association: " . $e->getMessage());
@@ -197,17 +198,17 @@ class AssociationRepository
             $query = "DELETE FROM user_association WHERE idAssociation = :idAssociation";
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['idAssociation' => $idAssociation]);
-            
+
             // Then delete related records in association_invitation
             $query = "DELETE FROM association_invitation WHERE idAssociation = :idAssociation";
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['idAssociation' => $idAssociation]);
-            
+
             // Finally delete the association
             $query = "DELETE FROM association WHERE idAssociation = :idAssociation";
             $stmt = $this->DB->prepare($query);
             $result = $stmt->execute(['idAssociation' => $idAssociation]);
-            
+
             return $result;
         } catch (Exception $e) {
             throw new Exception("Error deleting association: " . $e->getMessage());
@@ -226,7 +227,7 @@ class AssociationRepository
                 'logoPath' => $logoPath,
                 'idAssociation' => $idAssociation
             ]);
-            
+
             return $result;
         } catch (Exception $e) {
             throw new Exception("Error updating association logo: " . $e->getMessage());
@@ -245,7 +246,7 @@ class AssociationRepository
                 'bannerPath' => $bannerPath,
                 'idAssociation' => $idAssociation
             ]);
-            
+
             return $result;
         } catch (Exception $e) {
             throw new Exception("Error updating association banner: " . $e->getMessage());
@@ -264,7 +265,7 @@ class AssociationRepository
                 'idAssociation' => $idAssociation,
                 'idUser' => $idUser
             ]);
-            
+
             return (int)$stmt->fetchColumn() > 0;
         } catch (Exception $e) {
             throw new Exception("Error checking association ownership: " . $e->getMessage());
