@@ -115,6 +115,41 @@ class AssociationController extends AbstractController
             if (empty($name)) {
                 $errors['name'] = "Le nom de l'association est obligatoire";
             }
+            if ($idVille == null) {
+                $errors['ville'] = "La ville est obligatoire";
+            }
+            $existingAssociation = $this->repo->getAssociationByNameForThisUser($name, $idUser);
+            if ($existingAssociation) {
+                $errors['name'] = "Vous avez déjà une association avec ce nom";
+            }
+            $existingVille = $this->repo->isVilleExists($idVille);
+            if (!$existingVille) {
+                $errors['idVille'] = "La ville sélectionnée est invalide";
+            }
+            // Description, address, phone, email, and website can be empty, but if provided, validate them
+
+            if (!empty($description) && strlen($description) < 10) {
+                $errors['description'] = "La description doit contenir au moins 10 caractères";
+            }
+
+            if (!empty($address) && strlen($address) < 5) {
+                $errors['address'] = "L'adresse doit contenir au moins 5 caractères";
+            }
+
+            if (!empty($phone) && !preg_match('/^\+?[0-9\s\-]{7,20}$/', $phone)) {
+                $errors['phone'] = "Le numéro de téléphone est invalide";
+            }
+
+            if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors['email'] = "L'email est invalide";
+            }
+
+            if (!empty($website) && !filter_var($website, FILTER_VALIDATE_URL)) {
+                $errors['website'] = "Le site web est invalide";
+            }
+
+            $this->returnAllErrors($errors, 'association/ajouter?error=true&');
+
 
             // Create new association
             $association = new Association();
@@ -136,17 +171,25 @@ class AssociationController extends AbstractController
                 $logoPath = $this->handleImageUpload('logo', 'logos');
                 $association->setLogoPath($logoPath);
             }
-           
+
             // Handle banner upload if present
             if (!empty($_FILES['banner']['name'])) {
                 $bannerPath = $this->handleImageUpload('banner', 'banners');
                 $association->setBannerPath($bannerPath);
             }
             $this->returnAllErrors($errors, 'association/ajouter?error=true&');
-            $this->repo->createAssociation($association);
-
-            $_SESSION['success'] = "L'association a été créée avec succès";
-            $this->redirect('mes_associations');
+            $create_association = $this->repo->createAssociation($association);
+            if ($create_association) {
+                $joinedAt = (new DateTime())->format('Y-m-d H:i:s');
+                $idUser = $_SESSION['idUser'];
+                $idAssociation = $create_association->getIdAssociation();
+                $declareRole = $this->repo->declareTheRoleOfTheAssociationCreator($idUser, $idAssociation , $joinedAt);
+                if($declareRole === false){
+                    throw new Exception("Une erreur est survenue lors de l'affectation du rôle de créateur");
+                }
+                $_SESSION['success'] = "L'association a été créée avec succès";
+                $this->redirect('mes_associations');
+            }
         } catch (Exception $e) {
             $this->render('association/ajouter', [
                 'error' => $e->getMessage(),

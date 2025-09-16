@@ -106,7 +106,51 @@ class AssociationRepository
             throw new Exception("Error creating association: " . $e->getMessage());
         }
     }
-
+    /**
+     * Declare the role of the association creator as 'admin' in user_association table
+     */
+    public function declareTheRoleOfTheAssociationCreator($idUser, $idAssociation , $joinedAt): bool
+    {
+        try {
+            $query = "INSERT INTO user_association (idUser, idAssociation, role, isActive, joinedAt) 
+                      VALUES (:idUser, :idAssociation, 'admin', 1, :joinedAt)";
+            $stmt = $this->DB->prepare($query);
+            return $stmt->execute([
+                'idUser' => $idUser,
+                'idAssociation' => $idAssociation,
+                'joinedAt' => $joinedAt
+            ]);
+        } catch (Exception $e) {
+            throw new Exception("Error declaring association creator role: " . $e->getMessage());
+        }
+    }
+    public function getAssociationByNameForThisUser($name, $idUser): ?Association
+    {
+        try {
+            $query = "SELECT * FROM association WHERE name = :name AND idUser = :idUser";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute([
+                'name' => $name,
+                'idUser' => $idUser
+            ]);
+            
+            $association = $stmt->fetchObject(Association::class);
+            return $association !== false ? $association : null;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching association by name for user: " . $e->getMessage());
+        }
+    }
+    public function isVilleExists($idVille)
+    {
+        try {
+            $query = "SELECT COUNT(*) FROM ville WHERE idVille = :idVille";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idVille' => $idVille]);
+            return (int)$stmt->fetchColumn() > 0;
+        } catch (Exception $e) {
+            throw new Exception("Error checking if ville exists: " . $e->getMessage());
+        }
+    }
     /**
      * Update an existing association
      */
