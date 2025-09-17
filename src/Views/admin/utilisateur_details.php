@@ -12,16 +12,16 @@
             <?php
             // Sanitize user data for display and create safe URL/id values
             $rawId = $user['id'] ?? '';
-            $id = htmlspecialchars($rawId);
+            $id = $rawId;
             $idUrl = urlencode($rawId);
 
-            $firstName = htmlspecialchars($user['firstName'] ?? '');
-            $lastName = htmlspecialchars($user['lastName'] ?? '');
-            $email = htmlspecialchars($user['email'] ?? '');
-            $phone = htmlspecialchars($user['phone'] ?? '');
-            $roleName = htmlspecialchars($user['roleName'] ?? '');
+            $firstName = $user['firstName'] ?? '';
+            $lastName = $user['lastName'] ?? '';
+            $email = $user['email'] ?? '';
+            $phone = $user['phone'] ?? '';
+            $roleName = $user['roleName'] ?? '';
             $bioRaw = $user['bio'] ?? '';
-            $bio = htmlspecialchars($bioRaw);
+            $bio = $bioRaw;
 
             // Helper to safely format dates (avoids warnings on invalid/empty values)
             $formatDate = function($value, $format = 'd/m/Y à H:i', $default = 'Jamais') {
@@ -37,18 +37,18 @@
             // Avatar/banner: accept absolute URLs or root-relative paths; otherwise prepend HOME_URL
             $avatarPathRaw = $user['avatarPath'] ?? '';
             if (!empty($avatarPathRaw) && (strpos($avatarPathRaw, 'http') === 0 || strpos($avatarPathRaw, '/') === 0)) {
-                $avatarPath = htmlspecialchars($avatarPathRaw);
+                $avatarPath = $avatarPathRaw;
             } elseif (!empty($avatarPathRaw)) {
-                $avatarPath = htmlspecialchars(HOME_URL . ltrim($avatarPathRaw, '/'));
+                $avatarPath = HOME_URL . ltrim($avatarPathRaw, '/');
             } else {
-                $avatarPath = htmlspecialchars(HOME_URL . 'assets/images/uploads/avatars/default_avatar.png');
+                $avatarPath = HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
             }
 
             $bannerPathRaw = $user['bannerPath'] ?? '';
             if (!empty($bannerPathRaw) && (strpos($bannerPathRaw, 'http') === 0 || strpos($bannerPathRaw, '/') === 0)) {
-                $bannerPath = htmlspecialchars($bannerPathRaw);
+                $bannerPath = $bannerPathRaw;
             } elseif (!empty($bannerPathRaw)) {
-                $bannerPath = htmlspecialchars(HOME_URL . ltrim($bannerPathRaw, '/'));
+                $bannerPath = HOME_URL . ltrim($bannerPathRaw, '/');
             } else {
                 $bannerPath = null;
             }

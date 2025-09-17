@@ -11,7 +11,7 @@
                 <div class="form-group">
                     <label for="title">Titre de l'événement *</label>
                     <input type="text" id="title" name="title" required 
-                           value="<?= htmlspecialchars($evenement->getTitle()) ?>">
+                           value="<?= $evenement->getTitle() ?>">
                 </div>
 
                 <div class="form-group">
@@ -21,7 +21,7 @@
                         <?php foreach ($categories as $category): ?>
                             <option value="<?= $category['idEventCategory'] ?>"
                                     <?= $evenement->getIdEventCategory() == $category['idEventCategory'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($category['name']) ?>
+                                <?= $category['name'] ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -30,12 +30,12 @@
 
             <div class="form-group">
                 <label for="description">Description *</label>
-                <textarea id="description" name="description" rows="4" required><?= htmlspecialchars($evenement->getDescription()) ?></textarea>
+                <textarea id="description" name="description" rows="4" required><?= $evenement->getDescription() ?></textarea>
             </div>
 
             <div class="form-group">
                 <label for="shortDescription">Description courte</label>
-                <textarea id="shortDescription" name="shortDescription" rows="2"><?= htmlspecialchars($evenement->getShortDescription() ?? '') ?></textarea>
+                <textarea id="shortDescription" name="shortDescription" rows="2"><?= $evenement->getShortDescription() ?? '' ?></textarea>
             </div>
 
             <div class="form-row">
@@ -69,7 +69,7 @@
             <div class="form-group">
                 <label for="address">Adresse *</label>
                 <input type="text" id="address" name="address" required
-                       value="<?= htmlspecialchars($evenement->getAddress()) ?>">
+                       value="<?= $evenement->getAddress() ?>">
             </div>
 
             <div class="form-row">
@@ -85,7 +85,7 @@
                         <option value="">Sélectionnez une ville</option>
                         <?php if ($ville): ?>
                             <option value="<?= $ville['idVille'] ?>" selected>
-                                <?= htmlspecialchars($ville['ville_nom_reel']) ?>
+                                <?= $ville['ville_nom_reel'] ?>
                             </option>
                         <?php endif; ?>
                     </select>
@@ -107,7 +107,7 @@
                         <?php foreach ($associations as $association): ?>
                             <option value="<?= $association['idAssociation'] ?>"
                                     <?= $evenement->getIdAssociation() == $association['idAssociation'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($association['name']) ?>
+                                <?= $association['name'] ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -118,7 +118,7 @@
                 <div class="form-group">
                     <label>Image actuelle</label>
                     <div class="current-image">
-                        <img src="<?= htmlspecialchars($evenement->getImagePath()) ?>" alt="Image actuelle" style="max-width: 200px; height: auto;">
+                        <img src="<?= $evenement->getImagePath() ?>" alt="Image actuelle" style="max-width: 200px; height: auto;">
                     </div>
                 </div>
             <?php endif; ?>
@@ -127,7 +127,7 @@
                 <div class="form-group">
                     <label>Bannière actuelle</label>
                     <div class="current-banner">
-                        <img src="<?= htmlspecialchars($evenement->getBannerPath()) ?>" alt="Bannière actuelle" style="max-width: 300px; height: auto;">
+                        <img src="<?= $evenement->getBannerPath() ?>" alt="Bannière actuelle" style="max-width: 300px; height: auto;">
                     </div>
                 </div>
             <?php endif; ?>

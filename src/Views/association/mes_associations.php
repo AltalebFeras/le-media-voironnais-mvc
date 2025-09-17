@@ -28,15 +28,15 @@
                 <div class="max-width-33">
                     <div class="card">
                         <?php if ($association->getBannerPath()): ?>
-                            <img src="<?= $association->getBannerPath() ?>" alt="Bannière de <?= htmlspecialchars($association->getName()) ?>">
+                            <img src="<?= $association->getBannerPath() ?>" alt="Bannière de <?= $association->getName() ?>">
                         <?php endif; ?>
 
                         <div>
                             <div class="flex-row align-items-center mb">
                                 <?php if ($association->getLogoPath()): ?>
-                                    <img src="<?= $association->getLogoPath() ?>" style="width:50px; height:50px; border-radius:50%;" alt="Logo de <?= htmlspecialchars($association->getName()) ?>">
+                                    <img src="<?= $association->getLogoPath() ?>" style="width:50px; height:50px; border-radius:50%;" alt="Logo de <?= $association->getName() ?>">
                                 <?php endif; ?>
-                                <h5><?= htmlspecialchars($association->getName()) ?></h5>
+                                <h5><?= $association->getName() ?></h5>
                             </div>
                             
                             <div>

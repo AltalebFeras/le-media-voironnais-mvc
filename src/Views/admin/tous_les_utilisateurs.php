@@ -27,12 +27,12 @@
 			<div class="users-list">
 				<?php foreach ($users as $user): ?>
 					<?php
-					$id = htmlspecialchars($user['id']);
-					$first = htmlspecialchars($user['firstName'] ?? '');
-					$last = htmlspecialchars($user['lastName'] ?? '');
-					$email = htmlspecialchars($user['email'] ?? '');
-					$created = htmlspecialchars($user['createdAt'] ?? '');
-					$avatar = !empty($user['avatarPath']) ? htmlspecialchars($user['avatarPath']) : (DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png');
+					$id = $user['id'] ?? '';
+					$first = $user['firstName'] ?? '';
+					$last = $user['lastName'] ?? '';
+					$email = $user['email'] ?? '';
+					$created = $user['createdAt'] ?? '';
+					$avatar = !empty($user['avatarPath']) ? $user['avatarPath'] : (DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png');
 					$online = !empty($user['isOnline']) && ((int)$user['isOnline'] === 1);
 					// initials fallback
 					$initials = '';
@@ -52,7 +52,7 @@
 								<?php if ($avatar): ?>
 									<img src="<?= $avatar; ?>" alt="Avatar <?= $id; ?>">
 								<?php else: ?>
-									<span><?= htmlspecialchars($initials); ?></span>
+									<span><?= $initials; ?></span>
 								<?php endif; ?>
 							</span>
 							<div class="user-title">

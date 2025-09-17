@@ -17,18 +17,18 @@
                         <div>
                             <label for="name">Nom de l'association *</label>
                             <input type="text" id="name" name="name"
-                                value="<?= htmlspecialchars($association->getName()) ?>" required>
+                                value="<?= $association->getName() ?>" required>
                         </div>
 
                         <div>
                             <label for="description">Description</label>
-                            <textarea id="description" name="description" rows="4"><?= htmlspecialchars($association->getDescription() ?? '') ?></textarea>
+                            <textarea id="description" name="description" rows="4"><?= $association->getDescription() ?? '' ?></textarea>
                         </div>
 
                         <div>
                             <label for="address">Adresse</label>
                             <input type="text" id="address" name="address"
-                                value="<?= htmlspecialchars($association->getAddress() ?? '') ?>">
+                                value="<?= $association->getAddress() ?? '' ?>">
                         </div>
 
                         <!-- Postal code and city fields -->
@@ -37,7 +37,7 @@
                                 <div>
                                     <label for="codePostal">Code postal</label>
                                     <input type="text" id="codePostal" name="codePostal" maxlength="5" 
-                                           value="<?= $ville ? htmlspecialchars($ville['ville_code_postal']) : '' ?>">
+                                           value="<?= $ville ? $ville['ville_code_postal'] : '' ?>">
                                     <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
                                 </div>
                             </div>
@@ -46,7 +46,7 @@
                                     <label for="ville">Ville</label>
                                     <select id="ville" name="ville">
                                         <?php if ($ville): ?>
-                                            <option value="<?= $ville['ville_nom_reel'] ?>" selected><?= htmlspecialchars($ville['ville_nom_reel']) ?></option>
+                                            <option value="<?= $ville['ville_nom_reel'] ?>" selected><?= $ville['ville_nom_reel'] ?></option>
                                         <?php else: ?>
                                             <option value="">Sélectionnez une ville</option>
                                         <?php endif; ?>
@@ -62,14 +62,14 @@
                                 <div>
                                     <label for="phone">Téléphone</label>
                                     <input type="tel" id="phone" name="phone"
-                                        value="<?= htmlspecialchars($association->getPhone() ?? '') ?>">
+                                        value="<?= $association->getPhone() ?? '' ?>">
                                 </div>
                             </div>
                             <div class="max-width-50">
                                 <div>
                                     <label for="email">Email</label>
                                     <input type="email" id="email" name="email"
-                                        value="<?= htmlspecialchars($association->getEmail() ?? '') ?>">
+                                        value="<?= $association->getEmail() ?? '' ?>">
                                 </div>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                             <label for="website">Site web</label>
                             <input type="url" id="website" name="website"
                                 placeholder="https://example.com"
-                                value="<?= htmlspecialchars($association->getWebsite() ?? '') ?>">
+                                value="<?= $association->getWebsite() ?? '' ?>">
                         </div>
 
                         <div>

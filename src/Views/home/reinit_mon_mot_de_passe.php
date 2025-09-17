@@ -6,7 +6,7 @@
     <!-- Alert Messages -->
   <?php include_once __DIR__ . '/../includes/messages.php'; ?>
     <form action="<?= DOMAIN . HOME_URL . 'reinit_mon_mot_de_passe' ?>" method="POST">
-        <input type="hidden" name="token" value="<?= htmlspecialchars($_GET['token'] ?? '') ?>">
+        <input type="hidden" name="token" value="<?= $_GET['token'] ?? '' ?>">
         <p>
             Veuillez entrer votre nouveau mot de passe.
         </p>

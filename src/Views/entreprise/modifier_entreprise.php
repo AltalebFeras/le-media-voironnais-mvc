@@ -17,25 +17,25 @@
                         <div>
                             <label for="name">Nom de l'entreprise *</label>
                             <input type="text" id="name" name="name"
-                                value="<?= htmlspecialchars($entreprise->getName()) ?>" required>
+                                value="<?= $entreprise->getName() ?>" required>
                         </div>
 
                         <div>
                             <label for="description">Description</label>
-                            <textarea id="description" name="description" rows="4"><?= htmlspecialchars($entreprise->getDescription() ?? '') ?></textarea>
+                            <textarea id="description" name="description" rows="4"><?= $entreprise->getDescription() ?? '' ?></textarea>
                         </div>
 
                         <div>
                             <label for="siret">Numéro SIRET</label>
                             <input type="text" id="siret" name="siret"
-                                value="<?= htmlspecialchars($entreprise->getSiret() ?? '') ?>">
+                                value="<?= $entreprise->getSiret() ?? '' ?>">
                             <small class="text-muted">Format : 14 chiffres sans espace</small>
                         </div>
 
                         <div>
                             <label for="address">Adresse</label>
                             <input type="text" id="address" name="address"
-                                value="<?= htmlspecialchars($entreprise->getAddress() ?? '') ?>">
+                                value="<?= $entreprise->getAddress() ?? '' ?>">
                         </div>
                         <!-- New postal code and city fields -->
                         <div class="flex-row">
@@ -64,14 +64,14 @@
                                 <div>
                                     <label for="phone">Téléphone</label>
                                     <input type="tel" id="phone" name="phone"
-                                        value="<?= htmlspecialchars($entreprise->getPhone() ?? '') ?>">
+                                        value="<?= $entreprise->getPhone() ?? '' ?>">
                                 </div>
                             </div>
                             <div class="max-width-50">
                                 <div>
                                     <label for="email">Email</label>
                                     <input type="email" id="email" name="email"
-                                        value="<?= htmlspecialchars($entreprise->getEmail() ?? '') ?>">
+                                        value="<?= $entreprise->getEmail() ?? '' ?>">
                                 </div>
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                             <label for="website">Site web</label>
                             <input type="url" id="website" name="website"
                                 placeholder="https://example.com"
-                                value="<?= htmlspecialchars($entreprise->getWebsite() ?? '') ?>">
+                                value="<?= $entreprise->getWebsite() ?? '' ?>">
                         </div>
 
                         <div>

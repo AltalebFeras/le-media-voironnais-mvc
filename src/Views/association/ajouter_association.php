@@ -16,18 +16,18 @@
                         <div>
                             <label for="name">Nom de l'association *</label>
                             <input type="text" id="name" name="name"
-                                value="<?= isset($_SESSION['form_data']['name']) ? htmlspecialchars($_SESSION['form_data']['name']) : '' ?>"  >
+                                value="<?= isset($_SESSION['form_data']['name']) ? $_SESSION['form_data']['name'] : '' ?>"  >
                         </div>
 
                         <div>
                             <label for="description">Description</label>
-                            <textarea id="description" name="description" rows="4"><?= isset($_SESSION['form_data']['description']) ? htmlspecialchars($_SESSION['form_data']['description']) : '' ?></textarea>
+                            <textarea id="description" name="description" rows="4"><?= isset($_SESSION['form_data']['description']) ? $_SESSION['form_data']['description'] : '' ?></textarea>
                         </div>
 
                         <div>
                             <label for="address">Adresse</label>
                             <input type="text" id="address" name="address"
-                                value="<?= isset($_SESSION['form_data']['address']) ? htmlspecialchars($_SESSION['form_data']['address']) : '' ?>">
+                                value="<?= isset($_SESSION['form_data']['address']) ? $_SESSION['form_data']['address'] : '' ?>">
                         </div>
 
                         <!-- New postal code and city fields -->
@@ -36,7 +36,7 @@
                                 <div>
                                     <label for="codePostal">Code postal</label>
                                     <input type="text" id="codePostal" name="codePostal" maxlength="5" 
-                                           value="<?= isset($_SESSION['form_data']['codePostal']) ? htmlspecialchars($_SESSION['form_data']['codePostal']) : '' ?>">
+                                           value="<?= isset($_SESSION['form_data']['codePostal']) ? $_SESSION['form_data']['codePostal'] : '' ?>">
                                     <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
                                 </div>
                             </div>
@@ -58,14 +58,14 @@
                                 <div>
                                     <label for="phone">Téléphone</label>
                                     <input type="tel" id="phone" name="phone"
-                                        value="<?= isset($_SESSION['form_data']['phone']) ? htmlspecialchars($_SESSION['form_data']['phone']) : '' ?>">
+                                        value="<?= isset($_SESSION['form_data']['phone']) ? $_SESSION['form_data']['phone'] : '' ?>">
                                 </div>
                             </div>
                             <div class="max-width-50">
                                 <div>
                                     <label for="email">Email</label>
                                     <input type="email" id="email" name="email"
-                                        value="<?= isset($_SESSION['form_data']['email']) ? htmlspecialchars($_SESSION['form_data']['email']) : '' ?>">
+                                        value="<?= isset($_SESSION['form_data']['email']) ? $_SESSION['form_data']['email'] : '' ?>">
                                 </div>
                             </div>
                         </div>
@@ -74,7 +74,7 @@
                             <label for="website">Site web</label>
                             <input type="url" id="website" name="website"
                                 placeholder="https://example.com"
-                                value="<?= isset($_SESSION['form_data']['website']) ? htmlspecialchars($_SESSION['form_data']['website']) : '' ?>">
+                                value="<?= isset($_SESSION['form_data']['website']) ? $_SESSION['form_data']['website'] : '' ?>">
                         </div>
 
                         <div>

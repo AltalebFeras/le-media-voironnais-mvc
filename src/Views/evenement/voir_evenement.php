@@ -5,7 +5,7 @@
 <main>
     <div class="event-header">
         <div class="flex-row align-items-center mb">
-            <h1><?= htmlspecialchars($evenement->getTitle()) ?></h1>
+            <h1><?= $evenement->getTitle() ?></h1>
             <?php if ($isOwner): ?>
                 <div class="event-actions">
                     <a href="<?= HOME_URL ?>evenement/modifier?id=<?= $evenement->getIdEvenement() ?>" class="btn">
@@ -31,8 +31,8 @@
     <div class="event-content">
         <?php if ($evenement->getBannerPath() || $evenement->getImagePath()): ?>
             <div class="event-banner">
-                <img src="<?= htmlspecialchars($evenement->getBannerPath() ?: $evenement->getImagePath()) ?>"
-                    alt="<?= htmlspecialchars($evenement->getTitle()) ?>">
+                <img src="<?= $evenement->getBannerPath() ?: $evenement->getImagePath() ?>"
+                    alt="<?= $evenement->getTitle() ?>">
             </div>
         <?php endif; ?>
 
@@ -42,13 +42,13 @@
 
                 <div class="info-item">
                     <strong>Description :</strong>
-                    <p><?= nl2br(htmlspecialchars($evenement->getDescription())) ?></p>
+                    <p><?= nl2br($evenement->getDescription()) ?></p>
                 </div>
 
                 <?php if ($evenement->getShortDescription()): ?>
                     <div class="info-item">
                         <strong>Description courte :</strong>
-                        <p><?= nl2br(htmlspecialchars($evenement->getShortDescription())) ?></p>
+                        <p><?= nl2br($evenement->getShortDescription()) ?></p>
                     </div>
                 <?php endif; ?>
 
@@ -73,9 +73,9 @@
 
                 <div class="info-item">
                     <strong>Adresse :</strong>
-                    <p><?= htmlspecialchars($evenement->getAddress()) ?></p>
+                    <p><?= $evenement->getAddress() ?></p>
                     <?php if ($ville): ?>
-                        <p><?= htmlspecialchars($ville['ville_code_postal']) ?> <?= htmlspecialchars($ville['ville_nom_reel']) ?></p>
+                        <p><?= $ville['ville_code_postal'] ?> <?= $ville['ville_nom_reel'] ?></p>
                     <?php endif; ?>
                 </div>
 
@@ -92,7 +92,7 @@
                 <?php if ($evenement->getPrice()): ?>
                     <div class="info-item">
                         <strong>Prix :</strong>
-                        <p><?= number_format($evenement->getPrice(), 2) ?> <?= htmlspecialchars($evenement->getCurrency()) ?></p>
+                        <p><?= number_format($evenement->getPrice(), 2) ?> <?= $evenement->getCurrency() ?></p>
                     </div>
                 <?php endif; ?>
 
@@ -161,7 +161,7 @@
                     <div class="info-item">
                         <strong>Images :</strong>
                         <div class="event-images">
-                            <img src="<?= htmlspecialchars($evenement->getImagePath()) ?>"
+                            <img src="<?= $evenement->getImagePath() ?>"
                                 alt="Image de l'événement" class="event-thumb">
                         </div>
                     </div>
@@ -196,7 +196,7 @@
                             <h3>Confirmer la suppression</h3>
                             <button type="button" onclick="document.getElementById('deleteModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
                             <div class="mt mb">
-                                <p>Êtes-vous sûr de vouloir supprimer l'événement "<?= htmlspecialchars($evenement->getName()) ?>" ?</p>
+                                <p>Êtes-vous sûr de vouloir supprimer l'événement "<?= $evenement->getName() ?>" ?</p>
                                 <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
                             </div>
                             <div class="flex-row justify-content-between">

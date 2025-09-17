@@ -5,7 +5,7 @@ if (isset($_SESSION['error'])): ?>
     <!-- Alert Messages -->
     <div class="custom-alert custom-alert-danger">
         <p>
-            <?= htmlspecialchars($_SESSION['error']); ?>
+            <?= $_SESSION['error']; ?>
         </p>
         <button class="custom-btn-close" onclick="this.parentElement.remove()" aria-label="Close">❌</button>
     </div>
@@ -15,7 +15,7 @@ if (isset($_SESSION['error'])): ?>
 <?php if (isset($_SESSION['success'])): ?>
     <div class="custom-alert custom-alert-success">
         <p>
-            <?= htmlspecialchars($_SESSION['success']); ?>
+            <?= $_SESSION['success']; ?>
         </p>
         <button class="custom-btn-close" onclick="this.parentElement.remove()" aria-label="Close">❌</button>
     </div>
@@ -28,7 +28,7 @@ if (!empty($_SESSION['errors'])): ?>
     <ul class="error-list">
         <?php foreach ($_SESSION['errors'] as $key => $error): ?>
             <li class="error-item">
-                <?= htmlspecialchars($error) ?>
+                <?= $error ?>
                 <button class="custom-btn-close" onclick="
                     const li = this.parentElement;
                     const ul = li.parentElement;

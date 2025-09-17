@@ -3,7 +3,7 @@
 <main>
     <div class="flex-row justify-content-between mb">
         <div>
-            <h1><?= htmlspecialchars($entreprise->getName()) ?></h1>
+            <h1><?= $entreprise->getName() ?></h1>
         </div>
         <div>
             <a href="<?= HOME_URL . 'mes_entreprises' ?>" class="">
@@ -24,17 +24,17 @@
                     <!-- Banner -->
                     <?php if ($entreprise->getBannerPath()): ?>
                         <div class="entreprise-banner">
-                            <img src="<?= $entreprise->getBannerPath() ?>" alt="Bannière de <?= htmlspecialchars($entreprise->getName()) ?>" style="width:100%; max-height:300px; object-fit:cover;">
+                            <img src="<?= $entreprise->getBannerPath() ?>" alt="Bannière de <?= $entreprise->getName() ?>" style="width:100%; max-height:300px; object-fit:cover;">
                         </div>
                     <?php endif; ?>
 
                     <!-- Header with logo and title -->
                     <div class="flex-row align-items-center mb p-3">
                         <?php if ($entreprise->getLogoPath()): ?>
-                            <img src="<?= $entreprise->getLogoPath() ?>" style="width:100px; height:100px; border-radius:50%; margin-right:20px;" alt="Logo de <?= htmlspecialchars($entreprise->getName()) ?>">
+                            <img src="<?= $entreprise->getLogoPath() ?>" style="width:100px; height:100px; border-radius:50%; margin-right:20px;" alt="Logo de <?= $entreprise->getName() ?>">
                         <?php endif; ?>
                         <div>
-                            <h2><?= htmlspecialchars($entreprise->getName()) ?></h2>
+                            <h2><?= $entreprise->getName() ?></h2>
                             <div class="flex-row">
                                 <span class="badge <?= $entreprise->getIsActive() ? 'badge-success' : 'badge-secondary' ?> mr-2">
                                     <?= $entreprise->getIsActive() ? 'Active' : 'Inactive' ?>
@@ -51,7 +51,7 @@
                         <div class="mb-3">
                             <h4>Description</h4>
                             <div class="card p-3 bg-light">
-                                <p><?= nl2br(htmlspecialchars($entreprise->getDescription() ?? 'Aucune description disponible')) ?></p>
+                                <p><?= nl2br($entreprise->getDescription() ?? 'Aucune description disponible') ?></p>
                             </div>
                         </div>
                         
@@ -60,12 +60,12 @@
                                 <h4>Coordonnées</h4>
                                 <dl>
                                     <dt>Adresse</dt>
-                                    <dd><?= htmlspecialchars($entreprise->getAddress() ?? 'Non renseignée') ?></dd>
+                                    <dd><?= $entreprise->getAddress() ?? 'Non renseignée' ?></dd>
                                     
                                     <dt>Ville</dt>
                                     <dd>
                                         <?php if ($ville): ?>
-                                            <?= htmlspecialchars($ville['ville_nom_reel']) ?> (<?= htmlspecialchars($ville['ville_code_postal']) ?>)
+                                            <?= $ville['ville_nom_reel'] ?> (<?= $ville['ville_code_postal'] ?>)
                                         <?php else: ?>
                                             Non renseignée
                                         <?php endif; ?>
@@ -74,8 +74,8 @@
                                     <dt>Téléphone</dt>
                                     <dd>
                                         <?php if ($entreprise->getPhone()): ?>
-                                            <a href="tel:<?= htmlspecialchars($entreprise->getPhone()) ?>">
-                                                <?= htmlspecialchars($entreprise->getPhone()) ?>
+                                            <a href="tel:<?= $entreprise->getPhone() ?>">
+                                                <?= $entreprise->getPhone() ?>
                                             </a>
                                         <?php else: ?>
                                             Non renseigné
@@ -85,8 +85,8 @@
                                     <dt>Email</dt>
                                     <dd>
                                         <?php if ($entreprise->getEmail()): ?>
-                                            <a href="mailto:<?= htmlspecialchars($entreprise->getEmail()) ?>">
-                                                <?= htmlspecialchars($entreprise->getEmail()) ?>
+                                            <a href="mailto:<?= $entreprise->getEmail() ?>">
+                                                <?= $entreprise->getEmail() ?>
                                             </a>
                                         <?php else: ?>
                                             Non renseigné
@@ -96,8 +96,8 @@
                                     <dt>Site web</dt>
                                     <dd>
                                         <?php if ($entreprise->getWebsite()): ?>
-                                            <a href="<?= htmlspecialchars($entreprise->getWebsite()) ?>" target="_blank">
-                                                <?= htmlspecialchars($entreprise->getWebsite()) ?>
+                                            <a href="<?= $entreprise->getWebsite() ?>" target="_blank">
+                                                <?= $entreprise->getWebsite() ?>
                                             </a>
                                         <?php else: ?>
                                             Non renseigné
@@ -110,7 +110,7 @@
                                 <h4>Informations administratives</h4>
                                 <dl>
                                     <dt>SIRET</dt>
-                                    <dd><?= htmlspecialchars($entreprise->getSiret() ?? 'Non renseigné') ?></dd>
+                                    <dd><?= $entreprise->getSiret() ?? 'Non renseigné' ?></dd>
                                     
                                     <dt>Créée le</dt>
                                     <dd><?= $entreprise->getCreatedAtFormatted() ?></dd>
@@ -144,9 +144,9 @@
                         <div class="services-list">
                             <?php foreach ($services as $service): ?>
                                 <div class="service-item p-2 mb-2 border-bottom">
-                                    <strong><?= htmlspecialchars($service['name']) ?></strong>
+                                    <strong><?= $service['name'] ?></strong>
                                     <br>
-                                    <small class="text-muted"><?= htmlspecialchars($service['description']) ?></small>
+                                    <small class="text-muted"><?= $service['description'] ?></small>
                                 </div>
                             <?php endforeach; ?>
                         </div>
@@ -175,7 +175,7 @@
                     <h3>Confirmer la suppression</h3>
                     <button type="button" onclick="document.getElementById('deleteModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
                     <div class="mt mb">
-                        <p>Êtes-vous sûr de vouloir supprimer l'entreprise "<?= htmlspecialchars($entreprise->getName()) ?>" ?</p>
+                        <p>Êtes-vous sûr de vouloir supprimer l'entreprise "<?= $entreprise->getName() ?>" ?</p>
                         <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
                     </div>
                     <div class="flex-row justify-content-between">

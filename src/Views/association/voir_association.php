@@ -3,7 +3,7 @@
 <main>
     <div class="flex-row justify-content-between mb">
         <div>
-            <h1><?= htmlspecialchars($association->getName()) ?></h1>
+            <h1><?= $association->getName() ?></h1>
         </div>
         <div>
             <a href="<?= HOME_URL . 'mes_associations' ?>" class="">
@@ -24,17 +24,17 @@
                     <!-- Banner -->
                     <?php if ($association->getBannerPath()): ?>
                         <div class="association-banner">
-                            <img src="<?= $association->getBannerPath() ?>" alt="Bannière de <?= htmlspecialchars($association->getName()) ?>" style="width:100%; max-height:300px; object-fit:cover;">
+                            <img src="<?= $association->getBannerPath() ?>" alt="Bannière de <?= $association->getName() ?>" style="width:100%; max-height:300px; object-fit:cover;">
                         </div>
                     <?php endif; ?>
 
                     <!-- Header with logo and title -->
                     <div class="flex-row align-items-center mb p-3">
                         <?php if ($association->getLogoPath()): ?>
-                            <img src="<?= $association->getLogoPath() ?>" style="width:100px; height:100px; border-radius:50%; margin-right:20px;" alt="Logo de <?= htmlspecialchars($association->getName()) ?>">
+                            <img src="<?= $association->getLogoPath() ?>" style="width:100px; height:100px; border-radius:50%; margin-right:20px;" alt="Logo de <?= $association->getName() ?>">
                         <?php endif; ?>
                         <div>
-                            <h2><?= htmlspecialchars($association->getName()) ?></h2>
+                            <h2><?= $association->getName() ?></h2>
                             <div class="flex-row">
                                 <span class="badge <?= $association->getIsActive() ? 'badge-success' : 'badge-secondary' ?> mr-2">
                                     <?= $association->getIsActive() ? 'Active' : 'Inactive' ?>
@@ -51,7 +51,7 @@
                         <div class="mb-3">
                             <h4>Description</h4>
                             <div class="card p-3 bg-light">
-                                <p><?= nl2br(htmlspecialchars($association->getDescription() ?? 'Aucune description disponible')) ?></p>
+                                <p><?= nl2br($association->getDescription() ?? 'Aucune description disponible') ?></p>
                             </div>
                         </div>
                         
@@ -60,12 +60,12 @@
                                 <h4>Coordonnées</h4>
                                 <dl>
                                     <dt>Adresse</dt>
-                                    <dd><?= htmlspecialchars($association->getAddress() ?? 'Non renseignée') ?></dd>
-                                    
+                                    <dd><?= $association->getAddress() ?? 'Non renseignée' ?></dd>
+
                                     <dt>Ville</dt>
                                     <dd>
                                         <?php if ($ville): ?>
-                                            <?= htmlspecialchars($ville['ville_nom_reel']) ?> (<?= htmlspecialchars($ville['ville_code_postal']) ?>)
+                                            <?= $ville['ville_nom_reel'] ?> (<?= $ville['ville_code_postal'] ?>)
                                         <?php else: ?>
                                             Non renseignée
                                         <?php endif; ?>
@@ -74,8 +74,8 @@
                                     <dt>Téléphone</dt>
                                     <dd>
                                         <?php if ($association->getPhone()): ?>
-                                            <a href="tel:<?= htmlspecialchars($association->getPhone()) ?>">
-                                                <?= htmlspecialchars($association->getPhone()) ?>
+                                            <a href="tel:<?= $association->getPhone() ?>">
+                                                <?= $association->getPhone() ?>
                                             </a>
                                         <?php else: ?>
                                             Non renseigné
@@ -85,8 +85,8 @@
                                     <dt>Email</dt>
                                     <dd>
                                         <?php if ($association->getEmail()): ?>
-                                            <a href="mailto:<?= htmlspecialchars($association->getEmail()) ?>">
-                                                <?= htmlspecialchars($association->getEmail()) ?>
+                                            <a href="mailto:<?= $association->getEmail() ?>">
+                                                <?= $association->getEmail() ?>
                                             </a>
                                         <?php else: ?>
                                             Non renseigné
@@ -96,8 +96,8 @@
                                     <dt>Site web</dt>
                                     <dd>
                                         <?php if ($association->getWebsite()): ?>
-                                            <a href="<?= htmlspecialchars($association->getWebsite()) ?>" target="_blank">
-                                                <?= htmlspecialchars($association->getWebsite()) ?>
+                                            <a href="<?= $association->getWebsite() ?>" target="_blank">
+                                                <?= $association->getWebsite() ?>
                                             </a>
                                         <?php else: ?>
                                             Non renseigné
@@ -148,7 +148,7 @@
                                             </div>
                                         </div>
                                         <div class="member-info flex-grow">
-                                            <strong><?= htmlspecialchars($member['firstName'] . ' ' . $member['lastName']) ?></strong>
+                                            <strong><?= $member['firstName'] . ' ' . $member['lastName'] ?></strong>
                                             <br>
                                             <small class="text-muted">
                                                 <span class="badge badge-sm <?= $member['role'] === 'admin' ? 'badge-primary' : 'badge-secondary' ?>">
@@ -175,7 +175,7 @@
                     <h3>Confirmer la suppression</h3>
                     <button type="button" onclick="document.getElementById('deleteModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
                     <div class="mt mb">
-                        <p>Êtes-vous sûr de vouloir supprimer l'association "<?= htmlspecialchars($association->getName()) ?>" ?</p>
+                        <p>Êtes-vous sûr de vouloir supprimer l'association "<?= $association->getName() ?>" ?</p>
                         <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
                     </div>
                     <div class="flex-row justify-content-between">
