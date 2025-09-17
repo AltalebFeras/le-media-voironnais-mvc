@@ -29,7 +29,7 @@
                     <h3><?= $evenement['title'] ?></h3>
 
                     <div class="event-meta">
-                        <p><strong>Date:</strong> <?= date('d/m/Y H:i', strtotime($evenement['eventDate'])) ?? '' ?></p>
+                        <p><strong>Date:</strong> <?= date('d/m/Y H:i', strtotime($evenement['startDate'])) ?? '' ?></p>
                         <p><strong>Lieu:</strong> <?= $evenement['address'] ?? '' ?></p>
                         <p><strong>Ville:</strong> <?= $evenement['ville_nom_reel'] ?? 'Inconnu' ?></p>
                         <p><strong>Catégorie:</strong> <?= $evenement['category_name'] ?? 'Inconnue' ?></p>

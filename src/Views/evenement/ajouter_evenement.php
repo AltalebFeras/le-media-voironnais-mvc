@@ -40,9 +40,9 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="eventDate">Date et heure de début *</label>
-                    <input type="datetime-local" id="eventDate" name="eventDate" required
-                        value="<?= isset($_SESSION['form_data']['eventDate']) ? $_SESSION['form_data']['eventDate'] : '' ?>">
+                    <label for="startDate">Date et heure de début *</label>
+                    <input type="datetime-local" id="startDate" name="startDate" required
+                        value="<?= isset($_SESSION['form_data']['startDate']) ? $_SESSION['form_data']['startDate'] : '' ?>">
                 </div>
 
                 <div class="form-group">

@@ -10,7 +10,7 @@ class Evenement
     private ?string $title = null;
     private ?string $description = null;
     private ?string $shortDescription = null;
-    private ?string $eventDate = null;
+    private ?string $startDate = null;
     private ?string $endDate = null;
     private ?string $registrationDeadline = null;
     private ?int $maxParticipants = null;
@@ -50,9 +50,9 @@ class Evenement
     {
         return $this->shortDescription;
     }
-    public function getEventDate(): ?string
+    public function getStartDate(): ?string
     {
-        return $this->eventDate;
+        return $this->startDate;
     }
     public function getEndDate(): ?string
     {
@@ -164,9 +164,9 @@ class Evenement
         return $this;
     }
 
-    public function setEventDate(?string $eventDate): self
+    public function setStartDate(?string $startDate): self
     {
-        $this->eventDate = $eventDate;
+        $this->startDate = $startDate;
         return $this;
     }
 
@@ -297,11 +297,11 @@ class Evenement
     }
 
     // Formatted date getters
-    public function getEventDateFormatted(): ?string
+    public function getStartDateFormatted(): ?string
     {
-        if (!$this->eventDate) return null;
-        $date = DateTime::createFromFormat('Y-m-d H:i:s', $this->eventDate);
-        return $date ? $date->format('d/m/Y H:i') : $this->eventDate;
+        if (!$this->startDate) return null;
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $this->startDate);
+        return $date ? $date->format('d/m/Y H:i') : $this->startDate;
     }
 
     public function getCreatedAtFormatted(): ?string
@@ -331,22 +331,22 @@ class Evenement
             $errors['description'] = 'La description ne peut pas dépasser 5000 caractères';
         }
 
-        if (empty($this->eventDate)) {
-            $errors['eventDate'] = 'La date de l\'événement est obligatoire';
+        if (empty($this->startDate)) {
+            $errors['startDate'] = 'La date de début est obligatoire';
         } else {
             // Try datetime-local format first, then full datetime format
-            $eventDate = DateTime::createFromFormat('Y-m-d\TH:i', $this->eventDate);
-            if (!$eventDate) {
-                $eventDate = DateTime::createFromFormat('Y-m-d H:i:s', $this->eventDate);
+            $startDate = DateTime::createFromFormat('Y-m-d\TH:i', $this->startDate);
+            if (!$startDate) {
+                $startDate = DateTime::createFromFormat('Y-m-d H:i:s', $this->startDate);
             }
 
-            if (!$eventDate) {
-                $errors['eventDate'] = 'Format de date invalide';
+            if (!$startDate) {
+                $errors['startDate'] = 'Format de date invalide';
             } else {
                 $today = new DateTime();
                 $today->setTime(0, 0, 0); // Set to start of day for comparison
-                if ($eventDate < $today) {
-                    $errors['eventDate'] = 'La date de l\'événement ne peut pas être dans le passé';
+                if ($startDate < $today) {
+                    $errors['startDate'] = 'La date de début ne peut pas être dans le passé';
                 }
             }
         }
@@ -380,28 +380,28 @@ class Evenement
                 $deadlineDate = DateTime::createFromFormat('Y-m-d H:i:s', $this->registrationDeadline);
             }
 
-            $eventDate = DateTime::createFromFormat('Y-m-d\TH:i', $this->eventDate);
-            if (!$eventDate) {
-                $eventDate = DateTime::createFromFormat('Y-m-d H:i:s', $this->eventDate);
+            $startDate = DateTime::createFromFormat('Y-m-d\TH:i', $this->startDate);
+            if (!$startDate) {
+                $startDate = DateTime::createFromFormat('Y-m-d H:i:s', $this->startDate);
             }
 
-            if ($deadlineDate && $eventDate && $deadlineDate > $eventDate) {
-                $errors['registrationDeadline'] = 'La date limite d\'inscription doit être antérieure à la date de l\'événement';
+            if ($deadlineDate && $startDate && $deadlineDate > $startDate) {
+                $errors['registrationDeadline'] = 'La date limite d\'inscription doit être antérieure à la date de début';
             }
         }
 
-        if ($this->endDate && $this->eventDate) {
+        if ($this->endDate && $this->startDate) {
             $endDate = DateTime::createFromFormat('Y-m-d\TH:i', $this->endDate);
             if (!$endDate) {
                 $endDate = DateTime::createFromFormat('Y-m-d H:i:s', $this->endDate);
             }
 
-            $eventDate = DateTime::createFromFormat('Y-m-d\TH:i', $this->eventDate);
-            if (!$eventDate) {
-                $eventDate = DateTime::createFromFormat('Y-m-d H:i:s', $this->eventDate);
+            $startDate = DateTime::createFromFormat('Y-m-d\TH:i', $this->startDate);
+            if (!$startDate) {
+                $startDate = DateTime::createFromFormat('Y-m-d H:i:s', $this->startDate);
             }
 
-            if ($endDate && $eventDate && $endDate < $eventDate) {
+            if ($endDate && $startDate && $endDate < $startDate) {
                 $errors['endDate'] = 'La date de fin doit être postérieure à la date de début';
             }
         }

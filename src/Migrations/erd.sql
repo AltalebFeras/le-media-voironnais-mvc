@@ -140,7 +140,7 @@ CREATE TABLE evenement (
   title VARCHAR(255) NOT NULL,
   description TEXT NULL,
   shortDescription VARCHAR(500) NULL,
-  eventDate DATETIME NOT NULL,
+  startDate DATETIME NOT NULL,
   endDate DATETIME NULL,
   registrationDeadline DATETIME NULL,
   maxParticipants INT NOT NULL,
@@ -402,7 +402,7 @@ CREATE INDEX idx_entreprise_active ON entreprise (isActive);
 CREATE INDEX idx_entreprise_status ON entreprise (status);
 
 -- Event indexes
-CREATE INDEX idx_evenement_date ON evenement (eventDate);
+CREATE INDEX idx_evenement_date ON evenement (startDate);
 CREATE INDEX idx_evenement_status ON evenement (status);
 CREATE INDEX idx_evenement_public ON evenement (isPublic);
 CREATE INDEX idx_evenement_association ON evenement (idAssociation);
@@ -486,7 +486,7 @@ VALUES
 ('Boulangerie Dupont', 'Artisan boulanger-pâtissier', '/images/logo/dupont.png', '/images/banners/dupont.jpg', '7 Place du Marché, Voiron', '+33 4 55 66 77 88', 'bonjour@boulangerie-dupont.fr', NULL, '98765432109876', 'brouillon', FALSE, 2);
 
 -- Insert events
-INSERT INTO evenement (title, description, shortDescription, eventDate, endDate, registrationDeadline, maxParticipants, currentParticipants, address, latitude, longitude, imagePath, bannerPath, status, isPublic, requiresApproval, price, currency, idUser, idAssociation, idVille, idEventCategory)
+INSERT INTO evenement (title, description, shortDescription, startDate, endDate, registrationDeadline, maxParticipants, currentParticipants, address, latitude, longitude, imagePath, bannerPath, status, isPublic, requiresApproval, price, currency, idUser, idAssociation, idVille, idEventCategory)
 VALUES
 ('Concert d\'été', 'Grand concert en plein air', 'Concert plein air', DATE_ADD(NOW(), INTERVAL 30 DAY), DATE_ADD(NOW(), INTERVAL 30 DAY), DATE_ADD(NOW(), INTERVAL 25 DAY), 500, 120, 'Parc Central, Voiron', 45.36420000, 5.59230000, '/images/events/concert.jpg', '/images/banners/concert.jpg', 'actif', TRUE, FALSE, 10.00, 'EUR', 2, 1, 1, 2),
 ('Atelier Peinture', 'Atelier pour débutants', 'Atelier de peinture', DATE_ADD(NOW(), INTERVAL 10 DAY), NULL, DATE_ADD(NOW(), INTERVAL 7 DAY), 20, 8, 'Maison des Arts, Voiron', 45.36500000, 5.59300000, '/images/events/atelier.jpg', NULL, 'brouillon', TRUE, FALSE, 0.00, 'EUR', 2, 1, 1, 2);
@@ -602,7 +602,7 @@ VALUES
 (10, 'Tech Conseil', 'Conseil IT', '/images/logo/techconseil.png', '/images/banners/techconseil.jpg', '50 Rue du Numérique, Voiron', NULL, 'hello@techconseil.fr', 'https://techconseil.fr', '88990011223344', 'brouillon', FALSE, 14, NOW());
 
 -- More events (IDs 3..10)
-INSERT INTO evenement (idEvenement, title, description, shortDescription, eventDate, endDate, registrationDeadline, maxParticipants, currentParticipants, address, latitude, longitude, imagePath, bannerPath, status, isPublic, requiresApproval, price, currency, idUser, idAssociation, idVille, idEventCategory, createdAt)
+INSERT INTO evenement (idEvenement, title, description, shortDescription, startDate, endDate, registrationDeadline, maxParticipants, currentParticipants, address, latitude, longitude, imagePath, bannerPath, status, isPublic, requiresApproval, price, currency, idUser, idAssociation, idVille, idEventCategory, createdAt)
 VALUES
 (3, 'Tournoi Esports', 'Tournoi local', 'Tournoi jeux vidéo', DATE_ADD(NOW(), INTERVAL 15 DAY), NULL, DATE_ADD(NOW(), INTERVAL 10 DAY), 64, 32, 'Salle Polyvalente, Voiron', 45.3645, 5.5925, '/images/events/esports.jpg', NULL, 'actif', TRUE, FALSE, 5.00, 'EUR', 4, 3, 2, 3, NOW()),
 (4, 'Expo Photo', 'Exposition de photographie', 'Expo photo', DATE_ADD(NOW(), INTERVAL 20 DAY), DATE_ADD(NOW(), INTERVAL 21 DAY), DATE_ADD(NOW(), INTERVAL 18 DAY), 200, 50, 'Galerie Municipale, Voiron', 45.3646, 5.5926, '/images/events/photo.jpg', '/images/banners/photo_event.jpg', 'brouillon', TRUE, FALSE, 0.00, 'EUR', 5, 4, 1, 2, NOW()),

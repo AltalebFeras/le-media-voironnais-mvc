@@ -40,9 +40,9 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="eventDate">Date et heure de début *</label>
-                    <input type="datetime-local" id="eventDate" name="eventDate" required
-                           value="<?= date('Y-m-d\TH:i', strtotime($evenement->getEventDate())) ?>">
+                    <label for="startDate">Date et heure de début *</label>
+                    <input type="datetime-local" id="startDate" name="startDate" required
+                           value="<?= date('Y-m-d\TH:i', strtotime($evenement->getStartDate())) ?>">
                 </div>
 
                 <div class="form-group">

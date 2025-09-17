@@ -28,7 +28,7 @@ class EvenementRepository
                 LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
                 LEFT JOIN association a ON e.idAssociation = a.idAssociation
                 WHERE e.idUser = :idUser AND e.isDeleted = 0 
-                ORDER BY e.eventDate ASC
+                ORDER BY e.startDate ASC
                 LIMIT :offset, :evenementsPerPage";
         
         $stmt = $this->pdo->prepare($sql);
@@ -72,7 +72,7 @@ class EvenementRepository
                   ->setTitle($data['title'])
                   ->setDescription($data['description'])
                   ->setShortDescription($data['shortDescription'])
-                  ->setEventDate($data['eventDate'])
+                  ->setStartDate($data['startDate'])
                   ->setEndDate($data['endDate'])
                   ->setRegistrationDeadline($data['registrationDeadline'])
                   ->setMaxParticipants($data['maxParticipants'])
@@ -106,11 +106,11 @@ class EvenementRepository
      */
     public function createEvent(Evenement $event): bool
     {
-        $sql = "INSERT INTO evenement (title, description, shortDescription, eventDate, endDate, 
+        $sql = "INSERT INTO evenement (title, description, shortDescription, startDate, endDate, 
                 registrationDeadline, maxParticipants, currentParticipants, address, latitude, longitude,
                 imagePath, bannerPath, status, isPublic, isDeleted, requiresApproval, price, currency,
                 createdAt, idUser, idAssociation, idVille, idEventCategory) 
-                VALUES (:title, :description, :shortDescription, :eventDate, :endDate, 
+                VALUES (:title, :description, :shortDescription, :startDate, :endDate, 
                 :registrationDeadline, :maxParticipants, :currentParticipants, :address, :latitude, :longitude,
                 :imagePath, :bannerPath, :status, :isPublic, :isDeleted, :requiresApproval, :price, :currency,
                 :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory)";
@@ -121,7 +121,7 @@ class EvenementRepository
             ':title' => $event->getTitle(),
             ':description' => $event->getDescription(),
             ':shortDescription' => $event->getShortDescription(),
-            ':eventDate' => $event->getEventDate(),
+            ':startDate' => $event->getStartDate(),
             ':endDate' => $event->getEndDate(),
             ':registrationDeadline' => $event->getRegistrationDeadline(),
             ':maxParticipants' => $event->getMaxParticipants(),
@@ -152,7 +152,7 @@ class EvenementRepository
     {
         $sql = "UPDATE evenement SET 
                 title = :title, description = :description, shortDescription = :shortDescription,
-                eventDate = :eventDate, endDate = :endDate, registrationDeadline = :registrationDeadline,
+                startDate = :startDate, endDate = :endDate, registrationDeadline = :registrationDeadline,
                 maxParticipants = :maxParticipants, address = :address, latitude = :latitude, longitude = :longitude,
                 status = :status, isPublic = :isPublic, requiresApproval = :requiresApproval,
                 price = :price, currency = :currency, updatedAt = :updatedAt, idVille = :idVille,
@@ -165,7 +165,7 @@ class EvenementRepository
             ':title' => $event->getTitle(),
             ':description' => $event->getDescription(),
             ':shortDescription' => $event->getShortDescription(),
-            ':eventDate' => $event->getEventDate(),
+            ':startDate' => $event->getStartDate(),
             ':endDate' => $event->getEndDate(),
             ':registrationDeadline' => $event->getRegistrationDeadline(),
             ':maxParticipants' => $event->getMaxParticipants(),

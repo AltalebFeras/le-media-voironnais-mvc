@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 16, 2025 at 05:15 PM
+-- Generation Time: Sep 17, 2025 at 05:33 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -52,17 +52,6 @@ CREATE TABLE IF NOT EXISTS `association` (
   KEY `idx_association_ville` (`idVille`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `association`
---
-
-INSERT INTO `association` (`idAssociation`, `name`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `isActive`, `isPublic`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
-(1, 'Culture Voiron', 'Association culturelle locale', '/images/logo/culture.png', '/images/banners/culture.jpg', '1 Rue de la Culture, Voiron', '+33 4 12 34 56 78', 'contact@culture-voiron.fr', 'https://culture-voiron.fr', 1, 0, 0, 27, 14329, '2025-09-11 12:00:01', NULL),
-(2, 'Sports Voironnais', 'Promotion des activités sportives', '/images/logo/sports.png', '/images/banners/sports.jpg', '10 Avenue du Sport, Voiron', '+33 4 87 65 43 21', 'contact@sports-voironnais.fr', 'https://sports-voironnais.fr', 1, 0, 0, 27, 14329, '2025-09-11 12:00:01', NULL),
-(3, 'Jeux & Esports Voiron', 'Gaming et esports locaux', '/images/logo/esports.png', '/images/banners/esports.jpg', '3 Rue des Jeux, Voiron', NULL, 'contact@jeux-voiron.fr', NULL, 1, 0, 0, 4, 14329, '2025-09-11 12:00:01', NULL),
-(4, 'Photographie Voiron', 'Club de photo', '/images/logo/photo.png', '/images/banners/photo.jpg', '8 Rue des Artistes, Voiron', NULL, 'hello@photo-voiron.fr', NULL, 1, 0, 0, 5, 14329, '2025-09-11 12:00:01', NULL),
-(5, 'Théâtre Amateur', 'Troupe de théâtre amateur', '/images/logo/theatre.png', '/images/banners/theatre.jpg', '12 Rue du Théâtre, Voiron', NULL, 'contact@theatre-amateur.fr', NULL, 1, 0, 0, 6, 14329, '2025-09-11 12:00:01', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -83,17 +72,6 @@ CREATE TABLE IF NOT EXISTS `association_invitation` (
   KEY `FK_user_TO_association_invitation_user` (`idUser`),
   KEY `FK_user_TO_association_invitation_inviter` (`idInviter`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `association_invitation`
---
-
-INSERT INTO `association_invitation` (`idAssociationInvitation`, `idAssociation`, `idUser`, `idInviter`, `status`, `invitedAt`, `respondedAt`) VALUES
-(1, 1, 3, 2, 'accepte', '2025-09-11 12:00:01', NULL),
-(2, 2, 3, 2, 'en_attente', '2025-09-11 12:00:01', NULL),
-(3, 3, 5, 4, 'accepte', '2025-09-11 12:00:01', NULL),
-(4, 4, 7, 6, 'refuse', '2025-09-11 12:00:01', NULL),
-(5, 5, 8, 6, 'en_attente', '2025-09-11 12:00:01', NULL);
 
 -- --------------------------------------------------------
 
@@ -121,19 +99,7 @@ CREATE TABLE IF NOT EXISTS `chat` (
   KEY `idx_chat_event` (`idEvenement`),
   KEY `idx_chat_association` (`idAssociation`),
   KEY `idx_chat_last_message` (`lastMessageAt`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `chat`
---
-
-INSERT INTO `chat` (`idChat`, `title`, `description`, `isGroup`, `isEventChat`, `idEvenement`, `idAssociation`, `createdBy`, `lastMessageAt`, `lastMessageId`, `createdAt`, `updatedAt`) VALUES
-(1, 'Discussion Générale', 'Espace de discussion pour la communauté', 1, 0, NULL, 1, 2, '2025-09-11 12:00:01', NULL, '2025-09-11 12:00:01', NULL),
-(2, 'Chat Concert', 'Discussion autour du concert', 1, 1, 1, 1, 2, '2025-09-11 12:00:01', NULL, '2025-09-11 12:00:01', NULL),
-(3, 'Chat Esports', 'Discussion tournoi', 1, 1, 3, 3, 4, '2025-09-11 12:00:01', NULL, '2025-09-11 12:00:01', NULL),
-(4, 'Photo Club', 'Discussions photo', 1, 0, NULL, 4, 5, '2025-09-11 12:00:01', NULL, '2025-09-11 12:00:01', NULL),
-(5, 'Yoga Group', 'Infos yoga', 1, 1, 8, NULL, 12, '2025-09-11 12:00:01', NULL, '2025-09-11 12:00:01', NULL),
-(6, 'Marché Livres', 'Organisation', 1, 1, 9, NULL, 9, '2025-09-11 12:00:01', NULL, '2025-09-11 12:00:01', NULL);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -153,23 +119,7 @@ CREATE TABLE IF NOT EXISTS `chat_participant` (
   PRIMARY KEY (`idChatParticipant`),
   UNIQUE KEY `unique_chat_user_participant` (`idChat`,`idUser`),
   KEY `FK_user_TO_chat_participant` (`idUser`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `chat_participant`
---
-
-INSERT INTO `chat_participant` (`idChatParticipant`, `idChat`, `idUser`, `role`, `joinedAt`, `leftAt`, `isActive`) VALUES
-(1, 1, 2, 'admin', '2025-09-11 12:00:01', NULL, 1),
-(2, 1, 3, 'membre', '2025-09-11 12:00:01', NULL, 1),
-(3, 2, 2, 'moderateur', '2025-09-11 12:00:01', NULL, 1),
-(4, 2, 3, 'membre', '2025-09-11 12:00:01', NULL, 1),
-(5, 3, 4, 'admin', '2025-09-11 12:00:01', NULL, 1),
-(6, 3, 5, 'membre', '2025-09-11 12:00:01', NULL, 1),
-(7, 4, 5, 'admin', '2025-09-11 12:00:01', NULL, 1),
-(8, 4, 7, 'membre', '2025-09-11 12:00:01', NULL, 1),
-(9, 5, 12, 'admin', '2025-09-11 12:00:01', NULL, 1),
-(10, 6, 9, 'admin', '2025-09-11 12:00:01', NULL, 1);
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -205,22 +155,6 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   KEY `idx_entreprise_ville` (`idVille`)
 ) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `entreprise`
---
-
-INSERT INTO `entreprise` (`idEntreprise`, `name`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `status`, `isActive`, `isPublic`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
-(1, 'Tech Voiron SARL', 'Solutions logicielles locales', '/images/logo/techvoiron.png', '/images/banners/techvoiron.jpg', '25 Rue des Alpes, Voiron', '+33 4 11 22 33 44', 'contact@techvoiron.fr', 'https://techvoiron.fr', '12345678901234', 'actif', 1, 0, 0, 1, 14329, '2025-09-11 12:00:01', NULL),
-(2, 'Boulangerie Dupont', 'Artisan boulanger-pâtissier', '/images/logo/dupont.png', '/images/banners/dupont.jpg', '7 Place du Marché, Voiron', '+33 4 55 66 77 88', 'bonjour@boulangerie-dupont.fr', NULL, '98765432109876', 'brouillon', 0, 0, 0, 2, 14329, '2025-09-11 12:00:01', NULL),
-(3, 'Menuiserie Martin', 'Menuiserie et agencement', '/images/logo/menuiserie.png', NULL, '15 Rue du Bois, Voiron', NULL, 'contact@menuiserie-martin.fr', NULL, '11223344556677', 'actif', 1, 0, 0, 7, 14329, '2025-09-11 12:00:01', NULL),
-(4, 'AutoVoiron', 'Garage automobile', '/images/logo/auto.png', '/images/banners/auto.jpg', '2 Avenue du Garage, Voiron', NULL, 'contact@autovoiron.fr', 'https://autovoiron.fr', '22334455667788', 'actif', 1, 0, 0, 8, 14329, '2025-09-11 12:00:01', NULL),
-(5, 'Librairie des Alpes', 'Librairie indépendante', '/images/logo/librairie.png', '/images/banners/librairie.jpg', '30 Rue des Livres, Voiron', NULL, 'bonjour@librairie-alpes.fr', NULL, '33445566778899', 'brouillon', 0, 0, 0, 9, 14329, '2025-09-11 12:00:01', NULL),
-(6, 'Fleuriste Rose', 'Fleuriste et déco', '/images/logo/fleuriste.png', NULL, '9 Rue des Fleurs, Voiron', NULL, 'contact@fleuristerose.fr', NULL, '44556677889900', 'actif', 1, 0, 0, 10, 14329, '2025-09-11 12:00:01', NULL),
-(7, 'Pizzeria Napoli', 'Restaurant italien', '/images/logo/pizzeria.png', '/images/banners/pizzeria.jpg', '21 Rue de Rome, Voiron', NULL, 'ciao@pizzeria-napoli.fr', 'https://pizzeria-napoli.fr', '55667788990011', 'suspendu', 0, 0, 0, 11, 14329, '2025-09-11 12:00:01', NULL),
-(8, 'Studio Yoga', 'Cours de yoga', '/images/logo/yoga.png', '/images/banners/yoga.jpg', '5 Rue Zen, Voiron', NULL, 'namaste@yogastudio.fr', NULL, '66778899001122', 'actif', 1, 0, 0, 12, 14329, '2025-09-11 12:00:01', NULL),
-(9, 'Coiffure Élégance', 'Salon de coiffure', '/images/logo/coiffure.png', NULL, '17 Rue de la Beauté, Voiron', NULL, 'rdv@coiffure-elegance.fr', NULL, '77889900112233', 'actif', 1, 0, 0, 13, 14329, '2025-09-11 12:00:01', NULL),
-(10, 'Tech Conseil', 'Conseil IT', '/images/logo/techconseil.png', '/images/banners/techconseil.jpg', '50 Rue du Numérique, Voiron', NULL, 'hello@techconseil.fr', 'https://techconseil.fr', '88990011223344', 'brouillon', 0, 0, 0, 14, 14329, '2025-09-11 12:00:01', NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -233,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `shortDescription` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `eventDate` datetime NOT NULL,
+  `startDate` datetime NOT NULL,
   `endDate` datetime DEFAULT NULL,
   `registrationDeadline` datetime DEFAULT NULL,
   `maxParticipants` int NOT NULL,
@@ -259,28 +193,12 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   UNIQUE KEY `UQ_idEvenement` (`idEvenement`),
   KEY `FK_user_TO_evenement_creator` (`idUser`),
   KEY `FK_ville_TO_evenement` (`idVille`),
-  KEY `idx_evenement_date` (`eventDate`),
+  KEY `idx_evenement_date` (`startDate`),
   KEY `idx_evenement_status` (`status`),
   KEY `idx_evenement_public` (`isPublic`),
   KEY `idx_evenement_association` (`idAssociation`),
   KEY `idx_evenement_category` (`idEventCategory`)
 ) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `evenement`
---
-
-INSERT INTO `evenement` (`idEvenement`, `title`, `description`, `shortDescription`, `eventDate`, `endDate`, `registrationDeadline`, `maxParticipants`, `currentParticipants`, `address`, `latitude`, `longitude`, `imagePath`, `bannerPath`, `status`, `isPublic`, `isDeleted`, `requiresApproval`, `price`, `currency`, `createdAt`, `updatedAt`, `idUser`, `idAssociation`, `idVille`, `idEventCategory`) VALUES
-(1, 'Concert d\'été', 'Grand concert en plein air', 'Concert plein air', '2025-10-11 12:00:01', '2025-10-11 12:00:01', '2025-10-06 12:00:01', 500, 120, 'Parc Central, Voiron', 45.36420000, 5.59230000, '/images/events/concert.jpg', '/images/banners/concert.jpg', 'actif', 1, 0, 0, 10.00, 'EUR', '2025-09-11 12:00:01', NULL, 2, 1, 1, 2),
-(2, 'Atelier Peinture', 'Atelier pour débutants', 'Atelier de peinture', '2025-09-21 12:00:01', NULL, '2025-09-18 12:00:01', 20, 8, 'Maison des Arts, Voiron', 45.36500000, 5.59300000, '/images/events/atelier.jpg', NULL, 'brouillon', 1, 0, 0, 0.00, 'EUR', '2025-09-11 12:00:01', NULL, 2, 1, 1, 2),
-(3, 'Tournoi Esports', 'Tournoi local', 'Tournoi jeux vidéo', '2025-09-26 12:00:01', NULL, '2025-09-21 12:00:01', 64, 32, 'Salle Polyvalente, Voiron', 45.36450000, 5.59250000, '/images/events/esports.jpg', NULL, 'actif', 1, 0, 0, 5.00, 'EUR', '2025-09-11 12:00:01', NULL, 4, 3, 2, 3),
-(4, 'Expo Photo', 'Exposition de photographie', 'Expo photo', '2025-10-01 12:00:01', '2025-10-02 12:00:01', '2025-09-29 12:00:01', 200, 50, 'Galerie Municipale, Voiron', 45.36460000, 5.59260000, '/images/events/photo.jpg', '/images/banners/photo_event.jpg', 'brouillon', 1, 0, 0, 0.00, 'EUR', '2025-09-11 12:00:01', NULL, 5, 4, 1, 2),
-(5, 'Match de Foot', 'Match amical', 'Foot amical', '2025-09-16 12:00:01', NULL, '2025-09-14 12:00:01', 22, 18, 'Stade Municipal, Voiron', 45.36470000, 5.59270000, '/images/events/foot.jpg', NULL, 'actif', 1, 0, 0, 0.00, 'EUR', '2025-09-11 12:00:01', NULL, 7, 2, 2, 1),
-(6, 'Atelier Théâtre', 'Atelier d\'impro', 'Impro débutants', '2025-09-23 12:00:01', NULL, '2025-09-20 12:00:01', 25, 10, 'Salle Théâtre, Voiron', 45.36480000, 5.59280000, '/images/events/theatre.jpg', NULL, 'brouillon', 1, 0, 0, 0.00, 'EUR', '2025-09-11 12:00:01', NULL, 6, 5, 3, 4),
-(7, 'Conférence Business', 'Conférence PME', 'PME et croissance', '2025-10-16 12:00:01', '2025-10-16 12:00:01', '2025-10-11 12:00:01', 150, 60, 'Centre d\'Affaires, Voiron', 45.36490000, 5.59290000, '/images/events/business.jpg', '/images/banners/business.jpg', 'actif', 1, 0, 1, 20.00, 'EUR', '2025-09-11 12:00:01', NULL, 1, NULL, 1, 5),
-(8, 'Cours de Yoga', 'Séance découverte', 'Yoga découverte', '2025-09-14 12:00:01', NULL, '2025-09-13 12:00:01', 30, 12, 'Parc Zen, Voiron', 45.36500000, 5.59300000, '/images/events/yoga.jpg', NULL, 'actif', 1, 0, 0, 0.00, 'EUR', '2025-09-11 12:00:01', NULL, 12, NULL, 1, 4),
-(9, 'Marché du Livre', 'Vente de livres', 'Livres d\'occasion', '2025-09-19 12:00:01', NULL, '2025-09-17 12:00:01', 100, 40, 'Place du Marché, Voiron', 45.36510000, 5.59310000, '/images/events/livres.jpg', NULL, 'actif', 1, 0, 0, 0.00, 'EUR', '2025-09-11 12:00:01', NULL, 9, NULL, 5, 2),
-(10, 'Bal Populaire', 'Bal en soirée', 'Bal d\'été', '2025-10-26 12:00:01', '2025-10-26 12:00:01', '2025-10-21 12:00:01', 400, 120, 'Place Centrale, Voiron', 45.36520000, 5.59320000, '/images/events/bal.jpg', '/images/banners/bal.jpg', 'brouillon', 1, 0, 0, 0.00, 'EUR', '2025-09-11 12:00:01', NULL, 2, 1, 4, 3);
 
 -- --------------------------------------------------------
 
@@ -332,17 +250,6 @@ CREATE TABLE IF NOT EXISTS `event_image` (
   KEY `FK_evenement_TO_event_image` (`idEvenement`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `event_image`
---
-
-INSERT INTO `event_image` (`idEventImage`, `idEvenement`, `imagePath`, `altText`, `isMain`, `sortOrder`, `createdAt`) VALUES
-(1, 1, '/images/events/concert_main.jpg', 'Concert - visuel principal', 1, 1, '2025-09-11 12:00:01'),
-(2, 1, '/images/events/concert_2.jpg', 'Concert - vue de la scène', 0, 2, '2025-09-11 12:00:01'),
-(3, 3, '/images/events/esports_main.jpg', 'Tournoi - principal', 1, 1, '2025-09-11 12:00:01'),
-(4, 3, '/images/events/esports_2.jpg', 'Tournoi - salle', 0, 2, '2025-09-11 12:00:01'),
-(5, 4, '/images/events/photo_main.jpg', 'Expo - principal', 1, 1, '2025-09-11 12:00:01');
-
 -- --------------------------------------------------------
 
 --
@@ -364,17 +271,6 @@ CREATE TABLE IF NOT EXISTS `event_invitation` (
   KEY `FK_user_TO_event_invitation_user` (`idUser`),
   KEY `FK_user_TO_event_invitation_inviter` (`idInviter`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `event_invitation`
---
-
-INSERT INTO `event_invitation` (`idEventInvitation`, `idEvenement`, `idUser`, `idInviter`, `status`, `invitedAt`, `respondedAt`, `message`) VALUES
-(1, 1, 3, 2, 'accepte', '2025-09-11 12:00:01', NULL, NULL),
-(2, 2, 3, 2, 'en_attente', '2025-09-11 12:00:01', NULL, NULL),
-(3, 3, 5, 4, 'en_attente', '2025-09-11 12:00:01', NULL, NULL),
-(4, 4, 7, 5, 'accepte', '2025-09-11 12:00:01', NULL, NULL),
-(5, 5, 10, 7, 'refuse', '2025-09-11 12:00:01', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -398,25 +294,6 @@ CREATE TABLE IF NOT EXISTS `event_participant` (
   KEY `idx_event_participant_user` (`idUser`),
   KEY `idx_event_participant_status` (`status`)
 ) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `event_participant`
---
-
-INSERT INTO `event_participant` (`idEventParticipant`, `idEvenement`, `idUser`, `status`, `joinedAt`, `approvedAt`, `cancelledAt`, `notes`) VALUES
-(1, 1, 2, 'inscrit', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(2, 1, 3, 'approuve', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(3, 2, 3, 'liste_attente', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(4, 3, 4, 'inscrit', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(5, 3, 5, 'approuve', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(6, 4, 5, 'inscrit', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(7, 5, 7, 'approuve', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(8, 5, 10, 'inscrit', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(9, 6, 6, 'liste_attente', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(10, 7, 1, 'approuve', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(11, 8, 12, 'inscrit', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(12, 9, 9, 'inscrit', '2025-09-11 12:00:01', NULL, NULL, NULL),
-(13, 10, 2, 'inscrit', '2025-09-11 12:00:01', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -444,18 +321,7 @@ CREATE TABLE IF NOT EXISTS `message` (
   KEY `idx_message_chat` (`idChat`),
   KEY `idx_message_sender` (`idSender`),
   KEY `idx_message_sent_at` (`sentAt`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `message`
---
-
-INSERT INTO `message` (`idMessage`, `idChat`, `idSender`, `content`, `messageType`, `filePath`, `isEdited`, `editedAt`, `isDeleted`, `deletedAt`, `replyToMessageId`, `sentAt`) VALUES
-(1, 1, 2, 'Bienvenue à tous !', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-11 12:00:01'),
-(2, 2, 3, 'Qui vient au concert ?', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-11 12:00:01'),
-(3, 3, 4, 'Rendez-vous à 14h pour le tournoi.', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-11 12:00:01'),
-(4, 4, 5, 'Nouvelle exposition la semaine prochaine.', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-11 12:00:01'),
-(5, 5, 12, 'Cours en plein air si beau temps.', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-11 12:00:01');
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -473,15 +339,7 @@ CREATE TABLE IF NOT EXISTS `message_status` (
   PRIMARY KEY (`idMessageStatus`),
   UNIQUE KEY `unique_message_user_status` (`idMessage`,`idUser`),
   KEY `FK_user_TO_message_status` (`idUser`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `message_status`
---
-
-INSERT INTO `message_status` (`idMessageStatus`, `idMessage`, `idUser`, `isRead`, `readAt`) VALUES
-(1, 1, 3, 1, '2025-09-11 12:00:01'),
-(2, 2, 2, 1, '2025-09-11 12:00:01');
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -506,17 +364,7 @@ CREATE TABLE IF NOT EXISTS `notification` (
   KEY `idx_notification_user` (`idUser`),
   KEY `idx_notification_read` (`isRead`),
   KEY `idx_notification_created` (`createdAt`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `notification`
---
-
-INSERT INTO `notification` (`idNotification`, `idUser`, `type`, `title`, `message`, `isRead`, `readAt`, `relatedId`, `relatedType`, `createdAt`) VALUES
-(1, 2, 'invitation_evenement', 'Invitation au concert', 'Vous êtes invité(e) au Concert d\'été', 0, NULL, NULL, NULL, '2025-09-11 12:00:01'),
-(2, 3, 'mise_a_jour_evenement', 'Mise à jour de l\'événement', 'L\'événement a été mis à jour', 0, NULL, NULL, NULL, '2025-09-11 12:00:01'),
-(3, 5, 'message', 'Nouveau message', 'Vous avez reçu un message.', 0, NULL, NULL, NULL, '2025-09-11 12:00:01'),
-(4, 12, 'rappel_evenement', 'Rappel', 'Votre cours de yoga est demain.', 0, NULL, NULL, NULL, '2025-09-11 12:00:01');
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -592,28 +440,10 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
-(1, 3, 'Alice', 'Durand', 'alice@example.com', '+33 6 12 34 56 78', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, 'Admin of the platform', '1988-05-12', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(2, 3, 'Bruno', 'Martin', 'bruno@example.com', '+33 6 98 76 54 32', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, 'Association manager', '1992-11-03', 1, 0, 0, 1, '2025-09-11 12:00:01', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(3, 3, 'Camille', 'Lefevre', 'camille@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1995-02-21', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(4, 3, 'David', 'Bernard', 'david.bernard@example.com', '+33 6 01 02 03 04', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1985-03-14', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(5, 3, 'Eva', 'Rossi', 'eva.rossi@example.com', '+33 6 05 06 07 08', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1990-07-09', 1, 0, 0, 1, '2025-09-11 12:00:01', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(6, 3, 'Farid', 'Lambert', 'farid.lambert@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1993-12-01', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(7, 3, 'Gilles', 'Moreau', 'gilles.moreau@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, 'Sport volunteer', '1982-09-30', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(8, 3, 'Hana', 'Petit', 'hana.petit@example.com', '+33 6 11 22 33 44', '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1998-05-25', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(9, 3, 'Ibrahim', 'Garcia', 'ibrahim.garcia@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1987-01-20', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(10, 3, 'Jade', 'Fournier', 'jade.fournier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1999-04-04', 1, 0, 0, 1, '2025-09-11 12:00:01', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(11, 3, 'Karim', 'Lopez', 'karim.lopez@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1991-02-17', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(12, 3, 'Laura', 'Garnier', 'laura.garnier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1994-08-11', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(13, 3, 'Mika', 'Chevalier', 'mika.chevalier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1986-10-10', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(14, 3, 'Nora', 'Robert', 'nora.robert@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1997-06-06', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(15, 3, 'Olivier', 'Marchand', 'olivier.marchand@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1984-03-03', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(16, 3, 'Paula', 'Guyot', 'paula.guyot@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1996-01-29', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(17, 3, 'Quentin', 'Colin', 'quentin.colin@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1993-09-19', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(18, 3, 'Rania', 'Da Silva', 'rania.silva@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1990-12-24', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(19, 3, 'Sophie', 'Charpentier', 'sophie.charpentier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1989-07-07', 1, 0, 0, 0, NULL, '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', NULL, NULL, NULL, NULL),
-(20, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(27, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-16 19:09:13', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', '2025-09-16 11:37:06', '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL),
-(28, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-16 11:37:02', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL);
+(1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-16 11:37:02', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
+(2, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
+(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 0, '2025-09-17 19:16:03', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', '2025-09-16 11:37:06', '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL),
+(4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-17 19:16:31', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -633,20 +463,6 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `user_association`
---
-
-INSERT INTO `user_association` (`idUserAssociation`, `idUser`, `idAssociation`, `role`, `joinedAt`, `isActive`) VALUES
-(1, 2, 1, 'admin', '2025-09-11 12:00:01', 1),
-(2, 3, 1, 'membre', '2025-09-11 12:00:01', 1),
-(3, 2, 2, 'moderateur', '2025-09-11 12:00:01', 1),
-(4, 4, 3, 'admin', '2025-09-11 12:00:01', 1),
-(5, 5, 3, 'membre', '2025-09-11 12:00:01', 1),
-(6, 6, 4, 'moderateur', '2025-09-11 12:00:01', 1),
-(7, 7, 4, 'membre', '2025-09-11 12:00:01', 1),
-(8, 8, 5, 'membre', '2025-09-11 12:00:01', 1);
 
 -- --------------------------------------------------------
 
@@ -684,7 +500,7 @@ CREATE TABLE IF NOT EXISTS `ville` (
   KEY `ville_code_postal` (`ville_code_postal`),
   KEY `ville_longitude_latitude_deg` (`ville_longitude_deg`,`ville_latitude_deg`),
   KEY `ville_nom_simple` (`ville_nom_simple`)
-) ENGINE=MyISAM AUTO_INCREMENT=14862 DEFAULT CHARSET=utf8mb3;
+) ENGINE=MyISAM AUTO_INCREMENT=38101 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `ville`
@@ -757,7 +573,7 @@ INSERT INTO `ville` (`idVille`, `ville_departement`, `ville_slug`, `ville_nom`, 
 (14503, '38', 'bresson', 'BRESSON', 'bresson', 'Bresson', '38320', '057', '38057', 700, 5.75, 45.1333, '3792', '50152', '+54458', '450811', 228, 533),
 (14504, '38', 'montalieu-vercieu', 'MONTALIEU-VERCIEU', 'montalieu vercieu', 'Montalieu-Vercieu', '38390', '247', '38247', 2900, 5.4, 45.8167, '3408', '50905', '+52413', '454851', 200, 347),
 (38000, '38', 'grenoble-38000', 'GRENOBLE-38000', 'grenoble 38000', 'Grenoble-38000', '38000', '185', '38185', 156700, 5.71667, 45.1667, '3766', '50208', '+54335', '451113', 204, 600),
-(38100, '38', 'grenoble-38100', 'GRENOBLE-38100', 'grenoble 38100', 'Grenoble-38100', '38100', '999', '99999', 99999, 9.71667, 59.1667, '9999', '99999', '+99999', '999999', 999, 999),
+(38100, '38', 'grenoble-38100', 'GRENOBLE-38100', 'grenoble 38100', 'Grenoble-38100', '38100', NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (14506, '38', 'varces-allieres-et-risset', 'VARCES-ALLIERES-ET-RISSET', 'varces allieres et risset', 'Varces-Allières-et-Risset', '38760', '524', '38524', 6500, 5.68195, 45.0867, '3717', '50096', '+54055', '450512', 247, 1960),
 (14507, '38', 'brangues', 'BRANGUES', 'brangues', 'Brangues', '38510', '055', '38055', 600, 5.53333, 45.7, '3550', '50770', '+53152', '454135', 204, 236),
 (14508, '38', 'saint-simeon-de-bressieux', 'SAINT-SIMEON-DE-BRESSIEUX', 'saint simeon de bressieux', 'Saint-Siméon-de-Bressieux', '38870', '457', '38457', 2700, 5.25, 45.3333, '3250', '50365', '+51542', '451942', 337, 627),

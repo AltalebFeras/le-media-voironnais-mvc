@@ -101,7 +101,7 @@ class EvenementController extends AbstractController
             $title = isset($_POST['title']) ? htmlspecialchars(trim($_POST['title'])) : null;
             $description = isset($_POST['description']) ? htmlspecialchars(trim($_POST['description'])) : null;
             $shortDescription = isset($_POST['shortDescription']) ? htmlspecialchars(trim($_POST['shortDescription'])) : null;
-            $eventDate = isset($_POST['eventDate']) ? htmlspecialchars(trim($_POST['eventDate'])) : null;
+            $startDate = isset($_POST['startDate']) ? htmlspecialchars(trim($_POST['startDate'])) : null;
             $endDate = isset($_POST['endDate']) ? htmlspecialchars(trim($_POST['endDate'])) : null;
             $registrationDeadline = isset($_POST['registrationDeadline']) ? htmlspecialchars(trim($_POST['registrationDeadline'])) : null;
             $maxParticipants = isset($_POST['maxParticipants']) ? (int)$_POST['maxParticipants'] : null;
@@ -122,7 +122,7 @@ class EvenementController extends AbstractController
             $evenement->setTitle($title)
                      ->setDescription($description)
                      ->setShortDescription($shortDescription)
-                     ->setEventDate($eventDate)
+                     ->setEventDate($startDate)
                      ->setEndDate($endDate)
                      ->setRegistrationDeadline($registrationDeadline)
                      ->setMaxParticipants($maxParticipants)
@@ -242,7 +242,7 @@ class EvenementController extends AbstractController
             $title = isset($_POST['title']) ? htmlspecialchars(trim($_POST['title'])) : null;
             $description = isset($_POST['description']) ? htmlspecialchars(trim($_POST['description'])) : null;
             $shortDescription = isset($_POST['shortDescription']) ? htmlspecialchars(trim($_POST['shortDescription'])) : null;
-            $eventDate = isset($_POST['eventDate']) ? htmlspecialchars(trim($_POST['eventDate'])) : null;
+            $startDate = isset($_POST['startDate']) ? htmlspecialchars(trim($_POST['startDate'])) : null;
             $endDate = isset($_POST['endDate']) ? htmlspecialchars(trim($_POST['endDate'])) : null;
             $registrationDeadline = isset($_POST['registrationDeadline']) ? htmlspecialchars(trim($_POST['registrationDeadline'])) : null;
             $maxParticipants = isset($_POST['maxParticipants']) ? (int)$_POST['maxParticipants'] : null;
@@ -260,7 +260,7 @@ class EvenementController extends AbstractController
             $evenement->setTitle($title)
                      ->setDescription($description)
                      ->setShortDescription($shortDescription)
-                     ->setEventDate($eventDate)
+                     ->setEventDate($startDate)
                      ->setEndDate($endDate)
                      ->setRegistrationDeadline($registrationDeadline)
                      ->setMaxParticipants($maxParticipants)
