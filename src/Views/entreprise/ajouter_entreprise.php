@@ -1,10 +1,10 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 <main>
-   
+
     <div class="flex-row justify-content-between">
         <h1>Ajouter une entreprise</h1>
-        <a href="<?=HOME_URL . 'mes_entreprises' ?>" class="">
+        <a href="<?= HOME_URL . 'mes_entreprises' ?>" class="">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
@@ -19,40 +19,61 @@
                         <div>
                             <label for="name">Nom de l'entreprise *</label>
                             <input type="text" id="name" name="name"
-                                value="<?= isset($formData['name']) ? htmlspecialchars($formData['name']) : '' ?>" required>
+                                value="<?= isset($_SESSION['form_data']['name']) ? ($_SESSION['form_data']['name']) : '' ?>" required>
                         </div>
 
                         <div>
                             <label for="description">Description</label>
-                            <textarea id="description" name="description" rows="4"><?= isset($formData['description']) ? htmlspecialchars($formData['description']) : '' ?></textarea>
+                            <textarea id="description" name="description" rows="4"><?= isset($_SESSION['form_data']['description']) ? ($_SESSION['form_data']['description']) : '' ?></textarea>
                         </div>
 
                         <div>
                             <label for="siret">Numéro SIRET</label>
                             <input type="text" id="siret" name="siret"
-                                value="<?= isset($formData['siret']) ? htmlspecialchars($formData['siret']) : '' ?>">
+                                value="<?= isset($_SESSION['form_data']['siret']) ? ($_SESSION['form_data']['siret']) : '' ?>">
                             <small class="text-muted">Format : 14 chiffres sans espace</small>
                         </div>
 
                         <div>
                             <label for="address">Adresse</label>
                             <input type="text" id="address" name="address"
-                                value="<?= isset($formData['address']) ? htmlspecialchars($formData['address']) : '' ?>">
+                                value="<?= isset($formData['address']) ? ($formData['address']) : '' ?>">
                         </div>
-
+                        <!-- New postal code and city fields -->
+                        <div class="flex-row">
+                            <div class="max-width-50">
+                                <div>
+                                    <label for="codePostal">Code postal</label>
+                                    <input type="text" id="codePostal" name="codePostal" maxlength="5"
+                                        value="<?= isset($_SESSION['form_data']['codePostal']) ? ($_SESSION['form_data']['codePostal']) : '' ?>">
+                                    <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
+                                </div>
+                            </div>
+                            <div class="max-width-50">
+                                <div>
+                                    <label for="ville">Ville</label>
+                                    <select id="ville" name="ville" disabled>
+                                        <option value="">Sélectionnez une ville</option>
+                                    </select>
+                                    <input type="hidden" id="idVille" name="idVille"
+                                        value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End of new fields -->
                         <div class="flex-row">
                             <div class="max-width-50">
                                 <div>
                                     <label for="phone">Téléphone</label>
                                     <input type="tel" id="phone" name="phone"
-                                        value="<?= isset($formData['phone']) ? htmlspecialchars($formData['phone']) : '' ?>">
+                                        value="<?= isset($_SESSION['form_data']['phone']) ? ($_SESSION['form_data']['phone']) : '' ?>">
                                 </div>
                             </div>
                             <div class="max-width-50">
                                 <div>
                                     <label for="email">Email</label>
                                     <input type="email" id="email" name="email"
-                                        value="<?= isset($formData['email']) ? htmlspecialchars($formData['email']) : '' ?>">
+                                        value="<?= isset($_SESSION['form_data']['email']) ? ($_SESSION['form_data']['email']) : '' ?>">
                                 </div>
                             </div>
                         </div>
@@ -61,16 +82,7 @@
                             <label for="website">Site web</label>
                             <input type="url" id="website" name="website"
                                 placeholder="https://example.com"
-                                value="<?= isset($formData['website']) ? htmlspecialchars($formData['website']) : '' ?>">
-                        </div>
-
-                        <div>
-                            <label for="status">Statut</label>
-                            <select id="status" name="status">
-                                <option value="brouillon" <?= (isset($formData['status']) && $formData['status'] === 'brouillon') ? 'selected' : '' ?>>Brouillon</option>
-                                <option value="actif" <?= (isset($formData['status']) && $formData['status'] === 'actif') ? 'selected' : '' ?>>Actif</option>
-                                <option value="suspendu" <?= (isset($formData['status']) && $formData['status'] === 'suspendu') ? 'selected' : '' ?>>Suspendu</option>
-                            </select>
+                                value="<?= isset($_SESSION['form_data']['website']) ? ($_SESSION['form_data']['website']) : '' ?>">
                         </div>
 
                         <div>
@@ -105,4 +117,5 @@
         </div>
     </div>
 </main>
+<script src="<?= HOME_URL . 'assets/javascript/villes.js' ?>"></script>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

@@ -85,14 +85,14 @@ class EntrepriseController extends AbstractController
             // Use model validation
             $modelErrors = $entreprise->validate();
             $errors = array_merge($errors, $modelErrors);
-            $this->returnAllErrors($errors, 'entreprise/ajouter_entreprise?error=true');
+            $this->returnAllErrors($errors, 'entreprise/ajouter?error=true');
 
             $this->repo->createEntreprise($entreprise);
 
             $_SESSION['success'] = "L'entreprise a été créée avec succès";
             $this->redirect('mes_entreprises');
         } catch (Exception $e) {
-            $this->render('entreprise/ajouter_entreprise?error=true');
+            $this->render('entreprise/ajouter?error=true');
         }
     }
 
@@ -158,6 +158,10 @@ class EntrepriseController extends AbstractController
 
             $errors = [];
             $_SESSION['form_data'] = $_POST;
+            // if the entreprise is active you can not edit the siret
+            if ($entreprise->getIsActive() && $entreprise->getSiret() !== $siret) {
+                $errors['siret'] = "Vous ne pouvez pas modifier le numéro SIRET d'une entreprise active! Veuillez contacter le support.";
+            }
             // Update company
             $entreprise->setName($name)
                 ->setDescription($description)
@@ -182,7 +186,11 @@ class EntrepriseController extends AbstractController
                 $entreprise->setBannerPath($bannerPath);
                 $this->repo->updateBanner($idEntreprise, $bannerPath);
             }
-
+            // Use model validation
+            $modelErrors = $entreprise->validate();
+            $errors = array_merge($errors, $modelErrors);
+            $this->returnAllErrors($errors, 'entreprise/modifier?id=' . $idEntreprise);
+            
             $this->repo->updateEntreprise($entreprise);
 
             $_SESSION['success'] = "L'entreprise a été mise à jour avec succès";
@@ -224,7 +232,7 @@ class EntrepriseController extends AbstractController
     /**
      * Handle image upload
      */
-  
+
     public function handleImageUpload($fileInputName, $directory)
     {
         if (!isset($_FILES[$fileInputName]) || empty($_FILES[$fileInputName]['name'])) {

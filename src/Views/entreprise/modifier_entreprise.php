@@ -3,7 +3,7 @@
 <main>
     <div class="flex-row justify-content-between">
         <h1>Modifier l'entreprise</h1>
-        <a href="<?=HOME_URL . 'mes_entreprises' ?>" class="">
+        <a href="<?= HOME_URL . 'mes_entreprises' ?>" class="">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
@@ -37,7 +37,28 @@
                             <input type="text" id="address" name="address"
                                 value="<?= htmlspecialchars($entreprise->getAddress() ?? '') ?>">
                         </div>
-
+                        <!-- New postal code and city fields -->
+                        <div class="flex-row">
+                            <div class="max-width-50">
+                                <div>
+                                    <label for="codePostal">Code postal</label>
+                                    <input type="text" id="codePostal" name="codePostal" maxlength="5"
+                                        value="<?= isset($_SESSION['form_data']['codePostal']) ? ($_SESSION['form_data']['codePostal']) : '' ?>">
+                                    <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
+                                </div>
+                            </div>
+                            <div class="max-width-50">
+                                <div>
+                                    <label for="ville">Ville</label>
+                                    <select id="ville" name="ville" disabled>
+                                        <option value="">Sélectionnez une ville</option>
+                                    </select>
+                                    <input type="hidden" id="idVille" name="idVille"
+                                        value="">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End of new fields -->
                         <div class="flex-row">
                             <div class="max-width-50">
                                 <div>
@@ -133,4 +154,6 @@
         </div>
     </div>
 </main>
+
+<script src="<?= HOME_URL . 'assets/javascript/villes.js' ?>"></script>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
