@@ -102,7 +102,7 @@ class UserController extends AbstractController
             $errors['email'] = 'Cette adresse e-mail est déjà utilisée';
         }
         // If there are any validation errors, throw one Error with all errors
-        $this->returnAllErrors($errors, 'inscription');
+        $this->returnAllErrors($errors, 'inscription?error=true');
         // Use SEL as a pepper: append the secret to the plaintext before hashing
         $passwordHash = password_hash($password . SEL, PASSWORD_DEFAULT);
 
@@ -131,14 +131,14 @@ class UserController extends AbstractController
             $signUp = $this->repo->signUp($user);
         } else {
             $errors['sendEmail'] = 'Une erreur s\'est produite lors de l\'envoi de l\'e-mail d\'activation. Veuillez réessayer plus tard.';
-            $this->returnAllErrors($errors, 'inscription');
+            $this->returnAllErrors($errors, 'inscription?error=true');
         }
         if ($signUp) {
             $_SESSION['success'] = 'Un e-mail d\'activation a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception et cliquer sur le lien d\'activation pour activer votre compte.';
             $this->redirect('connexion');
         } else {
             $errors['signUp'] = 'Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer plus tard.';
-            $this->returnAllErrors($errors, 'inscription');
+            $this->returnAllErrors($errors, 'inscription?error=true');
         }
     }
 
@@ -209,7 +209,7 @@ class UserController extends AbstractController
         if ($user && $user->getIsDeleted() === true) {
             $errors['isDeleted'] = 'Votre compte a été supprimé, Veuillez contacter le support.';
         }
-        $this->returnAllErrors($errors, 'connexion');
+        $this->returnAllErrors($errors, 'connexion?error=true');
 
         $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
         $idUser = $user->getIdUser();
@@ -315,7 +315,7 @@ class UserController extends AbstractController
             }
         }
 
-        $this->returnAllErrors($errors, 'mdp_oublie');
+        $this->returnAllErrors($errors, 'mdp_oublie?error=true');
 
         if ($user) {
             $idUser = $user->getIdUser();
@@ -337,7 +337,7 @@ class UserController extends AbstractController
             $this->redirect('connexion');
         } else {
             $errors['email'] = 'Aucun compte trouvé avec cette adresse e-mail.';
-            $this->returnAllErrors($errors, 'mdp_oublie');
+            $this->returnAllErrors($errors, 'mdp_oublie?error=true');
         }
     }
 
@@ -372,11 +372,9 @@ class UserController extends AbstractController
                 $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
             }
         }
-        if (!empty($errors)) {
-            $_SESSION['errors'] = $errors;
-            header('Location: ' . HOME_URL . 'reinit_mon_mot_de_passe?token=' . $token . '&error=true');
-            exit();
-        }
+
+        $this->returnAllErrors($errors, 'reinit_mon_mot_de_passe?token=' . $token . '&error=true');
+
         // Hash new password with pepper
         $passwordHash = password_hash($newPassword . SEL, PASSWORD_DEFAULT);
         $idUser = $user->getIdUser();
@@ -386,13 +384,12 @@ class UserController extends AbstractController
             $this->redirect('connexion');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de la réinitialisation du mot de passe. Veuillez réessayer plus tard.';
-            header('Location: ' . HOME_URL . 'reinit_mon_mot_de_passe?token=' . $token . '&error=true');
-            exit();
+            $this->redirect('reinit_mon_mot_de_passe?token=' . $token . '&error=true');
         }
     }
     public function displayMyAccount()
     {
-        include_once __DIR__ . '/../Views/account/mon_compte.php';
+        $this->render('account/mon_compte', ['title' => 'Mon compte']);
     }
     public function editProfile()
     {
@@ -464,13 +461,13 @@ class UserController extends AbstractController
                 $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
 
                 $_SESSION['success'] = 'Votre profil a été mis à jour avec succès!';
-                header('Location: ' . HOME_URL . 'mon_compte');
+                $this->redirect('mon_compte');
             } else {
                 throw new Exception("Aucune modification n’a été effectuée.");
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&error=true');
+            $this->redirect('mon_compte?action=edit_profile&error=true');
             exit();
         }
     }
@@ -505,7 +502,7 @@ class UserController extends AbstractController
             if ($recaptchaStatus === false) {
                 $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
             }
-        } 
+        }
         // verify the last time of the email change at least 30 days ago
         if ($user) {
             $lastEmailChange = $user->getEmailChangedAt();
@@ -533,8 +530,7 @@ class UserController extends AbstractController
         $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $_SESSION['email'], $_SESSION['firstName'], $subject, $body);
         $_SESSION['newEmail'] = $email;
         $_SESSION['success'] = 'Un code de confirmation a été envoyé à votre nouvelle adresse e-mail. Veuillez vérifier votre boîte de réception et entrer le code pour confirmer votre nouvelle adresse e-mail.';
-        header('Location: ' . HOME_URL . 'mon_compte?action=confirm_new_email');
-        exit();
+        $this->redirect('mon_compte?action=confirm_new_email');
     }
 
     public function validateNewEmail()
@@ -570,8 +566,7 @@ class UserController extends AbstractController
                     $this->repo->clearAuthCode($idUser);
                     $_SESSION['email'] = $newEmail;
                     $_SESSION['success'] = 'Votre adresse e-mail a été mise à jour avec succès!';
-                    header('Location: ' . HOME_URL . 'mon_compte');
-                    exit();
+                    $this->redirect('mon_compte');
                 } else {
                     throw new Exception('Une erreur s\'est produite lors de la mise à jour de votre adresse e-mail. Veuillez réessayer plus tard.');
                 }
@@ -581,8 +576,7 @@ class UserController extends AbstractController
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            header('Location: ' . HOME_URL . 'mon_compte?action=confirm_new_email&error=true');
-            exit();
+            $this->redirect('mon_compte?action=confirm_new_email&error=true');
         }
     }
 
@@ -594,8 +588,7 @@ class UserController extends AbstractController
             unset($_SESSION['newEmail']);
         }
         $_SESSION['success'] = 'Le changement d\'adresse e-mail a été annulé avec succès.';
-        header('Location: ' . HOME_URL . 'mon_compte');
-        exit();
+        $this->redirect('mon_compte');
     }
 
     public function addPhone()
@@ -623,12 +616,10 @@ class UserController extends AbstractController
         if ($addPhone) {
             $_SESSION['phone'] = $user->getPhone();
             $_SESSION['success'] = 'Votre numéro de téléphone a été ajouté avec succès.';
-            header('Location: ' . HOME_URL . 'mon_compte');
-            exit();
+            $this->redirect('mon_compte');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de l\'ajout de votre numéro de téléphone. Veuillez réessayer plus tard.';
-            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=phone&error=true');
-            exit();
+            $this->redirect('mon_compte?action=edit_profile&field=phone&error=true');
         }
     }
     public function addBio()
@@ -654,12 +645,10 @@ class UserController extends AbstractController
         if ($addBio) {
             $_SESSION['bio'] = $user->getBio();
             $_SESSION['success'] = 'Votre biographie a été ajoutée avec succès.';
-            header('Location: ' . HOME_URL . 'mon_compte');
-            exit();
+            $this->redirect('mon_compte');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de l\'ajout de votre biographie. Veuillez réessayer plus tard.';
-            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=bio&error=true');
-            exit();
+            $this->redirect('mon_compte?action=edit_profile&field=bio&error=true');
         }
     }
     public function addDateOfBirth()
@@ -691,12 +680,10 @@ class UserController extends AbstractController
         if ($addDateOfBirth) {
             $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
             $_SESSION['success'] = 'Votre date de naissance a été ajoutée avec succès.';
-            header('Location: ' . HOME_URL . 'mon_compte');
-            exit();
+            $this->redirect('mon_compte');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de l\'ajout de votre date de naissance. Veuillez réessayer plus tard.';
-            header('Location: ' . HOME_URL . 'mon_compte?action=edit_profile&field=date_of_birth&error=true');
-            exit();
+            $this->redirect('mon_compte?action=edit_profile&field=date_of_birth&error=true');
         }
     }
 
@@ -730,12 +717,10 @@ class UserController extends AbstractController
         $changePassword = $this->repo->updatePassword($idUser, $newPasswordHash);
         if ($changePassword) {
             $_SESSION['success'] = 'Votre mot de passe a été changé avec succès !';
-            header('Location: ' . HOME_URL . 'mon_compte');
-            exit();
+            $this->redirect('mon_compte');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors du changement de mot de passe. Veuillez réessayer plus tard.';
-            header('Location: ' . HOME_URL . 'mon_compte?action=change_password&error=true');
-            exit();
+            $this->redirect('mon_compte?action=change_password&error=true');
         }
     }
     public function deleteAccount()
@@ -747,23 +732,21 @@ class UserController extends AbstractController
         // Validation the deleting account of the user connected by an his  ID and confirmDelete
         if (!$idUser || $confirmDelete !== 'je confirme') {
             $_SESSION['error'] = 'Texte de confirmation invalide!';
-            header('Location: ' . HOME_URL . 'mon_compte?action=delete_account&error=true');
-            exit();
+            $this->redirect('mon_compte?action=delete_account&error=true');
         }
         $deletedAt = (new DateTime())->format('Y-m-d H:i:s');
-        $deleteUser = $this->repo->deleteUser($idUser , $deletedAt);
+        $deleteUser = $this->repo->deleteUser($idUser, $deletedAt);
         if (!$deleteUser) {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de la suppression de votre compte. Veuillez réessayer plus tard.';
-            header('Location: ' . HOME_URL . 'mon_compte?action=delete_account&error=true');
-            exit();
+            $this->redirect('mon_compte?action=delete_account&error=true');
         }
-       
+
         // Send confirmation email of account deletion
-        if($deleteUser) {
-            $mail = new Mail(); 
+        if ($deleteUser) {
+            $mail = new Mail();
             $subject = 'Confirmation de la suppression de votre compte';
             $body = "Votre compte a été supprimé avec succès. Si vous souhaitez réactiver votre compte, veuillez contacter le support dans les 6 mois suivant la suppression.<br>";
-            $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $_SESSION['email'], $_SESSION['firstName'], $subject, $body);  
+            $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $_SESSION['email'], $_SESSION['firstName'], $subject, $body);
         }
         // Log out the user and return success message
         session_destroy();
@@ -797,13 +780,11 @@ class UserController extends AbstractController
             // Validate file type and size
             if (!in_array($fileType, $allowedMimeTypes) || !in_array($fileExtension, $allowedExtensions)) {
                 $_SESSION['error'] = 'Format de fichier non autorisé. Veuillez télécharger une image (jpg, jpeg, png, gif, webp).';
-                header('Location: ' . HOME_URL . 'mon_compte?error=true');
-                exit();
+                $this->redirect('mon_compte?error=true');
             }
             if ($fileSize > $maxFileSize) {
                 $_SESSION['error'] = 'La taille de l\'image ne doit pas dépasser ' . ($maxFileSize / (1024 * 1024)) . ' Mo.';
-                header('Location: ' . HOME_URL . 'mon_compte?error=true');
-                exit();
+                $this->redirect('mon_compte?error=true');
             }
 
             $fileName = uniqid() . '_' . basename($fileNameOriginal);
@@ -824,17 +805,14 @@ class UserController extends AbstractController
                 $_SESSION['avatarPath'] = $newProfilePicturePath;
 
                 $_SESSION['success'] = 'Votre photo de profil a été mise à jour avec succès!';
-                header('Location: ' . HOME_URL . 'mon_compte');
-                exit();
+                $this->redirect('mon_compte');
             } else {
                 $_SESSION['error'] = 'Une erreur s\'est produite lors du téléchargement de la photo de profil. Veuillez réessayer.';
-                header('Location: ' . HOME_URL . 'mon_compte?error=true');
-                exit();
+                $this->redirect('mon_compte?error=true');
             }
         } else {
             $_SESSION['error'] = 'Veuillez sélectionner une image à télécharger.';
-            header('Location: ' . HOME_URL . 'mon_compte?error=true');
-            exit();
+            $this->redirect('mon_compte?error=true');
         }
     }
     public function deleteProfilePicture()
@@ -844,8 +822,7 @@ class UserController extends AbstractController
         // check if the current profile picture is not the default one
         if (!$currentPicturePath || strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') !== false) {
             $_SESSION['error'] = 'Aucun avatar à supprimer.';
-            header('Location: ' . HOME_URL . 'mon_compte');
-            exit();
+            $this->redirect('mon_compte');
         }
         // here we delete file from server if it's not the default picture
         if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') === false) {
@@ -864,8 +841,7 @@ class UserController extends AbstractController
 
         // finally we redirect with success message
         $_SESSION['success'] = 'Votre photo de profil a été supprimée avec succès!';
-        header('Location: ' . HOME_URL . 'mon_compte');
-        exit();
+        $this->redirect('mon_compte');
     }
     public function editBanner()
     {
@@ -898,8 +874,7 @@ class UserController extends AbstractController
                         break;
                 }
                 $_SESSION['error'] = $errorMsg;
-                header('Location: ' . HOME_URL . 'mon_compte?error=true');
-                exit();
+                $this->redirect('mon_compte?error=true');
             }
 
             $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -920,20 +895,17 @@ class UserController extends AbstractController
             // Check if file is actually uploaded
             if (!is_uploaded_file($fileTmpPath)) {
                 $_SESSION['error'] = 'Le fichier n\'a pas été téléchargé correctement.';
-                header('Location: ' . HOME_URL . 'mon_compte?error=true');
-                exit();
+                $this->redirect('mon_compte?error=true');
             }
 
             // Validate file type and size
             if (!in_array($fileType, $allowedMimeTypes) || !in_array($fileExtension, $allowedExtensions)) {
                 $_SESSION['error'] = 'Format de fichier non autorisé. Veuillez télécharger une image (jpg, jpeg, png, gif, webp).';
-                header('Location: ' . HOME_URL . 'mon_compte?error=true');
-                exit();
+                $this->redirect('mon_compte?error=true');
             }
             if ($fileSize > $maxFileSize) {
                 $_SESSION['error'] = 'La taille de l\'image ne doit pas dépasser 2 Mo.';
-                header('Location: ' . HOME_URL . 'mon_compte?error=true');
-                exit();
+                $this->redirect('mon_compte?error=true');
             }
 
             $fileName = uniqid() . '_' . basename($fileNameOriginal);
@@ -963,15 +935,13 @@ class UserController extends AbstractController
                     imagedestroy($image);
                 } else {
                     $_SESSION['error'] = 'Impossible de traiter l\'image JPEG.';
-                    header('Location: ' . HOME_URL . 'mon_compte?error=true');
-                    exit();
+                    $this->redirect('mon_compte?error=true');
                 }
             } else {
                 // Move uploaded file for non-JPEG images
                 if (!move_uploaded_file($fileTmpPath, $uploadFile)) {
                     $_SESSION['error'] = 'Erreur lors du déplacement du fichier téléchargé.';
-                    header('Location: ' . HOME_URL . 'mon_compte?error=true');
-                    exit();
+                    $this->redirect('mon_compte?error=true');
                 }
             }
 
@@ -987,12 +957,10 @@ class UserController extends AbstractController
 
             $_SESSION['bannerPath'] = $newBannerPath;
             $_SESSION['success'] = 'Votre bannière a été mise à jour avec succès!';
-            header('Location: ' . HOME_URL . 'mon_compte');
-            exit();
+            $this->redirect('mon_compte');
         } else {
             $_SESSION['error'] = 'Veuillez sélectionner une image à télécharger.';
-            header('Location: ' . HOME_URL . 'mon_compte?error=true');
-            exit();
+            $this->redirect('mon_compte?error=true');
         }
     }
 
@@ -1002,8 +970,7 @@ class UserController extends AbstractController
         $currentBannerPath = $_SESSION['bannerPath'] ?? null;
         if (!$currentBannerPath || strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') !== false) {
             $_SESSION['error'] = 'Aucune bannière à supprimer.';
-            header('Location: ' . HOME_URL . 'mon_compte');
-            exit();
+            $this->redirect('mon_compte');
         }
         // Delete file from server
         if ($currentBannerPath) {
@@ -1016,7 +983,6 @@ class UserController extends AbstractController
         $this->repo->updateBanner($idUser, $defaultBannerPath);
         $_SESSION['bannerPath'] = $defaultBannerPath;
         $_SESSION['success'] = 'Votre bannière a été supprimée avec succès!';
-        header('Location: ' . HOME_URL . 'mon_compte');
-        exit();
+        $this->redirect('mon_compte');
     }
 }
