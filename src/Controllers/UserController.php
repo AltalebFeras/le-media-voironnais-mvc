@@ -87,14 +87,14 @@ class UserController extends AbstractController
         } else {
             $rgpdDate = date('Y-m-d H:i:s');
         }
-        // Verify reCAPTCHA
-        if (IS_PROD === TRUE) {
-            // Verify reCAPTCHA
-            $recaptchaStatus = $this->checkReCaptcha();
-            if ($recaptchaStatus === false) {
-                $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
-            }
-        }
+        // // Verify reCAPTCHA
+        // if (IS_PROD === TRUE) {
+        //     // Verify reCAPTCHA
+        //     $recaptchaStatus = $this->checkReCaptcha();
+        //     if ($recaptchaStatus === false) {
+        //         $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+        //     }
+        // }
 
         $emailExists = $this->repo->getUser($email);
 
