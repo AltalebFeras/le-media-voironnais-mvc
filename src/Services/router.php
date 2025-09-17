@@ -1,6 +1,7 @@
 <?php
 
 use src\Controllers\AdminController;
+use src\Controllers\EvenementController;
 use src\Controllers\HomeController;
 use src\Controllers\UserController;
 use src\Controllers\AssociationController;
@@ -12,6 +13,7 @@ $userController = new UserController();
 $adminController = new AdminController();
 $associationController = new AssociationController();
 $entrepriseController = new EntrepriseController();
+$evenementController = new EvenementController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
 $method = ConfigRouter::getMethod();
@@ -195,6 +197,47 @@ switch ($route) {
         }
         break;
 
+    // Evenement routes
+    case HOME_URL . 'mes_evenements':
+        if ($connectionSecured) {
+            if ($method === 'GET' && !isset($_GET['id'])) {
+                $evenementController->mesEvenements();
+            } elseif ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['id'])) {
+                $evenementController->displayEventDetails();
+            } elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+                $evenementController->deleteEvent();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+    case HOME_URL . 'evenement/ajouter':
+        if ($method === 'POST' && $connectionSecured) {
+            $evenementController->addEvent();
+        } elseif ($connectionSecured && $method === 'GET') {
+            $evenementController->showAddEventForm();
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+    case HOME_URL . 'evenement/modifier':
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $evenementController->updateEvent();
+            } elseif ($method === 'GET' && isset($_GET['id'])) {
+                $evenementController->showEditEventForm();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
 
     case HOME_URL . 'mon_compte':
         if ($method === 'POST' && $_GET['action'] && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {

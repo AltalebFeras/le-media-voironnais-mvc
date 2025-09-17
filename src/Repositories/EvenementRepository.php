@@ -1,0 +1,292 @@
+<?php
+
+namespace src\Repositories;
+
+use Exception;
+use PDO;
+use src\Models\Evenement;
+use src\Repositories\DatabaseConnection;
+use src\Services\Database;
+
+class EvenementRepository
+{
+    private $pdo;
+
+    public function __construct()
+    {
+        $this->pdo = Database::getInstance()->getDB();
+    }
+    /**
+     * Get events by user ID
+     */
+    public function getUserEvents(int $idUser): array
+    {
+        $sql = "SELECT e.*, v.ville_nom_reel, ec.name as category_name, a.name as association_name 
+                FROM evenement e 
+                LEFT JOIN ville v ON e.idVille = v.idVille 
+                LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
+                LEFT JOIN association a ON e.idAssociation = a.idAssociation
+                WHERE e.idUser = :idUser AND e.isDeleted = 0 
+                ORDER BY e.eventDate ASC";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get event by ID
+     */
+    public function getEventById(int $idEvenement): ?Evenement
+    {
+        $sql = "SELECT * FROM evenement WHERE idEvenement = :idEvenement AND isDeleted = 0";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idEvenement', $idEvenement, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($data) {
+            $event = new Evenement();
+            $event->setIdEvenement($data['idEvenement'])
+                  ->setTitle($data['title'])
+                  ->setDescription($data['description'])
+                  ->setShortDescription($data['shortDescription'])
+                  ->setEventDate($data['eventDate'])
+                  ->setEndDate($data['endDate'])
+                  ->setRegistrationDeadline($data['registrationDeadline'])
+                  ->setMaxParticipants($data['maxParticipants'])
+                  ->setCurrentParticipants($data['currentParticipants'])
+                  ->setAddress($data['address'])
+                  ->setLatitude($data['latitude'])
+                  ->setLongitude($data['longitude'])
+                  ->setImagePath($data['imagePath'])
+                  ->setBannerPath($data['bannerPath'])
+                  ->setStatus($data['status'])
+                  ->setIsPublic($data['isPublic'])
+                  ->setIsDeleted($data['isDeleted'])
+                  ->setRequiresApproval($data['requiresApproval'])
+                  ->setPrice($data['price'])
+                  ->setCurrency($data['currency'])
+                  ->setCreatedAt($data['createdAt'])
+                  ->setUpdatedAt($data['updatedAt'])
+                  ->setIdUser($data['idUser'])
+                  ->setIdAssociation($data['idAssociation'])
+                  ->setIdVille($data['idVille'])
+                  ->setIdEventCategory($data['idEventCategory']);
+            
+            return $event;
+        }
+        
+        return null;
+    }
+
+    /**
+     * Create new event
+     */
+    public function createEvent(Evenement $event): bool
+    {
+        $sql = "INSERT INTO evenement (title, description, shortDescription, eventDate, endDate, 
+                registrationDeadline, maxParticipants, currentParticipants, address, latitude, longitude,
+                imagePath, bannerPath, status, isPublic, isDeleted, requiresApproval, price, currency,
+                createdAt, idUser, idAssociation, idVille, idEventCategory) 
+                VALUES (:title, :description, :shortDescription, :eventDate, :endDate, 
+                :registrationDeadline, :maxParticipants, :currentParticipants, :address, :latitude, :longitude,
+                :imagePath, :bannerPath, :status, :isPublic, :isDeleted, :requiresApproval, :price, :currency,
+                :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory)";
+        
+        $stmt = $this->pdo->prepare($sql);
+        
+        return $stmt->execute([
+            ':title' => $event->getTitle(),
+            ':description' => $event->getDescription(),
+            ':shortDescription' => $event->getShortDescription(),
+            ':eventDate' => $event->getEventDate(),
+            ':endDate' => $event->getEndDate(),
+            ':registrationDeadline' => $event->getRegistrationDeadline(),
+            ':maxParticipants' => $event->getMaxParticipants(),
+            ':currentParticipants' => $event->getCurrentParticipants() ?? 0,
+            ':address' => $event->getAddress(),
+            ':latitude' => $event->getLatitude(),
+            ':longitude' => $event->getLongitude(),
+            ':imagePath' => $event->getImagePath(),
+            ':bannerPath' => $event->getBannerPath(),
+            ':status' => $event->getStatus(),
+            ':isPublic' => $event->getIsPublic() ? 1 : 0,
+            ':isDeleted' => 0,
+            ':requiresApproval' => $event->getRequiresApproval() ? 1 : 0,
+            ':price' => $event->getPrice(),
+            ':currency' => $event->getCurrency() ?? 'EUR',
+            ':createdAt' => $event->getCreatedAt(),
+            ':idUser' => $event->getIdUser(),
+            ':idAssociation' => $event->getIdAssociation(),
+            ':idVille' => $event->getIdVille(),
+            ':idEventCategory' => $event->getIdEventCategory()
+        ]);
+    }
+
+    /**
+     * Update event
+     */
+    public function updateEvent(Evenement $event): bool
+    {
+        $sql = "UPDATE evenement SET 
+                title = :title, description = :description, shortDescription = :shortDescription,
+                eventDate = :eventDate, endDate = :endDate, registrationDeadline = :registrationDeadline,
+                maxParticipants = :maxParticipants, address = :address, latitude = :latitude, longitude = :longitude,
+                status = :status, isPublic = :isPublic, requiresApproval = :requiresApproval,
+                price = :price, currency = :currency, updatedAt = :updatedAt, idVille = :idVille,
+                idEventCategory = :idEventCategory
+                WHERE idEvenement = :idEvenement AND idUser = :idUser";
+        
+        $stmt = $this->pdo->prepare($sql);
+        
+        return $stmt->execute([
+            ':title' => $event->getTitle(),
+            ':description' => $event->getDescription(),
+            ':shortDescription' => $event->getShortDescription(),
+            ':eventDate' => $event->getEventDate(),
+            ':endDate' => $event->getEndDate(),
+            ':registrationDeadline' => $event->getRegistrationDeadline(),
+            ':maxParticipants' => $event->getMaxParticipants(),
+            ':address' => $event->getAddress(),
+            ':latitude' => $event->getLatitude(),
+            ':longitude' => $event->getLongitude(),
+            ':status' => $event->getStatus(),
+            ':isPublic' => $event->getIsPublic() ? 1 : 0,
+            ':requiresApproval' => $event->getRequiresApproval() ? 1 : 0,
+            ':price' => $event->getPrice(),
+            ':currency' => $event->getCurrency(),
+            ':updatedAt' => $event->getUpdatedAt(),
+            ':idVille' => $event->getIdVille(),
+            ':idEventCategory' => $event->getIdEventCategory(),
+            ':idEvenement' => $event->getIdEvenement(),
+            ':idUser' => $event->getIdUser()
+        ]);
+    }
+
+    /**
+     * Delete event (soft delete)
+     */
+    public function deleteEvent(int $idEvenement): bool
+    {
+        $sql = "UPDATE evenement SET isDeleted = 1 WHERE idEvenement = :idEvenement";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idEvenement', $idEvenement, PDO::PARAM_INT);
+        
+        return $stmt->execute();
+    }
+
+    /**
+     * Get all event categories
+     */
+    public function getEventCategories(): array
+    {
+        $sql = "SELECT * FROM event_category WHERE isActive = 1 ORDER BY name ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get user associations for event creation
+     */
+    public function getUserAssociations(int $idUser): array
+    {
+        $sql = "SELECT a.idAssociation, a.name FROM association a 
+                WHERE a.idUser = :idUser AND a.isActive = 1 AND a.isDeleted = 0
+                ORDER BY a.name ASC";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get villes by postal code
+     */
+    public function getVillesByCp(string $codePostal): array
+    {
+        $sql = "SELECT idVille, ville_nom_reel FROM ville WHERE ville_code_postal = :codePostal ORDER BY ville_nom_reel ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':codePostal', $codePostal, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Check if ville exists
+     */
+    public function isVilleExists(int $idVille): bool
+    {
+        $sql = "SELECT COUNT(*) FROM ville WHERE idVille = :idVille";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idVille', $idVille, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Get ville by ID
+     */
+    public function getVilleById(int $idVille): ?array
+    {
+        $sql = "SELECT * FROM ville WHERE idVille = :idVille";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idVille', $idVille, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    /**
+     * Update event image
+     */
+    public function updateImage(int $idEvenement, string $imagePath): bool
+    {
+        $sql = "UPDATE evenement SET imagePath = :imagePath WHERE idEvenement = :idEvenement";
+        $stmt = $this->pdo->prepare($sql);
+        
+        return $stmt->execute([
+            ':imagePath' => $imagePath,
+            ':idEvenement' => $idEvenement
+        ]);
+    }
+
+    /**
+     * Update event banner
+     */
+    public function updateBanner(int $idEvenement, string $bannerPath): bool
+    {
+        $sql = "UPDATE evenement SET bannerPath = :bannerPath WHERE idEvenement = :idEvenement";
+        $stmt = $this->pdo->prepare($sql);
+        
+        return $stmt->execute([
+            ':bannerPath' => $bannerPath,
+            ':idEvenement' => $idEvenement
+        ]);
+    }
+
+    /**
+     * Check if user is event owner
+     */
+    public function isEventOwner(int $idEvenement, int $idUser): bool
+    {
+        $sql = "SELECT COUNT(*) FROM evenement WHERE idEvenement = :idEvenement AND idUser = :idUser";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':idEvenement' => $idEvenement,
+            ':idUser' => $idUser
+        ]);
+        
+        return $stmt->fetchColumn() > 0;
+    }
+}
