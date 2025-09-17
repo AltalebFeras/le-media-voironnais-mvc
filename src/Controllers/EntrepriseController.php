@@ -22,7 +22,7 @@ class EntrepriseController extends AbstractController
         try {
             $idUser = $_SESSION['idUser'];
             $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-            $entreprisesPerPage = 2;
+            $entreprisesPerPage = 6;
             $entreprises = $this->repo->getUserEntreprises($idUser, $currentPage, $entreprisesPerPage);
             $totalEntreprises = $this->repo->countUserEntreprises($idUser);
             $totalPages = (int)ceil($totalEntreprises / $entreprisesPerPage);

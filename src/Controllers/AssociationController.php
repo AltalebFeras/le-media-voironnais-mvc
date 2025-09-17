@@ -26,7 +26,7 @@ class AssociationController extends AbstractController
         try {
             $idUser = $_SESSION['idUser'];
             $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-            $associationsPerPage = 2;
+            $associationsPerPage = 9;
             $associations = $this->repo->getUserAssociations($idUser, $currentPage, $associationsPerPage);
             $totalAssociations = $this->repo->countUserAssociations($idUser);
             $totalPages = (int)ceil($totalAssociations / $associationsPerPage);

@@ -25,7 +25,7 @@ class EvenementController extends AbstractController
         try {
             $idUser = $_SESSION['idUser'];
             $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-            $evenementsPerPage = 2;
+            $evenementsPerPage = 9;
             $evenements = $this->repo->getUserEvents($idUser, $currentPage, $evenementsPerPage);
             $totalEvenements = $this->repo->countUserEvents($idUser);
             $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
