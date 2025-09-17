@@ -17,9 +17,6 @@ class EntrepriseController extends AbstractController
         $this->repo = new EntrepriseRepository();
     }
 
-    /**
-     * Display list of user companies
-     */
     public function mesEntreprises()
     {
         

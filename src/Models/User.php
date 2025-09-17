@@ -478,7 +478,7 @@ class User
         // Format the DateTime object to a string
         return $this->dateOfBirth->format('Y-m-d');
     }
-    
+
     /**
      * Get the value of dateOfBirth formatted
      */
@@ -683,7 +683,7 @@ class User
 
     /**
      * Get the value of isBanned
-     */ 
+     */
     public function getIsBanned()
     {
         return $this->isBanned;
@@ -693,7 +693,7 @@ class User
      * Set the value of isBanned
      *
      * @return  self
-     */ 
+     */
     public function setIsBanned($isBanned)
     {
         $this->isBanned = $isBanned;

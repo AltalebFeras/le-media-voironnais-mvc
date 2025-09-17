@@ -107,7 +107,7 @@ class AssociationController extends AbstractController
     }
     public function showAddForm()
     {
-        $this->render('association/ajouter');
+        $this->render('association/ajouter_association');
     }
 
     public function addAssociation()
@@ -125,12 +125,9 @@ class AssociationController extends AbstractController
 
             $_SESSION['form_data'] = $_POST;
             $errors = [];
-            if (empty($name)) {
-                $errors['name'] = "Le nom de l'association est obligatoire";
-            }
-            if ($idVille == null) {
-                $errors['ville'] = "La ville est obligatoire";
-            }
+
+            // Custom validations not covered by the model
+          
             $existingAssociation = $this->repo->getAssociationByNameForThisUser($name, $idUser);
             if ($existingAssociation) {
                 $errors['name'] = "Vous avez déjà une association avec ce nom";
@@ -139,33 +136,10 @@ class AssociationController extends AbstractController
             if (!$existingVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
-            // Description, address, phone, email, and website can be empty, but if provided, validate them
-
-            if (!empty($description) && strlen($description) < 10) {
-                $errors['description'] = "La description doit contenir au moins 10 caractères";
-            }
-
-            if (!empty($address) && strlen($address) < 5) {
-                $errors['address'] = "L'adresse doit contenir au moins 5 caractères";
-            }
-
-            if (!empty($phone) && !preg_match('/^\+?[0-9\s\-]{7,20}$/', $phone)) {
-                $errors['phone'] = "Le numéro de téléphone est invalide";
-            }
-
-            if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors['email'] = "L'email est invalide";
-            }
-
-            if (!empty($website) && !filter_var($website, FILTER_VALIDATE_URL)) {
-                $errors['website'] = "Le site web est invalide";
-            }
-
-            $this->returnAllErrors($errors, 'association/ajouter?error=true&');
-
 
             // Create new association
             $association = new Association();
+            
             $association->setName($name)
                 ->setDescription($description)
                 ->setAddress($address)
@@ -179,6 +153,10 @@ class AssociationController extends AbstractController
                 ->setIdVille($idVille)
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'));
 
+            // Use model validation
+            $modelErrors = $association->validate();
+            $errors = array_merge($errors, $modelErrors);
+
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {
                 $logoPath = $this->handleImageUpload('logo', 'logos');
@@ -190,7 +168,9 @@ class AssociationController extends AbstractController
                 $bannerPath = $this->handleImageUpload('banner', 'banners');
                 $association->setBannerPath($bannerPath);
             }
+
             $this->returnAllErrors($errors, 'association/ajouter?error=true&');
+
             $create_association = $this->repo->createAssociation($association);
             if ($create_association) {
                 $_SESSION['success'] = "L'association a été créée avec succès";
@@ -213,14 +193,14 @@ class AssociationController extends AbstractController
     public function showEditForm()
     {
         try {
-            // Handle URL segments for /association/modifier/{id}
+            // Handle URL segments for /association/modifier?id=
             $idAssociation = isset($_GET['id']) ? (int)$_GET['id'] : null;
 
 
             $idUser = $_SESSION['idUser'];
             $association = $this->repo->getAssociationById($idAssociation);
 
-            if (!$association) {
+            if (!$association || !$idAssociation) {
                 throw new Exception("L'association demandée n'existe pas");
             }
 
@@ -230,7 +210,7 @@ class AssociationController extends AbstractController
 
             $ville = $this->repo->getVilleById($association->getIdVille());
 
-            $this->render('association/modifier', [
+            $this->render('association/modifier_association', [
                 'association' => $association,
                 'ville' => $ville,
                 'title' => 'Modifier l\'association'
@@ -277,13 +257,6 @@ class AssociationController extends AbstractController
 
             $errors = [];
 
-            if (empty($name)) {
-                $errors['name'] = "Le nom de l'association est obligatoire";
-            }
-
-            if ($idVille == null) {
-                $errors['ville'] = "La ville est obligatoire";
-            }
 
             // Check if name exists for other associations of this user
             $existingAssociation = $this->repo->getAssociationByNameForThisUser($name, $idUser);
@@ -294,26 +267,6 @@ class AssociationController extends AbstractController
             $existingVille = $this->repo->isVilleExists($idVille);
             if (!$existingVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
-            }
-
-            if (!empty($description) && strlen($description) < 10) {
-                $errors['description'] = "La description doit contenir au moins 10 caractères";
-            }
-
-            if (!empty($address) && strlen($address) < 5) {
-                $errors['address'] = "L'adresse doit contenir au moins 5 caractères";
-            }
-
-            if (!empty($phone) && !preg_match('/^\+?[0-9\s\-]{7,20}$/', $phone)) {
-                $errors['phone'] = "Le numéro de téléphone est invalide";
-            }
-
-            if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors['email'] = "L'email est invalide";
-            }
-
-            if (!empty($website) && !filter_var($website, FILTER_VALIDATE_URL)) {
-                $errors['website'] = "Le site web est invalide";
             }
 
             // Update association data
@@ -327,6 +280,10 @@ class AssociationController extends AbstractController
                 ->setIdVille($idVille)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
 
+            // Use model validation
+            $modelErrors = $association->validate();
+            $errors = array_merge($errors, $modelErrors);
+
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {
                 $logoPath = $this->handleImageUpload('logo', 'logos');
@@ -339,7 +296,7 @@ class AssociationController extends AbstractController
                 $association->setBannerPath($bannerPath);
             }
 
-            $this->returnAllErrors($errors, 'association/modifier/' . $idAssociation . '?error=true');
+            $this->returnAllErrors($errors, 'association/modifier?id=' . $idAssociation . '?error=true');
 
             $this->repo->updateAssociation($association);
 
@@ -347,7 +304,7 @@ class AssociationController extends AbstractController
             $this->redirect('mes_associations');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('association/modifier/' . ($idAssociation ?? ''));
+            $this->redirect('association/modifier?id=' . ($idAssociation ?? ''));
         }
     }
 
@@ -369,6 +326,7 @@ class AssociationController extends AbstractController
 
             $this->repo->deleteAssociation($idAssociation, $idUser);
             $_SESSION['success'] = "L'association a été supprimée avec succès";
+            $this->redirect('mes_associations');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
         }
