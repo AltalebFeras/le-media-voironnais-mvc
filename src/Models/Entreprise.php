@@ -318,6 +318,14 @@ class Entreprise
         } elseif (strlen($this->name) > 255) {
             $errors['name'] = 'Le nom ne peut pas dépasser 255 caractères.';
         }
+        // Validation de l'description
+        if (!empty($this->description) && (strlen($this->description) > 1000 || strlen($this->description) < 10)) {
+            $errors['description'] = 'La description ne peut pas dépasser 1000 caractères et doit contenir au moins 10 caractères.';
+        }
+        // Validation de l'adresse
+        if (!empty($this->address) && (strlen($this->address) > 255 || strlen($this->address) < 5)) {
+            $errors['address'] = 'L\'adresse ne peut pas dépasser 255 caractères et doit contenir au moins 5 caractères.';
+        }
 
         // Validation de l'email (si fourni)
         if (!empty($this->email) && !filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
@@ -361,26 +369,6 @@ class Entreprise
     public function isValid(): bool
     {
         return empty($this->validate());
-    }
-
-    public function getStatusLabel(): string|null
-    {
-        $statusLabels = [
-            'brouillon' => 'Brouillon',
-            'actif' => 'Active',
-            'suspendu' => 'Suspendue'
-        ];
-        return $statusLabels[$this->status] ?? $this->status;
-    }
-
-    public function getStatusClass(): string
-    {
-        $statusClasses = [
-            'brouillon' => 'warning',
-            'actif' => 'success',
-            'suspendu' => 'danger'
-        ];
-        return $statusClasses[$this->status] ?? 'secondary';
     }
 
     public function toArray(): array

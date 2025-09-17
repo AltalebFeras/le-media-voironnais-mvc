@@ -19,62 +19,44 @@ class EntrepriseController extends AbstractController
 
     public function mesEntreprises()
     {
-        
+
         try {
             $idUser = $_SESSION['idUser'];
             $entreprises = $this->repo->getUserEntreprises($idUser);
-            
+
             $this->render('entreprise/mes_entreprises', [
                 'entreprises' => $entreprises,
                 'title' => 'Mes entreprises'
             ]);
         } catch (Exception $e) {
-            $this->render('error', [
+            $this->render('dashboard', [
                 'message' => $e->getMessage(),
                 'title' => 'Erreur'
             ]);
         }
     }
 
-    /**
-     * Show form to add a new company
-     */
     public function showAddForm()
     {
-        
-        $this->render('entreprise/ajouter', [
-            'title' => 'Ajouter une entreprise'
-        ]);
+        $this->render('entreprise/ajouter_entreprise');
     }
-
-    /**
-     * Process add company form
-     */
     public function addEntreprise()
     {
-        
         try {
             $idUser = $_SESSION['idUser'];
 
             // Validate form data
-            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS);
-            $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_SPECIAL_CHARS);
-            $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_SPECIAL_CHARS);
-            $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_SPECIAL_CHARS);
-            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-            $website = filter_input(INPUT_POST, 'website', FILTER_SANITIZE_URL);
-            $siret = filter_input(INPUT_POST, 'siret', FILTER_SANITIZE_SPECIAL_CHARS);
-            $status = filter_input(INPUT_POST, 'status', FILTER_SANITIZE_SPECIAL_CHARS);
-            
-            if (empty($name)) {
-                throw new Exception("Le nom de l'entreprise est obligatoire");
-            }
-            
-            // Default status if not provided
-            if (empty($status)) {
-                $status = 'brouillon';
-            }
-            
+            $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : null;
+            $description = isset($_POST['description']) ? htmlspecialchars(trim($_POST['description'])) : null;
+            $address = isset($_POST['address']) ? htmlspecialchars(trim($_POST['address'])) : null;
+            $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
+            $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : null;
+            $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
+            $siret = isset($_POST['siret']) ? htmlspecialchars(trim($_POST['siret'])) : null;
+            $status = 'brouillon'; // Default status
+            $errors = [];
+            $_SESSION['form_data'] = $_POST;
+
             // Create new company
             $entreprise = new Entreprise();
             $entreprise->setName($name)
@@ -88,29 +70,29 @@ class EntrepriseController extends AbstractController
                 ->setIsActive(0) // Default to inactive
                 ->setIdUser($idUser)
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'));
-            
+
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {
                 $logoPath = $this->handleImageUpload('logo', 'entreprises/logos');
                 $entreprise->setLogoPath($logoPath);
             }
-            
+
             // Handle banner upload if present
             if (!empty($_FILES['banner']['name'])) {
                 $bannerPath = $this->handleImageUpload('banner', 'entreprises/banners');
                 $entreprise->setBannerPath($bannerPath);
             }
-            
+            // Use model validation
+            $modelErrors = $entreprise->validate();
+            $errors = array_merge($errors, $modelErrors);
+            $this->returnAllErrors($errors, 'entreprise/ajouter_entreprise?error=true');
+
             $this->repo->createEntreprise($entreprise);
-            
+
             $_SESSION['success'] = "L'entreprise a été créée avec succès";
-            $this->redirect('/mes-entreprises');
+            $this->redirect('mes_entreprises');
         } catch (Exception $e) {
-            $this->render('entreprise/ajouter', [
-                'error' => $e->getMessage(),
-                'title' => 'Ajouter une entreprise',
-                'formData' => $_POST
-            ]);
+            $this->render('entreprise/ajouter_entreprise?error=true');
         }
     }
 
@@ -119,20 +101,21 @@ class EntrepriseController extends AbstractController
      */
     public function showEditForm()
     {
-        
+
         try {
             $idUser = $_SESSION['idUser'];
+            $idEntreprise = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
-            
-            if (!$entreprise) {
+
+            if (!$entreprise || !$idEntreprise) {
                 throw new Exception("L'entreprise demandée n'existe pas");
             }
-            
+
             // Check if user is the owner of the company
             if ($entreprise->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
             }
-            
+
             $this->render('entreprise/modifier', [
                 'entreprise' => $entreprise,
                 'title' => 'Modifier l\'entreprise'
@@ -148,35 +131,33 @@ class EntrepriseController extends AbstractController
      */
     public function updateEntreprise()
     {
-        
+
         try {
             $idUser = $_SESSION['idUser'];
+            $idEntreprise = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
-            
-            if (!$entreprise) {
+
+            if (!$entreprise || !$idEntreprise) {
                 throw new Exception("L'entreprise demandée n'existe pas");
             }
-            
+
             // Check if user is the owner of the company
             if ($entreprise->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
             }
-            
+
             // Validate form data
-            $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS);
-            $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_SPECIAL_CHARS);
-            $address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_SPECIAL_CHARS);
-            $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_SPECIAL_CHARS);
-            $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-            $website = filter_input(INPUT_POST, 'website', FILTER_SANITIZE_URL);
-            $siret = filter_input(INPUT_POST, 'siret', FILTER_SANITIZE_SPECIAL_CHARS);
-            $status = filter_input(INPUT_POST, 'status', FILTER_SANITIZE_SPECIAL_CHARS);
-            $isActive = isset($_POST['isActive']) ? 1 : 0;
-            
-            if (empty($name)) {
-                throw new Exception("Le nom de l'entreprise est obligatoire");
-            }
-            
+            $name = isset($_POST['name']) ? htmlspecialchars(trim($_POST['name'])) : null;
+            $description = isset($_POST['description']) ? htmlspecialchars(trim($_POST['description'])) : null;
+            $address = isset($_POST['address']) ? htmlspecialchars(trim($_POST['address'])) : null;
+            $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
+            $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : null;
+            $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
+            $siret = isset($_POST['siret']) ? htmlspecialchars(trim($_POST['siret'])) : null;
+            $status = 'brouillon'; // Default status
+
+            $errors = [];
+            $_SESSION['form_data'] = $_POST;
             // Update company
             $entreprise->setName($name)
                 ->setDescription($description)
@@ -186,33 +167,28 @@ class EntrepriseController extends AbstractController
                 ->setWebsite($website)
                 ->setSiret($siret)
                 ->setStatus($status)
-                ->setIsActive($isActive)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
-            
+
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {
-                $logoPath = $this->handleImageUpload('logo', 'entreprises/logos');
+                $logoPath = $this->handleImageUpload('logo', 'logos');
                 $entreprise->setLogoPath($logoPath);
                 $this->repo->updateLogo($idEntreprise, $logoPath);
             }
-            
+
             // Handle banner upload if present
             if (!empty($_FILES['banner']['name'])) {
-                $bannerPath = $this->handleImageUpload('banner', 'entreprises/banners');
+                $bannerPath = $this->handleImageUpload('banner', 'banners');
                 $entreprise->setBannerPath($bannerPath);
                 $this->repo->updateBanner($idEntreprise, $bannerPath);
             }
-            
+
             $this->repo->updateEntreprise($entreprise);
-            
+
             $_SESSION['success'] = "L'entreprise a été mise à jour avec succès";
-            $this->redirect('/mes-entreprises');
+            $this->redirect('mes_entreprises');
         } catch (Exception $e) {
-            $this->render('entreprise/modifier', [
-                'entreprise' => $entreprise,
-                'error' => $e->getMessage(),
-                'title' => 'Modifier l\'entreprise'
-            ]);
+            $this->redirect('entreprise/modifier?id=' . $idEntreprise);
         }
     }
 
@@ -221,57 +197,131 @@ class EntrepriseController extends AbstractController
      */
     public function deleteEntreprise()
     {
-        
         try {
             $idUser = $_SESSION['idUser'];
-            
+            $idEntreprise = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
+            $entreprise = $this->repo->getEntrepriseById($idEntreprise);
+
+            if (!$entreprise || !$idEntreprise) {
+                throw new Exception("L'entreprise demandée n'existe pas");
+            }
+
             // Check if user is the owner of the company
-            if (!$this->repo->isEntrepriseOwner($idEntreprise, $idUser)) {
+            if ($entreprise->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de supprimer cette entreprise");
             }
-            
+
             $this->repo->deleteEntreprise($idEntreprise);
-            
+
             $_SESSION['success'] = "L'entreprise a été supprimée avec succès";
+            $this->redirect('mes_entreprises');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_entreprises');
         }
-        
-        $this->redirect('/mes-entreprises');
     }
 
     /**
      * Handle image upload
      */
-    private function handleImageUpload($fileInputName, $directory)
+  
+    public function handleImageUpload($fileInputName, $directory)
     {
-        $targetDir = __DIR__ . "/../../public/uploads/{$directory}/";
-        
-        // Create directory if it doesn't exist
-        if (!file_exists($targetDir)) {
-            mkdir($targetDir, 0777, true);
+        if (!isset($_FILES[$fileInputName]) || empty($_FILES[$fileInputName]['name'])) {
+            throw new Exception("Aucun fichier n'a été sélectionné.");
         }
-        
-        $fileName = uniqid() . '_' . basename($_FILES[$fileInputName]['name']);
-        $targetFile = $targetDir . $fileName;
-        
-        // Check file type
-        $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-        
-        if (!in_array($imageFileType, $allowedTypes)) {
-            throw new Exception("Seuls les fichiers JPG, JPEG, PNG et GIF sont autorisés");
+
+        // Handle upload errors
+        if ($_FILES[$fileInputName]['error'] !== UPLOAD_ERR_OK) {
+            $errorMsg = 'Erreur lors du téléchargement de l\'image.';
+            switch ($_FILES[$fileInputName]['error']) {
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                    $errorMsg = "Le fichier est trop volumineux. Limite serveur : " . ini_get('upload_max_filesize') . ".";
+                    break;
+                case UPLOAD_ERR_PARTIAL:
+                    $errorMsg = "Le fichier n'a été que partiellement téléchargé.";
+                    break;
+                case UPLOAD_ERR_NO_FILE:
+                    $errorMsg = "Aucun fichier n'a été téléchargé.";
+                    break;
+                case UPLOAD_ERR_NO_TMP_DIR:
+                    $errorMsg = "Dossier temporaire manquant.";
+                    break;
+                case UPLOAD_ERR_CANT_WRITE:
+                    $errorMsg = "Échec de l'écriture du fichier sur le disque.";
+                    break;
+                case UPLOAD_ERR_EXTENSION:
+                    $errorMsg = "Une extension PHP a arrêté le téléchargement du fichier.";
+                    break;
+            }
+            throw new Exception($errorMsg);
         }
-        
-        // Check file size (5MB max)
-        if ($_FILES[$fileInputName]['size'] > 5000000) {
-            throw new Exception("Le fichier est trop volumineux (maximum 5MB)");
+
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $maxFileSize = 5 * 1024 * 1024; // 5MB
+
+        $uploadDir = __DIR__ . "/../../public/uploads/{$directory}/";
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
         }
-        
-        if (move_uploaded_file($_FILES[$fileInputName]['tmp_name'], $targetFile)) {
-            return "/uploads/{$directory}/" . $fileName;
+
+        $fileTmpPath = $_FILES[$fileInputName]['tmp_name'];
+        $fileNameOriginal = $_FILES[$fileInputName]['name'];
+        $fileSize = $_FILES[$fileInputName]['size'];
+        $fileType = mime_content_type($fileTmpPath);
+        $fileExtension = strtolower(pathinfo($fileNameOriginal, PATHINFO_EXTENSION));
+
+        // Check if file is actually uploaded
+        if (!is_uploaded_file($fileTmpPath)) {
+            throw new Exception('Le fichier n\'a pas été téléchargé correctement.');
+        }
+
+        // Validate file type and size
+        if (!in_array($fileType, $allowedMimeTypes) || !in_array($fileExtension, $allowedExtensions)) {
+            throw new Exception('Format de fichier non autorisé. Veuillez télécharger une image (jpg, jpeg, png, gif, webp).');
+        }
+
+        if ($fileSize > $maxFileSize) {
+            throw new Exception('La taille de l\'image ne doit pas dépasser 5 Mo.');
+        }
+
+        $fileName = uniqid() . '_' . basename($fileNameOriginal);
+        $uploadFile = "{$uploadDir}{$fileName}";
+
+        // Handle EXIF orientation for JPEG images
+        if ($fileExtension === 'jpg' || $fileExtension === 'jpeg') {
+            $image = @imagecreatefromjpeg($fileTmpPath);
+            if ($image && function_exists('exif_read_data')) {
+                $exif = @exif_read_data($fileTmpPath);
+                if (!empty($exif['Orientation'])) {
+                    switch ($exif['Orientation']) {
+                        case 3:
+                            $image = imagerotate($image, 180, 0);
+                            break;
+                        case 6:
+                            $image = imagerotate($image, -90, 0);
+                            break;
+                        case 8:
+                            $image = imagerotate($image, 90, 0);
+                            break;
+                    }
+                }
+            }
+            if ($image) {
+                imagejpeg($image, $uploadFile, 90);
+                imagedestroy($image);
+            } else {
+                throw new Exception('Impossible de traiter l\'image JPEG.');
+            }
         } else {
-            throw new Exception("Une erreur est survenue lors de l'upload de l'image");
+            // Move uploaded file for non-JPEG images
+            if (!move_uploaded_file($fileTmpPath, $uploadFile)) {
+                throw new Exception('Erreur lors du déplacement du fichier téléchargé.');
+            }
         }
+
+        return "/uploads/{$directory}/" . $fileName;
     }
 }

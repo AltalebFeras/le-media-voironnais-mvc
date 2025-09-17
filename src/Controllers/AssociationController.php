@@ -127,7 +127,7 @@ class AssociationController extends AbstractController
             $errors = [];
 
             // Custom validations not covered by the model
-          
+
             $existingAssociation = $this->repo->getAssociationByNameForThisUser($name, $idUser);
             if ($existingAssociation) {
                 $errors['name'] = "Vous avez déjà une association avec ce nom";
@@ -139,7 +139,7 @@ class AssociationController extends AbstractController
 
             // Create new association
             $association = new Association();
-            
+
             $association->setName($name)
                 ->setDescription($description)
                 ->setAddress($address)
@@ -329,9 +329,8 @@ class AssociationController extends AbstractController
             $this->redirect('mes_associations');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_associations');
         }
-
-        $this->redirect('mes_associations');
     }
 
 
