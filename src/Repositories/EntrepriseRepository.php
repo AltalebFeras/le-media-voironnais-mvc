@@ -62,9 +62,9 @@ class EntrepriseRepository
     {
         try {
             $query = "INSERT INTO entreprise 
-                     (name, description, logoPath, bannerPath, address, phone, email, website, siret, status, isActive, idUser, createdAt) 
+                     (name, description, logoPath, bannerPath, address, phone, email, website, siret, status, isActive, idUser, idVille, createdAt) 
                      VALUES 
-                     (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :status, :isActive, :idUser, :createdAt)";
+                     (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :status, :isActive, :idUser, :idVille, :createdAt)";
             
             $stmt = $this->DB->prepare($query);
             $stmt->execute([
@@ -80,6 +80,7 @@ class EntrepriseRepository
                 'status' => $entreprise->getStatus(),
                 'isActive' => $entreprise->getIsActive(),
                 'idUser' => $entreprise->getIdUser(),
+                'idVille' => $entreprise->getIdVille(),
                 'createdAt' => $entreprise->getCreatedAt()
             ]);
             

@@ -53,7 +53,7 @@ class EntrepriseController extends AbstractController
             $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : null;
             $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
             $siret = isset($_POST['siret']) ? htmlspecialchars(trim($_POST['siret'])) : null;
-            $status = 'brouillon'; // Default status
+            $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
             $errors = [];
             $_SESSION['form_data'] = $_POST;
 
@@ -66,20 +66,21 @@ class EntrepriseController extends AbstractController
                 ->setEmail($email)
                 ->setWebsite($website)
                 ->setSiret($siret)
-                ->setStatus($status)
+                ->setStatus('brouillon') // Default status
                 ->setIsActive(0) // Default to inactive
                 ->setIdUser($idUser)
+                ->setIdVille($idVille)
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'));
 
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {
-                $logoPath = $this->handleImageUpload('logo', 'entreprises/logos');
+                $logoPath = $this->handleImageUpload('logo', 'logos');
                 $entreprise->setLogoPath($logoPath);
             }
 
             // Handle banner upload if present
             if (!empty($_FILES['banner']['name'])) {
-                $bannerPath = $this->handleImageUpload('banner', 'entreprises/banners');
+                $bannerPath = $this->handleImageUpload('banner', 'banners');
                 $entreprise->setBannerPath($bannerPath);
             }
             // Use model validation
@@ -190,7 +191,7 @@ class EntrepriseController extends AbstractController
             $modelErrors = $entreprise->validate();
             $errors = array_merge($errors, $modelErrors);
             $this->returnAllErrors($errors, 'entreprise/modifier?id=' . $idEntreprise);
-            
+
             $this->repo->updateEntreprise($entreprise);
 
             $_SESSION['success'] = "L'entreprise a été mise à jour avec succès";
