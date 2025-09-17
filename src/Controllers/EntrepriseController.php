@@ -70,7 +70,9 @@ class EntrepriseController extends AbstractController
                 ->setIsActive(0) // Default to inactive
                 ->setIdUser($idUser)
                 ->setIdVille($idVille)
-                ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'));
+                ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'))
+                ->setLogoPath(null)
+                ->setBannerPath(null);
 
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {
