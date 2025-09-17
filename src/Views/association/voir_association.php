@@ -120,7 +120,7 @@
                         
                         <?php if ($isOwner): ?>
                             <div class="flex-row justify-content-between mt-4">
-                                <a href="<?= HOME_URL.'association/modifier?id='.$association->getIdAssociation() ?>" class="btn">
+                                <a href="<?= HOME_URL.'association/modifier?id='.$association->getIdAssociation() ?>" class="btn linkNotDecorated">
                                     Modifier l'association
                                 </a>
                                 <button type="button" class="btn btn-danger"

@@ -91,7 +91,7 @@
                     </div>
 
                     <div class="flex-row justify-content-between mt">
-                        <a href="<?= HOME_URL . 'mes_associations' ?>" class="btn">Annuler</a>
+                        <a href="<?= HOME_URL . 'mes_associations' ?>" class="btn linkNotDecorated">Annuler</a>
                         <button type="submit" class="btn">Créer l'association</button>
                     </div>
                 </div>

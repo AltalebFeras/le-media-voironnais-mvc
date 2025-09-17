@@ -272,7 +272,7 @@ class UserController extends AbstractController
     }
     public function displayDashboard()
     {
-        $this->render('dashboard/dashboard');
+        $this->render('user/dashboard');
     }
 
     public function treatmentForgotMyPassword()
@@ -389,7 +389,7 @@ class UserController extends AbstractController
     }
     public function displayMyAccount()
     {
-        $this->render('account/mon_compte', ['title' => 'Mon compte']);
+        $this->render('user/mon_compte', ['title' => 'Mon compte']);
     }
     public function editProfile()
     {

@@ -1,6 +1,6 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-<link rel="stylesheet" href="/assets/css/404.css">
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/404.css' ?>">
 <main>
 	<div class="page_404">
 		<div class="container_404">
@@ -12,9 +12,9 @@
 				<p>La page que vous recherchez n'existe pas ou a été supprimée.</p>
 				<p>On dirait que vous êtes perdu...</p>
 				<?php if (isset($_SESSION['connected']) && $_SESSION['connected'] === true) : ?>
-					<a href="/dashboard" class="link_404">Retour au tableau de bord</a>
+					<a href="<?= HOME_URL . 'dashboard'; ?>" class="link_404">Retour au tableau de bord</a>
 				<?php else : ?>
-					<a href="/" class="link_404">Retour à l'accueil</a>
+					<a href="<?= HOME_URL; ?>" class="link_404">Retour à l'accueil</a>
 				<?php endif; ?>
 			</div>
 		</div>

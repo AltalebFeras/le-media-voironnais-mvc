@@ -295,29 +295,39 @@ class Association
         } elseif (strlen($this->name) > 255) {
             $errors['name'] = 'Le nom ne peut pas dépasser 255 caractères.';
         }
-        // Validation de l'description
-        if (!empty($this->description) && strlen($this->description) > 1000 || strlen($this->description) < 10) {
-            $errors['description'] = 'La description ne peut pas dépasser 1000 caractères et doit contenir au moins 10 caractères.';
+        // Validation de la description
+        if (!is_null($this->description) && $this->description !== '') {
+            if (strlen($this->description) > 1000 || strlen($this->description) < 10) {
+                $errors['description'] = 'La description ne peut pas dépasser 1000 caractères et doit contenir au moins 10 caractères.';
+            }
         }
 
         // Validation de l'adresse
-        if (!empty($this->address) && strlen($this->address) > 255 || strlen($this->address) < 5) {
-            $errors['address'] = 'L\'adresse ne peut pas dépasser 255 caractères et doit contenir au moins 5 caractères.';
+        if (!is_null($this->address) && $this->address !== '') {
+            if (strlen($this->address) > 255 || strlen($this->address) < 5) {
+                $errors['address'] = 'L\'adresse ne peut pas dépasser 255 caractères et doit contenir au moins 5 caractères.';
+            }
         }
 
         // Validation de l'email
-        if (!empty($this->email) && !filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'L\'adresse email n\'est pas valide.';
+        if (!is_null($this->email) && $this->email !== '') {
+            if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+                $errors['email'] = 'L\'adresse email n\'est pas valide.';
+            }
         }
 
         // Validation du téléphone
-        if (!empty($this->phone) && !preg_match('/^[0-9\s\-\+\(\)\.]{10,20}$/', $this->phone)) {
-            $errors['phone'] = 'Le numéro de téléphone n\'est pas valide.';
+        if (!is_null($this->phone) && $this->phone !== '') {
+            if (!preg_match('/^[0-9\s\-\+\(\)\.]{10,20}$/', $this->phone)) {
+                $errors['phone'] = 'Le numéro de téléphone n\'est pas valide.';
+            }
         }
 
         // Validation du site web
-        if (!empty($this->website) && !filter_var($this->website, FILTER_VALIDATE_URL)) {
-            $errors['website'] = 'L\'URL du site web n\'est pas valide.';
+        if (!is_null($this->website) && $this->website !== '') {
+            if (!filter_var($this->website, FILTER_VALIDATE_URL)) {
+                $errors['website'] = 'L\'URL du site web n\'est pas valide.';
+            }
         }
         if (empty($this->idVille)) {
             $errors['ville'] = "La ville est obligatoire";

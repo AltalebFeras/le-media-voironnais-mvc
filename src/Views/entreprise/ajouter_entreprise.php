@@ -99,7 +99,7 @@
                     </div>
 
                     <div class="flex-row justify-content-between mt">
-                        <a href="<?= HOME_URL . 'mes_entreprises' ?>" class="btn">Annuler</a>
+                        <a href="<?= HOME_URL . 'mes_entreprises' ?>" class="btn linkNotDecorated">Annuler</a>
                         <button type="submit" class="btn">Créer l'entreprise</button>
                     </div>
                 </div>

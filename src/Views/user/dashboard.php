@@ -20,17 +20,13 @@
             <p>Voir toutes mes entreprises.</p>
         </a>
 
-        <a href="<?= HOME_URL . "mes_associations_operations?action=add_new_association" ?>" class="cardDashboard">
-            <h2>Créer une nouvelle Association</h2>
-            <p>Créer une nouvelle association.</p>
+        <a href="<?= HOME_URL . "mes_evenements" ?>" class="cardDashboard">
+            <h2>Mes Événements</h2>
+            <p>Voir tous mes événements.</p>
         </a>
         <a href="<?= HOME_URL . "mon_compte" ?>" class="cardDashboard">
             <h2>Mon compte</h2>
             <p>Voir et modifier mon profil, gérer mes événements, associations, entreprises, et accéder à la messagerie.</p>
-        </a>
-        <a href="<?= HOME_URL . "deconnexion" ?>" class="cardDashboard">
-            <h2>Se déconnecter</h2>
-            <p>Déconnexion de votre compte.</p>
         </a>
 
     </div>

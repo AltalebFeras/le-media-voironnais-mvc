@@ -3,7 +3,7 @@
   <header>
     <nav class="navbar">
       <div class="logo" style="display: flex; align-items: center;">
-        <a href="/"><img
+        <a href="<?= HOME_URL ?>"><img
             src="<?= DOMAIN . HOME_URL . 'assets/images/logo/logo.png' ?>"
             alt="Logo"
             height="60" />

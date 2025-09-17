@@ -61,10 +61,10 @@
                         <div>
                             <?php if ($association->getIdUser() == $_SESSION['user_id']): ?>
                                 <div class="flex-row justify-content-between mt">
-                                    <a href="/association/voir/<?= $association->getIdAssociation() ?>" class="btn">
+                                    <a href="<?= HOME_URL . 'association/voir/' . $association->getIdAssociation() ?>" class="btn">
                                         Voir détails
                                     </a>
-                                    <a href="/association/modifier/<?= $association->getIdAssociation() ?>" class="btn">
+                                    <a href="<?= HOME_URL . 'association/modifier/' . $association->getIdAssociation() ?>" class="btn">
                                         Modifier
                                     </a>
                                     <button type="button" class="btn"
@@ -74,8 +74,8 @@
                                 </div>
                             <?php else: ?>
                                 <div class="flex-row justify-content-between mt">
-                                    <a href="<?= HOME_URL . 'mes_associations?action=voir&id=' . $association->getIdAssociation() ?>" class="btn">
-                                        Voir détails
+                                    <a href="<?= HOME_URL . 'mes_associations?action=voir&id=' . $association->getIdAssociation() ?>" class="btn linkNotDecorated">
+                                        Voir
                                     </a>
                                     <p class="text-muted">Vous êtes membre de cette association</p>
                                 </div>

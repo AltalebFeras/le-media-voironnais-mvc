@@ -143,8 +143,8 @@
             </div>
 
             <div class="form-actions">
+                <a href="<?= HOME_URL ?>mes_evenements" class="btn btn-secondary linkNotDecorated">Annuler</a>
                 <button type="submit" class="btn">Créer l'événement</button>
-                <a href="<?= HOME_URL ?>mes_evenements" class="btn btn-secondary">Annuler</a>
             </div>
         </form>
     </div>
