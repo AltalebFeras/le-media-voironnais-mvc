@@ -19,14 +19,20 @@ class EntrepriseController extends AbstractController
 
     public function mesEntreprises()
     {
-
         try {
             $idUser = $_SESSION['idUser'];
-            $entreprises = $this->repo->getUserEntreprises($idUser);
+            $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+            $entreprisesPerPage = 2;
+            $entreprises = $this->repo->getUserEntreprises($idUser, $currentPage, $entreprisesPerPage);
+            $totalEntreprises = $this->repo->countUserEntreprises($idUser);
+            $totalPages = (int)ceil($totalEntreprises / $entreprisesPerPage);
 
             $this->render('entreprise/mes_entreprises', [
                 'entreprises' => $entreprises,
-                'title' => 'Mes entreprises'
+                'title' => 'Mes entreprises',
+                'total' => $totalEntreprises,
+                'currentPage' => $currentPage,
+                'totalPages' => $totalPages
             ]);
         } catch (Exception $e) {
             $this->redirect('mes_entreprises?error=true');

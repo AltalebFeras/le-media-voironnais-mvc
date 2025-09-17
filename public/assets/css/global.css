@@ -919,3 +919,38 @@ ul {
         margin: 0;
     }
 }
+
+
+/* Pagination */
+.pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.pager .page-info {
+    font-weight: 600;
+    color: #33414a;
+}
+
+.pager .page-link {
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid rgba(51, 65, 74, 0.08);
+    color: #213944;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.pager .page-link.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+.pager .page-link:hover {
+    background: #3a7ca5;
+    color: #fff;
+    border-color: #3a7ca5;
+}

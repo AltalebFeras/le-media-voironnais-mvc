@@ -17,23 +17,40 @@ class EvenementRepository
         $this->pdo = Database::getInstance()->getDB();
     }
     /**
-     * Get events by user ID
+     * Get events by user ID with pagination
      */
-    public function getUserEvents(int $idUser): array
+    public function getUserEvents(int $idUser, $currentPage = 1, $evenementsPerPage = 10): array
     {
+        $offset = max(0, ($currentPage - 1) * $evenementsPerPage);
         $sql = "SELECT e.*, v.ville_nom_reel, ec.name as category_name, a.name as association_name 
                 FROM evenement e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
                 LEFT JOIN association a ON e.idAssociation = a.idAssociation
                 WHERE e.idUser = :idUser AND e.isDeleted = 0 
-                ORDER BY e.eventDate ASC";
+                ORDER BY e.eventDate ASC
+                LIMIT :offset, :evenementsPerPage";
         
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':evenementsPerPage', $evenementsPerPage, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Count events by user ID
+     */
+    public function countUserEvents(int $idUser): int
+    {
+        $sql = "SELECT COUNT(*) FROM evenement WHERE idUser = :idUser AND isDeleted = 0";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
         
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return (int)$stmt->fetchColumn();
     }
 
     /**

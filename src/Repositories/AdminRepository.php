@@ -16,7 +16,7 @@ class AdminRepository
     }
 
     // Fetch a paginated list of users as associative arrays
-    public function findAllUsers(int $currentPage = 1, int $usersPerPage = 10): array
+    public function findAllUsers(int $currentPage, int $usersPerPage): array
     {
         $offset = max(0, ($currentPage - 1) * $usersPerPage);
         // use actual table `user` and correct column names

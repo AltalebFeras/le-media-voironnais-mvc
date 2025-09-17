@@ -18,14 +18,18 @@ class EntrepriseRepository
     }
 
     /**
-     * Get companies for a specific user
+     * Get companies for a specific user with pagination
      */
-    public function getUserEntreprises($idUser): array
+    public function getUserEntreprises($idUser, $currentPage = 1, $entreprisesPerPage = 10): array
     {
         try {
-            $query = "SELECT * FROM entreprise WHERE idUser = :idUser ORDER BY name ASC";
+            $offset = max(0, ($currentPage - 1) * $entreprisesPerPage);
+            $query = "SELECT * FROM entreprise WHERE idUser = :idUser ORDER BY name ASC LIMIT :offset, :entreprisesPerPage";
             $stmt = $this->DB->prepare($query);
-            $stmt->execute(['idUser' => $idUser]);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->bindValue(':entreprisesPerPage', $entreprisesPerPage, PDO::PARAM_INT);
+            $stmt->execute();
             
             $entreprises = [];
             while ($row = $stmt->fetchObject(Entreprise::class)) {
@@ -35,6 +39,22 @@ class EntrepriseRepository
             return $entreprises;
         } catch (Exception $e) {
             throw new Exception("Error fetching user companies: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Count companies for a specific user
+     */
+    public function countUserEntreprises($idUser): int
+    {
+        try {
+            $query = "SELECT COUNT(*) FROM entreprise WHERE idUser = :idUser";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idUser' => $idUser]);
+            
+            return (int)$stmt->fetchColumn();
+        } catch (Exception $e) {
+            throw new Exception("Error counting user companies: " . $e->getMessage());
         }
     }
 

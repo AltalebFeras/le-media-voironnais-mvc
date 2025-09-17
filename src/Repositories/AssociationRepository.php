@@ -20,17 +20,22 @@ class AssociationRepository
     /**
      * Get associations for a specific user
      */
-    public function getUserAssociations($idUser): array
+    public function getUserAssociations($idUser, $currentPage, $associationsPerPage): array
     {
         try {
             // Get associations where user is owner or member
+            $offset = max(0, ($currentPage - 1) * $associationsPerPage);
             $query = "SELECT a.* FROM association a 
                       LEFT JOIN user_association ua ON a.idAssociation = ua.idAssociation 
                       WHERE a.idUser = :idUser OR (ua.idUser = :idUser AND ua.isActive = 1 AND a.isDeleted = 0)
-                      GROUP BY a.idAssociation";
+                      GROUP BY a.idAssociation
+                      LIMIT :offset, :associationsPerPage";
 
             $stmt = $this->DB->prepare($query);
-            $stmt->execute(['idUser' => $idUser]);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->bindValue(':associationsPerPage', $associationsPerPage, PDO::PARAM_INT);
+            $stmt->execute();
 
             $associations = [];
             while ($row = $stmt->fetchObject(Association::class)) {
@@ -43,6 +48,21 @@ class AssociationRepository
         }
     }
 
+    public function countUserAssociations($idUser): int
+    {
+        try {
+            $query = "SELECT COUNT(DISTINCT a.idAssociation) FROM association a 
+                      LEFT JOIN user_association ua ON a.idAssociation = ua.idAssociation 
+                      WHERE a.idUser = :idUser OR (ua.idUser = :idUser AND ua.isActive = 1 AND a.isDeleted = 0)";
+
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idUser' => $idUser]);
+
+            return (int)$stmt->fetchColumn();
+        } catch (Exception $e) {
+            throw new Exception("Error counting user associations: " . $e->getMessage());
+        }
+    }
     /**
      * Get a specific association by ID
      */
@@ -193,19 +213,19 @@ class AssociationRepository
             throw new Exception("Error updating association: " . $e->getMessage());
         }
     }
-//  make  association isDeleted  true 
+    //  make  association isDeleted  true 
 
-public function deleteAssociation($idAssociation , $idUser): bool
-{
-    try {
-        $query = "UPDATE association SET isDeleted = 1 WHERE idAssociation = :idAssociation AND idUser = :idUser";
-        $stmt = $this->DB->prepare($query);
-        $stmt->execute(['idAssociation' => $idAssociation, 'idUser' => $idUser]);
-        return $stmt->rowCount() > 0;
-    } catch (Exception $e) {
-        throw new Exception("Error deleting association definitively: " . $e->getMessage());
+    public function deleteAssociation($idAssociation, $idUser): bool
+    {
+        try {
+            $query = "UPDATE association SET isDeleted = 1 WHERE idAssociation = :idAssociation AND idUser = :idUser";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idAssociation' => $idAssociation, 'idUser' => $idUser]);
+            return $stmt->rowCount() > 0;
+        } catch (Exception $e) {
+            throw new Exception("Error deleting association definitively: " . $e->getMessage());
+        }
     }
-}
 
     /**
      * Delete an association definitively

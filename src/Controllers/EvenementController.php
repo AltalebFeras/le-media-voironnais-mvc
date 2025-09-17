@@ -24,11 +24,18 @@ class EvenementController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $evenements = $this->repo->getUserEvents($idUser);
+            $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+            $evenementsPerPage = 2;
+            $evenements = $this->repo->getUserEvents($idUser, $currentPage, $evenementsPerPage);
+            $totalEvenements = $this->repo->countUserEvents($idUser);
+            $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
 
             $this->render('evenement/mes_evenements', [
                 'evenements' => $evenements,
-                'title' => 'Mes événements'
+                'title' => 'Mes événements',
+                'total' => $totalEvenements,
+                'currentPage' => $currentPage,
+                'totalPages' => $totalPages
             ]);
         } catch (Exception $e) {
             $this->redirect('mes_evenements?error=true');

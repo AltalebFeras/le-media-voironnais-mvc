@@ -54,6 +54,7 @@
                 </div>
             <?php endforeach; ?>
         </div>
+        <?php include_once __DIR__ . '/../includes/pagination.php'; ?>
     <?php endif; ?>
 </main>
 
