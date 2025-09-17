@@ -199,13 +199,13 @@ class UserController extends AbstractController
         if ($user && $user->getIsBanned() === true) {
             $errors['isBanned'] = 'Votre compte a été banni. Veuillez contacter le support pour plus d\'informations.';
         }
-        if (IS_PROD === TRUE) {
-            // Verify reCAPTCHA
-            $recaptchaStatus = $this->checkReCaptcha();
-            if ($recaptchaStatus === false) {
-                $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
-            }
-        }
+        // if (IS_PROD === TRUE) {
+        //     // Verify reCAPTCHA
+        //     $recaptchaStatus = $this->checkReCaptcha();
+        //     if ($recaptchaStatus === false) {
+        //         $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+        //     }
+        // }
         if ($user && $user->getIsDeleted() === true) {
             $errors['isDeleted'] = 'Votre compte a été supprimé, Veuillez contacter le support.';
         }
