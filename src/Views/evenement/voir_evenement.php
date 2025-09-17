@@ -4,28 +4,12 @@
 
 <main>
     <div class="event-header">
-        <div class="flex-row align-items-center mb">
+        <div class="flex-row align-items-center">
             <h1><?= $evenement->getTitle() ?></h1>
-            <?php if ($isOwner): ?>
-                <div class="event-actions">
-                    <a href="<?= HOME_URL ?>evenement/modifier?id=<?= $evenement->getIdEvenement() ?>" class="btn">
-                        <span class="material-icons">edit</span>
-                        Modifier
-                    </a>
-                    <a href="<?= HOME_URL ?>evenement/supprimer?id=<?= $evenement->getIdEvenement() ?>"
-                        class="btn bg-danger"
-                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')">
-                        <span class="material-icons">delete</span>
-                        Supprimer
-                    </a>
-                </div>
-            <?php endif; ?>
+            <a href="<?= HOME_URL ?>mes_evenements">
+            <span class="material-icons btn" style="color:white;">arrow_back</span>
+            </a>
         </div>
-
-        <a href="<?= HOME_URL ?>mes_evenements" class="link">
-            <span class="material-icons">arrow_back</span>
-            Retour à mes événements
-        </a>
     </div>
 
     <div class="event-content">
@@ -54,7 +38,7 @@
 
                 <div class="info-item">
                     <strong>Date et heure :</strong>
-                    <p><?= $evenement->getEventDateFormatted() ?></p>
+                    <p><?= $evenement->getStartDateFormatted() ?></p>
                 </div>
 
                 <?php if ($evenement->getEndDate()): ?>
@@ -181,22 +165,22 @@
                     <?php endif; ?>
                 </div>
                 <!-- edit _ delete -->
+                <?php if ($isOwner): ?>
                 <div class="event-actions">
-                    <a href="<?= HOME_URL ?>evenement/modifier?id=<?= $evenement->getIdEvenement() ?>" class="btn">
+                    <a href="<?= HOME_URL ?>evenement/modifier?id=<?= $evenement->getIdEvenement() ?>" class="btn linkNotDecorated mr">
                         Modifier
                     </a>
-                       <button type="button" class="btn btn-danger"
-                                    onclick="document.getElementById('deleteModal').style.display='flex'">
-                                    Supprimer l'événement
-                                </button>
+                    <button type="button" class="btn btn-danger"
+                        onclick="document.getElementById('deleteModal').style.display='flex'">
+                        Supprimer l'événement
+                    </button>
                 </div>
-                <?php if ($isOwner): ?>
                     <div id="deleteModal" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; justify-content:center; align-items:center;">
                         <div class="card" style="max-width:500px;">
                             <h3>Confirmer la suppression</h3>
                             <button type="button" onclick="document.getElementById('deleteModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
                             <div class="mt mb">
-                                <p>Êtes-vous sûr de vouloir supprimer l'événement "<?= $evenement->getName() ?>" ?</p>
+                                <p>Êtes-vous sûr de vouloir supprimer l'événement "<?= $evenement->getTitle() ?>" ?</p>
                                 <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
                             </div>
                             <div class="flex-row justify-content-between">

@@ -3,8 +3,12 @@
 <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
 <main>
-    <h1>Créer un événement</h1>
-
+    <div class="flex-row align-items-center mb">
+        <h1>Créer un événement</h1>
+        <a href="<?= HOME_URL . 'mes_evenements' ?>">
+            <span class="material-icons btn" style="color:white;">arrow_back</span>
+        </a>
+    </div>
     <div class="card max-width-75">
         <form action="<?= HOME_URL ?>evenement/ajouter" method="POST" enctype="multipart/form-data">
             <div class="form-row">

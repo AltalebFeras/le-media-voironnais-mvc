@@ -1,10 +1,17 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-<?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
 <main>
-    <h1>Modifier l'événement</h1>
+    <div class="event-header">
+        <div class="flex-row align-items-center">
+            <h1>Modifier l'événement</h1>
+            <a href="<?= HOME_URL ?>mes_evenements?action=voir&id=<?= $evenement->getIdEvenement() ?>">
+            <span class="material-icons btn" style="color:white;">arrow_back</span>
+            </a>
+        </div>
+    </div>
 
+    <?php include_once __DIR__ . '/../includes/messages.php'; ?>
     <div class="card max-width-75">
         <form action="<?= HOME_URL ?>evenement/modifier?id=<?= $evenement->getIdEvenement() ?>" method="POST" enctype="multipart/form-data">
             <div class="form-row">

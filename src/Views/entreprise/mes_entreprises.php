@@ -6,9 +6,16 @@
             <h1>Mes entreprises</h1>
         </div>
         <div>
-            <a href="/entreprise/ajouter" class="btn linkNotDecorated"> Ajouter une entreprise
+            <a href="<?= HOME_URL . 'dashboard' ?>">
+                <span class="material-icons btn" style="color:white;">arrow_back</span>
+
             </a>
         </div>
+    </div>
+    <div class="flex-row justify-content-between mb">
+        <a href="<?= HOME_URL . 'entreprise/ajouter' ?>" class="btn linkNotDecorated">
+            Ajouter une entreprise
+        </a>
     </div>
     <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
@@ -53,32 +60,12 @@
                         </div>
 
                         <div class="flex-row justify-content-between mt">
-                            <a href="<?= HOME_URL . 'mes_entreprises?action=voir&id=' . $entreprise->getIdEntreprise() ?>" class="btn">
+                            <a href="<?= HOME_URL . 'mes_entreprises?action=voir&id=' . $entreprise->getIdEntreprise() ?>" class="btn linkNotDecorated">
                                 Voir
-                            </a> <a href="<?= HOME_URL . 'entreprise/modifier?id=' . $entreprise->getIdEntreprise() ?>" class="btn">
-                                Modifier
                             </a>
                         </div>
                     </div>
                 </div>
-
-                <!-- Delete Confirmation Modal -->
-                <!-- <div id="deleteModal<?= $entreprise->getIdEntreprise() ?>" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:flex; justify-content:center; align-items:center;">
-                    <div class="card" style="max-width:500px;">
-                        <h3>Confirmer la suppression</h3>
-                        <button type="button" onclick="this.parentElement.parentElement.style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
-                        <div class="mt mb">
-                            <p>Êtes-vous sûr de vouloir supprimer l'entreprise "<?= ($entreprise->getName()) ?>" ?</p>
-                            <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
-                        </div>
-                        <div class="flex-row justify-content-between">
-                            <button type="button" class="btn" onclick="document.getElementById('deleteModal<?= $entreprise->getIdEntreprise() ?>').style.display='none'">Annuler</button>
-                            <form action="/entreprise/supprimer/<?= $entreprise->getIdEntreprise() ?>" method="post">
-                                <button type="submit" class="btn deconnexion">Supprimer</button>
-                            </form>
-                        </div>
-                    </div>
-                </div> -->
             <?php endforeach; ?>
         </div>
         <?php include_once __DIR__ . '/../includes/pagination.php'; ?>

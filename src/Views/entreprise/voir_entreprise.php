@@ -123,7 +123,7 @@
                         
                         <?php if ($isOwner): ?>
                             <div class="flex-row justify-content-between mt-4">
-                                <a href="<?= HOME_URL.'entreprise/modifier?id='.$entreprise->getIdEntreprise() ?>" class="btn">
+                                <a href="<?= HOME_URL.'entreprise/modifier?id='.$entreprise->getIdEntreprise() ?>" class="btn linkNotDecorated">
                                     Modifier l'entreprise
                                 </a>
                                 <button type="button" class="btn btn-danger"

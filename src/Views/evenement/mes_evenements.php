@@ -5,16 +5,18 @@
 <main>
     <div class="flex-row align-items-center mb">
         <h1>Mes événements</h1>
-        <a href="<?= HOME_URL ?>evenement/ajouter" class="btn">
-            Créer un événement
+        <a href="<?= HOME_URL . 'dashboard' ?>">
+            <span class="material-icons btn" style="color:white;">arrow_back</span>
+
         </a>
     </div>
-
+    <div>
+        <a href="<?= HOME_URL ?>evenement/ajouter" class="btn linkNotDecorated">Créer un événement</a>
+    </div>
     <?php if (empty($evenements)): ?>
         <div class="card max-width-50">
             <h3>Aucun événement créé</h3>
             <p>Vous n'avez pas encore créé d'événement. Commencez par créer votre premier événement !</p>
-            <a href="<?= HOME_URL ?>evenement/ajouter" class="btn">Créer mon premier événement</a>
         </div>
     <?php else: ?>
         <div class="dashboard-grid">
@@ -47,7 +49,7 @@
                     </div>
 
                     <div class="event-actions flex-row">
-                        <a href="<?= HOME_URL ?>mes_evenements?action=voir&id=<?= $evenement['idEvenement'] ?>" class="btn btn-info">
+                        <a href="<?= HOME_URL ?>mes_evenements?action=voir&id=<?= $evenement['idEvenement'] ?>" class="btn btn-info linkNotDecorated">
                             Voir
                         </a>
                     </div>
