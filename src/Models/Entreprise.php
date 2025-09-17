@@ -370,6 +370,15 @@ class Entreprise
     {
         return empty($this->validate());
     }
+    public function getStatusLabel(): string
+    {
+        return match ($this->status) {
+            'brouillon' => 'Brouillon',
+            'actif' => 'Actif',
+            'suspendu' => 'Suspendu',
+            default => 'Inconnu',
+        };
+    }
 
     public function toArray(): array
     {

@@ -155,8 +155,16 @@ switch ($route) {
 
     // Entreprise routes
     case HOME_URL . 'mes_entreprises':
-        if ($method === 'GET' && $connectionSecured) {
-            $entrepriseController->mesEntreprises();
+        if ($connectionSecured) {
+            if ($method === 'GET' && !isset($_GET['id'])) {
+                $entrepriseController->mesEntreprises();
+            } elseif ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['id'])) {
+                $entrepriseController->displayEntrepriseDetails();
+            } elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+                $entrepriseController->deleteEntreprise();
+            } else {
+                $homeController->page404();
+            }
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
@@ -173,21 +181,20 @@ switch ($route) {
         }
         break;
     case HOME_URL . 'entreprise/modifier':
-        if ($method === 'POST' && $connectionSecured) {
-            $entrepriseController->updateEntreprise();
-        } elseif ($connectionSecured && $method === 'GET') {
-            $entrepriseController->showEditForm();
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $entrepriseController->updateEntreprise();
+            } elseif ($method === 'GET' && isset($_GET['id'])) {
+                $entrepriseController->showEditForm();
+            } else {
+                $homeController->page404();
+            }
         } else {
-            $entrepriseController->showEditForm();
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
         }
         break;
-    case HOME_URL . 'entreprise/supprimer':
-        if ($method === 'POST' && $connectionSecured) {
-            $entrepriseController->deleteEntreprise();
-        } else {
-            $homeController->page404();
-        }
-        break;
+
 
     case HOME_URL . 'mon_compte':
         if ($method === 'POST' && $_GET['action'] && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {

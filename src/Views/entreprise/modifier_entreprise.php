@@ -11,7 +11,7 @@
         <div class="max-width-50">
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
-            <form action="/entreprise/modifier/<?= $entreprise->getIdEntreprise() ?>" method="post" enctype="multipart/form-data">
+            <form action="<?= HOME_URL . 'entreprise/modifier?id=' . $entreprise->getIdEntreprise() ?>" method="post" enctype="multipart/form-data">
                 <div class="card">
                     <div>
                         <div>
@@ -137,7 +137,7 @@
                     </div>
 
                     <div class="flex-row justify-content-between mt">
-                        <a href="/mes-entreprises" class="btn">Annuler</a>
+                        <a href="<?= HOME_URL . 'mes_entreprises' ?>" class="btn">Annuler</a>
                         <button type="submit" class="btn">Enregistrer les modifications</button>
                     </div>
                 </div>

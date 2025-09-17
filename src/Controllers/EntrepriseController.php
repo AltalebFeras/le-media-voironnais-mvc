@@ -29,10 +29,33 @@ class EntrepriseController extends AbstractController
                 'title' => 'Mes entreprises'
             ]);
         } catch (Exception $e) {
-            $this->render('dashboard', [
-                'message' => $e->getMessage(),
-                'title' => 'Erreur'
+            $this->redirect('mes_entreprises?error=true');
+        }
+    }
+    public function displayEntrepriseDetails()
+    {
+        try {
+            $idUser = $_SESSION['idUser'];
+            $idEntreprise = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
+            $entreprise = $this->repo->getEntrepriseById($idEntreprise);
+
+            if (!$entreprise || !$idEntreprise) {
+                throw new Exception("L'entreprise demandée n'existe pas");
+            }
+
+            // Check if user is the owner of the company
+            if ($entreprise->getIdUser() != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de voir cette entreprise");
+            }
+
+            $this->render('entreprise/voir_entreprise', [
+                'entreprise' => $entreprise,
+                'title' => 'Détails de l\'entreprise',
+                'isOwner' => true
             ]);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_entreprises?error=true');
         }
     }
 
@@ -119,13 +142,13 @@ class EntrepriseController extends AbstractController
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
             }
 
-            $this->render('entreprise/modifier', [
+            $this->render('entreprise/modifier_entreprise', [
                 'entreprise' => $entreprise,
                 'title' => 'Modifier l\'entreprise'
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('/mes-entreprises');
+            $this->redirect('mes_entreprises?error=true');
         }
     }
 

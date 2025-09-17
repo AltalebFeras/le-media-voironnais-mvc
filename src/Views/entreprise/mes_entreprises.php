@@ -10,6 +10,7 @@
             </a>
         </div>
     </div>
+    <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
     <?php if (empty($entreprises)): ?>
         <div class="custom-alert custom-alert-success">
@@ -21,33 +22,27 @@
                 <div class="max-width-33">
                     <div class="card">
                         <?php if ($entreprise->getBannerPath()): ?>
-                            <img src="<?= $entreprise->getBannerPath() ?>" alt="Bannière de <?= htmlspecialchars($entreprise->getName()) ?>">
+                            <img src="<?= $entreprise->getBannerPath() ?>" alt="Bannière de <?= ($entreprise->getName()) ?>">
                         <?php endif; ?>
 
                         <div>
                             <div class="flex-row align-items-center mb">
                                 <?php if ($entreprise->getLogoPath()): ?>
-                                    <img src="<?= $entreprise->getLogoPath() ?>" style="width:50px; height:50px; border-radius:50%;" alt="Logo de <?= htmlspecialchars($entreprise->getName()) ?>">
+                                    <img src="<?= $entreprise->getLogoPath() ?>" style="width:50px; height:50px; border-radius:50%;" alt="Logo de <?= ($entreprise->getName()) ?>">
                                 <?php endif; ?>
-                                <h5><?= htmlspecialchars($entreprise->getName()) ?></h5>
+                                <h5><?= ($entreprise->getName()) ?></h5>
                             </div>
 
                             <p>
-                                <?= htmlspecialchars($entreprise->getDescription() ?? 'Aucune description') ?>
+                                <?= ($entreprise->getDescription() ?? 'Aucune description') ?>
                             </p>
 
                             <?php if ($entreprise->getSiret()): ?>
-                                <p><small class="text-muted">SIRET: <?= htmlspecialchars($entreprise->getSiret()) ?></small></p>
+                                <p><small class="text-muted">SIRET: <?= ($entreprise->getSiret()) ?></small></p>
                             <?php endif; ?>
 
                             <div>
-                                <?php if ($entreprise->getStatus() === 'actif'): ?>
-                                    <span class="text-success">Actif</span>
-                                <?php elseif ($entreprise->getStatus() === 'brouillon'): ?>
-                                    <span class="text-muted">Brouillon</span>
-                                <?php elseif ($entreprise->getStatus() === 'suspendu'): ?>
-                                    <span class="text-warning">Suspendu</span>
-                                <?php endif; ?>
+                                <span class="text-success"><?= $entreprise->getStatusLabel() ?></span>
 
                                 <?php if ($entreprise->getIsActive()): ?>
                                     <span class="text-info">Publié</span>
@@ -58,24 +53,22 @@
                         </div>
 
                         <div class="flex-row justify-content-between mt">
-                            <a href="/entreprise/modifier/<?= $entreprise->getIdEntreprise() ?>" class="btn">
+                            <a href="<?= HOME_URL . 'mes_entreprises?action=voir&id=' . $entreprise->getIdEntreprise() ?>" class="btn">
+                                Voir
+                            </a> <a href="<?= HOME_URL . 'entreprise/modifier?id=' . $entreprise->getIdEntreprise() ?>" class="btn">
                                 Modifier
                             </a>
-                            <button type="button" class="btn" 
-                                onclick="document.getElementById('deleteModal<?= $entreprise->getIdEntreprise() ?>').style.display='block'">
-                                Supprimer
-                            </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Delete Confirmation Modal -->
-                <div id="deleteModal<?= $entreprise->getIdEntreprise() ?>" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:flex; justify-content:center; align-items:center;">
+                <!-- <div id="deleteModal<?= $entreprise->getIdEntreprise() ?>" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:flex; justify-content:center; align-items:center;">
                     <div class="card" style="max-width:500px;">
                         <h3>Confirmer la suppression</h3>
                         <button type="button" onclick="this.parentElement.parentElement.style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
                         <div class="mt mb">
-                            <p>Êtes-vous sûr de vouloir supprimer l'entreprise "<?= htmlspecialchars($entreprise->getName()) ?>" ?</p>
+                            <p>Êtes-vous sûr de vouloir supprimer l'entreprise "<?= ($entreprise->getName()) ?>" ?</p>
                             <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
                         </div>
                         <div class="flex-row justify-content-between">
@@ -85,7 +78,7 @@
                             </form>
                         </div>
                     </div>
-                </div>
+                </div> -->
             <?php endforeach; ?>
         </div>
     <?php endif; ?>

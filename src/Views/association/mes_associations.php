@@ -84,25 +84,6 @@
                     </div>
                 </div>
 
-                <!-- Delete Confirmation Modal -->
-                <?php if ($association->getIdUser() == $_SESSION['user_id']): ?>
-                    <div id="deleteModal<?= $association->getIdAssociation() ?>" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:flex; justify-content:center; align-items:center;">
-                        <div class="card" style="max-width:500px;">
-                            <h3>Confirmer la suppression</h3>
-                            <button type="button" onclick="this.parentElement.parentElement.style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
-                            <div class="mt mb">
-                                <p>Êtes-vous sûr de vouloir supprimer l'association "<?= htmlspecialchars($association->getName()) ?>" ?</p>
-                                <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
-                            </div>
-                            <div class="flex-row justify-content-between">
-                                <button type="button" class="btn" onclick="document.getElementById('deleteModal<?= $association->getIdAssociation() ?>').style.display='none'">Annuler</button>
-                                <form action="/association/supprimer/<?= $association->getIdAssociation() ?>" method="post">
-                                    <button type="submit" class="btn deconnexion">Supprimer</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                <?php endif; ?>
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
