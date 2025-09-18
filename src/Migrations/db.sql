@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 18, 2025 at 01:08 PM
+-- Generation Time: Sep 18, 2025 at 05:29 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -52,14 +52,15 @@ CREATE TABLE IF NOT EXISTS `association` (
   KEY `idx_association_user` (`idUser`),
   KEY `idx_association_active` (`isActive`),
   KEY `idx_association_ville` (`idVille`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `association`
 --
 
 INSERT INTO `association` (`idAssociation`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `isActive`, `isPublic`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
-(14, 'Eman AL BARGHASH', 'eman-al-barghash', '', NULL, NULL, '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 0, 3, 38100, '2025-09-18 14:41:45', NULL);
+(16, 'Feras ALTALEBssssssssss', 'feras-altaleb', '', 'http://le-media-voironnais/assets/images/uploads/logos/default_logo.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 0, 3, 38100, '2025-09-18 16:34:30', '2025-09-18 16:34:54'),
+(17, 'Feras ALTALEB', 'feras-altaleb-1', '', 'http://le-media-voironnais/assets/images/uploads/logos/default_logo.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 0, 3, 38100, '2025-09-18 16:37:49', NULL);
 
 -- --------------------------------------------------------
 
@@ -165,14 +166,14 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   KEY `idx_entreprise_active` (`isActive`),
   KEY `idx_entreprise_status` (`status`),
   KEY `idx_entreprise_ville` (`idVille`)
-) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `entreprise`
 --
 
 INSERT INTO `entreprise` (`idEntreprise`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `status`, `isActive`, `isPublic`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
-(18, 'Feras ALTALEB', 'feras-altaleb', '', NULL, NULL, '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', '', 'brouillon', 0, 0, 0, 3, 38100, '2025-09-18 14:41:33', NULL);
+(19, 'dgsdgsdfsdfsdfsdfsdf', 'dgsdgsdfsdfsdfsdfsdf', 'ffffffffffffffffffff', 'http://le-media-voironnais/assets/images/uploads/logos/default_logo.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', '', '0780773302', 'feras.altalib@gmail.com', '', '', 'brouillon', 0, 0, 0, 3, 38100, '2025-09-18 17:07:34', NULL);
 
 -- --------------------------------------------------------
 
@@ -218,14 +219,15 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   KEY `idx_evenement_association` (`idAssociation`),
   KEY `idx_evenement_entreprise` (`idEntreprise`),
   KEY `idx_evenement_category` (`idEventCategory`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `evenement`
 --
 
 INSERT INTO `evenement` (`idEvenement`, `title`, `slug`, `description`, `shortDescription`, `startDate`, `endDate`, `registrationDeadline`, `maxParticipants`, `currentParticipants`, `address`, `bannerPath`, `status`, `isPublic`, `isDeleted`, `requiresApproval`, `price`, `currency`, `createdAt`, `updatedAt`, `idUser`, `idAssociation`, `idEntreprise`, `idVille`, `idEventCategory`) VALUES
-(20, 'fffffffff', 'fffffffff', 'fffffffffffffffffffffffffff', 'ffffffffffffffffffff', '2025-09-23 14:46:00', '2025-10-01 14:46:00', '2025-09-19 14:46:00', 55, 0, '42 Rue Henri Duhamel', NULL, 'brouillon', 1, 0, 0, 0.00, 'EUR', '2025-09-18 14:53:18', NULL, 3, 14, NULL, 38100, 8);
+(21, 'dfsdfsdfsdfsdfsdfsdfsdf', 'dfsdfsdfsdfsdfsdfsdfsdf', 'dddddddddddddddddddddddd', 'ddddddddddddddd', '2025-10-11 15:17:00', '2025-10-12 15:17:00', '2025-10-01 15:17:00', 55, 0, '42 Rue Henri Duhamel', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', 'brouillon', 0, 0, 0, 0.00, 'EUR', '2025-09-18 15:18:03', '2025-09-18 18:04:06', 3, NULL, NULL, 38100, 16),
+(22, 'ffffffffff', 'ffffffffff', 'ffffffff', 'fffffffffffffffffffffff', '2025-10-11 16:52:00', '2025-10-31 16:53:00', '2025-10-01 16:53:00', 5, 0, '42 Rue Henri Duhamel', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', 'brouillon', 0, 0, 0, 0.00, 'EUR', '2025-09-18 16:53:47', '2025-09-18 18:03:41', 3, 16, 19, 38100, 5);
 
 -- --------------------------------------------------------
 
@@ -480,7 +482,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
 (1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-16 11:37:02', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
 (2, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-18 14:02:53', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', '2025-09-16 11:37:06', '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL),
+(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-18 18:28:48', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', '2025-09-16 11:37:06', '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL),
 (4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-17 19:16:31', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -500,14 +502,17 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   PRIMARY KEY (`idUserAssociation`),
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_association`
 --
 
 INSERT INTO `user_association` (`idUserAssociation`, `idUser`, `idAssociation`, `role`, `joinedAt`, `isActive`) VALUES
-(17, 3, 14, 'admin', '2025-09-18 14:41:45', 1);
+(17, 3, 14, 'admin', '2025-09-18 14:41:45', 1),
+(18, 3, 15, 'admin', '2025-09-18 16:23:20', 1),
+(19, 3, 16, 'admin', '2025-09-18 16:34:30', 1),
+(20, 3, 17, 'admin', '2025-09-18 16:37:49', 1);
 
 -- --------------------------------------------------------
 
