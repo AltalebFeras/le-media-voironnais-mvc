@@ -21,21 +21,17 @@
         <span></span>
       </div>
       <ul class="nav-links" id="nav-links">
-        <li><a class="link" href="<?= HOME_URL . 'dashboard' ?>">Dashboard</a></li>
-        <li><a class="link" href="<?= HOME_URL .'mes_associations' ?>">Mes Associations</a></li>
-        <li><a class="link" href="<?= HOME_URL .'mes_entreprises' ?>">Mes Entreprises</a></li>
-        <li><a class="link" href="<?= HOME_URL .'mes_evenements' ?>">Mes Événements</a></li>
         <?php if (isset($_SESSION['connected'])) : ?>
-          <li>
-            <a class="btn linkNotDecorated deconnexion" href="<?= HOME_URL . 'deconnexion' ?>">Déconnexion</a>
-          </li>
+          <li><a class="link" href="<?= HOME_URL . 'dashboard' ?>">Dashboard</a></li>
+          <li><a class="link" href="<?= HOME_URL . 'mes_associations' ?>">Mes Associations</a></li>
+          <li><a class="link" href="<?= HOME_URL . 'mes_entreprises' ?>">Mes Entreprises</a></li>
+          <li><a class="link" href="<?= HOME_URL . 'mes_evenements' ?>">Mes Événements</a></li>
+          <li><a class="btn linkNotDecorated deconnexion" href="<?= HOME_URL . 'deconnexion' ?>">Déconnexion</a></li>
         <?php else : ?>
           <?php if (isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])) : ?>
             <li><a class="link" href="<?= HOME_URL . 'admin/dashboard_admin' ?>">Retour au Dashboard</a></li>
           <?php else: ?>
-            <li>
-              <a class="btn linkNotDecorated " href="<?= HOME_URL . 'connexion' ?>">Connexion</a>
-            </li>
+            <li><a class="btn linkNotDecorated " href="<?= HOME_URL . 'connexion' ?>">Connexion</a></li>
           <?php endif; ?>
         <?php endif; ?>
       </ul>
