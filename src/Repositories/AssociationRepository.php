@@ -27,7 +27,7 @@ class AssociationRepository
             $offset = max(0, ($currentPage - 1) * $associationsPerPage);
             $query = "SELECT a.* FROM association a 
                       LEFT JOIN user_association ua ON a.idAssociation = ua.idAssociation 
-                      WHERE a.idUser = :idUser OR (ua.idUser = :idUser AND ua.isActive = 1 AND a.isDeleted = 0)
+                      WHERE (a.idUser = :idUser AND a.isDeleted = 0) OR (ua.idUser = :idUser AND ua.isActive = 1 AND a.isDeleted = 0)
                       GROUP BY a.idAssociation
                       LIMIT :offset, :associationsPerPage";
 
@@ -53,7 +53,7 @@ class AssociationRepository
         try {
             $query = "SELECT COUNT(DISTINCT a.idAssociation) FROM association a 
                       LEFT JOIN user_association ua ON a.idAssociation = ua.idAssociation 
-                      WHERE a.idUser = :idUser OR (ua.idUser = :idUser AND ua.isActive = 1 AND a.isDeleted = 0)";
+                      WHERE (a.idUser = :idUser AND a.isDeleted = 0) OR (ua.idUser = :idUser AND ua.isActive = 1 AND a.isDeleted = 0)";
 
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['idUser' => $idUser]);
