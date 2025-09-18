@@ -84,18 +84,6 @@
                                 placeholder="https://example.com"
                                 value="<?= isset($_SESSION['form_data']['website']) ? ($_SESSION['form_data']['website']) : '' ?>">
                         </div>
-
-                        <div>
-                            <label for="logo">Logo</label>
-                            <input type="file" id="logo" name="logo" accept="image/*">
-                            <small class="text-muted">Formats acceptés : JPG, PNG, GIF. Max 5MB.</small>
-                        </div>
-
-                        <div>
-                            <label for="banner">Bannière</label>
-                            <input type="file" id="banner" name="banner" accept="image/*">
-                            <small class="text-muted">Formats acceptés : JPG, PNG, GIF. Max 5MB.</small>
-                        </div>
                     </div>
 
                     <div class="flex-row justify-content-between mt">

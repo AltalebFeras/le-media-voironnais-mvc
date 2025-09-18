@@ -1,6 +1,6 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-
+<?php var_dump($_SESSION['form_data']); // Debug line to inspect the $evenement variable ?>
 <main>
     <div class="event-header">
         <div class="flex-row align-items-center">
@@ -17,8 +17,8 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="title">Titre de l'événement *</label>
-                    <input type="text" id="title" name="title" required 
-                           value="<?= $evenement['title'] ?? $_SESSION['form_data']['title'] ?? '' ?>">
+                    <input type="text" id="title" name="title" required
+                           value="<?= $_GET['error'] ? $_SESSION['form_data']['title'] : $evenement['title'] ?>">
                 </div>
 
                 <div class="form-group">

@@ -167,7 +167,7 @@ class EvenementRepository
                 maxParticipants = :maxParticipants, address = :address,
                 status = :status, isPublic = :isPublic, requiresApproval = :requiresApproval,
                 price = :price, currency = :currency, updatedAt = :updatedAt, idVille = :idVille,
-                idEventCategory = :idEventCategory
+                idEventCategory = :idEventCategory, idAssociation = :idAssociation
                 WHERE idEvenement = :idEvenement AND idUser = :idUser";
 
         $stmt = $this->pdo->prepare($sql);
@@ -190,6 +190,7 @@ class EvenementRepository
             ':updatedAt' => $event->getUpdatedAt(),
             ':idVille' => $event->getIdVille(),
             ':idEventCategory' => $event->getIdEventCategory(),
+            ':idAssociation' => $event->getIdAssociation(),
             ':idEvenement' => $event->getIdEvenement(),
             ':idUser' => $event->getIdUser()
         ]);

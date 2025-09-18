@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-if (!isset($_GET['error']) && isset($_SESSION['form_data'])) {
+if (!isset($_GET['error'])  && !isset($_GET['form_data']) && isset($_SESSION['form_data'])) {
     unset($_SESSION['form_data']);
 }
 date_default_timezone_set('Europe/Paris');

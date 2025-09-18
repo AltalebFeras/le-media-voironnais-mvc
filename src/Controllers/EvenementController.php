@@ -247,7 +247,7 @@ class EvenementController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_evenements');
+            $this->redirect('mes_evenements?error=true');
         }
     }
 
@@ -274,6 +274,7 @@ class EvenementController extends AbstractController
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cet événement");
             }
             $originalTitle = $evenement['title'];
+            $originalSlug = $evenement['slug'];
 
             // Get form data
             $title = isset($_POST['title']) ? htmlspecialchars(trim($_POST['title'])) : null;
@@ -318,11 +319,13 @@ class EvenementController extends AbstractController
             } elseif ($this->repo->isTitleExistsForUser($title, $idUser, $idEvenement)) {
                 $errors['title'] = "Vous avez déjà un événement avec ce titre";
             }
-            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true');
+            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true&form_data=true');
 
             // Update event data
-            $evenement = new Evenement();
-            $evenement->setTitle($title)
+            $evenementModel = new Evenement();
+            $evenementModel->setIdEvenement($idEvenement)
+                ->setIdUser($idUser)
+                ->setTitle($title)
                 ->setDescription($description)
                 ->setShortDescription($shortDescription)
                 ->setStartDate($startDate)
@@ -337,16 +340,17 @@ class EvenementController extends AbstractController
                 ->setRequiresApproval($requiresApproval)
                 ->setIdVille($idVille)
                 ->setIdEventCategory($idEventCategory)
+                ->setIdAssociation($idAssociation)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
 
             $helper = new Helper();
             // Use model validation
-            $modelErrors = $evenement->validate();
+            $modelErrors = $evenementModel->validate();
             $errors = array_merge($errors, $modelErrors);
-            // Ensure unique slug
-            // Regenerate slug if title changed
+            
+            // Handle slug generation
             if ($title !== $originalTitle) {
-                // $evenement->setSlug(null); // Reset slug to force regeneration
+                // Regenerate slug if title changed
                 $slug = $helper->generateSlug($title);
                 $existSlug = $this->repo->isSlugExists($slug);
 
@@ -359,18 +363,21 @@ class EvenementController extends AbstractController
                     }
                     $slug = $finalSlug;
                 }
-                $evenement->setSlug($slug);
+                $evenementModel->setSlug($slug);
+            } else {
+                // Keep existing slug if title unchanged
+                $evenementModel->setSlug($originalSlug);
             }
 
-            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true');
+            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true&form_data=true');
 
-            $this->repo->updateEvent($evenement);
+            $this->repo->updateEvent($evenementModel);
 
             $_SESSION['success'] = "L'événement a été mis à jour avec succès";
             $this->redirect('mes_evenements');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('evenement/modifier?id=' . ($idEvenement ?? ''));
+            $this->redirect('evenement/modifier?id=' . ($idEvenement ?? '') . '&error=true&form_data=true');
         }
     }
 

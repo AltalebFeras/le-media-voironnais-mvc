@@ -104,36 +104,6 @@
                         </div>
 
                         <hr>
-
-                        <?php if ($entreprise->getLogoPath()): ?>
-                            <div>
-                                <label>Logo actuel</label>
-                                <div>
-                                    <img src="<?= $entreprise->getLogoPath() ?>" alt="Logo actuel" style="max-height: 100px;">
-                                </div>
-                            </div>
-                        <?php endif; ?>
-
-                        <div>
-                            <label for="logo">Nouveau logo</label>
-                            <input type="file" id="logo" name="logo" accept="image/*">
-                            <small class="text-muted">Formats acceptés : JPG, PNG, GIF. Max 5MB.</small>
-                        </div>
-
-                        <?php if ($entreprise->getBannerPath()): ?>
-                            <div>
-                                <label>Bannière actuelle</label>
-                                <div>
-                                    <img src="<?= $entreprise->getBannerPath() ?>" alt="Bannière actuelle" style="max-height: 150px;">
-                                </div>
-                            </div>
-                        <?php endif; ?>
-
-                        <div>
-                            <label for="banner">Nouvelle bannière</label>
-                            <input type="file" id="banner" name="banner" accept="image/*">
-                            <small class="text-muted">Formats acceptés : JPG, PNG, GIF. Max 5MB.</small>
-                        </div>
                     </div>
 
                     <div class="flex-row justify-content-between mt">

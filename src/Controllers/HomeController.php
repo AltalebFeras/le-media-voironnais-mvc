@@ -13,16 +13,16 @@ class HomeController extends AbstractController
 
     public function displayAuth()
     {
-        if (!isset($_GET['error'])) {
-            unset($_SESSION['form_data']);
-        }
+        // if (!isset($_GET['error'])) {
+        //     unset($_SESSION['form_data']);
+        // }
         $this->render('home/connexion');
     }
     public function displayFormInscription()
     {
-        if (!isset($_GET['error'])) {
-            unset($_SESSION['form_data']);
-        }
+        // if (!isset($_GET['error'])) {
+        //     unset($_SESSION['form_data']);
+        // }
         $this->render('home/inscription');
     }
     public function displayFormForgetPassword()
