@@ -114,13 +114,9 @@ class EvenementRepository
     public function createEvent(Evenement $event): bool
     {
         $sql = "INSERT INTO evenement (title, slug, description, shortDescription, startDate, endDate, 
-                registrationDeadline, maxParticipants, currentParticipants, address, latitude, longitude,
-                imagePath, bannerPath, status, isPublic, isDeleted, requiresApproval, price, currency,
-                createdAt, idUser, idAssociation, idVille, idEventCategory) 
+                registrationDeadline, maxParticipants, currentParticipants, address, imagePath, bannerPath, status, isPublic, isDeleted, price, currency, createdAt, idUser, idAssociation, idVille, idEventCategory) 
                 VALUES (:title, :slug, :description, :shortDescription, :startDate, :endDate, 
-                :registrationDeadline, :maxParticipants, :currentParticipants, :address, :latitude, :longitude,
-                :imagePath, :bannerPath, :status, :isPublic, :isDeleted, :requiresApproval, :price, :currency,
-                :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory)";
+                :registrationDeadline, :maxParticipants, :currentParticipants, :address, :imagePath, :bannerPath, :status, :isPublic, :isDeleted, :price, :currency, :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory)";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -140,12 +136,11 @@ class EvenementRepository
             ':status' => $event->getStatus(),
             ':isPublic' => $event->getIsPublic() ? 1 : 0,
             ':isDeleted' => 0,
-            ':requiresApproval' => $event->getRequiresApproval() ? 1 : 0,
             ':price' => $event->getPrice(),
             ':currency' => $event->getCurrency() ?? 'EUR',
             ':createdAt' => $event->getCreatedAt(),
             ':idUser' => $event->getIdUser(),
-            ':idAssociation' => $event->getIdAssociation(),
+            ':idAssociation' => $event->getIdAssociation() ?? null,
             ':idVille' => $event->getIdVille(),
             ':idEventCategory' => $event->getIdEventCategory()
         ]);
@@ -159,8 +154,8 @@ class EvenementRepository
         $sql = "UPDATE evenement SET 
                 title = :title, slug = :slug, description = :description, shortDescription = :shortDescription,
                 startDate = :startDate, endDate = :endDate, registrationDeadline = :registrationDeadline,
-                maxParticipants = :maxParticipants, address = :address, latitude = :latitude, longitude = :longitude,
-                status = :status, isPublic = :isPublic, requiresApproval = :requiresApproval,
+                maxParticipants = :maxParticipants, address = :address, imagePath = :imagePath, bannerPath = :bannerPath,
+                status = :status, isPublic = :isPublic,
                 price = :price, currency = :currency, updatedAt = :updatedAt, idVille = :idVille,
                 idEventCategory = :idEventCategory
                 WHERE idEvenement = :idEvenement AND idUser = :idUser";
@@ -179,7 +174,6 @@ class EvenementRepository
             ':address' => $event->getAddress(),
             ':status' => $event->getStatus(),
             ':isPublic' => $event->getIsPublic() ? 1 : 0,
-            ':requiresApproval' => $event->getRequiresApproval() ? 1 : 0,
             ':price' => $event->getPrice(),
             ':currency' => $event->getCurrency(),
             ':updatedAt' => $event->getUpdatedAt(),
@@ -251,6 +245,16 @@ class EvenementRepository
         $sql = "SELECT COUNT(*) FROM ville WHERE idVille = :idVille";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':idVille', $idVille, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function isEventCategoryExists(int $idEventCategory): bool
+    {
+        $sql = "SELECT COUNT(*) FROM event_category WHERE idEventCategory = :idEventCategory AND isActive = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idEventCategory', $idEventCategory, PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt->fetchColumn() > 0;

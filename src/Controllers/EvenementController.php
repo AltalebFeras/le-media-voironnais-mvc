@@ -7,6 +7,7 @@ use src\Models\Evenement;
 use src\Repositories\EvenementRepository;
 use Exception;
 use DateTime;
+use src\Services\Helper;
 
 class EvenementController extends AbstractController
 {
@@ -82,7 +83,7 @@ class EvenementController extends AbstractController
     {
         $categories = $this->repo->getEventCategories();
         $associations = $this->repo->getUserAssociations($_SESSION['idUser']);
-        
+
         $this->render('evenement/ajouter_evenement', [
             'categories' => $categories,
             'associations' => $associations
@@ -112,35 +113,51 @@ class EvenementController extends AbstractController
             $idEventCategory = isset($_POST['idEventCategory']) ? (int)$_POST['idEventCategory'] : null;
             $idAssociation = isset($_POST['idAssociation']) ? (int)$_POST['idAssociation'] : null;
             $isPublic = isset($_POST['isPublic']) ? 1 : 0;
-            $requiresApproval = isset($_POST['requiresApproval']) ? 1 : 0;
 
             $errors = [];
             $_SESSION['form_data'] = $_POST;
+            // Validate association ownership
+            $userAssociations = $this->repo->getUserAssociations($idUser);
+            $associationIds = array_map(fn($assoc) => $assoc->getIdAssociation(), $userAssociations);
+            if ($idAssociation && !in_array($idAssociation, $associationIds)) {
+                $errors['idAssociation'] = "L'association sélectionnée est invalide";
+            }
+            $existingVille = $this->repo->isVilleExists($idVille);
+            if (!$existingVille) {
+                $errors['idVille'] = "La ville sélectionnée est invalide";
+            }
+            $existingCategory = $this->repo->isEventCategoryExists($idEventCategory);
+            if (!$existingCategory) {
+                $errors['idEventCategory'] = "La catégorie sélectionnée est invalide";
+            }
+
+            $this->returnAllErrors($errors, 'evenement/ajouter?error=true');
+            $helper = new Helper();
 
             // Create new event
             $evenement = new Evenement();
             $evenement->setTitle($title)
-                     ->setDescription($description)
-                     ->setShortDescription($shortDescription)
-                     ->setStartDate($startDate)
-                     ->setEndDate($endDate)
-                     ->setRegistrationDeadline($registrationDeadline)
-                     ->setMaxParticipants($maxParticipants)
-                     ->setCurrentParticipants(0)
-                     ->setAddress($address)
-                     ->setPrice($price)
-                     ->setCurrency($currency)
-                     ->setStatus('brouillon')
-                     ->setIsPublic($isPublic)
-                     ->setIsDeleted(false)
-                     ->setRequiresApproval($requiresApproval)
-                     ->setIdUser($idUser)
-                     ->setIdAssociation($idAssociation)
-                     ->setIdVille($idVille)
-                     ->setIdEventCategory($idEventCategory)
-                     ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'))
-                     ->setImagePath(null)
-                     ->setBannerPath(null);
+                ->setDescription($description)
+                ->setShortDescription($shortDescription)
+                ->setStartDate($startDate)
+                ->setEndDate($endDate)
+                ->setRegistrationDeadline($registrationDeadline)
+                ->setMaxParticipants($maxParticipants)
+                ->setCurrentParticipants(0)
+                ->setAddress($address)
+                ->setPrice($price)
+                ->setCurrency($currency)
+                ->setStatus('brouillon')
+                ->setIsPublic($isPublic)
+                ->setIsDeleted(false)
+                ->setIdUser($idUser)
+                ->setIdAssociation($idAssociation ?? null)
+                ->setIdVille($idVille)
+                ->setIdEventCategory($idEventCategory)
+                ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'))
+                ->setImagePath(null)
+                ->setBannerPath(null);
+
 
             // Handle image upload if present
             if (!empty($_FILES['image']['name'])) {
@@ -157,11 +174,21 @@ class EvenementController extends AbstractController
             // Use model validation
             $modelErrors = $evenement->validate();
             $errors = array_merge($errors, $modelErrors);
+            // Ensure unique slug
+            $slug = $helper->generateSlug($title);
+            $existSlug = $this->repo->isSlugExists($slug);
 
-            // Custom validations
-            if (!$this->repo->isVilleExists($idVille)) {
-                $errors['idVille'] = "La ville sélectionnée est invalide";
+            if ($existSlug) {
+                $suffix = 1;
+                $finalSlug = "{$slug}-{$suffix}";
+                while ($this->repo->isSlugExists($finalSlug)) {
+                    $suffix++;
+                    $finalSlug = "{$slug}-{$suffix}";
+                }
+                $slug = $finalSlug;
             }
+
+            $evenement->setSlug($slug);
 
             $this->returnAllErrors($errors, 'evenement/ajouter?error=true');
 
@@ -222,7 +249,7 @@ class EvenementController extends AbstractController
     {
         try {
             $idEvenement = isset($_GET['id']) ? (int)$_GET['id'] : null;
-            
+
             if (!$idEvenement) {
                 throw new Exception("ID d'événement invalide");
             }
@@ -258,21 +285,21 @@ class EvenementController extends AbstractController
 
             // Update event data
             $evenement->setTitle($title)
-                     ->setDescription($description)
-                     ->setShortDescription($shortDescription)
-                     ->setStartDate($startDate)
-                     ->setEndDate($endDate)
-                     ->setRegistrationDeadline($registrationDeadline)
-                     ->setMaxParticipants($maxParticipants)
-                     ->setAddress($address)
-                     ->setPrice($price)
-                     ->setCurrency($currency)
-                     ->setStatus('brouillon')
-                     ->setIsPublic($isPublic)
-                     ->setRequiresApproval($requiresApproval)
-                     ->setIdVille($idVille)
-                     ->setIdEventCategory($idEventCategory)
-                     ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+                ->setDescription($description)
+                ->setShortDescription($shortDescription)
+                ->setStartDate($startDate)
+                ->setEndDate($endDate)
+                ->setRegistrationDeadline($registrationDeadline)
+                ->setMaxParticipants($maxParticipants)
+                ->setAddress($address)
+                ->setPrice($price)
+                ->setCurrency($currency)
+                ->setStatus('brouillon')
+                ->setIsPublic($isPublic)
+                ->setRequiresApproval($requiresApproval)
+                ->setIdVille($idVille)
+                ->setIdEventCategory($idEventCategory)
+                ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
 
             // Handle image upload if present
             if (!empty($_FILES['image']['name'])) {
@@ -343,7 +370,7 @@ class EvenementController extends AbstractController
 
             $input = json_decode(file_get_contents('php://input'), true);
             $codePostal = isset($input['codePostal']) ? htmlspecialchars(trim($input['codePostal'])) : null;
-            
+
             if (!$codePostal) {
                 throw new Exception("Le code postal est requis");
             }
