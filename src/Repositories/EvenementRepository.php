@@ -56,47 +56,59 @@ class EvenementRepository
     /**
      * Get event by ID
      */
-    public function getEventById(int $idEvenement): ?Evenement
+    public function getEventCompleteById(int $idEvenement): mixed
     {
-        $sql = "SELECT * FROM evenement WHERE idEvenement = :idEvenement AND isDeleted = 0";
+        // Get basic event data with category and ville
+        $sql = "SELECT e.*, v.ville_nom_reel, ec.name as category_name, a.name as association_name, ent.name as entreprise_name
+                FROM evenement e 
+                LEFT JOIN ville v ON e.idVille = v.idVille 
+                LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
+                LEFT JOIN association a ON e.idAssociation = a.idAssociation
+                LEFT JOIN entreprise ent ON e.idEntreprise = ent.idEntreprise
+                WHERE e.idEvenement = :idEvenement AND e.isDeleted = 0";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':idEvenement', $idEvenement, PDO::PARAM_INT);
         $stmt->execute();
 
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($data) {
-            $event = new Evenement();
-            $event->setIdEvenement($data['idEvenement'])
-                ->setTitle($data['title'])
-                ->setSlug($data['slug'])
-                ->setDescription($data['description'])
-                ->setShortDescription($data['shortDescription'])
-                ->setStartDate($data['startDate'])
-                ->setEndDate($data['endDate'])
-                ->setRegistrationDeadline($data['registrationDeadline'])
-                ->setMaxParticipants($data['maxParticipants'])
-                ->setCurrentParticipants($data['currentParticipants'])
-                ->setAddress($data['address'])
-                ->setBannerPath($data['bannerPath'])
-                ->setStatus($data['status'])
-                ->setIsPublic($data['isPublic'])
-                ->setIsDeleted($data['isDeleted'])
-                ->setRequiresApproval($data['requiresApproval'])
-                ->setPrice($data['price'])
-                ->setCurrency($data['currency'])
-                ->setCreatedAt($data['createdAt'])
-                ->setUpdatedAt($data['updatedAt'])
-                ->setIdUser($data['idUser'])
-                ->setIdAssociation($data['idAssociation'])
-                ->setIdVille($data['idVille'])
-                ->setIdEventCategory($data['idEventCategory']);
-
-            return $event;
+        $event = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$event) {
+            return null;
         }
 
-        return null;
+        // Get event images
+        $sqlImages = "SELECT * FROM event_image WHERE idEvenement = :idEvenement ORDER BY sortOrder ASC, isMain DESC";
+        $stmtImages = $this->pdo->prepare($sqlImages);
+        $stmtImages->bindParam(':idEvenement', $idEvenement, PDO::PARAM_INT);
+        $stmtImages->execute();
+        $event['images'] = $stmtImages->fetchAll(PDO::FETCH_ASSOC);
+
+        // Get event participants with user details
+        $sqlParticipants = "SELECT ep.*, u.firstName, u.lastName, u.email, u.avatarPath 
+                           FROM event_participant ep 
+                           LEFT JOIN user u ON ep.idUser = u.idUser
+                           WHERE ep.idEvenement = :idEvenement 
+                           ORDER BY ep.joinedAt DESC";
+        $stmtParticipants = $this->pdo->prepare($sqlParticipants);
+        $stmtParticipants->bindParam(':idEvenement', $idEvenement, PDO::PARAM_INT);
+        $stmtParticipants->execute();
+        $event['participants'] = $stmtParticipants->fetchAll(PDO::FETCH_ASSOC);
+
+        // Get event invitations with user details
+        $sqlInvitations = "SELECT ei.*, u.firstName, u.lastName, u.email, u.avatarPath, 
+                                 inviter.firstName as inviter_firstName, inviter.lastName as inviter_lastName
+                          FROM event_invitation ei 
+                          LEFT JOIN user u ON ei.idUser = u.idUser
+                          LEFT JOIN user inviter ON ei.idInviter = inviter.idUser
+                          WHERE ei.idEvenement = :idEvenement 
+                          ORDER BY ei.invitedAt DESC";
+        $stmtInvitations = $this->pdo->prepare($sqlInvitations);
+        $stmtInvitations->bindParam(':idEvenement', $idEvenement, PDO::PARAM_INT);
+        $stmtInvitations->execute();
+        $event['invitations'] = $stmtInvitations->fetchAll(PDO::FETCH_ASSOC);
+
+        return $event;
     }
     public function isSlugExists($slug): bool
     {

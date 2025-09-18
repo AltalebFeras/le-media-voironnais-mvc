@@ -5,7 +5,7 @@
 <main>
     <div class="event-header">
         <div class="flex-row align-items-center">
-            <h1><?= $evenement->getTitle() ?></h1>
+            <h1><?= $evenement['title'] ?></h1>
             <a href="<?= HOME_URL ?>mes_evenements">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
             </a>
@@ -13,10 +13,10 @@
     </div>
 
     <div class="event-content">
-        <?php if ($evenement->getBannerPath()): ?>
+        <?php if ($evenement['bannerPath']): ?>
             <div class="event-banner">
-                <img src="<?= $evenement->getBannerPath() ?>"
-                    alt="<?= $evenement->getTitle() ?>">
+                <img src="<?= $evenement['bannerPath'] ?>"
+                    alt="<?= $evenement['title'] ?>">
             </div>
         <?php endif; ?>
 
@@ -26,75 +26,75 @@
 
                 <div class="info-item">
                     <strong>Description :</strong>
-                    <p><?= nl2br($evenement->getDescription()) ?></p>
+                    <p><?= nl2br($evenement['description']) ?></p>
                 </div>
 
-                <?php if ($evenement->getShortDescription()): ?>
+                <?php if ($evenement['shortDescription']): ?>
                     <div class="info-item">
                         <strong>Description courte :</strong>
-                        <p><?= nl2br($evenement->getShortDescription()) ?></p>
+                        <p><?= nl2br($evenement['shortDescription']) ?></p>
                     </div>
                 <?php endif; ?>
 
                 <div class="info-item">
                     <strong>Date et heure :</strong>
-                    <p><?= $evenement->getStartDateFormatted() ?></p>
+                    <p><?= date('d/m/Y H:i', strtotime($evenement['startDate'])) ?></p>
                 </div>
 
-                <?php if ($evenement->getEndDate()): ?>
+                <?php if ($evenement['endDate']): ?>
                     <div class="info-item">
                         <strong>Date de fin :</strong>
-                        <p><?= date('d/m/Y H:i', strtotime($evenement->getEndDate())) ?></p>
+                        <p><?= date('d/m/Y H:i', strtotime($evenement['endDate'])) ?></p>
                     </div>
                 <?php endif; ?>
 
-                <?php if ($evenement->getRegistrationDeadline()): ?>
+                <?php if ($evenement['registrationDeadline']): ?>
                     <div class="info-item">
                         <strong>Date limite d'inscription :</strong>
-                        <p><?= date('d/m/Y H:i', strtotime($evenement->getRegistrationDeadline())) ?></p>
+                        <p><?= date('d/m/Y H:i', strtotime($evenement['registrationDeadline'])) ?></p>
                     </div>
                 <?php endif; ?>
 
                 <div class="info-item">
                     <strong>Adresse :</strong>
-                    <p><?= $evenement->getAddress() ?></p>
+                    <p><?= $evenement['address'] ?></p>
                     <?php if ($ville): ?>
                         <p><?= $ville['ville_code_postal'] ?> <?= $ville['ville_nom_reel'] ?></p>
                     <?php endif; ?>
                 </div>
 
-                <?php if ($evenement->getMaxParticipants()): ?>
+                <?php if ($evenement['maxParticipants'] > 0): ?>
                     <div class="info-item">
                         <strong>Participants :</strong>
-                        <p><?= $evenement->getCurrentParticipants() ?> / <?= $evenement->getMaxParticipants() ?></p>
+                        <p><?= $evenement['currentParticipants'] ?> / <?= $evenement['maxParticipants'] ?></p>
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: <?= ($evenement->getCurrentParticipants() / $evenement->getMaxParticipants()) * 100 ?>%"></div>
+                            <div class="progress-fill" style="width: <?= ($evenement['currentParticipants'] / $evenement['maxParticipants']) * 100 ?>%"></div>
                         </div>
                     </div>
                 <?php endif; ?>
 
-                <?php if ($evenement->getPrice()): ?>
+                <?php if ($evenement['price'] > 0): ?>
                     <div class="info-item">
                         <strong>Prix :</strong>
-                        <p><?= number_format($evenement->getPrice(), 2) ?> <?= $evenement->getCurrency() ?></p>
+                        <p><?= number_format($evenement['price'], 2) ?> <?= $evenement['currency'] ?></p>
                     </div>
                 <?php endif; ?>
 
                 <div class="info-item">
                     <strong>Statut :</strong>
-                    <span class="status-badge status-<?= $evenement->getStatus() ?>">
-                        <?= ucfirst($evenement->getStatus()) ?>
+                    <span class="status-badge status-<?= $evenement['status'] ?>">
+                        <?= ucfirst($evenement['status']) ?>
                     </span>
                 </div>
 
                 <div class="info-item">
                     <strong>Visibilité :</strong>
-                    <span class="visibility-badge <?= $evenement->getIsPublic() ? 'public' : 'private' ?>">
-                        <?= $evenement->getIsPublic() ? 'Public' : 'Privé' ?>
+                    <span class="visibility-badge <?= $evenement['isPublic'] ? 'public' : 'private' ?>">
+                        <?= $evenement['isPublic'] ? 'Public' : 'Privé' ?>
                     </span>
                 </div>
 
-                <?php if ($evenement->getRequiresApproval()): ?>
+                <?php if ($evenement['requiresApproval']): ?>
                     <div class="info-item">
                         <strong>Inscription :</strong>
                         <span class="approval-badge">Avec approbation</span>
@@ -103,13 +103,13 @@
 
                 <div class="info-item">
                     <strong>Créé le :</strong>
-                    <p><?= $evenement->getCreatedAtFormatted() ?></p>
+                    <p><?= date('d/m/Y H:i', strtotime($evenement['createdAt'])) ?></p>
                 </div>
 
-                <?php if ($evenement->getUpdatedAt()): ?>
+                <?php if ($evenement['updatedAt']): ?>
                     <div class="info-item">
                         <strong>Modifié le :</strong>
-                        <p><?= date('d/m/Y H:i', strtotime($evenement->getUpdatedAt())) ?></p>
+                        <p><?= date('d/m/Y H:i', strtotime($evenement['updatedAt'])) ?></p>
                     </div>
                 <?php endif; ?>
             </div>
@@ -117,11 +117,22 @@
             <div class="event-meta card">
                 <h3>Informations complémentaires</h3>
 
+                <?php if ($evenement['category_name']): ?>
+                    <div class="info-item">
+                        <strong>Catégorie :</strong>
+                        <p><?= $evenement['category_name'] ?></p>
+                    </div>
+                <?php endif; ?>
 
-                <?php if ($evenement->getIdAssociation()): ?>
+                <?php if ($evenement['idAssociation'] && $evenement['association_name']): ?>
                     <div class="info-item">
                         <strong>Organisé par :</strong>
-                        <p>Association</p>
+                        <p>Association: <?= $evenement['association_name'] ?></p>
+                    </div>
+                <?php elseif ($evenement['idEntreprise'] && $evenement['entreprise_name']): ?>
+                    <div class="info-item">
+                        <strong>Organisé par :</strong>
+                        <p>Entreprise: <?= $evenement['entreprise_name'] ?></p>
                     </div>
                 <?php else: ?>
                     <div class="info-item">
@@ -130,12 +141,43 @@
                     </div>
                 <?php endif; ?>
 
-                <?php if ($evenement->getBannerPath()): ?>
+                <?php if (!empty($evenement['images'])): ?>
                     <div class="info-item">
                         <strong>Images :</strong>
                         <div class="event-images">
-                            <img src="<?= $evenement->getBannerPath() ?>"
-                                alt="Image de l'événement" class="event-thumb">
+                            <?php foreach ($evenement['images'] as $image): ?>
+                                <img src="<?= $image['imagePath'] ?>"
+                                    alt="<?= $image['altText'] ?? 'Image de l\'événement' ?>" 
+                                    class="event-thumb">
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($evenement['participants'])): ?>
+                    <div class="info-item">
+                        <strong>Participants inscrits :</strong>
+                        <div class="participants-list">
+                            <?php foreach ($evenement['participants'] as $participant): ?>
+                                <div class="participant-item">
+                                    <span><?= $participant['firstName'] ?> <?= $participant['lastName'] ?></span>
+                                    <small>(<?= ucfirst($participant['status']) ?>)</small>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($evenement['invitations'])): ?>
+                    <div class="info-item">
+                        <strong>Invitations envoyées :</strong>
+                        <div class="invitations-list">
+                            <?php foreach ($evenement['invitations'] as $invitation): ?>
+                                <div class="invitation-item">
+                                    <span><?= $invitation['firstName'] ?> <?= $invitation['lastName'] ?></span>
+                                    <small>(<?= ucfirst($invitation['status']) ?>)</small>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 <?php endif; ?>
@@ -144,19 +186,19 @@
                     <h4>Statistiques</h4>
                     <div class="stat-item">
                         <span class="stat-label">Participants inscrits :</span>
-                        <span class="stat-value"><?= $evenement->getCurrentParticipants() ?? 0 ?></span>
+                        <span class="stat-value"><?= $evenement['currentParticipants'] ?? 0 ?></span>
                     </div>
-                    <?php if ($evenement->getMaxParticipants()): ?>
+                    <?php if ($evenement['maxParticipants'] > 0): ?>
                         <div class="stat-item">
                             <span class="stat-label">Places disponibles :</span>
-                            <span class="stat-value"><?= $evenement->getMaxParticipants() - ($evenement->getCurrentParticipants() ?? 0) ?></span>
+                            <span class="stat-value"><?= $evenement['maxParticipants'] - ($evenement['currentParticipants'] ?? 0) ?></span>
                         </div>
                     <?php endif; ?>
                 </div>
-                <!-- edit _ delete -->
+
                 <?php if ($isOwner): ?>
                 <div class="event-actions">
-                    <a href="<?= HOME_URL ?>evenement/modifier?id=<?= $evenement->getIdEvenement() ?>" class="btn linkNotDecorated mr">
+                    <a href="<?= HOME_URL ?>evenement/modifier?id=<?= $evenement['idEvenement'] ?>" class="btn linkNotDecorated mr">
                         Modifier
                     </a>
                     <button type="button" class="btn btn-danger"
@@ -169,12 +211,12 @@
                             <h3>Confirmer la suppression</h3>
                             <button type="button" onclick="document.getElementById('deleteModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
                             <div class="mt mb">
-                                <p>Êtes-vous sûr de vouloir supprimer l'événement "<?= $evenement->getTitle() ?>" ?</p>
+                                <p>Êtes-vous sûr de vouloir supprimer l'événement "<?= $evenement['title'] ?>" ?</p>
                                 <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
                             </div>
                             <div class="flex-row justify-content-between">
                                 <button type="button" class="btn" onclick="document.getElementById('deleteModal').style.display='none'">Annuler</button>
-                                <form action="<?= HOME_URL . 'mes_evenements?action=delete&id=' . $evenement->getIdEvenement() ?>" method="post">
+                                <form action="<?= HOME_URL . 'mes_evenements?action=delete&id=' . $evenement['idEvenement'] ?>" method="post">
                                     <button type="submit" class="btn deconnexion">Supprimer</button>
                                 </form>
                             </div>
@@ -345,6 +387,33 @@
     .stat-value {
         font-weight: 600;
         color: #333;
+    }
+
+    .participants-list,
+    .invitations-list {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 0.5rem;
+    }
+
+    .participant-item,
+    .invitation-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.25rem 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .participant-item:last-child,
+    .invitation-item:last-child {
+        border-bottom: none;
+    }
+
+    .participant-item small,
+    .invitation-item small {
+        color: #666;
+        font-style: italic;
     }
 
     @media (max-width: 968px) {

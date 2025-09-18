@@ -51,18 +51,19 @@ class EvenementController extends AbstractController
         try {
             $idUser = $_SESSION['idUser'];
             $idEvenement = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
-            $evenement = $this->repo->getEventById($idEvenement);
+            $evenement = $this->repo->getEventCompleteById($idEvenement);
+            
 
             if (!$evenement || !$idEvenement) {
                 throw new Exception("L'événement demandé n'existe pas");
             }
 
             // Check if user is the owner of the event
-            if ($evenement->getIdUser() != $idUser) {
+            if ($evenement['idUser'] != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de voir cet événement");
             }
 
-            $ville = $this->repo->getVilleById($evenement->getIdVille());
+            $ville = $this->repo->getVilleById($evenement['idVille']);
 
             $this->render('evenement/voir_evenement', [
                 'evenement' => $evenement,
@@ -223,13 +224,13 @@ class EvenementController extends AbstractController
         try {
             $idEvenement = isset($_GET['id']) ? (int)$_GET['id'] : null;
             $idUser = $_SESSION['idUser'];
-            $evenement = $this->repo->getEventById($idEvenement);
+            $evenement = $this->repo->getEventCompleteById($idEvenement);
 
             if (!$evenement || !$idEvenement) {
                 throw new Exception("L'événement demandé n'existe pas");
             }
 
-            if ($evenement->getIdUser() != $idUser) {
+            if ($evenement['idUser'] != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cet événement");
             }
 
@@ -263,16 +264,16 @@ class EvenementController extends AbstractController
             }
 
             $idUser = $_SESSION['idUser'];
-            $evenement = $this->repo->getEventById($idEvenement);
+            $evenement = $this->repo->getEventCompleteById($idEvenement);
 
             if (!$evenement) {
                 throw new Exception("L'événement demandé n'existe pas");
             }
 
-            if ($evenement->getIdUser() != $idUser) {
+            if ($evenement['idUser'] != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cet événement");
             }
-            $originalTitle = $evenement->getTitle();
+            $originalTitle = $evenement['title'];
 
             // Get form data
             $title = isset($_POST['title']) ? htmlspecialchars(trim($_POST['title'])) : null;

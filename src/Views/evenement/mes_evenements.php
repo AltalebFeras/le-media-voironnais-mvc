@@ -1,6 +1,5 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-<?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
 <main>
     <div class="flex-row align-items-center mb">
@@ -10,6 +9,7 @@
 
         </a>
     </div>
+    <?php include_once __DIR__ . '/../includes/messages.php'; ?>
     <div>
         <a href="<?= HOME_URL ?>evenement/ajouter" class="btn linkNotDecorated">Créer un événement</a>
     </div>
