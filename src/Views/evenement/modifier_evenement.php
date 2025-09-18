@@ -121,36 +121,6 @@
                 </div>
             </div>
 
-            <?php if ($evenement->getImagePath()): ?>
-                <div class="form-group">
-                    <label>Image actuelle</label>
-                    <div class="current-image">
-                        <img src="<?= $evenement->getImagePath() ?>" alt="Image actuelle" style="max-width: 200px; height: auto;">
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($evenement->getBannerPath()): ?>
-                <div class="form-group">
-                    <label>Bannière actuelle</label>
-                    <div class="current-banner">
-                        <img src="<?= $evenement->getBannerPath() ?>" alt="Bannière actuelle" style="max-width: 300px; height: auto;">
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="image">Nouvelle image de l'événement</label>
-                    <input type="file" id="image" name="image" accept="image/*">
-                </div>
-
-                <div class="form-group">
-                    <label for="banner">Nouvelle bannière</label>
-                    <input type="file" id="banner" name="banner" accept="image/*">
-                </div>
-            </div>
-
             <div class="form-group">
                 <label>
                     <input type="checkbox" name="isPublic" value="1" 
@@ -169,7 +139,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn">Mettre à jour l'événement</button>
-                <a href="<?= HOME_URL . 'evenement/modifier?id=' . $evenement->getIdEvenement() ?>" class="btn btn-secondary">Annuler</a>
+                <a href="<?= HOME_URL . 'mes_evenements?action=voir&id=' . $evenement->getIdEvenement() ?>" class="btn btn-secondary">Annuler</a>
             </div>
         </form>
     </div>

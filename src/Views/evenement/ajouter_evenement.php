@@ -127,18 +127,6 @@
 
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="image">Image de l'événement</label>
-                    <input type="file" id="image" name="image" accept="image/*">
-                </div>
-
-                <div class="form-group">
-                    <label for="banner">Bannière</label>
-                    <input type="file" id="banner" name="banner" accept="image/*">
-                </div>
-            </div>
-
             <div class="form-group">
                 <label>
                     <input type="checkbox" name="isPublic" value="1"

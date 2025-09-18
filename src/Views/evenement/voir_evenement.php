@@ -13,9 +13,9 @@
     </div>
 
     <div class="event-content">
-        <?php if ($evenement->getBannerPath() || $evenement->getImagePath()): ?>
+        <?php if ($evenement->getBannerPath()): ?>
             <div class="event-banner">
-                <img src="<?= $evenement->getBannerPath() ?: $evenement->getImagePath() ?>"
+                <img src="<?= $evenement->getBannerPath() ?>"
                     alt="<?= $evenement->getTitle() ?>">
             </div>
         <?php endif; ?>
@@ -130,11 +130,11 @@
                     </div>
                 <?php endif; ?>
 
-                <?php if ($evenement->getImagePath() && $evenement->getBannerPath()): ?>
+                <?php if ($evenement->getBannerPath()): ?>
                     <div class="info-item">
                         <strong>Images :</strong>
                         <div class="event-images">
-                            <img src="<?= $evenement->getImagePath() ?>"
+                            <img src="<?= $evenement->getBannerPath() ?>"
                                 alt="Image de l'événement" class="event-thumb">
                         </div>
                     </div>

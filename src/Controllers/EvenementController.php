@@ -175,7 +175,6 @@ class EvenementController extends AbstractController
                 ->setIdVille($idVille)
                 ->setIdEventCategory($idEventCategory)
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'))
-                ->setImagePath(null)
                 ->setBannerPath(null);
             // Set default image and banner paths
             $bannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
