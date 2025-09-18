@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 17, 2025 at 05:33 PM
+-- Generation Time: Sep 18, 2025 at 12:22 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -30,7 +30,8 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `association`;
 CREATE TABLE IF NOT EXISTS `association` (
   `idAssociation` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `slug` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `logoPath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `bannerPath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -47,10 +48,11 @@ CREATE TABLE IF NOT EXISTS `association` (
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`idAssociation`),
   UNIQUE KEY `UQ_idAssociation` (`idAssociation`),
+  UNIQUE KEY `slug` (`slug`),
   KEY `idx_association_user` (`idUser`),
   KEY `idx_association_active` (`isActive`),
   KEY `idx_association_ville` (`idVille`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -130,7 +132,8 @@ CREATE TABLE IF NOT EXISTS `chat_participant` (
 DROP TABLE IF EXISTS `entreprise`;
 CREATE TABLE IF NOT EXISTS `entreprise` (
   `idEntreprise` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `slug` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `logoPath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `bannerPath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -149,11 +152,13 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`idEntreprise`),
   UNIQUE KEY `UQ_idEntreprise` (`idEntreprise`),
+  UNIQUE KEY `slug` (`slug`),
+  UNIQUE KEY `name` (`name`),
   KEY `idx_entreprise_user` (`idUser`),
   KEY `idx_entreprise_active` (`isActive`),
   KEY `idx_entreprise_status` (`status`),
   KEY `idx_entreprise_ville` (`idVille`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -164,7 +169,8 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
 DROP TABLE IF EXISTS `evenement`;
 CREATE TABLE IF NOT EXISTS `evenement` (
   `idEvenement` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `title` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `slug` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `shortDescription` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `startDate` datetime NOT NULL,
@@ -173,8 +179,6 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   `maxParticipants` int NOT NULL,
   `currentParticipants` int NOT NULL DEFAULT '0',
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `latitude` decimal(10,8) DEFAULT NULL,
-  `longitude` decimal(11,8) DEFAULT NULL,
   `imagePath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `bannerPath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `status` enum('brouillon','actif','annule','termine') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'brouillon',
@@ -187,18 +191,21 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   `updatedAt` datetime DEFAULT NULL,
   `idUser` int NOT NULL,
   `idAssociation` int DEFAULT NULL,
+  `idEntreprise` int DEFAULT NULL,
   `idVille` int NOT NULL,
   `idEventCategory` int DEFAULT NULL,
   PRIMARY KEY (`idEvenement`),
   UNIQUE KEY `UQ_idEvenement` (`idEvenement`),
+  UNIQUE KEY `slug` (`slug`),
   KEY `FK_user_TO_evenement_creator` (`idUser`),
   KEY `FK_ville_TO_evenement` (`idVille`),
   KEY `idx_evenement_date` (`startDate`),
   KEY `idx_evenement_status` (`status`),
   KEY `idx_evenement_public` (`isPublic`),
   KEY `idx_evenement_association` (`idAssociation`),
+  KEY `idx_evenement_entreprise` (`idEntreprise`),
   KEY `idx_evenement_category` (`idEventCategory`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -217,18 +224,29 @@ CREATE TABLE IF NOT EXISTS `event_category` (
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idEventCategory`),
   UNIQUE KEY `UQ_idEventCategory` (`idEventCategory`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `event_category`
 --
 
 INSERT INTO `event_category` (`idEventCategory`, `name`, `description`, `color`, `icon`, `isActive`, `createdAt`) VALUES
-(1, 'Sport', 'Sporting events and activities', '#FF6B6B', NULL, 1, '2025-09-11 12:00:01'),
-(2, 'Culture', 'Cultural events and exhibitions', '#4ECDC4', NULL, 1, '2025-09-11 12:00:01'),
-(3, 'Social', 'Social gatherings and networking', '#45B7D1', NULL, 1, '2025-09-11 12:00:01'),
-(4, 'Education', 'Educational workshops and seminars', '#96CEB4', NULL, 1, '2025-09-11 12:00:01'),
-(5, 'Business', 'Business meetings and conferences', '#FFEAA7', NULL, 1, '2025-09-11 12:00:01');
+(13, 'Théâtre', 'Pièces de théâtre et spectacles', '#E17055', NULL, 1, '2025-09-11 12:00:01'),
+(12, 'Environnement', 'Événements écologiques et durables', '#00CEC9', NULL, 1, '2025-09-11 12:00:01'),
+(10, 'Famille', 'Activités familiales et événements pour enfants', '#55A3FF', NULL, 1, '2025-09-11 12:00:01'),
+(11, 'Santé', 'Bien-être et événements de santé', '#00B894', NULL, 1, '2025-09-11 12:00:01'),
+(9, 'Technologie', 'Événements tech et innovations', '#6C5CE7', NULL, 1, '2025-09-11 12:00:01'),
+(8, 'Art', 'Expositions d\'art et ateliers créatifs', '#FDCB6E', NULL, 1, '2025-09-11 12:00:01'),
+(7, 'Gastronomie', 'Festivals culinaires et dégustations', '#FD79A8', NULL, 1, '2025-09-11 12:00:01'),
+(6, 'Musique', 'Concerts et événements musicaux', '#A29BFE', NULL, 1, '2025-09-11 12:00:01'),
+(5, 'Affaires', 'Réunions d\'affaires et conférences', '#FFEAA7', NULL, 1, '2025-09-11 12:00:01'),
+(4, 'Éducation', 'Ateliers éducatifs et séminaires', '#96CEB4', NULL, 1, '2025-09-11 12:00:01'),
+(3, 'Social', 'Rassemblements sociaux et réseautage', '#45B7D1', NULL, 1, '2025-09-11 12:00:01'),
+(2, 'Culture', 'Événements culturels et expositions', '#4ECDC4', NULL, 1, '2025-09-11 12:00:01'),
+(1, 'Sport', 'Événements sportifs et activités physiques', '#FF6B6B', NULL, 1, '2025-09-11 12:00:01'),
+(14, 'Marché', 'Marchés locaux et foires', '#81ECEC', NULL, 1, '2025-09-11 12:00:01'),
+(15, 'Religion', 'Événements religieux et spirituels', '#DDA0DD', NULL, 1, '2025-09-11 12:00:01'),
+(16, 'Autre', 'Événements divers et variés', '#CCCCCC', NULL, 1, '2025-09-18 10:44:01');
 
 -- --------------------------------------------------------
 
@@ -442,7 +460,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
 (1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-16 11:37:02', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
 (2, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 0, '2025-09-17 19:16:03', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', '2025-09-16 11:37:06', '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL),
+(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-18 14:02:53', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', '2025-09-16 11:37:06', '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL),
 (4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-17 19:16:31', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -462,7 +480,7 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   PRIMARY KEY (`idUserAssociation`),
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
