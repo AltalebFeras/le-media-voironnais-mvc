@@ -270,6 +270,7 @@ class EvenementController extends AbstractController
             if ($evenement->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cet événement");
             }
+            $originalTitle = $evenement->getTitle();
 
             // Get form data
             $title = isset($_POST['title']) ? htmlspecialchars(trim($_POST['title'])) : null;
@@ -283,11 +284,36 @@ class EvenementController extends AbstractController
             $price = isset($_POST['price']) ? (float)$_POST['price'] : null;
             $currency = isset($_POST['currency']) ? htmlspecialchars(trim($_POST['currency'])) : 'EUR';
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
+            $idAssociation = isset($_POST['idAssociation']) && !empty($_POST['idAssociation']) ? (int)$_POST['idAssociation'] : null;
             $idEventCategory = isset($_POST['idEventCategory']) ? (int)$_POST['idEventCategory'] : null;
             $isPublic = isset($_POST['isPublic']) ? 1 : 0;
             $requiresApproval = isset($_POST['requiresApproval']) ? 1 : 0;
 
             $errors = [];
+
+            $_SESSION['form_data'] = $_POST;
+
+            // Validate association ownership
+            $userAssociations = $this->repo->getUserAssociations($idUser);
+            $associationIds = array_map(fn($assoc) => $assoc->getIdAssociation(), $userAssociations);
+            if ($idAssociation && !in_array($idAssociation, $associationIds)) {
+                $errors['idAssociation'] = "L'association sélectionnée est invalide";
+            }
+            $existingVille = $this->repo->isVilleExists($idVille);
+            if (!$existingVille) {
+                $errors['idVille'] = "La ville sélectionnée est invalide";
+            }
+            $existingCategory = $this->repo->isEventCategoryExists($idEventCategory);
+            if (!$existingCategory) {
+                $errors['idEventCategory'] = "La catégorie sélectionnée est invalide";
+            }
+            // verify if the title is not empty and is unique for the user only (exclude current event)
+            if (empty($title)) {
+                $errors['title'] = "Le titre est requis";
+            } elseif ($this->repo->isTitleExistsForUser($title, $idUser, $idEvenement)) {
+                $errors['title'] = "Vous avez déjà un événement avec ce titre";
+            }
+            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true');
 
             // Update event data
             $evenement->setTitle($title)
@@ -320,13 +346,27 @@ class EvenementController extends AbstractController
                 $evenement->setBannerPath($bannerPath);
                 $this->repo->updateBanner($idEvenement, $bannerPath);
             }
-
+            $helper = new Helper();
             // Use model validation
             $modelErrors = $evenement->validate();
             $errors = array_merge($errors, $modelErrors);
+            // Ensure unique slug
+            // Regenerate slug if title changed
+            if ($title !== $originalTitle) {
+                // $evenement->setSlug(null); // Reset slug to force regeneration
+                $slug = $helper->generateSlug($title);
+                $existSlug = $this->repo->isSlugExists($slug);
 
-            if (!$this->repo->isVilleExists($idVille)) {
-                $errors['idVille'] = "La ville sélectionnée est invalide";
+                if ($existSlug) {
+                    $suffix = 1;
+                    $finalSlug = "{$slug}-{$suffix}";
+                    while ($this->repo->isSlugExists($finalSlug)) {
+                        $suffix++;
+                        $finalSlug = "{$slug}-{$suffix}";
+                    }
+                    $slug = $finalSlug;
+                }
+                $evenement->setSlug($slug);
             }
 
             $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true');

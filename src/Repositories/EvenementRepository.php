@@ -154,8 +154,8 @@ class EvenementRepository
         $sql = "UPDATE evenement SET 
                 title = :title, slug = :slug, description = :description, shortDescription = :shortDescription,
                 startDate = :startDate, endDate = :endDate, registrationDeadline = :registrationDeadline,
-                maxParticipants = :maxParticipants, address = :address, imagePath = :imagePath, bannerPath = :bannerPath,
-                status = :status, isPublic = :isPublic,
+                maxParticipants = :maxParticipants, address = :address,
+                status = :status, isPublic = :isPublic, requiresApproval = :requiresApproval,
                 price = :price, currency = :currency, updatedAt = :updatedAt, idVille = :idVille,
                 idEventCategory = :idEventCategory
                 WHERE idEvenement = :idEvenement AND idUser = :idUser";
@@ -174,6 +174,7 @@ class EvenementRepository
             ':address' => $event->getAddress(),
             ':status' => $event->getStatus(),
             ':isPublic' => $event->getIsPublic() ? 1 : 0,
+            ':requiresApproval' => $event->getRequiresApproval() ? 1 : 0,
             ':price' => $event->getPrice(),
             ':currency' => $event->getCurrency(),
             ':updatedAt' => $event->getUpdatedAt(),
@@ -315,12 +316,19 @@ class EvenementRepository
 
         return $stmt->fetchColumn() > 0;
     }
-    public function isTitleExistsForUser(string $title, int $idUser): bool
+    // Check if title exists for user (to ensure uniqueness)(exclude current event)
+    public function isTitleExistsForUser(string $title, int $idUser,  $idEvenement = null): bool
     {
         $sql = "SELECT COUNT(*) FROM evenement WHERE title = :title AND idUser = :idUser AND isDeleted = 0";
+        if ($idEvenement) {
+            $sql .= " AND idEvenement != :idEvenement";
+        }
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':title', $title, PDO::PARAM_STR);
         $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        if ($idEvenement) {
+            $stmt->bindParam(':idEvenement', $idEvenement, PDO::PARAM_INT);
+        }
         $stmt->execute();
 
         return $stmt->fetchColumn() > 0;
