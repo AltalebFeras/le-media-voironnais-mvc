@@ -9,6 +9,7 @@ class Entreprise
 {
     private int $idEntreprise;
     private string $name;
+    private string $slug;
     private ?string $description;
     private ?string $logoPath;
     private ?string $bannerPath;
@@ -37,6 +38,10 @@ class Entreprise
     public function getName(): string
     {
         return $this->name;
+    }
+    public function getSlug()
+    {
+        return $this->slug;
     }
 
     public function getDescription(): ?string
@@ -162,7 +167,12 @@ class Entreprise
         $this->name = $name;
         return $this;
     }
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
 
+        return $this;
+    }
     public function setDescription(?string $description): static
     {
         $this->description = $description;
@@ -315,8 +325,8 @@ class Entreprise
         // Validation du nom (obligatoire)
         if (empty(trim($this->name))) {
             $errors['name'] = 'Le nom de l\'entreprise est obligatoire.';
-        } elseif (strlen($this->name) > 255) {
-            $errors['name'] = 'Le nom ne peut pas dépasser 255 caractères.';
+        } elseif (strlen($this->name) > 180) {
+            $errors['name'] = 'Le nom ne peut pas dépasser 180 caractères.';
         }
         // Validation de l'description
         if (!empty($this->description) && (strlen($this->description) > 1000 || strlen($this->description) < 10)) {

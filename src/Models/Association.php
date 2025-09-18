@@ -9,6 +9,7 @@ class Association
 {
     private int $idAssociation;
     private string $name;
+    private string $slug;
     private ?string $description;
     private ?string $logoPath;
     private ?string $bannerPath;
@@ -35,6 +36,11 @@ class Association
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
     }
 
     public function getDescription(): ?string
@@ -148,6 +154,12 @@ class Association
     public function setName(string $name): static
     {
         $this->name = $name;
+        return $this;
+    }
+    public function setSlug($slug): static
+    {
+        $this->slug = $slug;
+
         return $this;
     }
 
@@ -292,8 +304,8 @@ class Association
         // Validation du nom
         if (empty(trim($this->name))) {
             $errors['name'] = 'Le nom de l\'association est obligatoire.';
-        } elseif (strlen($this->name) > 255) {
-            $errors['name'] = 'Le nom ne peut pas dépasser 255 caractères.';
+        } elseif (strlen($this->name) > 180) {
+            $errors['name'] = 'Le nom ne peut pas dépasser 180 caractères.';
         }
         // Validation de la description
         if (!is_null($this->description) && $this->description !== '') {

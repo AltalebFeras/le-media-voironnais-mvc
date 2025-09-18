@@ -4,17 +4,21 @@ namespace src\Controllers;
 
 use src\Abstracts\AbstractController;
 use src\Models\Entreprise;
+use src\Repositories\AssociationRepository;
 use src\Repositories\EntrepriseRepository;
 use Exception;
 use DateTime;
+use src\Services\Helper;
 
 class EntrepriseController extends AbstractController
 {
     private $repo;
+    private $AssocRepo = null;
 
     public function __construct()
     {
         $this->repo = new EntrepriseRepository();
+        $this->AssocRepo = new AssociationRepository();
     }
 
     public function mesEntreprises()
@@ -86,6 +90,14 @@ class EntrepriseController extends AbstractController
             $errors = [];
             $_SESSION['form_data'] = $_POST;
 
+            $existingEntreprise = $this->repo->getEntrepriseByName($name);
+            if ($existingEntreprise) {
+                $errors['name'] = "Une entreprise avec ce nom existe déjà.";
+            }
+            $existingVille = $this->AssocRepo->isVilleExists($idVille);
+            if (!$existingVille) {
+                $errors['idVille'] = "La ville sélectionnée est invalide";
+            }
             // Create new company
             $entreprise = new Entreprise();
             $entreprise->setName($name)
@@ -102,6 +114,22 @@ class EntrepriseController extends AbstractController
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'))
                 ->setLogoPath(null)
                 ->setBannerPath(null);
+            // Generate unique slug
+            $helper = new Helper();
+            $slug = $helper->generateSlug($name);
+            $existSlug = $this->repo->isSlugExists($slug);
+
+            if ($existSlug) {
+                $suffix = 1;
+                $finalSlug = "{$slug}-{$suffix}";
+                while ($this->repo->isSlugExists($finalSlug)) {
+                    $suffix++;
+                    $finalSlug = "{$slug}-{$suffix}";
+                }
+                $slug = $finalSlug;
+            }
+
+            $entreprise->setSlug($slug);
 
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {
@@ -185,6 +213,7 @@ class EntrepriseController extends AbstractController
             $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
             $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : null;
             $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
+            $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
             $siret = isset($_POST['siret']) ? htmlspecialchars(trim($_POST['siret'])) : null;
             $status = 'brouillon'; // Default status
 
@@ -194,6 +223,17 @@ class EntrepriseController extends AbstractController
             if ($entreprise->getIsActive() && $entreprise->getSiret() !== $siret) {
                 $errors['siret'] = "Vous ne pouvez pas modifier le numéro SIRET d'une entreprise active! Veuillez contacter le support.";
             }
+            $existingEntreprise = $this->repo->getEntrepriseByName($name);
+            $originalName = $entreprise->getName();
+
+            if ($existingEntreprise && $name === $existingEntreprise->getName() && $existingEntreprise->getIdEntreprise() != $idEntreprise) {
+                $errors['name'] = "Une entreprise avec ce nom existe déjà.";
+            }
+            $existingVille = $this->AssocRepo->isVilleExists($idVille);
+            if (!$existingVille) {
+                $errors['idVille'] = "La ville sélectionnée est invalide";
+            }
+
             // Update company
             $entreprise->setName($name)
                 ->setDescription($description)
@@ -203,7 +243,29 @@ class EntrepriseController extends AbstractController
                 ->setWebsite($website)
                 ->setSiret($siret)
                 ->setStatus($status)
+                ->setIdVille($idVille)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+
+            // Regenerate slug if name changed - compare with original name
+            if ($name !== $originalName) {
+                $helper = new Helper();
+                $slug = $helper->generateSlug($name);
+
+                $existSlug = $this->repo->isSlugExists($slug);
+
+                if ($existSlug) {
+                    $suffix = 1;
+                    $finalSlug = "{$slug}-{$suffix}";
+                    while ($this->repo->isSlugExists($finalSlug)) {
+                        $suffix++;
+                        $finalSlug = "{$slug}-{$suffix}";
+                    }
+                    $slug = $finalSlug;
+                }
+
+                $entreprise->setSlug($slug);
+            }
 
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {

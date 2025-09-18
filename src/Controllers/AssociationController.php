@@ -7,6 +7,7 @@ use src\Models\Association;
 use src\Repositories\AssociationRepository;
 use Exception;
 use DateTime;
+use src\Services\Helper;
 
 class AssociationController extends AbstractController
 {
@@ -133,7 +134,6 @@ class AssociationController extends AbstractController
             $_SESSION['form_data'] = $_POST;
             $errors = [];
 
-            // Custom validations not covered by the model
 
             $existingAssociation = $this->repo->getAssociationByNameForThisUser($name, $idUser);
             if ($existingAssociation) {
@@ -143,7 +143,7 @@ class AssociationController extends AbstractController
             if (!$existingVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
-
+            $helper = new Helper();
             // Create new association
             $association = new Association();
 
@@ -164,6 +164,21 @@ class AssociationController extends AbstractController
             $modelErrors = $association->validate();
             $errors = array_merge($errors, $modelErrors);
 
+            $slug = $helper->generateSlug($name);
+            $existSlug = $this->repo->isSlugExists($slug);
+
+            if ($existSlug) {
+                $suffix = 1;
+                $finalSlug = "{$slug}-{$suffix}";
+                while ($this->repo->isSlugExists($finalSlug)) {
+                    $suffix++;
+                    $finalSlug = "{$slug}-{$suffix}";
+                }
+                $slug = $finalSlug;
+            }
+
+            $association->setSlug($slug);
+
             // Handle logo upload if present
             if (!empty($_FILES['logo']['name'])) {
                 $logoPath = $this->handleImageUpload('logo', 'logos');
@@ -176,7 +191,7 @@ class AssociationController extends AbstractController
                 $association->setBannerPath($bannerPath);
             }
 
-            $this->returnAllErrors($errors, 'association/ajouter?error=true&');
+            $this->returnAllErrors($errors, 'association/ajouter?error=true');
 
             $create_association = $this->repo->createAssociation($association);
             if ($create_association) {
@@ -187,10 +202,7 @@ class AssociationController extends AbstractController
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->render('association/ajouter', [
-                'title' => 'Ajouter une association',
-                'form_data' => $_POST
-            ]);
+            $this->redirect('association/ajouter?error=true');
         }
     }
 
@@ -264,7 +276,6 @@ class AssociationController extends AbstractController
 
             $errors = [];
 
-
             // Check if name exists for other associations of this user
             $existingAssociation = $this->repo->getAssociationByNameForThisUser($name, $idUser);
             if ($existingAssociation && $existingAssociation->getIdAssociation() != $idAssociation) {
@@ -286,7 +297,25 @@ class AssociationController extends AbstractController
                 ->setIsActive($isActive)
                 ->setIdVille($idVille)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+            // Regenerate slug if name changed
+            if ($name !== $association->getName()) {
+                $helper = new Helper();
+                $slug = $helper->generateSlug($name);
 
+                $existSlug = $this->repo->isSlugExists($slug);
+
+                if ($existSlug) {
+                    $suffix = 1;
+                    $finalSlug = "{$slug}-{$suffix}";
+                    while ($this->repo->isSlugExists($finalSlug)) {
+                        $suffix++;
+                        $finalSlug = "{$slug}-{$suffix}";
+                    }
+                    $slug = $finalSlug;
+                }
+
+                $association->setSlug($slug);
+            }
             // Use model validation
             $modelErrors = $association->validate();
             $errors = array_merge($errors, $modelErrors);

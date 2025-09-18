@@ -30,12 +30,12 @@ class EntrepriseRepository
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->bindValue(':entreprisesPerPage', $entreprisesPerPage, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             $entreprises = [];
             while ($row = $stmt->fetchObject(Entreprise::class)) {
                 $entreprises[] = $row;
             }
-            
+
             return $entreprises;
         } catch (Exception $e) {
             throw new Exception("Error fetching user companies: " . $e->getMessage());
@@ -51,7 +51,7 @@ class EntrepriseRepository
             $query = "SELECT COUNT(*) FROM entreprise WHERE idUser = :idUser";
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['idUser' => $idUser]);
-            
+
             return (int)$stmt->fetchColumn();
         } catch (Exception $e) {
             throw new Exception("Error counting user companies: " . $e->getMessage());
@@ -67,14 +67,68 @@ class EntrepriseRepository
             $query = "SELECT * FROM entreprise WHERE idEntreprise = :idEntreprise";
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['idEntreprise' => $idEntreprise]);
-            
+
             $entreprise = $stmt->fetchObject(Entreprise::class);
             return $entreprise !== false ? $entreprise : null;
         } catch (Exception $e) {
             throw new Exception("Error fetching company: " . $e->getMessage());
         }
     }
+    public function getEntrepriseBySlug($slug): ?Entreprise
+    {
+        try {
+            $query = "SELECT * FROM entreprise WHERE slug = :slug";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['slug' => $slug]);
 
+            $entreprise = $stmt->fetchObject(Entreprise::class);
+            return $entreprise !== false ? $entreprise : null;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching company by slug: " . $e->getMessage());
+        }
+    }
+    public function getEntrepriseByName($name): ?Entreprise 
+    {
+        try {
+            $query = "SELECT * FROM entreprise WHERE name = :name";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['name' => $name]);
+
+            $entreprise = $stmt->fetchObject(Entreprise::class);
+            return $entreprise !== false ? $entreprise : null;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching company by name: " . $e->getMessage());
+        }
+    }
+    public function getAllEntreprises(): array
+    {
+        try {
+            $query = "SELECT * FROM entreprise ORDER BY name ASC";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute();
+
+            $entreprises = [];
+            while ($row = $stmt->fetchObject(Entreprise::class)) {
+                $entreprises[] = $row;
+            }
+
+            return $entreprises;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching all companies: " . $e->getMessage());
+        }
+    }
+    public function isSlugExists($slug): bool
+    {
+        try {
+            $query = "SELECT COUNT(*) FROM entreprise WHERE slug = :slug";
+            $stmt = $this->DB->prepare($query);
+            $stmt->bindParam(':slug', $slug);
+            $stmt->execute();
+            return $stmt->fetchColumn() > 0;
+        } catch (Exception $e) {
+            throw new Exception("Error checking slug existence: " . $e->getMessage());
+        }
+    }
     /**
      * Create a new company
      */
@@ -82,13 +136,14 @@ class EntrepriseRepository
     {
         try {
             $query = "INSERT INTO entreprise 
-                     (name, description, logoPath, bannerPath, address, phone, email, website, siret, status, isActive, idUser, idVille, createdAt) 
+                     (name, slug, description, logoPath, bannerPath, address, phone, email, website, siret, status, isActive, idUser, idVille, createdAt) 
                      VALUES 
-                     (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :status, :isActive, :idUser, :idVille, :createdAt)";
-            
+                     (:name, :slug, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :status, :isActive, :idUser, :idVille, :createdAt)";
+
             $stmt = $this->DB->prepare($query);
             $stmt->execute([
                 'name' => $entreprise->getName(),
+                'slug' => $entreprise->getSlug(),
                 'description' => $entreprise->getDescription(),
                 'logoPath' => $entreprise->getLogoPath(),
                 'bannerPath' => $entreprise->getBannerPath(),
@@ -103,7 +158,7 @@ class EntrepriseRepository
                 'idVille' => $entreprise->getIdVille(),
                 'createdAt' => $entreprise->getCreatedAt()
             ]);
-            
+
             $entreprise->setIdEntreprise($this->DB->lastInsertId());
             return $entreprise;
         } catch (Exception $e) {
@@ -119,6 +174,7 @@ class EntrepriseRepository
         try {
             $query = "UPDATE entreprise SET 
                      name = :name, 
+                     slug = :slug,
                      description = :description,
                      address = :address, 
                      phone = :phone, 
@@ -129,10 +185,11 @@ class EntrepriseRepository
                      isActive = :isActive,
                      updatedAt = :updatedAt
                      WHERE idEntreprise = :idEntreprise";
-            
+
             $stmt = $this->DB->prepare($query);
             $result = $stmt->execute([
                 'name' => $entreprise->getName(),
+                'slug' => $entreprise->getSlug(),
                 'description' => $entreprise->getDescription(),
                 'address' => $entreprise->getAddress(),
                 'phone' => $entreprise->getPhone(),
@@ -144,7 +201,7 @@ class EntrepriseRepository
                 'updatedAt' => $entreprise->getUpdatedAt(),
                 'idEntreprise' => $entreprise->getIdEntreprise()
             ]);
-            
+
             return $result;
         } catch (Exception $e) {
             throw new Exception("Error updating company: " . $e->getMessage());
@@ -160,7 +217,7 @@ class EntrepriseRepository
             $query = "DELETE FROM entreprise WHERE idEntreprise = :idEntreprise";
             $stmt = $this->DB->prepare($query);
             $result = $stmt->execute(['idEntreprise' => $idEntreprise]);
-            
+
             return $result;
         } catch (Exception $e) {
             throw new Exception("Error deleting company: " . $e->getMessage());
@@ -179,7 +236,7 @@ class EntrepriseRepository
                 'logoPath' => $logoPath,
                 'idEntreprise' => $idEntreprise
             ]);
-            
+
             return $result;
         } catch (Exception $e) {
             throw new Exception("Error updating company logo: " . $e->getMessage());
@@ -198,7 +255,7 @@ class EntrepriseRepository
                 'bannerPath' => $bannerPath,
                 'idEntreprise' => $idEntreprise
             ]);
-            
+
             return $result;
         } catch (Exception $e) {
             throw new Exception("Error updating company banner: " . $e->getMessage());
@@ -217,28 +274,29 @@ class EntrepriseRepository
                 'idEntreprise' => $idEntreprise,
                 'idUser' => $idUser
             ]);
-            
+
             return (int)$stmt->fetchColumn() > 0;
         } catch (Exception $e) {
             throw new Exception("Error checking company ownership: " . $e->getMessage());
         }
     }
 
-    public function findAll($includeDeleted = false) {
+    public function findAll($includeDeleted = false)
+    {
         $sql = "SELECT e.*, v.ville_nom, u.firstName, u.lastName 
                 FROM entreprise e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN user u ON e.idUser = u.idUser";
-        
+
         if (!$includeDeleted) {
             $sql .= " WHERE e.isDeleted = 0";
         }
-        
+
         $sql .= " ORDER BY e.createdAt DESC";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->execute();
-        
+
         $entreprises = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $entreprise = new Entreprise($row);
@@ -246,65 +304,68 @@ class EntrepriseRepository
             $entreprise->owner_name = $row['firstName'] . ' ' . $row['lastName'];
             $entreprises[] = $entreprise;
         }
-        
+
         return $entreprises;
     }
 
-    public function findByUser($idUser, $includeDeleted = false) {
+    public function findByUser($idUser, $includeDeleted = false)
+    {
         $sql = "SELECT e.*, v.ville_nom 
                 FROM entreprise e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 WHERE e.idUser = :idUser";
-        
+
         if (!$includeDeleted) {
             $sql .= " AND e.isDeleted = 0";
         }
-        
+
         $sql .= " ORDER BY e.createdAt DESC";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         $entreprises = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $entreprise = new Entreprise($row);
             $entreprise->ville_nom = $row['ville_nom'];
             $entreprises[] = $entreprise;
         }
-        
+
         return $entreprises;
     }
 
-    public function findById($id) {
+    public function findById($id)
+    {
         $sql = "SELECT e.*, v.ville_nom, u.firstName, u.lastName 
                 FROM entreprise e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN user u ON e.idUser = u.idUser 
                 WHERE e.idEntreprise = :id";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if ($row) {
             $entreprise = new Entreprise($row);
             $entreprise->ville_nom = $row['ville_nom'];
             $entreprise->owner_name = $row['firstName'] . ' ' . $row['lastName'];
             return $entreprise;
         }
-        
+
         return null;
     }
 
-    public function create(Entreprise $entreprise) {
+    public function create(Entreprise $entreprise)
+    {
         $sql = "INSERT INTO entreprise (name, description, logoPath, bannerPath, address, phone, email, website, siret, status, isActive, isPublic, idUser, idVille, createdAt) 
                 VALUES (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :status, :isActive, :isPublic, :idUser, :idVille, NOW())";
-        
+
         $stmt = $this->DB->prepare($sql);
-        
+
         $stmt->bindParam(':name', $entreprise->getName());
         $stmt->bindParam(':description', $entreprise->getDescription());
         $stmt->bindParam(':logoPath', $entreprise->getLogoPath());
@@ -319,16 +380,17 @@ class EntrepriseRepository
         $stmt->bindParam(':isPublic', $entreprise->getIsPublic(), PDO::PARAM_BOOL);
         $stmt->bindParam(':idUser', $entreprise->getIdUser(), PDO::PARAM_INT);
         $stmt->bindParam(':idVille', $entreprise->getIdVille(), PDO::PARAM_INT);
-        
+
         if ($stmt->execute()) {
             $entreprise->setIdEntreprise($this->DB->lastInsertId());
             return $entreprise;
         }
-        
+
         return false;
     }
 
-    public function update(Entreprise $entreprise) {
+    public function update(Entreprise $entreprise)
+    {
         $sql = "UPDATE entreprise SET 
                 name = :name, 
                 description = :description, 
@@ -345,9 +407,9 @@ class EntrepriseRepository
                 idVille = :idVille, 
                 updatedAt = NOW() 
                 WHERE idEntreprise = :id";
-        
+
         $stmt = $this->DB->prepare($sql);
-        
+
         $stmt->bindParam(':name', $entreprise->getName());
         $stmt->bindParam(':description', $entreprise->getDescription());
         $stmt->bindParam(':logoPath', $entreprise->getLogoPath());
@@ -362,54 +424,58 @@ class EntrepriseRepository
         $stmt->bindParam(':isPublic', $entreprise->getIsPublic(), PDO::PARAM_BOOL);
         $stmt->bindParam(':idVille', $entreprise->getIdVille(), PDO::PARAM_INT);
         $stmt->bindParam(':id', $entreprise->getIdEntreprise(), PDO::PARAM_INT);
-        
+
         return $stmt->execute();
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $sql = "UPDATE entreprise SET isDeleted = 1, deletedAt = NOW() WHERE idEntreprise = :id";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        
+
         return $stmt->execute();
     }
 
-    public function permanentDelete($id) {
+    public function permanentDelete($id)
+    {
         $sql = "DELETE FROM entreprise WHERE idEntreprise = :id";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        
+
         return $stmt->execute();
     }
 
-    public function restore($id) {
+    public function restore($id)
+    {
         $sql = "UPDATE entreprise SET isDeleted = 0, deletedAt = NULL WHERE idEntreprise = :id";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        
+
         return $stmt->execute();
     }
 
-    public function findByStatus($status, $includeDeleted = false) {
+    public function findByStatus($status, $includeDeleted = false)
+    {
         $sql = "SELECT e.*, v.ville_nom, u.firstName, u.lastName 
                 FROM entreprise e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN user u ON e.idUser = u.idUser 
                 WHERE e.status = :status";
-        
+
         if (!$includeDeleted) {
             $sql .= " AND e.isDeleted = 0";
         }
-        
+
         $sql .= " ORDER BY e.createdAt DESC";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindParam(':status', $status);
         $stmt->execute();
-        
+
         $entreprises = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $entreprise = new Entreprise($row);
@@ -417,23 +483,24 @@ class EntrepriseRepository
             $entreprise->owner_name = $row['firstName'] . ' ' . $row['lastName'];
             $entreprises[] = $entreprise;
         }
-        
+
         return $entreprises;
     }
 
-    public function searchByName($query) {
+    public function searchByName($query)
+    {
         $sql = "SELECT e.*, v.ville_nom, u.firstName, u.lastName 
                 FROM entreprise e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN user u ON e.idUser = u.idUser 
                 WHERE e.name LIKE :query AND e.isDeleted = 0 
                 ORDER BY e.name ASC";
-        
+
         $stmt = $this->DB->prepare($sql);
         $searchTerm = '%' . $query . '%';
         $stmt->bindParam(':query', $searchTerm);
         $stmt->execute();
-        
+
         $entreprises = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $entreprise = new Entreprise($row);
@@ -441,11 +508,12 @@ class EntrepriseRepository
             $entreprise->owner_name = $row['firstName'] . ' ' . $row['lastName'];
             $entreprises[] = $entreprise;
         }
-        
+
         return $entreprises;
     }
 
-    public function getStatistics() {
+    public function getStatistics()
+    {
         $sql = "SELECT 
                     COUNT(*) as total,
                     SUM(CASE WHEN status = 'actif' THEN 1 ELSE 0 END) as actives,
@@ -453,10 +521,10 @@ class EntrepriseRepository
                     SUM(CASE WHEN status = 'suspendu' THEN 1 ELSE 0 END) as suspendues,
                     SUM(CASE WHEN isDeleted = 1 THEN 1 ELSE 0 END) as supprimees
                 FROM entreprise";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->execute();
-        
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

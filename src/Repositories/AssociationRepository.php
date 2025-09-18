@@ -93,6 +93,19 @@ class AssociationRepository
             throw new Exception("Error fetching villes by CP: " . $e->getMessage());
         }
     }
+    public function isSlugExists($slug): bool
+    {
+        try {
+            $query = "SELECT COUNT(*) FROM association WHERE slug = :slug";
+            $stmt = $this->DB->prepare($query);
+            $stmt->bindParam(':slug', $slug);
+            $stmt->execute();
+            return $stmt->fetchColumn() > 0;
+        } catch (PDOException $e) {
+            throw new Exception("Error checking slug existence: " . $e->getMessage());
+        }
+    }
+
     /**
      * Create a new association and declare the creator as admin
      */
@@ -104,13 +117,14 @@ class AssociationRepository
 
             // Create association
             $query = "INSERT INTO association 
-                     (name, description, logoPath, bannerPath, address, phone, email, website, isActive, idUser, idVille, createdAt) 
+                         (name, slug, description, logoPath, bannerPath, address, phone, email, website, isActive, idUser, idVille, createdAt) 
                      VALUES 
-                     (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :isActive, :idUser, :idVille, :createdAt)";
+                     (:name, :slug, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :isActive, :idUser, :idVille, :createdAt)";
 
             $stmt = $this->DB->prepare($query);
             $stmt->execute([
                 'name' => $association->getName(),
+                'slug' => $association->getSlug(),
                 'description' => $association->getDescription(),
                 'logoPath' => $association->getLogoPath(),
                 'bannerPath' => $association->getBannerPath(),
@@ -180,6 +194,7 @@ class AssociationRepository
         try {
             $query = "UPDATE association SET 
                      name = :name, 
+                     slug = :slug,
                      description = :description,
                      address = :address, 
                      phone = :phone, 
@@ -195,6 +210,7 @@ class AssociationRepository
             $stmt = $this->DB->prepare($query);
             $result = $stmt->execute([
                 'name' => $association->getName(),
+                'slug' => $association->getSlug(),
                 'description' => $association->getDescription(),
                 'address' => $association->getAddress(),
                 'phone' => $association->getPhone(),

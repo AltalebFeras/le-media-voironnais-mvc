@@ -6,18 +6,17 @@ use DateTime;
 
 class Evenement
 {
-    private ?int $idEvenement = null;
-    private ?string $title = null;
+    private int $idEvenement;
+    private string $title;
+    private string $slug;
     private ?string $description = null;
     private ?string $shortDescription = null;
-    private ?string $startDate = null;
-    private ?string $endDate = null;
-    private ?string $registrationDeadline = null;
-    private ?int $maxParticipants = null;
+    private string $startDate;
+    private string $endDate;
+    private string $registrationDeadline;
+    private int $maxParticipants;
     private ?int $currentParticipants = null;
     private ?string $address = null;
-    private ?float $latitude = null;
-    private ?float $longitude = null;
     private ?string $imagePath = null;
     private ?string $bannerPath = null;
     private ?string $status = null;
@@ -26,12 +25,12 @@ class Evenement
     private ?bool $requiresApproval = null;
     private ?float $price = null;
     private ?string $currency = null;
-    private ?string $createdAt = null;
+    private string $createdAt;
     private ?string $updatedAt = null;
-    private ?int $idUser = null;
+    private int $idUser;
     private ?int $idAssociation = null;
-    private ?int $idVille = null;
-    private ?int $idEventCategory = null;
+    private int $idVille;
+    private int $idEventCategory;
 
     // Getters
     public function getIdEvenement(): ?int
@@ -41,6 +40,10 @@ class Evenement
     public function getTitle(): ?string
     {
         return $this->title;
+    }
+    public function getSlug()
+    {
+        return $this->slug;
     }
     public function getDescription(): ?string
     {
@@ -73,14 +76,6 @@ class Evenement
     public function getAddress(): ?string
     {
         return $this->address;
-    }
-    public function getLatitude(): ?float
-    {
-        return $this->latitude;
-    }
-    public function getLongitude(): ?float
-    {
-        return $this->longitude;
     }
     public function getImagePath(): ?string
     {
@@ -151,7 +146,12 @@ class Evenement
         $this->title = $title;
         return $this;
     }
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
 
+        return $this;
+    }
     public function setDescription(?string $description): self
     {
         $this->description = $description;
@@ -197,18 +197,6 @@ class Evenement
     public function setAddress(?string $address): self
     {
         $this->address = $address;
-        return $this;
-    }
-
-    public function setLatitude(?float $latitude): self
-    {
-        $this->latitude = $latitude;
-        return $this;
-    }
-
-    public function setLongitude(?float $longitude): self
-    {
-        $this->longitude = $longitude;
         return $this;
     }
 
@@ -321,8 +309,8 @@ class Evenement
         // Required fields validation
         if (empty($this->title)) {
             $errors['title'] = 'Le titre est obligatoire';
-        } elseif (strlen($this->title) < 3 || strlen($this->title) > 255) {
-            $errors['title'] = 'Le titre doit contenir entre 3 et 255 caractères';
+        } elseif (strlen($this->title) < 3 || strlen($this->title) > 180) {
+            $errors['title'] = 'Le titre doit contenir entre 3 et 180 caractères';
         }
 
         if (empty($this->description)) {
