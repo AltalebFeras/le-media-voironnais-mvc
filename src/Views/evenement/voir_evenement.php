@@ -117,17 +117,6 @@
             <div class="event-meta card">
                 <h3>Informations complémentaires</h3>
 
-                <?php if ($evenement->getLatitude() && $evenement->getLongitude()): ?>
-                    <div class="info-item">
-                        <strong>Localisation :</strong>
-                        <p>Lat: <?= $evenement->getLatitude() ?>, Long: <?= $evenement->getLongitude() ?></p>
-                        <a href="https://www.google.com/maps?q=<?= $evenement->getLatitude() ?>,<?= $evenement->getLongitude() ?>"
-                            target="_blank" class="btn btn-info">
-                            <span class="material-icons">map</span>
-                            Voir sur la carte
-                        </a>
-                    </div>
-                <?php endif; ?>
 
                 <?php if ($evenement->getIdAssociation()): ?>
                     <div class="info-item">

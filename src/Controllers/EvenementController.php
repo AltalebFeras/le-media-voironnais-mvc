@@ -111,7 +111,7 @@ class EvenementController extends AbstractController
             $currency = isset($_POST['currency']) ? htmlspecialchars(trim($_POST['currency'])) : 'EUR';
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
             $idEventCategory = isset($_POST['idEventCategory']) ? (int)$_POST['idEventCategory'] : null;
-            $idAssociation = isset($_POST['idAssociation']) ? (int)$_POST['idAssociation'] : null;
+            $idAssociation = isset($_POST['idAssociation']) && !empty($_POST['idAssociation']) ? (int)$_POST['idAssociation'] : null;
             $isPublic = isset($_POST['isPublic']) ? 1 : 0;
 
             $errors = [];
@@ -129,6 +129,12 @@ class EvenementController extends AbstractController
             $existingCategory = $this->repo->isEventCategoryExists($idEventCategory);
             if (!$existingCategory) {
                 $errors['idEventCategory'] = "La catégorie sélectionnée est invalide";
+            }
+            // verify if the title is not empty and is unique for the user only
+            if (empty($title)) {
+                $errors['title'] = "Le titre est requis";
+            } elseif ($this->repo->isTitleExistsForUser($title, $idUser)) {
+                $errors['title'] = "Vous avez déjà un événement avec ce titre";
             }
 
             $this->returnAllErrors($errors, 'evenement/ajouter?error=true');
@@ -151,7 +157,7 @@ class EvenementController extends AbstractController
                 ->setIsPublic($isPublic)
                 ->setIsDeleted(false)
                 ->setIdUser($idUser)
-                ->setIdAssociation($idAssociation ?? null)
+                ->setIdAssociation($idAssociation)
                 ->setIdVille($idVille)
                 ->setIdEventCategory($idEventCategory)
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'))

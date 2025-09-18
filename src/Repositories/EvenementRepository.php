@@ -140,7 +140,7 @@ class EvenementRepository
             ':currency' => $event->getCurrency() ?? 'EUR',
             ':createdAt' => $event->getCreatedAt(),
             ':idUser' => $event->getIdUser(),
-            ':idAssociation' => $event->getIdAssociation() ?? null,
+            ':idAssociation' => $event->getIdAssociation(),
             ':idVille' => $event->getIdVille(),
             ':idEventCategory' => $event->getIdEventCategory()
         ]);
@@ -312,6 +312,16 @@ class EvenementRepository
             ':idEvenement' => $idEvenement,
             ':idUser' => $idUser
         ]);
+
+        return $stmt->fetchColumn() > 0;
+    }
+    public function isTitleExistsForUser(string $title, int $idUser): bool
+    {
+        $sql = "SELECT COUNT(*) FROM evenement WHERE title = :title AND idUser = :idUser AND isDeleted = 0";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->execute();
 
         return $stmt->fetchColumn() > 0;
     }
