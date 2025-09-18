@@ -117,17 +117,15 @@ class AssociationRepository
 
             // Create association
             $query = "INSERT INTO association 
-                         (name, slug, description, logoPath, bannerPath, address, phone, email, website, isActive, idUser, idVille, createdAt) 
+                         (name, slug, description, address, phone, email, website, isActive, idUser, idVille, createdAt) 
                      VALUES 
-                     (:name, :slug, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :isActive, :idUser, :idVille, :createdAt)";
+                     (:name, :slug, :description, :address, :phone, :email, :website, :isActive, :idUser, :idVille, :createdAt)";
 
             $stmt = $this->DB->prepare($query);
             $stmt->execute([
                 'name' => $association->getName(),
                 'slug' => $association->getSlug(),
                 'description' => $association->getDescription(),
-                'logoPath' => $association->getLogoPath(),
-                'bannerPath' => $association->getBannerPath(),
                 'address' => $association->getAddress(),
                 'phone' => $association->getPhone(),
                 'email' => $association->getEmail(),
@@ -202,8 +200,6 @@ class AssociationRepository
                      website = :website, 
                      isActive = :isActive,
                      idVille = :idVille,
-                     logoPath = :logoPath,
-                     bannerPath = :bannerPath,
                      updatedAt = :updatedAt
                      WHERE idAssociation = :idAssociation";
 
@@ -218,8 +214,6 @@ class AssociationRepository
                 'website' => $association->getWebsite(),
                 'isActive' => $association->getIsActive(),
                 'idVille' => $association->getIdVille(),
-                'logoPath' => $association->getLogoPath(),
-                'bannerPath' => $association->getBannerPath(),
                 'updatedAt' => $association->getUpdatedAt(),
                 'idAssociation' => $association->getIdAssociation()
             ]);

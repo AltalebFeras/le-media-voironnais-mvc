@@ -154,6 +154,8 @@ class EvenementController extends AbstractController
             $this->returnAllErrors($errors, 'evenement/ajouter?error=true');
             $helper = new Helper();
 
+            // default path for banner
+            $bannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
             // Create new event
             $evenement = new Evenement();
             $evenement->setTitle($title)
@@ -175,11 +177,8 @@ class EvenementController extends AbstractController
                 ->setIdVille($idVille)
                 ->setIdEventCategory($idEventCategory)
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'))
-                ->setBannerPath(null);
-            // Set default image and banner paths
-            $bannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
-            $evenement->setBannerPath($bannerPath);
-
+                ->setBannerPath($bannerPath);
+                
             // Use model validation
             $modelErrors = $evenement->validate();
             $errors = array_merge($errors, $modelErrors);
