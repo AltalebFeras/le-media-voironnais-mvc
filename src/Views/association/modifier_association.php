@@ -1,5 +1,6 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
+
 <main>
     <div class="flex-row justify-content-between">
         <h1>Modifier l'association</h1>
@@ -17,18 +18,18 @@
                         <div>
                             <label for="name">Nom de l'association *</label>
                             <input type="text" id="name" name="name"
-                                value="<?= $association->getName() ?>" required>
+                                value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['name'])) ? htmlspecialchars($_SESSION['form_data']['name']) : htmlspecialchars($association->getName()) ?>" required>
                         </div>
 
                         <div>
                             <label for="description">Description</label>
-                            <textarea id="description" name="description" rows="4"><?= $association->getDescription() ?? '' ?></textarea>
+                            <textarea id="description" name="description" rows="4"><?= (isset($_GET['error']) && isset($_SESSION['form_data']['description'])) ? htmlspecialchars($_SESSION['form_data']['description']) : htmlspecialchars($association->getDescription() ?? '') ?></textarea>
                         </div>
 
                         <div>
                             <label for="address">Adresse</label>
                             <input type="text" id="address" name="address"
-                                value="<?= $association->getAddress() ?? '' ?>">
+                                value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['address'])) ? htmlspecialchars($_SESSION['form_data']['address']) : htmlspecialchars($association->getAddress() ?? '') ?>">
                         </div>
 
                         <!-- Postal code and city fields -->
@@ -37,7 +38,7 @@
                                 <div>
                                     <label for="codePostal">Code postal</label>
                                     <input type="text" id="codePostal" name="codePostal" maxlength="5" 
-                                           value="<?= $ville ? $ville['ville_code_postal'] : '' ?>">
+                                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['codePostal'])) ? htmlspecialchars($_SESSION['form_data']['codePostal']) : ($ville ? htmlspecialchars($ville['ville_code_postal']) : '') ?>">
                                     <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
                                 </div>
                             </div>
@@ -52,7 +53,7 @@
                                         <?php endif; ?>
                                     </select>
                                     <input type="hidden" id="idVille" name="idVille" 
-                                           value="<?= $association->getIdVille() ?>">
+                                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['idVille'])) ? htmlspecialchars($_SESSION['form_data']['idVille']) : htmlspecialchars($association->getIdVille()) ?>">
                                 </div>
                             </div>
                         </div>
@@ -62,14 +63,14 @@
                                 <div>
                                     <label for="phone">Téléphone</label>
                                     <input type="tel" id="phone" name="phone"
-                                        value="<?= $association->getPhone() ?? '' ?>">
+                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['phone'])) ? htmlspecialchars($_SESSION['form_data']['phone']) : htmlspecialchars($association->getPhone() ?? '') ?>">
                                 </div>
                             </div>
                             <div class="max-width-50">
                                 <div>
                                     <label for="email">Email</label>
                                     <input type="email" id="email" name="email"
-                                        value="<?= $association->getEmail() ?? '' ?>">
+                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['email'])) ? htmlspecialchars($_SESSION['form_data']['email']) : htmlspecialchars($association->getEmail() ?? '') ?>">
                                 </div>
                             </div>
                         </div>
@@ -78,13 +79,13 @@
                             <label for="website">Site web</label>
                             <input type="url" id="website" name="website"
                                 placeholder="https://example.com"
-                                value="<?= $association->getWebsite() ?? '' ?>">
+                                value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['website'])) ? htmlspecialchars($_SESSION['form_data']['website']) : htmlspecialchars($association->getWebsite() ?? '') ?>">
                         </div>
 
                         <div>
                             <div class="flex-row align-items-center">
                                 <input type="checkbox" id="isActive" name="isActive"
-                                    <?= $association->getIsActive() ? 'checked' : '' ?>>
+                                    <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['isActive'])) ? $_SESSION['form_data']['isActive'] : $association->getIsActive()) ? 'checked' : '' ?>>
                                 <label for="isActive">
                                     Association active
                                 </label>

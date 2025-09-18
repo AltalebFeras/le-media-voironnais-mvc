@@ -270,6 +270,7 @@ class AssociationController extends AbstractController
             $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
             $isActive = isset($_POST['isActive']) ? 1 : 0;
+            $_SESSION['form_data'] = $_POST;
 
             $errors = [];
 
@@ -317,7 +318,7 @@ class AssociationController extends AbstractController
             $modelErrors = $association->validate();
             $errors = array_merge($errors, $modelErrors);
 
-            $this->returnAllErrors($errors, 'association/modifier?id=' . $idAssociation . '?error=true');
+            $this->returnAllErrors($errors, 'association/modifier?id=' . $idAssociation . '&error=true');
 
             $this->repo->updateAssociation($association);
 
@@ -325,7 +326,7 @@ class AssociationController extends AbstractController
             $this->redirect('mes_associations');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('association/modifier?id=' . ($idAssociation ?? ''));
+            $this->redirect('association/modifier?id=' . ($idAssociation ?? '') . '&error=true');
         }
     }
 

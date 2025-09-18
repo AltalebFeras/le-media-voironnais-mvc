@@ -1,21 +1,6 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-<?php
-var_dump($_SESSION['form_data']); // Debug line to inspect the $evenement variable
-function getFormValue($fieldName, $evenement, $default = '') {
-    if (isset($_GET['error']) && isset($_SESSION['form_data'][$fieldName])) {
-        return $_SESSION['form_data'][$fieldName];
-    }
-    return $evenement[$fieldName] ?? $default;
-}
 
-function getDateValue($fieldName, $evenement) {
-    if (isset($_GET['error']) && isset($_SESSION['form_data'][$fieldName])) {
-        return $_SESSION['form_data'][$fieldName];
-    }
-    return $evenement[$fieldName] ? date('Y-m-d\TH:i', strtotime($evenement[$fieldName])) : '';
-}
-?>
 <main>
     <div class="event-header">
         <div class="flex-row align-items-center">
@@ -33,7 +18,7 @@ function getDateValue($fieldName, $evenement) {
                 <div class="form-group">
                     <label for="title">Titre de l'événement *</label>
                     <input type="text" id="title" name="title" required
-                           value="<?= htmlspecialchars(getFormValue('title', $evenement)) ?>">
+                           value="<?= htmlspecialchars((isset($_GET['error']) && isset($_SESSION['form_data']['title'])) ? $_SESSION['form_data']['title'] : ($evenement['title'] ?? '')) ?>">
                 </div>
 
                 <div class="form-group">
@@ -41,7 +26,7 @@ function getDateValue($fieldName, $evenement) {
                     <select id="idEventCategory" name="idEventCategory" required>
                         <option value="">Sélectionnez une catégorie</option>
                         <?php foreach ($categories as $category): ?>
-                            <?php $selectedCategory = getFormValue('idEventCategory', $evenement); ?>
+                            <?php $selectedCategory = (isset($_GET['error']) && isset($_SESSION['form_data']['idEventCategory'])) ? $_SESSION['form_data']['idEventCategory'] : ($evenement['idEventCategory'] ?? ''); ?>
                             <option value="<?= $category['idEventCategory'] ?>"
                                     <?= $selectedCategory == $category['idEventCategory'] ? 'selected' : '' ?>>
                                 <?= $category['name'] ?>
@@ -53,25 +38,25 @@ function getDateValue($fieldName, $evenement) {
 
             <div class="form-group">
                 <label for="description">Description *</label>
-                <textarea id="description" name="description" rows="4" required><?= htmlspecialchars(getFormValue('description', $evenement)) ?></textarea>
+                <textarea id="description" name="description" rows="4" required><?= htmlspecialchars((isset($_GET['error']) && isset($_SESSION['form_data']['description'])) ? $_SESSION['form_data']['description'] : ($evenement['description'] ?? '')) ?></textarea>
             </div>
 
             <div class="form-group">
                 <label for="shortDescription">Description courte</label>
-                <textarea id="shortDescription" name="shortDescription" rows="2"><?= htmlspecialchars(getFormValue('shortDescription', $evenement)) ?></textarea>
+                <textarea id="shortDescription" name="shortDescription" rows="2"><?= htmlspecialchars((isset($_GET['error']) && isset($_SESSION['form_data']['shortDescription'])) ? $_SESSION['form_data']['shortDescription'] : ($evenement['shortDescription'] ?? '')) ?></textarea>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="startDate">Date et heure de début *</label>
                     <input type="datetime-local" id="startDate" name="startDate" required
-                           value="<?= getDateValue('startDate', $evenement) ?>">
+                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['startDate'])) ? $_SESSION['form_data']['startDate'] : ($evenement['startDate'] ? date('Y-m-d\TH:i', strtotime($evenement['startDate'])) : '') ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="endDate">Date et heure de fin</label>
                     <input type="datetime-local" id="endDate" name="endDate"
-                           value="<?= getDateValue('endDate', $evenement) ?>">
+                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['endDate'])) ? $_SESSION['form_data']['endDate'] : ($evenement['endDate'] ? date('Y-m-d\TH:i', strtotime($evenement['endDate'])) : '') ?>">
                 </div>
             </div>
 
@@ -79,27 +64,27 @@ function getDateValue($fieldName, $evenement) {
                 <div class="form-group">
                     <label for="registrationDeadline">Date limite d'inscription</label>
                     <input type="datetime-local" id="registrationDeadline" name="registrationDeadline"
-                           value="<?= getDateValue('registrationDeadline', $evenement) ?>">
+                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['registrationDeadline'])) ? $_SESSION['form_data']['registrationDeadline'] : ($evenement['registrationDeadline'] ? date('Y-m-d\TH:i', strtotime($evenement['registrationDeadline'])) : '') ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="maxParticipants">Nombre maximum de participants</label>
                     <input type="number" id="maxParticipants" name="maxParticipants" min="1"
-                           value="<?= htmlspecialchars(getFormValue('maxParticipants', $evenement)) ?>">
+                           value="<?= htmlspecialchars((isset($_GET['error']) && isset($_SESSION['form_data']['maxParticipants'])) ? $_SESSION['form_data']['maxParticipants'] : ($evenement['maxParticipants'] ?? '')) ?>">
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="address">Adresse *</label>
                 <input type="text" id="address" name="address" required
-                       value="<?= htmlspecialchars(getFormValue('address', $evenement)) ?>">
+                       value="<?= htmlspecialchars((isset($_GET['error']) && isset($_SESSION['form_data']['address'])) ? $_SESSION['form_data']['address'] : ($evenement['address'] ?? '')) ?>">
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="codePostal">Code postal *</label>
                     <input type="text" id="codePostal" name="codePostal" maxlength="5" required
-                           value="<?= htmlspecialchars(getFormValue('codePostal', $evenement, $ville ? $ville['ville_code_postal'] : '')) ?>">
+                           value="<?= htmlspecialchars((isset($_GET['error']) && isset($_SESSION['form_data']['codePostal'])) ? $_SESSION['form_data']['codePostal'] : ($ville ? $ville['ville_code_postal'] : '')) ?>">
                 </div>
 
                 <div class="form-group">
@@ -112,7 +97,7 @@ function getDateValue($fieldName, $evenement) {
                             </option>
                         <?php endif; ?>
                     </select>
-                    <input type="hidden" id="idVille" name="idVille" value="<?= htmlspecialchars(getFormValue('idVille', $evenement)) ?>">
+                    <input type="hidden" id="idVille" name="idVille" value="<?= htmlspecialchars((isset($_GET['error']) && isset($_SESSION['form_data']['idVille'])) ? $_SESSION['form_data']['idVille'] : ($evenement['idVille'] ?? '')) ?>">
                 </div>
             </div>
 
@@ -120,7 +105,7 @@ function getDateValue($fieldName, $evenement) {
                 <div class="form-group">
                     <label for="price">Prix (€)</label>
                     <input type="number" id="price" name="price" min="0" step="0.01"
-                           value="<?= htmlspecialchars(getFormValue('price', $evenement)) ?>">
+                           value="<?= htmlspecialchars((isset($_GET['error']) && isset($_SESSION['form_data']['price'])) ? $_SESSION['form_data']['price'] : ($evenement['price'] ?? '')) ?>">
                 </div>
 
                 <div class="form-group">
@@ -128,7 +113,7 @@ function getDateValue($fieldName, $evenement) {
                     <select id="idAssociation" name="idAssociation">
                         <option value="">Aucune association</option>
                         <?php foreach ($associations as $association): ?>
-                            <?php $selectedAssociation = getFormValue('idAssociation', $evenement); ?>
+                            <?php $selectedAssociation = (isset($_GET['error']) && isset($_SESSION['form_data']['idAssociation'])) ? $_SESSION['form_data']['idAssociation'] : ($evenement['idAssociation'] ?? ''); ?>
                             <option value="<?= $association['idAssociation'] ?>"
                                     <?= $selectedAssociation == $association['idAssociation'] ? 'selected' : '' ?>>
                                 <?= $association['name'] ?>
@@ -141,7 +126,7 @@ function getDateValue($fieldName, $evenement) {
             <div class="form-group">
                 <label>
                     <input type="checkbox" name="isPublic" value="1" 
-                           <?= getFormValue('isPublic', $evenement, false) ? 'checked' : '' ?>>
+                           <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['isPublic'])) ? $_SESSION['form_data']['isPublic'] : ($evenement['isPublic'] ?? false)) ? 'checked' : '' ?>>
                     Événement public
                 </label>
             </div>
@@ -149,7 +134,7 @@ function getDateValue($fieldName, $evenement) {
             <div class="form-group">
                 <label>
                     <input type="checkbox" name="requiresApproval" value="1"
-                           <?= getFormValue('requiresApproval', $evenement, false) ? 'checked' : '' ?>>
+                           <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['requiresApproval'])) ? $_SESSION['form_data']['requiresApproval'] : ($evenement['requiresApproval'] ?? false)) ? 'checked' : '' ?>>
                     Inscription avec approbation
                 </label>
             </div>
@@ -185,6 +170,19 @@ function getDateValue($fieldName, $evenement) {
 .current-image, .current-banner {
     margin-top: 0.5rem;
     padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+}
+</style>
+
+<?php include_once __DIR__ . '/../includes/footer.php'; ?>
     border: 1px solid #ddd;
     border-radius: 8px;
     display: inline-block;

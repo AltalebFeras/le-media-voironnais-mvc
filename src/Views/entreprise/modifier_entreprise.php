@@ -1,5 +1,6 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
+
 <main>
     <div class="flex-row justify-content-between">
         <h1>Modifier l'entreprise</h1>
@@ -17,25 +18,25 @@
                         <div>
                             <label for="name">Nom de l'entreprise *</label>
                             <input type="text" id="name" name="name"
-                                value="<?= $entreprise->getName() ?>" required>
+                                value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['name'])) ? htmlspecialchars($_SESSION['form_data']['name']) : htmlspecialchars($entreprise->getName()) ?>" required>
                         </div>
 
                         <div>
                             <label for="description">Description</label>
-                            <textarea id="description" name="description" rows="4"><?= $entreprise->getDescription() ?? '' ?></textarea>
+                            <textarea id="description" name="description" rows="4"><?= (isset($_GET['error']) && isset($_SESSION['form_data']['description'])) ? htmlspecialchars($_SESSION['form_data']['description']) : htmlspecialchars($entreprise->getDescription() ?? '') ?></textarea>
                         </div>
 
                         <div>
                             <label for="siret">Numéro SIRET</label>
                             <input type="text" id="siret" name="siret"
-                                value="<?= $entreprise->getSiret() ?? '' ?>">
+                                value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['siret'])) ? htmlspecialchars($_SESSION['form_data']['siret']) : htmlspecialchars($entreprise->getSiret() ?? '') ?>">
                             <small class="text-muted">Format : 14 chiffres sans espace</small>
                         </div>
 
                         <div>
                             <label for="address">Adresse</label>
                             <input type="text" id="address" name="address"
-                                value="<?= $entreprise->getAddress() ?? '' ?>">
+                                value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['address'])) ? htmlspecialchars($_SESSION['form_data']['address']) : htmlspecialchars($entreprise->getAddress() ?? '') ?>">
                         </div>
                         <!-- New postal code and city fields -->
                         <div class="flex-row">
@@ -43,7 +44,7 @@
                                 <div>
                                     <label for="codePostal">Code postal</label>
                                     <input type="text" id="codePostal" name="codePostal" maxlength="5"
-                                        value="<?= isset($_SESSION['form_data']['codePostal']) ? ($_SESSION['form_data']['codePostal']) : '' ?>">
+                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['codePostal'])) ? htmlspecialchars($_SESSION['form_data']['codePostal']) : '' ?>">
                                     <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
                                 </div>
                             </div>
@@ -54,7 +55,7 @@
                                         <option value="">Sélectionnez une ville</option>
                                     </select>
                                     <input type="hidden" id="idVille" name="idVille"
-                                        value="">
+                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['idVille'])) ? htmlspecialchars($_SESSION['form_data']['idVille']) : '' ?>">
                                 </div>
                             </div>
                         </div>
@@ -64,14 +65,14 @@
                                 <div>
                                     <label for="phone">Téléphone</label>
                                     <input type="tel" id="phone" name="phone"
-                                        value="<?= $entreprise->getPhone() ?? '' ?>">
+                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['phone'])) ? htmlspecialchars($_SESSION['form_data']['phone']) : htmlspecialchars($entreprise->getPhone() ?? '') ?>">
                                 </div>
                             </div>
                             <div class="max-width-50">
                                 <div>
                                     <label for="email">Email</label>
                                     <input type="email" id="email" name="email"
-                                        value="<?= $entreprise->getEmail() ?? '' ?>">
+                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['email'])) ? htmlspecialchars($_SESSION['form_data']['email']) : htmlspecialchars($entreprise->getEmail() ?? '') ?>">
                                 </div>
                             </div>
                         </div>
@@ -80,22 +81,23 @@
                             <label for="website">Site web</label>
                             <input type="url" id="website" name="website"
                                 placeholder="https://example.com"
-                                value="<?= $entreprise->getWebsite() ?? '' ?>">
+                                value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['website'])) ? htmlspecialchars($_SESSION['form_data']['website']) : htmlspecialchars($entreprise->getWebsite() ?? '') ?>">
                         </div>
 
                         <div>
                             <label for="status">Statut</label>
                             <select id="status" name="status">
-                                <option value="brouillon" <?= $entreprise->getStatus() === 'brouillon' ? 'selected' : '' ?>>Brouillon</option>
-                                <option value="actif" <?= $entreprise->getStatus() === 'actif' ? 'selected' : '' ?>>Actif</option>
-                                <option value="suspendu" <?= $entreprise->getStatus() === 'suspendu' ? 'selected' : '' ?>>Suspendu</option>
+                                <?php $selectedStatus = (isset($_GET['error']) && isset($_SESSION['form_data']['status'])) ? $_SESSION['form_data']['status'] : $entreprise->getStatus(); ?>
+                                <option value="brouillon" <?= $selectedStatus === 'brouillon' ? 'selected' : '' ?>>Brouillon</option>
+                                <option value="actif" <?= $selectedStatus === 'actif' ? 'selected' : '' ?>>Actif</option>
+                                <option value="suspendu" <?= $selectedStatus === 'suspendu' ? 'selected' : '' ?>>Suspendu</option>
                             </select>
                         </div>
 
                         <div>
                             <div class="flex-row align-items-center">
                                 <input type="checkbox" id="isActive" name="isActive"
-                                    <?= $entreprise->getIsActive() ? 'checked' : '' ?>>
+                                    <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['isActive'])) ? $_SESSION['form_data']['isActive'] : $entreprise->getIsActive()) ? 'checked' : '' ?>>
                                 <label for="isActive">
                                     Entreprise publiée
                                 </label>

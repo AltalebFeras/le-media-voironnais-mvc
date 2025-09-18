@@ -262,14 +262,16 @@ class EntrepriseController extends AbstractController
             // Use model validation
             $modelErrors = $entreprise->validate();
             $errors = array_merge($errors, $modelErrors);
-            $this->returnAllErrors($errors, 'entreprise/modifier?id=' . $idEntreprise);
+            $this->returnAllErrors($errors, 'entreprise/modifier?id=' . $idEntreprise.'&error=true');
 
             $this->repo->updateEntreprise($entreprise);
 
             $_SESSION['success'] = "L'entreprise a été mise à jour avec succès";
             $this->redirect('mes_entreprises');
         } catch (Exception $e) {
-            $this->redirect('entreprise/modifier?id=' . $idEntreprise);
+            $_SESSION['form_data'] = $_POST;
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('entreprise/modifier?id=' . $idEntreprise.'&error=true');
         }
     }
 
