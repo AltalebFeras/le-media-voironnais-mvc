@@ -1,6 +1,21 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-<?php var_dump($_SESSION['form_data']); // Debug line to inspect the $evenement variable ?>
+<?php
+var_dump($_SESSION['form_data']); // Debug line to inspect the $evenement variable
+function getFormValue($fieldName, $evenement, $default = '') {
+    if (isset($_GET['error']) && isset($_SESSION['form_data'][$fieldName])) {
+        return $_SESSION['form_data'][$fieldName];
+    }
+    return $evenement[$fieldName] ?? $default;
+}
+
+function getDateValue($fieldName, $evenement) {
+    if (isset($_GET['error']) && isset($_SESSION['form_data'][$fieldName])) {
+        return $_SESSION['form_data'][$fieldName];
+    }
+    return $evenement[$fieldName] ? date('Y-m-d\TH:i', strtotime($evenement[$fieldName])) : '';
+}
+?>
 <main>
     <div class="event-header">
         <div class="flex-row align-items-center">
@@ -18,7 +33,7 @@
                 <div class="form-group">
                     <label for="title">Titre de l'événement *</label>
                     <input type="text" id="title" name="title" required
-                           value="<?= $_GET['error'] ? $_SESSION['form_data']['title'] : $evenement['title'] ?>">
+                           value="<?= htmlspecialchars(getFormValue('title', $evenement)) ?>">
                 </div>
 
                 <div class="form-group">
@@ -26,8 +41,9 @@
                     <select id="idEventCategory" name="idEventCategory" required>
                         <option value="">Sélectionnez une catégorie</option>
                         <?php foreach ($categories as $category): ?>
-                            <option value="<?= $category['idEventCategory'] ?? $_SESSION['form_data']['idEventCategory'] ?? '' ?>"
-                                    <?= $evenement['idEventCategory'] == $category['idEventCategory'] ? 'selected' : '' ?>>
+                            <?php $selectedCategory = getFormValue('idEventCategory', $evenement); ?>
+                            <option value="<?= $category['idEventCategory'] ?>"
+                                    <?= $selectedCategory == $category['idEventCategory'] ? 'selected' : '' ?>>
                                 <?= $category['name'] ?>
                             </option>
                         <?php endforeach; ?>
@@ -37,25 +53,25 @@
 
             <div class="form-group">
                 <label for="description">Description *</label>
-                <textarea id="description" name="description" rows="4" required><?= $evenement['description'] ?? $_SESSION['form_data']['description'] ?? '' ?></textarea>
+                <textarea id="description" name="description" rows="4" required><?= htmlspecialchars(getFormValue('description', $evenement)) ?></textarea>
             </div>
 
             <div class="form-group">
                 <label for="shortDescription">Description courte</label>
-                <textarea id="shortDescription" name="shortDescription" rows="2"><?= $evenement['shortDescription'] ?? $_SESSION['form_data']['shortDescription'] ?? '' ?></textarea>
+                <textarea id="shortDescription" name="shortDescription" rows="2"><?= htmlspecialchars(getFormValue('shortDescription', $evenement)) ?></textarea>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="startDate">Date et heure de début *</label>
                     <input type="datetime-local" id="startDate" name="startDate" required
-                           value="<?= date('Y-m-d\TH:i', strtotime($evenement['startDate'])) ?? $_SESSION['form_data']['startDate'] ?? '' ?>">
+                           value="<?= getDateValue('startDate', $evenement) ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="endDate">Date et heure de fin</label>
                     <input type="datetime-local" id="endDate" name="endDate"
-                           value="<?= $evenement['endDate'] ? date('Y-m-d\TH:i', strtotime($evenement['endDate'])) : $_SESSION['form_data']['endDate'] ?? '' ?>">
+                           value="<?= getDateValue('endDate', $evenement) ?>">
                 </div>
             </div>
 
@@ -63,27 +79,27 @@
                 <div class="form-group">
                     <label for="registrationDeadline">Date limite d'inscription</label>
                     <input type="datetime-local" id="registrationDeadline" name="registrationDeadline"
-                           value="<?= $evenement['registrationDeadline'] ? date('Y-m-d\TH:i', strtotime($evenement['registrationDeadline'])) : $_SESSION['form_data']['registrationDeadline'] ?? '' ?>">
+                           value="<?= getDateValue('registrationDeadline', $evenement) ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="maxParticipants">Nombre maximum de participants</label>
                     <input type="number" id="maxParticipants" name="maxParticipants" min="1"
-                           value="<?= $evenement['maxParticipants'] ?? $_SESSION['form_data']['maxParticipants'] ?? '' ?>">
+                           value="<?= htmlspecialchars(getFormValue('maxParticipants', $evenement)) ?>">
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="address">Adresse *</label>
                 <input type="text" id="address" name="address" required
-                       value="<?= $evenement['address'] ?? $_SESSION['form_data']['address'] ?? '' ?>">
+                       value="<?= htmlspecialchars(getFormValue('address', $evenement)) ?>">
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="codePostal">Code postal *</label>
                     <input type="text" id="codePostal" name="codePostal" maxlength="5" required
-                           value="<?= $ville ? $ville['ville_code_postal'] : $_SESSION['form_data']['codePostal'] ?? '' ?>">
+                           value="<?= htmlspecialchars(getFormValue('codePostal', $evenement, $ville ? $ville['ville_code_postal'] : '')) ?>">
                 </div>
 
                 <div class="form-group">
@@ -91,12 +107,12 @@
                     <select id="ville" name="ville" required>
                         <option value="">Sélectionnez une ville</option>
                         <?php if ($ville): ?>
-                            <option value="<?= $ville['idVille'] ?? $_SESSION['form_data']['idVille'] ?? '' ?>" selected>
+                            <option value="<?= $ville['idVille'] ?>" selected>
                                 <?= $ville['ville_nom_reel'] ?>
                             </option>
                         <?php endif; ?>
                     </select>
-                    <input type="hidden" id="idVille" name="idVille" value="<?= $evenement['idVille'] ?? $_SESSION['form_data']['idVille'] ?? '' ?>">
+                    <input type="hidden" id="idVille" name="idVille" value="<?= htmlspecialchars(getFormValue('idVille', $evenement)) ?>">
                 </div>
             </div>
 
@@ -104,7 +120,7 @@
                 <div class="form-group">
                     <label for="price">Prix (€)</label>
                     <input type="number" id="price" name="price" min="0" step="0.01"
-                           value="<?= $evenement['price'] ?? $_SESSION['form_data']['price'] ?? '' ?>">
+                           value="<?= htmlspecialchars(getFormValue('price', $evenement)) ?>">
                 </div>
 
                 <div class="form-group">
@@ -112,8 +128,9 @@
                     <select id="idAssociation" name="idAssociation">
                         <option value="">Aucune association</option>
                         <?php foreach ($associations as $association): ?>
-                            <option value="<?= $association['idAssociation'] ?? $_SESSION['form_data']['idAssociation'] ?? '' ?>"
-                                    <?= $evenement['idAssociation'] == $association['idAssociation'] ? 'selected' : '' ?>>
+                            <?php $selectedAssociation = getFormValue('idAssociation', $evenement); ?>
+                            <option value="<?= $association['idAssociation'] ?>"
+                                    <?= $selectedAssociation == $association['idAssociation'] ? 'selected' : '' ?>>
                                 <?= $association['name'] ?>
                             </option>
                         <?php endforeach; ?>
@@ -124,7 +141,7 @@
             <div class="form-group">
                 <label>
                     <input type="checkbox" name="isPublic" value="1" 
-                           <?= $evenement['isPublic'] ?? $_SESSION['form_data']['isPublic'] ?? false ? 'checked' : '' ?>>
+                           <?= getFormValue('isPublic', $evenement, false) ? 'checked' : '' ?>>
                     Événement public
                 </label>
             </div>
@@ -132,7 +149,7 @@
             <div class="form-group">
                 <label>
                     <input type="checkbox" name="requiresApproval" value="1"
-                           <?= $evenement['requiresApproval'] ?? $_SESSION['form_data']['requiresApproval'] ?? false ? 'checked' : '' ?>>
+                           <?= getFormValue('requiresApproval', $evenement, false) ? 'checked' : '' ?>>
                     Inscription avec approbation
                 </label>
             </div>

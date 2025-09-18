@@ -52,7 +52,7 @@ class EvenementController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $idEvenement = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
             $evenement = $this->repo->getEventCompleteById($idEvenement);
-            
+
 
             if (!$evenement || !$idEvenement) {
                 throw new Exception("L'événement demandé n'existe pas");
@@ -179,7 +179,7 @@ class EvenementController extends AbstractController
                 ->setIdEventCategory($idEventCategory)
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'))
                 ->setBannerPath($bannerPath);
-                
+
             // Use model validation
             $modelErrors = $evenement->validate();
             $errors = array_merge($errors, $modelErrors);
@@ -295,6 +295,7 @@ class EvenementController extends AbstractController
 
             $errors = [];
 
+            // Store form data in session for error cases
             $_SESSION['form_data'] = $_POST;
 
             // Validate association ownership
@@ -347,7 +348,7 @@ class EvenementController extends AbstractController
             // Use model validation
             $modelErrors = $evenementModel->validate();
             $errors = array_merge($errors, $modelErrors);
-            
+
             // Handle slug generation
             if ($title !== $originalTitle) {
                 // Regenerate slug if title changed
@@ -376,6 +377,8 @@ class EvenementController extends AbstractController
             $_SESSION['success'] = "L'événement a été mis à jour avec succès";
             $this->redirect('mes_evenements');
         } catch (Exception $e) {
+            // Preserve form data on exception
+            $_SESSION['form_data'] = $_POST;
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('evenement/modifier?id=' . ($idEvenement ?? '') . '&error=true&form_data=true');
         }
