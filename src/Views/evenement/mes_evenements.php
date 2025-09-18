@@ -22,9 +22,7 @@
         <div class="dashboard-grid">
             <?php foreach ($evenements as $evenement): ?>
                 <div class="card">
-                    <?php if ($evenement['imagePath']): ?>
-                        <img src="<?= $evenement['imagePath'] ?>" alt="<?= $evenement['title'] ?>">
-                    <?php elseif ($evenement['bannerPath']): ?>
+                    <?php if ($evenement['bannerPath']): ?>
                         <img src="<?= $evenement['bannerPath'] ?>" alt="<?= $evenement['title'] ?>">
                     <?php endif; ?>
 

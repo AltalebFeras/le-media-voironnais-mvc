@@ -79,7 +79,6 @@ class EvenementRepository
                 ->setMaxParticipants($data['maxParticipants'])
                 ->setCurrentParticipants($data['currentParticipants'])
                 ->setAddress($data['address'])
-                ->setImagePath($data['imagePath'])
                 ->setBannerPath($data['bannerPath'])
                 ->setStatus($data['status'])
                 ->setIsPublic($data['isPublic'])
@@ -114,9 +113,9 @@ class EvenementRepository
     public function createEvent(Evenement $event): bool
     {
         $sql = "INSERT INTO evenement (title, slug, description, shortDescription, startDate, endDate, 
-                registrationDeadline, maxParticipants, currentParticipants, address, imagePath, bannerPath, status, isPublic, isDeleted, price, currency, createdAt, idUser, idAssociation, idVille, idEventCategory) 
+                registrationDeadline, maxParticipants, currentParticipants, address, bannerPath, status, isPublic, isDeleted, price, currency, createdAt, idUser, idAssociation, idVille, idEventCategory) 
                 VALUES (:title, :slug, :description, :shortDescription, :startDate, :endDate, 
-                :registrationDeadline, :maxParticipants, :currentParticipants, :address, :imagePath, :bannerPath, :status, :isPublic, :isDeleted, :price, :currency, :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory)";
+                :registrationDeadline, :maxParticipants, :currentParticipants, :address, :bannerPath, :status, :isPublic, :isDeleted, :price, :currency, :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory)";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -131,7 +130,6 @@ class EvenementRepository
             ':maxParticipants' => $event->getMaxParticipants(),
             ':currentParticipants' => $event->getCurrentParticipants() ?? 0,
             ':address' => $event->getAddress(),
-            ':imagePath' => $event->getImagePath(),
             ':bannerPath' => $event->getBannerPath(),
             ':status' => $event->getStatus(),
             ':isPublic' => $event->getIsPublic() ? 1 : 0,
@@ -225,6 +223,18 @@ class EvenementRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getUserEntreprise($idUser): array
+    {
+        $sql = "SELECT e.idEntreprise, e.name FROM entreprise e 
+                WHERE e.idUser = :idUser  AND e.isDeleted = 0
+                ORDER BY e.name ASC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     /**
      * Get villes by postal code
      */
@@ -274,19 +284,6 @@ class EvenementRepository
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
-    /**
-     * Update event image
-     */
-    public function updateImage(int $idEvenement, string $imagePath): bool
-    {
-        $sql = "UPDATE evenement SET imagePath = :imagePath WHERE idEvenement = :idEvenement";
-        $stmt = $this->pdo->prepare($sql);
-
-        return $stmt->execute([
-            ':imagePath' => $imagePath,
-            ':idEvenement' => $idEvenement
-        ]);
-    }
 
     /**
      * Update event banner

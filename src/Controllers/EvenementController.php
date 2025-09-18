@@ -81,12 +81,15 @@ class EvenementController extends AbstractController
      */
     public function showAddEventForm()
     {
+        $idUser = $_SESSION['idUser'];
         $categories = $this->repo->getEventCategories();
-        $associations = $this->repo->getUserAssociations($_SESSION['idUser']);
+        $associations = $this->repo->getUserAssociations($idUser);
+        $entreprises = $this->repo->getUserEntreprise($idUser);
 
         $this->render('evenement/ajouter_evenement', [
             'categories' => $categories,
-            'associations' => $associations
+            'associations' => $associations,
+            'entreprises' => $entreprises
         ]);
     }
 
@@ -97,7 +100,6 @@ class EvenementController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-
             // Validate form data
             $title = isset($_POST['title']) ? htmlspecialchars(trim($_POST['title'])) : null;
             $description = isset($_POST['description']) ? htmlspecialchars(trim($_POST['description'])) : null;
@@ -112,16 +114,28 @@ class EvenementController extends AbstractController
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
             $idEventCategory = isset($_POST['idEventCategory']) ? (int)$_POST['idEventCategory'] : null;
             $idAssociation = isset($_POST['idAssociation']) && !empty($_POST['idAssociation']) ? (int)$_POST['idAssociation'] : null;
+            $idEntreprise = isset($_POST['idEntreprise']) && !empty($_POST['idEntreprise']) ? (int)$_POST['idEntreprise'] : null;
             $isPublic = isset($_POST['isPublic']) ? 1 : 0;
 
             $errors = [];
             $_SESSION['form_data'] = $_POST;
             // Validate association ownership
             $userAssociations = $this->repo->getUserAssociations($idUser);
-            $associationIds = array_map(fn($assoc) => $assoc->getIdAssociation(), $userAssociations);
+            $associationIds = array_map(function ($assoc) {
+                return is_object($assoc) ? $assoc->getIdAssociation() : $assoc['idAssociation'];
+            }, $userAssociations);
             if ($idAssociation && !in_array($idAssociation, $associationIds)) {
                 $errors['idAssociation'] = "L'association sélectionnée est invalide";
             }
+            // validation entreprise ownership
+            $userEntreprises = $this->repo->getUserEntreprise($idUser);
+            $entrepriseIds = array_map(function ($ent) {
+                return is_object($ent) ? $ent->getIdEntreprise() : $ent['idEntreprise'];
+            }, $userEntreprises);
+            if ($idEntreprise && !in_array($idEntreprise, $entrepriseIds)) {
+                $errors['idEntreprise'] = "L'entreprise sélectionnée est invalide";
+            }
+            // Ville and category existence
             $existingVille = $this->repo->isVilleExists($idVille);
             if (!$existingVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
@@ -163,19 +177,9 @@ class EvenementController extends AbstractController
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'))
                 ->setImagePath(null)
                 ->setBannerPath(null);
-
-
-            // Handle image upload if present
-            if (!empty($_FILES['image']['name'])) {
-                $imagePath = $this->handleImageUpload('image', 'events');
-                $evenement->setImagePath($imagePath);
-            }
-
-            // Handle banner upload if present
-            if (!empty($_FILES['banner']['name'])) {
-                $bannerPath = $this->handleImageUpload('banner', 'banners');
-                $evenement->setBannerPath($bannerPath);
-            }
+            // Set default image and banner paths
+            $bannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
+            $evenement->setBannerPath($bannerPath);
 
             // Use model validation
             $modelErrors = $evenement->validate();
@@ -295,7 +299,9 @@ class EvenementController extends AbstractController
 
             // Validate association ownership
             $userAssociations = $this->repo->getUserAssociations($idUser);
-            $associationIds = array_map(fn($assoc) => $assoc->getIdAssociation(), $userAssociations);
+            $associationIds = array_map(function ($assoc) {
+                return is_object($assoc) ? $assoc->getIdAssociation() : $assoc['idAssociation'];
+            }, $userAssociations);
             if ($idAssociation && !in_array($idAssociation, $associationIds)) {
                 $errors['idAssociation'] = "L'association sélectionnée est invalide";
             }
@@ -333,19 +339,6 @@ class EvenementController extends AbstractController
                 ->setIdEventCategory($idEventCategory)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
 
-            // Handle image upload if present
-            if (!empty($_FILES['image']['name'])) {
-                $imagePath = $this->handleImageUpload('image', 'events');
-                $evenement->setImagePath($imagePath);
-                $this->repo->updateImage($idEvenement, $imagePath);
-            }
-
-            // Handle banner upload if present
-            if (!empty($_FILES['banner']['name'])) {
-                $bannerPath = $this->handleImageUpload('banner', 'banners');
-                $evenement->setBannerPath($bannerPath);
-                $this->repo->updateBanner($idEvenement, $bannerPath);
-            }
             $helper = new Helper();
             // Use model validation
             $modelErrors = $evenement->validate();

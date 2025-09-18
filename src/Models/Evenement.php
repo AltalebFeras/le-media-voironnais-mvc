@@ -17,7 +17,6 @@ class Evenement
     private int $maxParticipants;
     private ?int $currentParticipants = null;
     private ?string $address = null;
-    private ?string $imagePath = null;
     private ?string $bannerPath = null;
     private ?string $status = null;
     private ?bool $isPublic = null;
@@ -77,10 +76,7 @@ class Evenement
     {
         return $this->address;
     }
-    public function getImagePath(): ?string
-    {
-        return $this->imagePath;
-    }
+
     public function getBannerPath(): ?string
     {
         return $this->bannerPath;
@@ -197,12 +193,6 @@ class Evenement
     public function setAddress(?string $address): self
     {
         $this->address = $address;
-        return $this;
-    }
-
-    public function setImagePath(?string $imagePath): self
-    {
-        $this->imagePath = $imagePath;
         return $this;
     }
 

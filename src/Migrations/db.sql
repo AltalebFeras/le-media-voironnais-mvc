@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 18, 2025 at 12:22 PM
+-- Generation Time: Sep 18, 2025 at 01:08 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -52,7 +52,14 @@ CREATE TABLE IF NOT EXISTS `association` (
   KEY `idx_association_user` (`idUser`),
   KEY `idx_association_active` (`isActive`),
   KEY `idx_association_ville` (`idVille`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `association`
+--
+
+INSERT INTO `association` (`idAssociation`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `isActive`, `isPublic`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
+(14, 'Eman AL BARGHASH', 'eman-al-barghash', '', NULL, NULL, '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 0, 3, 38100, '2025-09-18 14:41:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -158,7 +165,14 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   KEY `idx_entreprise_active` (`isActive`),
   KEY `idx_entreprise_status` (`status`),
   KEY `idx_entreprise_ville` (`idVille`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `entreprise`
+--
+
+INSERT INTO `entreprise` (`idEntreprise`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `status`, `isActive`, `isPublic`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
+(18, 'Feras ALTALEB', 'feras-altaleb', '', NULL, NULL, '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', '', 'brouillon', 0, 0, 0, 3, 38100, '2025-09-18 14:41:33', NULL);
 
 -- --------------------------------------------------------
 
@@ -179,7 +193,6 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   `maxParticipants` int NOT NULL,
   `currentParticipants` int NOT NULL DEFAULT '0',
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `imagePath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `bannerPath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `status` enum('brouillon','actif','annule','termine') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'brouillon',
   `isPublic` tinyint(1) NOT NULL DEFAULT '1',
@@ -205,7 +218,14 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   KEY `idx_evenement_association` (`idAssociation`),
   KEY `idx_evenement_entreprise` (`idEntreprise`),
   KEY `idx_evenement_category` (`idEventCategory`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `evenement`
+--
+
+INSERT INTO `evenement` (`idEvenement`, `title`, `slug`, `description`, `shortDescription`, `startDate`, `endDate`, `registrationDeadline`, `maxParticipants`, `currentParticipants`, `address`, `bannerPath`, `status`, `isPublic`, `isDeleted`, `requiresApproval`, `price`, `currency`, `createdAt`, `updatedAt`, `idUser`, `idAssociation`, `idEntreprise`, `idVille`, `idEventCategory`) VALUES
+(20, 'fffffffff', 'fffffffff', 'fffffffffffffffffffffffffff', 'ffffffffffffffffffff', '2025-09-23 14:46:00', '2025-10-01 14:46:00', '2025-09-19 14:46:00', 55, 0, '42 Rue Henri Duhamel', NULL, 'brouillon', 1, 0, 0, 0.00, 'EUR', '2025-09-18 14:53:18', NULL, 3, 14, NULL, 38100, 8);
 
 -- --------------------------------------------------------
 
@@ -480,7 +500,14 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   PRIMARY KEY (`idUserAssociation`),
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user_association`
+--
+
+INSERT INTO `user_association` (`idUserAssociation`, `idUser`, `idAssociation`, `role`, `joinedAt`, `isActive`) VALUES
+(17, 3, 14, 'admin', '2025-09-18 14:41:45', 1);
 
 -- --------------------------------------------------------
 

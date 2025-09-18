@@ -91,14 +91,14 @@
                     <input type="hidden" id="idVille" name="idVille"
                         value="<?= isset($_SESSION['form_data']['idVille']) ? $_SESSION['form_data']['idVille'] : '' ?>">
                 </div>
-            </div>
-
-            <div class="form-row">
                 <div class="form-group">
                     <label for="price">Prix (€)</label>
                     <input type="number" id="price" name="price" min="0" step="0.01"
                         value="<?= isset($_SESSION['form_data']['price']) ? $_SESSION['form_data']['price'] : '' ?>">
                 </div>
+            </div>
+
+            <div class="form-row">
 
                 <div class="form-group">
                     <label for="idAssociation">Association organisatrice</label>
@@ -112,6 +112,19 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="idEntreprise">Entreprise organisatrice</label>
+                    <select id="idEntreprise" name="idEntreprise">
+                        <option value="">Aucune entreprise</option>
+                        <?php foreach ($entreprises as $entreprise): ?>
+                            <option value="<?= $entreprise['idEntreprise'] ?>"
+                                <?= isset($_SESSION['form_data']['idEntreprise']) && $_SESSION['form_data']['idEntreprise'] == $entreprise['idEntreprise'] ? 'selected' : '' ?>>
+                                <?= $entreprise['name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
             </div>
 
             <div class="form-row">
