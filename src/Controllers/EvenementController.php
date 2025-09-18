@@ -320,7 +320,7 @@ class EvenementController extends AbstractController
             } elseif ($this->repo->isTitleExistsForUser($title, $idUser, $idEvenement)) {
                 $errors['title'] = "Vous avez déjà un événement avec ce titre";
             }
-            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true&form_data=true');
+            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true');
 
             // Update event data
             $evenementModel = new Evenement();
@@ -370,7 +370,7 @@ class EvenementController extends AbstractController
                 $evenementModel->setSlug($originalSlug);
             }
 
-            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true&form_data=true');
+            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true');
 
             $this->repo->updateEvent($evenementModel);
 
@@ -380,7 +380,7 @@ class EvenementController extends AbstractController
             // Preserve form data on exception
             $_SESSION['form_data'] = $_POST;
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('evenement/modifier?id=' . ($idEvenement ?? '') . '&error=true&form_data=true');
+            $this->redirect('evenement/modifier?id=' . ($idEvenement ?? '') . '&error=true');
         }
     }
 
