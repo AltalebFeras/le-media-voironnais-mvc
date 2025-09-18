@@ -291,7 +291,11 @@ class EntrepriseController extends AbstractController
             if ($entreprise->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de supprimer cette entreprise");
             }
-
+            // Check if the company has associated events
+            $hasEvents = $this->repo->isEntrepriseHasEvents($idEntreprise);
+            if ($hasEvents) {
+                throw new Exception("L'entreprise ne peut pas être supprimée car elle contient des événements");
+            }
             $this->repo->deleteEntreprise($idEntreprise);
 
             $_SESSION['success'] = "L'entreprise a été supprimée avec succès";

@@ -24,7 +24,7 @@ class EntrepriseRepository
     {
         try {
             $offset = max(0, ($currentPage - 1) * $entreprisesPerPage);
-            $query = "SELECT * FROM entreprise WHERE idUser = :idUser ORDER BY name ASC LIMIT :offset, :entreprisesPerPage";
+            $query = "SELECT * FROM entreprise WHERE idUser = :idUser AND isDeleted = 0 ORDER BY name ASC LIMIT :offset, :entreprisesPerPage";
             $stmt = $this->DB->prepare($query);
             $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -214,7 +214,7 @@ class EntrepriseRepository
     public function deleteEntreprise($idEntreprise): bool
     {
         try {
-            $query = "DELETE FROM entreprise WHERE idEntreprise = :idEntreprise";
+            $query = "UPDATE entreprise SET isDeleted = 1 WHERE idEntreprise = :idEntreprise";
             $stmt = $this->DB->prepare($query);
             $result = $stmt->execute(['idEntreprise' => $idEntreprise]);
 
@@ -426,6 +426,18 @@ class EntrepriseRepository
         $stmt->bindParam(':id', $entreprise->getIdEntreprise(), PDO::PARAM_INT);
 
         return $stmt->execute();
+    }
+
+    public function isEntrepriseHasEvents($idEntreprise): bool
+    {
+        try {
+            $query = "SELECT COUNT(*) FROM evenement WHERE idEntreprise = :idEntreprise AND isDeleted = 0 AND startDate >= DATE_SUB(CURRENT_DATE, INTERVAL 3 MONTH)";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idEntreprise' => $idEntreprise]);
+            return (int)$stmt->fetchColumn() > 0;
+        } catch (Exception $e) {
+            throw new Exception("Error checking if entreprise has events: " . $e->getMessage());
+        }
     }
 
     public function delete($id)
