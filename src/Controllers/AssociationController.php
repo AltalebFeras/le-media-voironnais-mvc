@@ -54,11 +54,14 @@ class AssociationController extends AbstractController
             $errors = [];
             $association = $this->repo->getAssociationById($idAssociation);
 
-            if (!$association) {
+            if (!$association || !$idAssociation || $association->getIsDeleted() == true) {
                 $errors['association'] = "L'association demandée n'existe pas";
             }
 
             $isOwner = $association ? $association->getIdUser() == $idUser : false;
+            if (!$isOwner) {
+                $errors['association'] = "L'association demandée n'existe pas";
+            }
             $members = [];
             $ville = null;
 
@@ -136,18 +139,19 @@ class AssociationController extends AbstractController
 
 
             $existingAssociation = $this->repo->getAssociationByNameForThisUser($name, $idUser);
-            if ($existingAssociation) {
+
+            if ($existingAssociation && $existingAssociation->getIsDeleted() == false) {
                 $errors['name'] = "Vous avez déjà une association avec ce nom";
             }
             $existingVille = $this->repo->isVilleExists($idVille);
             if (!$existingVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
-            
+
             $helper = new Helper();
             // default paths for logo and banner
-            $logoPath = DOMAIN. HOME_URL . 'assets/images/uploads/logos/default_logo.png';
-            $bannerPath = DOMAIN. HOME_URL . 'assets/images/uploads/banners/default_banner.png';
+            $logoPath = DOMAIN . HOME_URL . 'assets/images/uploads/logos/default_logo.png';
+            $bannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
             // Create new association
             $association = new Association();
 
@@ -211,11 +215,12 @@ class AssociationController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $association = $this->repo->getAssociationById($idAssociation);
 
-            if (!$association || !$idAssociation) {
+            if (!$association || !$idAssociation || $association->getIsDeleted() == true) {
                 throw new Exception("L'association demandée n'existe pas");
             }
 
-            if ($association->getIdUser() != $idUser) {
+            $isOwner = $association ? $association->getIdUser() == $idUser : false;
+            if (!$isOwner) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette association");
             }
 
@@ -270,7 +275,7 @@ class AssociationController extends AbstractController
 
             // Check if name exists for other associations of this user
             $existingAssociation = $this->repo->getAssociationByNameForThisUser($name, $idUser);
-            if ($existingAssociation && $existingAssociation->getIdAssociation() != $idAssociation) {
+            if ($existingAssociation && $existingAssociation->getIdAssociation() != $idAssociation  && $existingAssociation->getIsDeleted() == false) {
                 $errors['name'] = "Vous avez déjà une association avec ce nom";
             }
 
@@ -327,17 +332,23 @@ class AssociationController extends AbstractController
     /**
      * Delete an association
      */
-    public function deleteAssociation()
+    public function deleteAssociation(): void
     {
         try {
             $idAssociation = isset($_GET['id']) ? htmlspecialchars($_GET['id']) : null;
             if (!$idAssociation) {
                 throw new Exception("ID d'association invalide");
             }
+
             $idUser = $_SESSION['idUser'];
 
             if (!$this->repo->isAssociationOwner($idAssociation, $idUser)) {
                 throw new Exception("Vous n'avez pas l'autorisation de supprimer cette association");
+            }
+            // verify before delete if association contains events
+            $hasEvents = $this->repo->isAssociationHasEvents($idAssociation);
+            if ($hasEvents) {
+                throw new Exception("L'association ne peut pas être supprimée car elle contient des événements");
             }
 
             $this->repo->deleteAssociation($idAssociation, $idUser);
@@ -348,5 +359,4 @@ class AssociationController extends AbstractController
             $this->redirect('mes_associations');
         }
     }
- 
 }

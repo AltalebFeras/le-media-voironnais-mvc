@@ -117,15 +117,17 @@ class AssociationRepository
 
             // Create association
             $query = "INSERT INTO association 
-                         (name, slug, description, address, phone, email, website, isActive, idUser, idVille, createdAt) 
+                         (name, slug, description, logoPath, bannerPath, address, phone, email, website, isActive, idUser, idVille, createdAt) 
                      VALUES 
-                     (:name, :slug, :description, :address, :phone, :email, :website, :isActive, :idUser, :idVille, :createdAt)";
+                     (:name, :slug, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :isActive, :idUser, :idVille, :createdAt)";
 
             $stmt = $this->DB->prepare($query);
             $stmt->execute([
                 'name' => $association->getName(),
                 'slug' => $association->getSlug(),
                 'description' => $association->getDescription(),
+                'logoPath' => $association->getLogoPath(),
+                'bannerPath' => $association->getBannerPath(),
                 'address' => $association->getAddress(),
                 'phone' => $association->getPhone(),
                 'email' => $association->getEmail(),
@@ -182,6 +184,18 @@ class AssociationRepository
             return (int)$stmt->fetchColumn() > 0;
         } catch (Exception $e) {
             throw new Exception("Error checking if ville exists: " . $e->getMessage());
+        }
+    }
+
+    public function isAssociationHasEvents($idAssociation): bool
+    {
+        try {
+            $query = "SELECT COUNT(*) FROM evenement WHERE idAssociation = :idAssociation AND isDeleted = 0 AND startDate >= DATE_SUB(CURRENT_DATE, INTERVAL 3 MONTH)";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idAssociation' => $idAssociation]);
+            return (int)$stmt->fetchColumn() > 0;
+        } catch (Exception $e) {
+            throw new Exception("Error checking if association has events: " . $e->getMessage());
         }
     }
     /**
