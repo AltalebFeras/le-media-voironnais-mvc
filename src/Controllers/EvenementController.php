@@ -236,7 +236,7 @@ class EvenementController extends AbstractController
 
             $categories = $this->repo->getEventCategories();
             $associations = $this->repo->getUserAssociations($idUser);
-            $ville = $this->repo->getVilleById($evenement->getIdVille());
+            $ville = $this->repo->getVilleById($evenement['idVille']);
 
             $this->render('evenement/modifier_evenement', [
                 'evenement' => $evenement,
@@ -321,6 +321,7 @@ class EvenementController extends AbstractController
             $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true');
 
             // Update event data
+            $evenement = new Evenement();
             $evenement->setTitle($title)
                 ->setDescription($description)
                 ->setShortDescription($shortDescription)
