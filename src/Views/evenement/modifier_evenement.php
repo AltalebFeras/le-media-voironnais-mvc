@@ -5,7 +5,7 @@
     <div class="event-header">
         <div class="flex-row align-items-center">
             <h1>Modifier l'événement</h1>
-            <a href="<?= HOME_URL ?>mes_evenements?action=voir&id=<?= $evenement['idEvenement'] ?>">
+            <a href="<?= HOME_URL ?>mes_evenements?action=voir&uiid=<?= $evenement['idEvenement'] ?>">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
             </a>
         </div>
@@ -13,7 +13,7 @@
 
     <?php include_once __DIR__ . '/../includes/messages.php'; ?>
     <div class="card max-width-75">
-        <form action="<?= HOME_URL ?>evenement/modifier?id=<?= $evenement['idEvenement'] ?>" method="POST" enctype="multipart/form-data">
+        <form action="<?= HOME_URL ?>evenement/modifier?uiid=<?= $evenement['idEvenement'] ?>" method="POST" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group">
                     <label for="title">Titre de l'événement *</label>
@@ -141,7 +141,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn">Mettre à jour l'événement</button>
-                <a href="<?= HOME_URL . 'mes_evenements?action=voir&id=' . $evenement['idEvenement'] ?>" class="btn btn-secondary">Annuler</a>
+                <a href="<?= HOME_URL . 'mes_evenements?action=voir&uiid=' . $evenement['idEvenement'] ?>" class="btn btn-secondary">Annuler</a>
             </div>
         </form>
     </div>

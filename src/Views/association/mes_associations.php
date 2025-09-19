@@ -74,7 +74,7 @@
                                 </div>
                             <?php else: ?>
                                 <div class="flex-row justify-content-between mt">
-                                    <a href="<?= HOME_URL . 'mes_associations?action=voir&id=' . $association->getIdAssociation() ?>" class="btn linkNotDecorated">
+                                    <a href="<?= HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getIdAssociation() ?>" class="btn linkNotDecorated">
                                         Voir
                                     </a>
                                     <p class="text-muted">Vous êtes membre de cette association</p>

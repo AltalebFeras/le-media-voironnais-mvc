@@ -172,9 +172,9 @@ class AssociationController extends AbstractController
             $modelErrors = $association->validate();
             $errors = array_merge($errors, $modelErrors);
 
-            $slug = $helper->generateSlug($name);
+            $slug = $helper->generateSlug($existingVille, $name);
             $existSlug = $this->repo->isSlugExists($slug);
-
+            var_dump($slug); die;
             if ($existSlug) {
                 $suffix = 1;
                 $finalSlug = "{$slug}-{$suffix}";
@@ -298,7 +298,7 @@ class AssociationController extends AbstractController
             // Regenerate slug if name changed
             if ($name !== $association->getName()) {
                 $helper = new Helper();
-                $slug = $helper->generateSlug($name);
+                $slug = $helper->generateSlug($name, $existingVille);
 
                 $existSlug = $this->repo->isSlugExists($slug);
 

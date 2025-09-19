@@ -116,11 +116,11 @@ switch ($route) {
     // Association routes
     case HOME_URL . 'mes_associations':
         if ($connectionSecured) {
-            if ($method === 'GET' && !isset($_GET['action']) && !isset($_GET['id'])) {
+            if ($method === 'GET' && !isset($_GET['action']) && !isset($_GET['uiid'])) {
                 $associationController->mesAssociations();
-            } else if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['id'])) {
+            } else if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['uiid'])) {
                 $associationController->displayAssociationDetails();
-            } else if ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+            } else if ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['uiid'])) {
                 $associationController->deleteAssociation();
             } elseif ($method === 'GET') {
                 $homeController->page404();
@@ -144,7 +144,7 @@ switch ($route) {
         if ($connectionSecured) {
             if ($method === 'POST') {
                 $associationController->updateAssociation();
-            } elseif ($method === 'GET' && isset($_GET['id'])) {
+            } elseif ($method === 'GET' && isset($_GET['uiid'])) {
                 $associationController->showEditForm();
             } else {
                 $homeController->page404();
@@ -158,11 +158,11 @@ switch ($route) {
     // Entreprise routes
     case HOME_URL . 'mes_entreprises':
         if ($connectionSecured) {
-            if ($method === 'GET' && !isset($_GET['id'])) {
+            if ($method === 'GET' && !isset($_GET['uiid'])) {
                 $entrepriseController->mesEntreprises();
-            } elseif ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['id'])) {
+            } elseif ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['uiid'])) {
                 $entrepriseController->displayEntrepriseDetails();
-            } elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+            } elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['uiid'])) {
                 $entrepriseController->deleteEntreprise();
             } else {
                 $homeController->page404();
@@ -186,7 +186,7 @@ switch ($route) {
         if ($connectionSecured) {
             if ($method === 'POST') {
                 $entrepriseController->updateEntreprise();
-            } elseif ($method === 'GET' && isset($_GET['id'])) {
+            } elseif ($method === 'GET' && isset($_GET['uiid'])) {
                 $entrepriseController->showEditForm();
             } else {
                 $homeController->page404();
@@ -200,11 +200,11 @@ switch ($route) {
     // Evenement routes
     case HOME_URL . 'mes_evenements':
         if ($connectionSecured) {
-            if ($method === 'GET' && !isset($_GET['id'])) {
+            if ($method === 'GET' && !isset($_GET['uiid'])) {
                 $evenementController->mesEvenements();
-            } elseif ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['id'])) {
+            } elseif ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['uiid'])) {
                 $evenementController->displayEventDetails();
-            } elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+            } elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['uiid'])) {
                 $evenementController->deleteEvent();
             } else {
                 $homeController->page404();
@@ -228,7 +228,7 @@ switch ($route) {
         if ($connectionSecured) {
             if ($method === 'POST') {
                 $evenementController->updateEvent();
-            } elseif ($method === 'GET' && isset($_GET['id'])) {
+            } elseif ($method === 'GET' && isset($_GET['uiid'])) {
                 $evenementController->showEditEventForm();
             } else {
                 $homeController->page404();

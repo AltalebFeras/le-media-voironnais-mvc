@@ -175,13 +175,13 @@ class AssociationRepository
             throw new Exception("Error fetching association by name for user: " . $e->getMessage());
         }
     }
-    public function isVilleExists($idVille)
+    public function isVilleExists($idVille): mixed
     {
         try {
-            $query = "SELECT COUNT(*) FROM ville WHERE idVille = :idVille";
+            $query = "SELECT ville_slug FROM ville WHERE idVille = :idVille";
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['idVille' => $idVille]);
-            return (int)$stmt->fetchColumn() > 0;
+            return $stmt->fetchColumn();
         } catch (Exception $e) {
             throw new Exception("Error checking if ville exists: " . $e->getMessage());
         }

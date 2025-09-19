@@ -47,7 +47,7 @@
                     </div>
 
                     <div class="event-actions flex-row">
-                        <a href="<?= HOME_URL ?>mes_evenements?action=voir&id=<?= $evenement['idEvenement'] ?>" class="btn btn-info linkNotDecorated">
+                        <a href="<?= HOME_URL ?>mes_evenements?action=voir&uiid=<?= $evenement['idEvenement'] ?>" class="btn btn-info linkNotDecorated">
                             Voir
                         </a>
                     </div>

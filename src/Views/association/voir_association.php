@@ -120,7 +120,7 @@
                         
                         <?php if ($isOwner): ?>
                             <div class="flex-row justify-content-between mt-4">
-                                <a href="<?= HOME_URL.'association/modifier?id='.$association->getIdAssociation() ?>" class="btn linkNotDecorated">
+                                <a href="<?= HOME_URL.'association/modifier?uiid='.$association->getIdAssociation() ?>" class="btn linkNotDecorated">
                                     Modifier l'association
                                 </a>
                                 <button type="button" class="btn btn-danger"
@@ -180,7 +180,7 @@
                     </div>
                     <div class="flex-row justify-content-between">
                         <button type="button" class="btn" onclick="document.getElementById('deleteModal').style.display='none'">Annuler</button>
-                        <form action="<?= HOME_URL . 'mes_associations?action=delete&id=' . $association->getIdAssociation() ?>" method="post">
+                        <form action="<?= HOME_URL . 'mes_associations?action=delete&uiid=' . $association->getIdAssociation() ?>" method="post">
                             <button type="submit" class="btn deconnexion">Supprimer</button>
                         </form>
                     </div>

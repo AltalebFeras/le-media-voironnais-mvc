@@ -6,17 +6,40 @@ use Exception;
 
 class Helper
 {
-    public function generateSlug(string $string): string
+    public function generateSlug(string $ville, string $string, $category = null): string
     {
-        // Remove accents and special characters
+        // Use $ville and $category in the slug
+        $villeSlug = '';
+        $categorySlug = '';
+
+        if (!empty($ville)) {
+            $villeSlug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $ville);
+            $villeSlug = strtolower($villeSlug);
+            $villeSlug = preg_replace('/[^a-z0-9\s-]/', '', $villeSlug);
+            $villeSlug = preg_replace('/[\s-]+/', '-', $villeSlug);
+            $villeSlug = trim($villeSlug, '-');
+        }
+
+        if (!empty($category)) {
+            $categorySlug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $category);
+            $categorySlug = strtolower($categorySlug);
+            $categorySlug = preg_replace('/[^a-z0-9\s-]/', '', $categorySlug);
+            $categorySlug = preg_replace('/[\s-]+/', '-', $categorySlug);
+            $categorySlug = trim($categorySlug, '-');
+        }
+
+        // Remove accents and special characters from $string
         $slug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $string);
         $slug = strtolower($slug);
         $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
         $slug = preg_replace('/[\s-]+/', '-', $slug);
         $slug = trim($slug, '-');
-        return $slug;
+
+        // Combine all parts
+        $parts = array_filter([$villeSlug, $categorySlug, $slug]);
+        return implode('-', $parts);
     }
-       /**
+    /**
      * Handle image upload
      */
     public function handleImageUpload($fileInputName, $directory)

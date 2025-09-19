@@ -20,7 +20,11 @@ class EntrepriseController extends AbstractController
         $this->repo = new EntrepriseRepository();
         $this->AssocRepo = new AssociationRepository();
     }
-
+    private function getId()
+    {
+        $uiid =  isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+        return $this->repo->getIdByUiid($uiid);
+    }
     public function mesEntreprises()
     {
         try {
@@ -46,7 +50,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $idEntreprise = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
+            $idEntreprise = $this->getId();
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
 
             if (!$entreprise || !$idEntreprise) {
@@ -262,7 +266,7 @@ class EntrepriseController extends AbstractController
             // Use model validation
             $modelErrors = $entreprise->validate();
             $errors = array_merge($errors, $modelErrors);
-            $this->returnAllErrors($errors, 'entreprise/modifier?id=' . $idEntreprise.'&error=true');
+            $this->returnAllErrors($errors, 'entreprise/modifier?id=' . $idEntreprise . '&error=true');
 
             $this->repo->updateEntreprise($entreprise);
 
@@ -271,7 +275,7 @@ class EntrepriseController extends AbstractController
         } catch (Exception $e) {
             $_SESSION['form_data'] = $_POST;
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('entreprise/modifier?id=' . $idEntreprise.'&error=true');
+            $this->redirect('entreprise/modifier?id=' . $idEntreprise . '&error=true');
         }
     }
 
@@ -307,5 +311,4 @@ class EntrepriseController extends AbstractController
             $this->redirect('mes_entreprises');
         }
     }
-
 }

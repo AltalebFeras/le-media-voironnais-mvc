@@ -17,6 +17,18 @@ class EntrepriseRepository
         $this->DB = Database::getInstance()->getDB();
     }
 
+    public function getIdByUiid($uiid)
+    {
+        try {
+            $query = "SELECT idEntreprise FROM entreprise WHERE uiid = :uiid";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['uiid' => $uiid]);
+
+            return $stmt->fetchColumn();
+        } catch (Exception $e) {
+            throw new Exception("Error fetching company by uiid: " . $e->getMessage());
+        }
+    }
     /**
      * Get companies for a specific user with pagination
      */
