@@ -21,11 +21,14 @@ class Entreprise
     private ?string $status;
     private bool $isActive;
     private bool $isPublic;
+    private bool $isPartner;
     private bool $isDeleted;
     private int $idUser;
     private int $idVille;
     private DateTime|string $createdAt;
     private DateTime|string|null $updatedAt;
+    private DateTime|string|null $partnerStartDate;
+    private DateTime|string|null $partnerEndDate;
 
     use Hydration;
 
@@ -93,6 +96,10 @@ class Entreprise
     {
         return $this->isActive;
     }
+    public function getIsPartner()
+    {
+        return $this->isPartner;
+    }
 
     public function getIdUser(): int
     {
@@ -154,6 +161,63 @@ class Entreprise
             return $this->updatedAt;
         }
     }
+    public function getPartnerStartDate(): DateTime|string|null
+    {
+        if ($this->partnerStartDate === null) {
+            return null;
+        }
+        if (is_string($this->partnerStartDate)) {
+            return $this->partnerStartDate;
+        }
+        if (is_a($this->partnerStartDate, DateTime::class)) {
+            return $this->partnerStartDate->format('Y-m-d H:i:s');
+        }
+        return null;
+    }
+    public function getPartnerStartDateFormatted(): string|null
+    {
+        if ($this->partnerStartDate === null) {
+            return null;
+        }
+        if ($this->partnerStartDate instanceof DateTime) {
+            return $this->partnerStartDate->format('d/m/Y à H:i');
+        }
+        try {
+            $dt = new DateTime($this->partnerStartDate);
+            return $dt->format('d/m/Y à H:i');
+        } catch (\Exception $e) {
+            return $this->partnerStartDate;
+        }
+    }
+    public function getPartnerEndDate(): DateTime|string|null
+    {
+        if ($this->partnerEndDate === null) {
+            return null;
+        }
+        if (is_string($this->partnerEndDate)) {
+            return $this->partnerEndDate;
+        }
+        if (is_a($this->partnerEndDate, DateTime::class)) {
+            return $this->partnerEndDate->format('Y-m-d H:i:s');
+        }
+        return null;
+    }
+    public function getPartnerEndDateFormatted(): string|null
+    {
+        if ($this->partnerEndDate === null) {
+            return null;
+        }
+        if ($this->partnerEndDate instanceof DateTime) {
+            return $this->partnerEndDate->format('d/m/Y à H:i');
+        }
+        try {
+            $dt = new DateTime($this->partnerEndDate);
+            return $dt->format('d/m/Y à H:i');
+        } catch (\Exception $e) {
+            return $this->partnerEndDate;
+        }
+    }
+
 
     // Setters
     public function setIdEntreprise(int $idEntreprise): static
@@ -259,6 +323,28 @@ class Entreprise
         }
         return $this;
     }
+    public function setPartnerStartDate(DateTime|string|null $partnerStartDate): self
+    {
+        if ($partnerStartDate === null) {
+            $this->partnerStartDate = null;
+        } elseif (is_string($partnerStartDate)) {
+            $this->partnerStartDate = new DateTime($partnerStartDate);
+        } elseif (is_a($partnerStartDate, DateTime::class)) {
+            $this->partnerStartDate = $partnerStartDate;
+        }
+        return $this;
+    }
+    public function setPartnerEndDate(DateTime|string|null $partnerEndDate): self
+    {
+        if ($partnerEndDate === null) {
+            $this->partnerEndDate = null;
+        } elseif (is_string($partnerEndDate)) {
+            $this->partnerEndDate = new DateTime($partnerEndDate);
+        } elseif (is_a($partnerEndDate, DateTime::class)) {
+            $this->partnerEndDate = $partnerEndDate;
+        }
+        return $this;
+    }
 
     /**
      * Get the value of idVille
@@ -314,6 +400,12 @@ class Entreprise
     public function setIsDeleted($isDeleted)
     {
         $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+    public function setIsPartner($isPartner)
+    {
+        $this->isPartner = $isPartner;
 
         return $this;
     }
