@@ -38,7 +38,7 @@
                                 <?php endif; ?>
                                 <h5><?= $association->getName() ?></h5>
                             </div>
-                            
+
                             <div>
                                 <p>
                                     <strong>Statut:</strong>
@@ -59,34 +59,19 @@
                         </div>
 
                         <div>
-                            <?php if ($association->getIdUser() == $_SESSION['user_id']): ?>
-                                <div class="flex-row justify-content-between mt">
-                                    <a href="<?= HOME_URL . 'association/voir/' . $association->getIdAssociation() ?>" class="btn">
-                                        Voir détails
-                                    </a>
-                                    <a href="<?= HOME_URL . 'association/modifier/' . $association->getIdAssociation() ?>" class="btn">
-                                        Modifier
-                                    </a>
-                                    <button type="button" class="btn"
-                                        onclick="document.getElementById('deleteModal<?= $association->getIdAssociation() ?>').style.display='block'">
-                                        Supprimer
-                                    </button>
-                                </div>
-                            <?php else: ?>
-                                <div class="flex-row justify-content-between mt">
-                                    <a href="<?= HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getIdAssociation() ?>" class="btn linkNotDecorated">
-                                        Voir
-                                    </a>
-                                    <p class="text-muted">Vous êtes membre de cette association</p>
-                                </div>
-                            <?php endif; ?>
+                            <div class="flex-row justify-content-between mt">
+                                <a href="<?= HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getUiid() ?>" class="btn linkNotDecorated">
+                                    Voir
+                                </a>
+                                <p class="text-muted">Vous êtes membre de cette association</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
             <?php endforeach; ?>
         </div>
-			<?php include_once __DIR__ . '/../includes/pagination.php'; ?>
+        <?php include_once __DIR__ . '/../includes/pagination.php'; ?>
 
     <?php endif; ?>
 </main>

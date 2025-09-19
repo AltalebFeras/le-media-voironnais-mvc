@@ -4,7 +4,7 @@
 <main>
     <div class="flex-row justify-content-between">
         <h1>Modifier l'association</h1>
-        <a href="<?=HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getIdAssociation() ?>" class="">
+        <a href="<?=HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getUiid() ?>" class="">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
@@ -12,7 +12,7 @@
         <div class="max-width-50">
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
-            <form action="/association/modifier?uiid=<?= $association->getIdAssociation() ?>" method="post" enctype="multipart/form-data">
+            <form action="/association/modifier?uiid=<?= $association->getUiid() ?>" method="post" enctype="multipart/form-data">
                 <div class="card">
                     <div>
                         <div>
@@ -97,7 +97,7 @@
                     </div>
 
                     <div class="flex-row justify-content-between mt">
-                        <a href="<?= HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getIdAssociation() ?>" class="btn">Annuler</a>
+                        <a href="<?= HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getUiid() ?>" class="btn">Annuler</a>
                         <button type="submit" class="btn">Enregistrer les modifications</button>
                     </div>
                 </div>

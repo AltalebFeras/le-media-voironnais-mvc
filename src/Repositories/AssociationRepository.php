@@ -16,6 +16,18 @@ class AssociationRepository
     {
         $this->DB = Database::getInstance()->getDB();
     }
+    public function getIdByUiid($uiid): int|null
+    {
+        try {
+            $query = "SELECT idAssociation FROM association WHERE uiid = :uiid";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['uiid' => $uiid]);
+            $idAssociation = $stmt->fetchColumn();
+            return $idAssociation !== false ? (int)$idAssociation : null;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching association ID by UIID: " . $e->getMessage());
+        }
+    }
 
     /**
      * Get associations for a specific user
@@ -117,12 +129,13 @@ class AssociationRepository
 
             // Create association
             $query = "INSERT INTO association 
-                         (name, slug, description, logoPath, bannerPath, address, phone, email, website, isActive, idUser, idVille, createdAt) 
+                         (uiid, name, slug, description, logoPath, bannerPath, address, phone, email, website, isActive, idUser, idVille, createdAt) 
                      VALUES 
-                     (:name, :slug, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :isActive, :idUser, :idVille, :createdAt)";
+                     (:uiid, :name, :slug, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :isActive, :idUser, :idVille, :createdAt)";
 
             $stmt = $this->DB->prepare($query);
             $stmt->execute([
+                'uiid' => $association->getUiid(),
                 'name' => $association->getName(),
                 'slug' => $association->getSlug(),
                 'description' => $association->getDescription(),

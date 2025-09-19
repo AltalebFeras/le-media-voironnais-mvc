@@ -17,7 +17,11 @@ class AssociationController extends AbstractController
     {
         $this->repo = new AssociationRepository();
     }
-
+    private function getId(): int|null
+    {
+        $uiid =  isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+        return $this->repo->getIdByUiid($uiid);
+    }
     /**
      * Display list of user associations
      */
@@ -31,12 +35,13 @@ class AssociationController extends AbstractController
             $associations = $this->repo->getUserAssociations($idUser, $currentPage, $associationsPerPage);
             $totalAssociations = $this->repo->countUserAssociations($idUser);
             $totalPages = (int)ceil($totalAssociations / $associationsPerPage);
-
+            // Render the view with pagination data
             $this->render('association/mes_associations', [
                 'associations' => $associations,
                 'total' => $totalAssociations,
                 'currentPage' => $currentPage,
                 'totalPages' => $totalPages
+
             ]);
         } catch (Exception $e) {
             $this->render('error', [
@@ -50,7 +55,7 @@ class AssociationController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $idAssociation = isset($_GET['id']) ? (int)$_GET['id'] : null;
+            $idAssociation = $this->getId();
             $errors = [];
             $association = $this->repo->getAssociationById($idAssociation);
 
@@ -143,8 +148,8 @@ class AssociationController extends AbstractController
             if ($existingAssociation && $existingAssociation->getIsDeleted() == false) {
                 $errors['name'] = "Vous avez déjà une association avec ce nom";
             }
-            $existingVille = $this->repo->isVilleExists($idVille);
-            if (!$existingVille) {
+            $nameVille = $this->repo->isVilleExists($idVille);
+            if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
 
@@ -152,12 +157,16 @@ class AssociationController extends AbstractController
             // default paths for logo and banner
             $logoPath = DOMAIN . HOME_URL . 'assets/images/uploads/logos/default_logo.png';
             $bannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
+
+            // generate unique uiid 16 characters
+            $uiid = $helper->generateUiid();
             // Create new association
             $association = new Association();
 
             $association->setName($name)
                 ->setDescription($description)
                 ->setAddress($address)
+                ->setUiid($uiid)
                 ->setPhone($phone)
                 ->setEmail($email)
                 ->setWebsite($website)
@@ -172,9 +181,9 @@ class AssociationController extends AbstractController
             $modelErrors = $association->validate();
             $errors = array_merge($errors, $modelErrors);
 
-            $slug = $helper->generateSlug($existingVille, $name);
+            $slug = $helper->generateSlug($nameVille, $name);
             $existSlug = $this->repo->isSlugExists($slug);
-            var_dump($slug); die;
+          
             if ($existSlug) {
                 $suffix = 1;
                 $finalSlug = "{$slug}-{$suffix}";
@@ -208,9 +217,8 @@ class AssociationController extends AbstractController
     public function showEditForm()
     {
         try {
-            // Handle URL segments for /association/modifier?id=
-            $idAssociation = isset($_GET['id']) ? (int)$_GET['id'] : null;
-
+            // Handle URL segments for /association/modifier?uiid=
+            $idAssociation = $this->getId();
 
             $idUser = $_SESSION['idUser'];
             $association = $this->repo->getAssociationById($idAssociation);
@@ -243,9 +251,9 @@ class AssociationController extends AbstractController
     public function updateAssociation()
     {
         try {
-            $idAssociation = null;
-            $idAssociation = isset($_GET['id']) ? (int)$_GET['id'] : null;
-
+            
+            $idAssociation = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
             if (!$idAssociation) {
                 throw new Exception("ID d'association invalide");
             }
@@ -280,8 +288,8 @@ class AssociationController extends AbstractController
                 $errors['name'] = "Vous avez déjà une association avec ce nom";
             }
 
-            $existingVille = $this->repo->isVilleExists($idVille);
-            if (!$existingVille) {
+            $nameVille = $this->repo->isVilleExists($idVille);
+            if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
 
@@ -298,7 +306,7 @@ class AssociationController extends AbstractController
             // Regenerate slug if name changed
             if ($name !== $association->getName()) {
                 $helper = new Helper();
-                $slug = $helper->generateSlug($name, $existingVille);
+                $slug = $helper->generateSlug($name, $nameVille);
 
                 $existSlug = $this->repo->isSlugExists($slug);
 
@@ -318,15 +326,15 @@ class AssociationController extends AbstractController
             $modelErrors = $association->validate();
             $errors = array_merge($errors, $modelErrors);
 
-            $this->returnAllErrors($errors, 'association/modifier?id=' . $idAssociation . '&error=true');
+            $this->returnAllErrors($errors, 'association/modifier?uiid=' . $uiid . '&error=true');
 
             $this->repo->updateAssociation($association);
 
             $_SESSION['success'] = "L'association a été mise à jour avec succès";
-            $this->redirect('mes_associations');
+            $this->redirect('mes_associations?action=voir&uiid=' . $uiid);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('association/modifier?id=' . ($idAssociation ?? '') . '&error=true');
+            $this->redirect('association/modifier?uiid=' . ($uiid ?? '') . '&error=true');
         }
     }
 
@@ -336,7 +344,7 @@ class AssociationController extends AbstractController
     public function deleteAssociation(): void
     {
         try {
-            $idAssociation = isset($_GET['id']) ? htmlspecialchars($_GET['id']) : null;
+            $idAssociation = $this->getId();
             if (!$idAssociation) {
                 throw new Exception("ID d'association invalide");
             }

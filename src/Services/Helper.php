@@ -6,6 +6,19 @@ use Exception;
 
 class Helper
 {
+    /**
+     * Generate a unique identifier (UUID v4)
+     */
+    public function generateUiid(): string
+    {
+        $uiid = substr(bin2hex(random_bytes(16)), 1, 16);
+        // $uiid = uniqid('', true);
+        return $uiid;
+    }
+
+    /**
+     * Generate a URL-friendly slug from a string, including ville and category if provided
+     */
     public function generateSlug(string $ville, string $string, $category = null): string
     {
         // Use $ville and $category in the slug

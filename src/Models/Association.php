@@ -8,6 +8,7 @@ use src\Services\Hydration;
 class Association
 {
     private int $idAssociation;
+    private string $uiid;
     private string $name;
     private string $slug;
     private ?string $description;
@@ -254,6 +255,25 @@ class Association
     public function setIdVille(int $idVille): self
     {
         $this->idVille = $idVille;
+        return $this;
+    }
+    /**
+     * Get the value of uiid
+     */
+    public function getUiid(): string
+    {
+        return $this->uiid;
+    }
+
+    /**
+     * Set the value of uiid
+     *
+     * @return  self
+     */
+    public function setUiid($uiid): static
+    {
+        $this->uiid = $uiid;
+
         return $this;
     }
 

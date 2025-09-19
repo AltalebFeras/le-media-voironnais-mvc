@@ -137,8 +137,8 @@ class EvenementController extends AbstractController
                 $errors['idEntreprise'] = "L'entreprise sélectionnée est invalide";
             }
             // Ville and category existence
-            $existingVille = $this->repo->isVilleExists($idVille);
-            if (!$existingVille) {
+            $nameVille = $this->repo->isVilleExists($idVille);
+            if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
             $existingCategory = $this->repo->isEventCategoryExists($idEventCategory);
@@ -306,8 +306,8 @@ class EvenementController extends AbstractController
             if ($idAssociation && !in_array($idAssociation, $associationIds)) {
                 $errors['idAssociation'] = "L'association sélectionnée est invalide";
             }
-            $existingVille = $this->repo->isVilleExists($idVille);
-            if (!$existingVille) {
+            $nameVille = $this->repo->isVilleExists($idVille);
+            if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
             $existingCategory = $this->repo->isEventCategoryExists($idEventCategory);

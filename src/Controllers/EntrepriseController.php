@@ -98,8 +98,8 @@ class EntrepriseController extends AbstractController
             if ($existingEntreprise) {
                 $errors['name'] = "Une entreprise avec ce nom existe déjà.";
             }
-            $existingVille = $this->AssocRepo->isVilleExists($idVille);
-            if (!$existingVille) {
+            $nameVille = $this->AssocRepo->isVilleExists($idVille);
+            if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
             // default paths for logo and banner
@@ -225,8 +225,8 @@ class EntrepriseController extends AbstractController
             if ($existingEntreprise && $name === $existingEntreprise->getName() && $existingEntreprise->getIdEntreprise() != $idEntreprise) {
                 $errors['name'] = "Une entreprise avec ce nom existe déjà.";
             }
-            $existingVille = $this->AssocRepo->isVilleExists($idVille);
-            if (!$existingVille) {
+            $nameVille = $this->AssocRepo->isVilleExists($idVille);
+            if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
 
