@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 22, 2025 at 08:21 AM
+-- Generation Time: Sep 22, 2025 at 01:41 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `association` (
   KEY `idx_association_user` (`idUser`),
   KEY `idx_association_active` (`isActive`),
   KEY `idx_association_ville` (`idVille`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -168,13 +168,6 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   KEY `idx_entreprise_ville` (`idVille`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `entreprise`
---
-
-INSERT INTO `entreprise` (`idEntreprise`, `uiid`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `status`, `isActive`, `isPublic`, `isPartner`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`, `partnerStartDate`, `partnerEndDate`) VALUES
-(23, 'c88bcc52447511ee', 'Feras ALTALEB', 'grenoble-38100-feras-altaleb', 'sdfsdfffffffffff', 'http://le-media-voironnais/assets/images/uploads/logos/default_logo.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', '', '0780773302', 'feras.altalib@gmail.com', '', '', 'brouillon', 0, 0, 0, 0, 3, 38100, '2025-09-22 09:49:01', NULL, NULL, NULL);
-
 -- --------------------------------------------------------
 
 --
@@ -221,14 +214,15 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   KEY `idx_evenement_association` (`idAssociation`),
   KEY `idx_evenement_entreprise` (`idEntreprise`),
   KEY `idx_evenement_category` (`idEventCategory`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `evenement`
 --
 
 INSERT INTO `evenement` (`idEvenement`, `uiid`, `title`, `slug`, `description`, `shortDescription`, `startDate`, `endDate`, `registrationDeadline`, `maxParticipants`, `currentParticipants`, `address`, `bannerPath`, `status`, `isPublic`, `isDeleted`, `requiresApproval`, `price`, `currency`, `createdAt`, `updatedAt`, `idUser`, `idAssociation`, `idEntreprise`, `idVille`, `idEventCategory`) VALUES
-(24, 'c58d7968021a0448', 'fgggggggg', '1-fgggggggg-1', 'gffffffffffffffffffffffffffffff', '', '2025-10-03 10:03:00', '2025-10-10 10:03:00', '2025-09-24 10:03:00', 11, 0, '42 Rue Henri Duhamel', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', 'brouillon', 0, 1, 0, 0.00, 'EUR', '2025-09-22 10:03:58', '2025-09-22 10:09:15', 3, NULL, NULL, 38100, 16);
+(26, '3c2a2b006fa81893', 'vcvw', '1-vcvw-1', 'wxxxxxxxx', '', '2025-09-26 15:16:00', '2025-09-27 15:17:00', '2025-09-24 15:17:00', 2, 0, '42 Rue Henri Duhamel', 'assets/images/uploads/banners/default_banner.png', 'brouillon', 0, 0, 0, 0.00, 'EUR', '2025-09-22 15:17:21', NULL, 3, NULL, NULL, 38100, 1),
+(27, '06472817940ff0a0', 'ddsfds', 'grenoble-38100-ddsfds-affaires', 'ssssssss', '', '2025-09-24 15:19:00', '2025-09-24 15:19:00', '2025-09-22 15:19:00', 33, 0, '42 Rue Henri Duhamel', 'assets/images/uploads/banners/default_banner.png', 'brouillon', 0, 0, 0, 0.00, 'EUR', '2025-09-22 15:23:07', NULL, 3, NULL, NULL, 38100, 5);
 
 -- --------------------------------------------------------
 
@@ -289,7 +283,7 @@ CREATE TABLE IF NOT EXISTS `event_image` (
   PRIMARY KEY (`idEventImage`),
   UNIQUE KEY `UQ_idEventImage` (`idEventImage`),
   KEY `FK_evenement_TO_event_image` (`idEvenement`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -483,7 +477,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
 (1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-19 09:37:31', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
 (2, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-22 10:20:09', '2025-09-15 09:47:56', NULL, '18aab59f6829597f2a447a393b407e35', '2025-09-15 09:47:56', '2025-09-16 11:37:06', '2025-09-15 10:10:17', '2025-09-19 09:35:59', NULL),
+(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-22 11:44:52', '2025-09-15 09:47:56', NULL, '18aab59f6829597f2a447a393b407e35', '2025-09-15 09:47:56', '2025-09-22 11:38:58', '2025-09-15 10:10:17', '2025-09-19 09:35:59', NULL),
 (4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-17 19:16:31', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -503,7 +497,7 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   PRIMARY KEY (`idUserAssociation`),
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 

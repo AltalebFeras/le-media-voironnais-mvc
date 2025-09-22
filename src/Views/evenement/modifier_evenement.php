@@ -122,6 +122,18 @@
                     </select>
                 </div>
             </div>
+              <div class="form-group">
+                    <label for="idEntreprise">Entreprise organisatrice</label>
+                    <select id="idEntreprise" name="idEntreprise">
+                        <option value="">Aucune entreprise choisie</option>
+                        <?php foreach ($entreprises as $entreprise): ?>
+                            <option value="<?= $entreprise['idEntreprise'] ?>"
+                                <?= isset($_SESSION['form_data']['idEntreprise']) && $_SESSION['form_data']['idEntreprise'] == $entreprise['idEntreprise'] ? 'selected' : '' ?>>
+                                <?= $entreprise['name'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
             <div class="form-group">
                 <label>
