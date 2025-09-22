@@ -143,7 +143,19 @@ switch ($route) {
     case HOME_URL . 'association/modifier':
         if ($connectionSecured) {
             if ($method === 'POST') {
-                $associationController->updateAssociation();
+                if (isset($_GET['action']) && $_GET['action'] === 'modifier_banner') {
+                    $associationController->updateBanner();
+                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_banner') {
+                    $associationController->deleteBanner();
+                } elseif (isset($_GET['action']) && $_GET['action'] === 'modifier_logo') {
+                    $associationController->updateLogo();
+                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_logo') {
+                    $associationController->deleteLogo();
+                } elseif (!$_GET['action']) {
+                    $associationController->updateAssociation();
+                } else {
+                    $homeController->page404();
+                }
             } elseif ($method === 'GET' && isset($_GET['uiid'])) {
                 $associationController->showEditForm();
             } else {

@@ -155,8 +155,8 @@ class AssociationController extends AbstractController
 
             $helper = new Helper();
             // default paths for logo and banner
-            $logoPath = DOMAIN . HOME_URL . 'assets/images/uploads/logos/default_logo.png';
-            $bannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
+            $logoPath = 'assets/images/uploads/logos/default_logo.png';
+            $bannerPath = 'assets/images/uploads/banners/default_banner.png';
 
             // generate unique uiid 16 characters
             $uiid = $helper->generateUiid();
@@ -183,7 +183,7 @@ class AssociationController extends AbstractController
 
             $slug = $helper->generateSlug($nameVille, $name);
             $existSlug = $this->repo->isSlugExists($slug);
-          
+
             if ($existSlug) {
                 $suffix = 1;
                 $finalSlug = "{$slug}-{$suffix}";
@@ -251,7 +251,7 @@ class AssociationController extends AbstractController
     public function updateAssociation()
     {
         try {
-            
+
             $idAssociation = $this->getId();
             $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
             if (!$idAssociation) {
@@ -366,6 +366,165 @@ class AssociationController extends AbstractController
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('mes_associations');
+        }
+    }
+
+    public function updateBanner()
+    {
+        try {
+            $idAssociation = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            if (!$idAssociation) {
+                throw new Exception("ID d'association invalide");
+            }
+
+            $idUser = $_SESSION['idUser'];
+            $association = $this->repo->getAssociationById($idAssociation);
+
+            if (!$association) {
+                throw new Exception("L'association demandée n'existe pas");
+            }
+
+            if ($association->getIdUser() != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cette association");
+            }
+
+            // Handle image upload
+            $helper = new Helper();
+            $bannerPath = $helper->handleImageUpload('banner', 'banners');
+         
+            // Update association banner path
+            $association->setBannerPath($bannerPath)
+                ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+            $this->repo->updateAssociationBanner($association);
+
+            $_SESSION['success'] = "La bannière a été mise à jour avec succès";
+            $this->redirect('mes_associations?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_associations?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+
+    public function deleteBanner(): void
+    {
+        try {
+            $idAssociation = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            if (!$idAssociation) {
+                throw new Exception("ID d'association invalide");
+            }
+
+            $idUser = $_SESSION['idUser'];
+            $association = $this->repo->getAssociationById($idAssociation);
+
+            if (!$association) {
+                throw new Exception("L'association demandée n'existe pas");
+            }
+
+            if ($association->getIdUser() != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cette association");
+            }
+
+            // Set banner path to default
+            $defaultBannerPath = 'assets/images/uploads/banners/default_banner.png';
+            if ($association->getBannerPath() === $defaultBannerPath) {
+                throw new Exception(" La bannière est déjà la bannière par défaut");
+            }
+            // remove the file from server if not default
+            $helper = new Helper();
+            $helper->handleDeleteImage($association->getBannerPath());
+
+            $association->setBannerPath($defaultBannerPath)
+                ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+            $this->repo->updateAssociationBanner($association);
+
+            $_SESSION['success'] = "La bannière a été réinitialisée avec succès";
+            $this->redirect('mes_associations?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_associations?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+
+    public function updateLogo()
+    {
+        try {
+            $idAssociation = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            if (!$idAssociation) {
+                throw new Exception("ID d'association invalide");
+            }
+
+            $idUser = $_SESSION['idUser'];
+            $association = $this->repo->getAssociationById($idAssociation);
+
+            if (!$association) {
+                throw new Exception("L'association demandée n'existe pas");
+            }
+
+            if ($association->getIdUser() != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cette association");
+            }
+
+            // Handle image upload
+            $helper = new Helper();
+            $logoPath = $helper->handleImageUpload('logo', 'logos');
+
+            // Update association logo path
+            $association->setLogoPath($logoPath)
+                ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+            $this->repo->updateAssociationLogo($association);
+
+            $_SESSION['success'] = "Le logo a été mis à jour avec succès";
+            $this->redirect('mes_associations?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_associations?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+    public function deleteLogo(): void
+    {
+        try {
+            $idAssociation = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            if (!$idAssociation) {
+                throw new Exception("ID d'association invalide");
+            }
+
+            $idUser = $_SESSION['idUser'];
+            $association = $this->repo->getAssociationById($idAssociation);
+
+            if (!$association) {
+                throw new Exception("L'association demandée n'existe pas");
+            }
+
+            if ($association->getIdUser() != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cette association");
+            }
+
+            // Set logo path to default
+            $defaultLogoPath = 'assets/images/uploads/logos/default_logo.png';
+            if ($association->getLogoPath() === $defaultLogoPath) {
+                throw new Exception(" Le logo est déjà le logo par défaut");
+            }
+            // remove the file from server if not default
+            $helper = new Helper();
+            $helper->handleDeleteImage($association->getLogoPath());
+
+            $association->setLogoPath($defaultLogoPath)
+                ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+            $this->repo->updateAssociationLogo($association);
+
+            $_SESSION['success'] = "Le logo a été réinitialisé avec succès";
+            $this->redirect('mes_associations?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_associations?action=voir&uiid=' . $uiid . '&error=true');
         }
     }
 }

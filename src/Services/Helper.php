@@ -92,7 +92,7 @@ class Helper
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         $maxFileSize = 5 * 1024 * 1024; // 5MB
 
-        $uploadDir = __DIR__ . "/../../public/uploads/{$directory}/";
+        $uploadDir = __DIR__ . "/../../public/assets/images/uploads/{$directory}/";
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
@@ -152,6 +152,20 @@ class Helper
             }
         }
 
-        return "/uploads/{$directory}/" . $fileName;
+        return "assets/images/uploads/{$directory}/" . $fileName;
+    }
+    public function handleDeleteImage($imagePath): bool
+    {
+        try {
+
+            $fullPath = __DIR__ . "/../../public/" . $imagePath;
+
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 }

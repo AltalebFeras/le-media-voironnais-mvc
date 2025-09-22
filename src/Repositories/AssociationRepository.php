@@ -250,8 +250,48 @@ class AssociationRepository
             throw new Exception("Error updating association: " . $e->getMessage());
         }
     }
-    //  make  association isDeleted  true 
+    //  update  association banner 
+    public function updateAssociationBanner(Association $association): bool
+    {
+        try {
+            $query = "UPDATE association SET 
+                     bannerPath = :bannerPath,
+                     updatedAt = :updatedAt
+                     WHERE idAssociation = :idAssociation";
 
+            $stmt = $this->DB->prepare($query);
+            $result = $stmt->execute([
+                'bannerPath' => $association->getBannerPath(),
+                'updatedAt' => $association->getUpdatedAt(),
+                'idAssociation' => $association->getIdAssociation()
+            ]);
+
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception("Error updating association: " . $e->getMessage());
+        }
+    }
+
+    public function updateAssociationLogo(Association $association): bool
+    {
+        try {
+            $query = "UPDATE association SET 
+                     logoPath = :logoPath,
+                     updatedAt = :updatedAt
+                     WHERE idAssociation = :idAssociation";
+
+            $stmt = $this->DB->prepare($query);
+            $result = $stmt->execute([
+                'logoPath' => $association->getLogoPath(),
+                'updatedAt' => $association->getUpdatedAt(),
+                'idAssociation' => $association->getIdAssociation()
+            ]);
+
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception("Error updating association: " . $e->getMessage());
+        }
+    }
     public function deleteAssociation($idAssociation, $idUser): bool
     {
         try {
