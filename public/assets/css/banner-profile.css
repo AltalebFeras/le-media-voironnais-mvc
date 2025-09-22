@@ -1,0 +1,348 @@
+/* General Banner and Profile/Logo Styles - Shared between User Account and Association */
+
+/* Banner Section Base Styles */
+.banner-section, .account-banner-section, .association-banner-section {
+    position: relative;
+    width: 100%;
+    min-height: 220px;
+    height: 270px;
+    margin: 0 auto;
+    background: #e3eafc;
+    border-radius: 0 0 18px 18px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(58,124,165,0.08);
+    z-index: 1;
+}
+
+/* Banner Wrapper */
+.banner-wrapper, .account-banner-wrapper, .association-banner-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; 
+    left: 0;
+    z-index: 1;
+}
+
+/* Banner Image and Placeholder */
+.banner-img, .banner-placeholder,
+.account-banner-img, .account-banner-placeholder,
+.association-banner-img, .association-banner-placeholder {
+    width: 100%;
+    height: 270px;
+    object-fit: cover;
+    background: #e3eafc;
+    display: block;
+    border-radius: 0 0 18px 18px;
+}
+
+.banner-placeholder, .account-banner-placeholder, .association-banner-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 1.1rem;
+    background: #e3eafc;
+}
+
+/* Banner Preview */
+#bannerPreview {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 270px;
+    object-fit: cover;
+    border-radius: 0 0 18px 18px;
+    z-index: 2;
+    display: none;
+}
+
+/* Banner Action Buttons */
+.banner-actions, .account-banner-actions, .association-banner-actions {
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    z-index: 10;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.banner-actions form,
+.banner-actions button,
+.banner-actions label,
+.account-banner-actions form,
+.account-banner-actions button,
+.account-banner-actions label,
+.association-banner-actions form,
+.association-banner-actions button,
+.association-banner-actions label {
+    margin: 0;
+    padding: 0;
+}
+
+.banner-actions .btn,
+.banner-actions button,
+.banner-actions label,
+.account-banner-actions .btn,
+.account-banner-actions button,
+.account-banner-actions label,
+.association-banner-actions .btn,
+.association-banner-actions button,
+.association-banner-actions label {
+    font-size: 0.95rem;
+    padding: 0.45rem 1.1rem;
+    border-radius: 8px;
+    background: #fff;
+    color: #3a7ca5;
+    border: 1.5px solid #3a7ca5;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(58,124,165,0.08);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.banner-actions .btn.bg-danger,
+.account-banner-actions .btn.bg-danger,
+.association-banner-actions .btn.bg-danger {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+}
+
+.banner-actions .btn:hover,
+.banner-actions label:hover,
+.account-banner-actions .btn:hover,
+.account-banner-actions label:hover,
+.association-banner-actions .btn:hover,
+.association-banner-actions label:hover {
+    background: #3a7ca5;
+    color: #fff;
+}
+
+.banner-actions input[type="file"],
+.account-banner-actions input[type="file"],
+.association-banner-actions input[type="file"] {
+    display: none;
+}
+
+/* Profile Picture / Logo Base Styles */
+.profile-picture, .account-profile-picture, .association-logo-picture {
+    position: absolute;
+    left: 25%;
+    bottom: 0px;
+    transform: translateX(-50%);
+    z-index: 20;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Profile Picture / Logo Image */
+.profile-picture img,
+.account-profile-picture img,
+.association-logo-picture img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    object-fit: cover;
+    background: #e9ecef;
+    box-shadow: 0 2px 12px rgba(42, 122, 226, 0.13);
+    margin-bottom: 0.5rem;
+}
+
+/* Profile Picture / Logo Display (non-editable) */
+.profile-display, .association-logo-display {
+    position: absolute;
+    bottom: -50px;
+    left: 25%;
+    transform: translateX(-50%);
+    z-index: 20;
+}
+
+.profile-display img, .association-logo-display img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 4px solid white;
+    object-fit: cover;
+    box-shadow: 0 2px 12px rgba(42, 122, 226, 0.13);
+}
+
+/* Profile Picture / Logo Forms */
+.profile-picture form,
+.account-profile-picture form,
+.association-logo-picture form {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.profile-picture .btn,
+.account-profile-picture .btn,
+.association-logo-picture .btn {
+    font-size: 0.95rem;
+    padding: 0.35rem 1rem;
+    border-radius: 8px;
+    margin: 0;
+}
+
+.profile-picture label,
+.account-profile-picture label,
+.association-logo-picture label {
+    background: #e3eafc;
+    color: #2a7ae2;
+    border: 2px dashed #2a7ae2;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.35rem 1rem;
+    margin: 0;
+    transition: background 0.2s, color 0.2s;
+}
+
+.profile-picture label:hover,
+.account-profile-picture label:hover,
+.association-logo-picture label:hover {
+    background: #2a7ae2;
+    color: #fff;
+}
+
+.profile-picture input[type="file"],
+.account-profile-picture input[type="file"],
+.association-logo-picture input[type="file"] {
+    display: none;
+}
+
+/* Association specific styles */
+.association-main-content {
+    width: 100%;
+    position: relative;
+    z-index: 5;
+}
+
+/* Responsive Styles */
+@media (max-width: 1000px) {
+    .banner-section, .account-banner-section, .association-banner-section {
+        max-width: 100vw;
+    }
+}
+
+@media (max-width: 900px) {
+    .banner-section, .account-banner-section, .association-banner-section,
+    .banner-img, .banner-placeholder,
+    .account-banner-img, .account-banner-placeholder,
+    .association-banner-img, .association-banner-placeholder,
+    #bannerPreview {
+        min-height: 160px;
+        height: 160px;
+        max-height: 160px;
+    }
+    
+    .profile-picture, .account-profile-picture, .association-logo-picture {
+        bottom: -50px;
+    }
+    
+    .profile-picture img,
+    .account-profile-picture img,
+    .association-logo-picture img {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .profile-display, .association-logo-display {
+        left: 20%;
+    }
+    
+    .profile-display img, .association-logo-display img {
+        width: 100px;
+        height: 100px;
+        border: 3px solid white;
+    }
+}
+
+@media (max-width: 600px) {
+    .banner-section, .account-banner-section, .association-banner-section,
+    .banner-img, .banner-placeholder,
+    .account-banner-img, .account-banner-placeholder,
+    .association-banner-img, .association-banner-placeholder,
+    #bannerPreview {
+        min-height: 100px;
+        height: 100px;
+        max-height: 100px;
+    }
+    
+    .profile-picture, .account-profile-picture, .association-logo-picture {
+        bottom: -35px;
+    }
+    
+    .profile-picture img,
+    .account-profile-picture img,
+    .association-logo-picture img {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .profile-display, .association-logo-display {
+        left: 15%;
+    }
+    
+    .profile-display img, .association-logo-display img {
+        width: 70px;
+        height: 70px;
+        border: 2px solid white;
+    }
+    
+    .association-main-content {
+        padding: 50px 10px 20px 10px !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .banner-section, .account-banner-section, .association-banner-section,
+    .banner-img, .banner-placeholder,
+    .account-banner-img, .account-banner-placeholder,
+    .association-banner-img, .association-banner-placeholder,
+    #bannerPreview {
+        min-height: 60px;
+        height: 60px;
+        max-height: 60px;
+    }
+    
+    .profile-picture, .account-profile-picture, .association-logo-picture {
+        bottom: -20px;
+    }
+    
+    .profile-picture img,
+    .account-profile-picture img,
+    .association-logo-picture img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .profile-display, .association-logo-display {
+        left: 10%;
+    }
+    
+    .profile-display img, .association-logo-display img {
+        width: 40px;
+        height: 40px;
+        border: 2px solid white;
+    }
+    
+    .association-main-content {
+        padding: 30px 5px 20px 5px !important;
+    }
+}
