@@ -425,4 +425,32 @@ class EvenementRepository
 
         return $stmt->fetchColumn() > 0;
     }
+
+    public function getEvents($currentPage, $evenementsPerPage): array
+    {
+        $offset = max(0, ($currentPage - 1) * $evenementsPerPage);
+        $sql = "SELECT e.*, v.ville_nom_reel, ec.name as category_name, a.name as association_name 
+                FROM evenement e 
+                LEFT JOIN ville v ON e.idVille = v.idVille 
+                LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
+                LEFT JOIN association a ON e.idAssociation = a.idAssociation
+                WHERE e.isDeleted = 0 AND e.isPublic = 1
+                ORDER BY e.startDate ASC
+                LIMIT :offset, :evenementsPerPage";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':evenementsPerPage', $evenementsPerPage, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function countEvents(): int
+    {
+        $sql = "SELECT COUNT(*) FROM evenement WHERE isDeleted = 0 AND isPublic = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn();
+    }
 }

@@ -690,4 +690,23 @@ class EvenementController extends AbstractController
 
         return "/uploads/{$directory}/" . $fileName;
     }
+
+    public function listEvents()
+    {
+ try {
+            $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+            $evenementsPerPage = 9;
+            $evenements = $this->repo->getEvents($currentPage, $evenementsPerPage);
+            $totalEvenements = $this->repo->countEvents();
+            $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
+            $this->render('evenement/publique_evenements_listes', [
+                'evenements' => $evenements,
+                'title' => 'Tous les événements',
+                'total' => $totalEvenements,
+                'currentPage' => $currentPage,
+                'totalPages' => $totalPages
+            ]);
+        } catch (Exception $e) {
+            $this->redirect('evenements?error=true');
+        }    }
 }

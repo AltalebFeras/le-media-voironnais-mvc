@@ -29,7 +29,7 @@ switch ($route) {
     case HOME_URL:
         $homeController->displayHomepage();
         break;
-
+    // Authentication routes
     case HOME_URL . 'connexion':
         if ($method === 'POST') {
             $userController->treatmentConnexion();
@@ -95,7 +95,11 @@ switch ($route) {
             }
         }
         break;
-    // User routes
+    // events public routes
+    case HOME_URL . 'evenements':
+        $evenementController->listEvents();
+    break;
+        // User routes
 
     case HOME_URL . 'dashboard':
         if ($connectionSecured) {
@@ -274,7 +278,7 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
-
+    //  User account routes
     case HOME_URL . 'mon_compte':
         if ($method === 'POST' && $_GET['action'] && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
             switch ($_GET['action']) {
