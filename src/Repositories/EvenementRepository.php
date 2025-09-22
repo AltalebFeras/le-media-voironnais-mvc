@@ -274,7 +274,7 @@ class EvenementRepository
     /**
      * Check if ville exists
      */
-    public function isVilleExists(int $idVille): bool
+     public function isVilleExists($idVille): mixed
     {
         try {
             $query = "SELECT ville_slug FROM ville WHERE idVille = :idVille";
@@ -286,7 +286,7 @@ class EvenementRepository
         }
     }
 
-    public function isEventCategoryExists(int $idEventCategory): bool
+    public function isEventCategoryExists(int $idEventCategory): mixed
     {
         try {
             $query = "SELECT name FROM event_category WHERE idEventCategory = :idEventCategory AND isActive = 1";
