@@ -251,7 +251,19 @@ switch ($route) {
     case HOME_URL . 'evenement/modifier':
         if ($connectionSecured) {
             if ($method === 'POST') {
-                $evenementController->updateEvent();
+                if (isset($_GET['action']) && $_GET['action'] === 'modifier_banner') {
+                    $evenementController->updateBanner();
+                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_banner') {
+                    $evenementController->deleteBanner();
+                } elseif (isset($_GET['action']) && $_GET['action'] === 'ajouter_image') {
+                    $evenementController->addEventImage();
+                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_image') {
+                    $evenementController->deleteEventImage();
+                } elseif (!isset($_GET['action'])) {
+                    $evenementController->updateEvent();
+                } else {
+                    $homeController->page404();
+                }
             } elseif ($method === 'GET' && isset($_GET['uiid'])) {
                 $evenementController->showEditEventForm();
             } else {

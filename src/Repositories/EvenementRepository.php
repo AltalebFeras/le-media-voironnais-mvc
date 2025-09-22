@@ -315,15 +315,83 @@ class EvenementRepository
     /**
      * Update event banner
      */
-    public function updateBanner(int $idEvenement, string $bannerPath): bool
+    public function updateEventBanner($idEvenement, $bannerPath): bool
     {
-        $sql = "UPDATE evenement SET bannerPath = :bannerPath WHERE idEvenement = :idEvenement";
-        $stmt = $this->pdo->prepare($sql);
+        try {
+            $query = "UPDATE evenement SET bannerPath = :bannerPath, updatedAt = NOW() WHERE idEvenement = :idEvenement";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([
+                'bannerPath' => $bannerPath,
+                'idEvenement' => $idEvenement
+            ]);
+        } catch (Exception $e) {
+            throw new Exception("Error updating event banner: " . $e->getMessage());
+        }
+    }
 
-        return $stmt->execute([
-            ':bannerPath' => $bannerPath,
-            ':idEvenement' => $idEvenement
-        ]);
+    public function addEventImage($idEvenement, $imagePath, $altText, $sortOrder): bool
+    {
+        try {
+            $query = "INSERT INTO event_image (idEvenement, imagePath, altText, sortOrder, createdAt) 
+                     VALUES (:idEvenement, :imagePath, :altText, :sortOrder, NOW())";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute([
+                'idEvenement' => $idEvenement,
+                'imagePath' => $imagePath,
+                'altText' => $altText,
+                'sortOrder' => $sortOrder
+            ]);
+        } catch (Exception $e) {
+            throw new Exception("Error adding event image: " . $e->getMessage());
+        }
+    }
+
+    public function getEventImages($idEvenement): array
+    {
+        try {
+            $query = "SELECT * FROM event_image WHERE idEvenement = :idEvenement ORDER BY sortOrder ASC, createdAt ASC";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['idEvenement' => $idEvenement]);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            throw new Exception("Error fetching event images: " . $e->getMessage());
+        }
+    }
+
+    public function getEventImageById($idEventImage): ?array
+    {
+        try {
+            $query = "SELECT * FROM event_image WHERE idEventImage = :idEventImage";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['idEventImage' => $idEventImage]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching event image: " . $e->getMessage());
+        }
+    }
+
+    public function deleteEventImage($idEventImage): bool
+    {
+        try {
+            $query = "DELETE FROM event_image WHERE idEventImage = :idEventImage";
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute(['idEventImage' => $idEventImage]);
+        } catch (Exception $e) {
+            throw new Exception("Error deleting event image: " . $e->getMessage());
+        }
+    }
+
+    public function getMaxImageSortOrder($idEvenement): int
+    {
+        try {
+            $query = "SELECT COALESCE(MAX(sortOrder), 0) FROM event_image WHERE idEvenement = :idEvenement";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['idEvenement' => $idEvenement]);
+            return (int)$stmt->fetchColumn();
+        } catch (Exception $e) {
+            throw new Exception("Error getting max sort order: " . $e->getMessage());
+        }
     }
 
     /**

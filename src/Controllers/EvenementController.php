@@ -48,6 +48,151 @@ class EvenementController extends AbstractController
     }
 
     /**
+     * Update event banner
+     */
+    public function updateBanner()
+    {
+        try {
+            $idUser = $_SESSION['idUser'];
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $idEvenement = $this->getId();
+
+            if (!$idEvenement) {
+                throw new Exception("ID d'événement invalide");
+            }
+
+            $evenement = $this->repo->getEventCompleteById($idEvenement);
+            if (!$evenement || $evenement['idUser'] != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cet événement");
+            }
+
+            $helper = new Helper();
+            $bannerPath = $helper->handleImageUpload('banner', 'banners');
+
+            $this->repo->updateEventBanner($idEvenement, $bannerPath);
+
+            $_SESSION['success'] = "La bannière a été mise à jour avec succès";
+            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+
+    /**
+     * Delete event banner
+     */
+    public function deleteBanner(): void
+    {
+        try {
+            $idUser = $_SESSION['idUser'];
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $idEvenement = $this->getId();
+
+            if (!$idEvenement) {
+                throw new Exception("ID d'événement invalide");
+            }
+
+            $evenement = $this->repo->getEventCompleteById($idEvenement);
+            if (!$evenement || $evenement['idUser'] != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cet événement");
+            }
+
+            $defaultBannerPath = 'assets/images/uploads/banners/default_banner.png';
+
+            if ($evenement['bannerPath'] !== $defaultBannerPath) {
+                $helper = new Helper();
+                $helper->handleDeleteImage($evenement['bannerPath']);
+            }
+
+            $this->repo->updateEventBanner($idEvenement, $defaultBannerPath);
+
+            $_SESSION['success'] = "La bannière a été réinitialisée avec succès";
+            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+
+    /**
+     * Add event image
+     */
+    public function addEventImage()
+    {
+        try {
+            $idUser = $_SESSION['idUser'];
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $idEvenement = $this->getId();
+
+            if (!$idEvenement) {
+                throw new Exception("ID d'événement invalide");
+            }
+
+            $evenement = $this->repo->getEventCompleteById($idEvenement);
+            if (!$evenement || $evenement['idUser'] != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cet événement");
+            }
+
+            $helper = new Helper();
+            $imagePath = $helper->handleImageUpload('eventImage', 'events');
+            $altText = isset($_POST['altText']) ? htmlspecialchars(trim($_POST['altText'])) : '';
+            // $idEventImage = $helper->generateUiid();
+
+            // Get current max sort order
+            $maxSortOrder = $this->repo->getMaxImageSortOrder($idEvenement);
+            $sortOrder = $maxSortOrder + 1;
+            
+            $this->repo->addEventImage($idEvenement, $imagePath, $altText, $sortOrder);
+
+            $_SESSION['success'] = "L'image a été ajoutée avec succès";
+            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+
+    /**
+     * Delete event image
+     */
+    public function deleteEventImage()
+    {
+        try {
+            $idUser = $_SESSION['idUser'];
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $idEventImage = isset($_GET['imageId']) ? (int)$_GET['imageId'] : null;
+            $idEvenement = $this->getId();
+
+            if (!$idEvenement || !$idEventImage) {
+                throw new Exception("Paramètres invalides");
+            }
+
+            $evenement = $this->repo->getEventCompleteById($idEvenement);
+            if (!$evenement || $evenement['idUser'] != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cet événement");
+            }
+
+            $image = $this->repo->getEventImageById($idEventImage);
+            if (!$image || $image['idEvenement'] != $idEvenement) {
+                throw new Exception("Image introuvable");
+            }
+
+            // Delete physical file
+            $helper = new Helper();
+            $helper->handleDeleteImage($image['imagePath']);
+
+            // Delete from database
+            $this->repo->deleteEventImage($idEventImage);
+
+            $_SESSION['success'] = "L'image a été supprimée avec succès";
+            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+    /**
      * Display event details
      */
     public function displayEventDetails()
@@ -68,11 +213,13 @@ class EvenementController extends AbstractController
             }
 
             $ville = $this->repo->getVilleById($evenement['idVille']);
+            $images = $this->repo->getEventImages($idEvenement);
 
             $this->render('evenement/voir_evenement', [
                 'evenement' => $evenement,
                 'ville' => $ville,
                 'title' => 'Détails de l\'événement',
+                'eventImages' => $images,
                 'isOwner' => true
             ]);
         } catch (Exception $e) {
@@ -80,7 +227,6 @@ class EvenementController extends AbstractController
             $this->redirect('mes_evenements?error=true');
         }
     }
-
     /**
      * Show form to add event
      */
@@ -159,7 +305,7 @@ class EvenementController extends AbstractController
             $this->returnAllErrors($errors, 'evenement/ajouter?error=true');
 
             // default path for banner
-            $bannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
+            $bannerPath =  'assets/images/uploads/banners/default_banner.png';
             // Create new event
             $evenement = new Evenement();
             $evenement->setTitle($title)
@@ -263,7 +409,7 @@ class EvenementController extends AbstractController
     public function updateEvent()
     {
         try {
-            
+
             $idUser = $_SESSION['idUser'];
             $uiid =  isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
             $idEvenement =  $this->getId();
