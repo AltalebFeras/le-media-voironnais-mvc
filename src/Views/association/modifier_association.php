@@ -57,6 +57,7 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- End of new fields -->
 
                         <div class="flex-row">
                             <div class="max-width-50">

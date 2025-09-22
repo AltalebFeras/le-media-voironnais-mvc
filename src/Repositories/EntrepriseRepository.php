@@ -148,12 +148,13 @@ class EntrepriseRepository
     {
         try {
             $query = "INSERT INTO entreprise 
-                     (name, slug, description, logoPath, bannerPath, address, phone, email, website, siret, status, isActive, idUser, idVille, createdAt) 
+                     (uiid, name, slug, description, logoPath, bannerPath, address, phone, email, website, siret, status, isActive, idUser, idVille, createdAt) 
                      VALUES 
-                     (:name, :slug, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :status, :isActive, :idUser, :idVille, :createdAt)";
+                     (:uiid, :name, :slug, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :status, :isActive, :idUser, :idVille, :createdAt)";
 
             $stmt = $this->DB->prepare($query);
             $stmt->execute([
+                'uiid' => $entreprise->getUiid(),
                 'name' => $entreprise->getName(),
                 'slug' => $entreprise->getSlug(),
                 'description' => $entreprise->getDescription(),

@@ -8,6 +8,7 @@ use src\Services\Hydration;
 class Entreprise
 {
     private int $idEntreprise;
+    private string $uiid;
     private string $name;
     private string $slug;
     private ?string $description;
@@ -37,7 +38,10 @@ class Entreprise
     {
         return $this->idEntreprise;
     }
-
+    public function getUiid()
+    {
+        return $this->uiid;
+    }
     public function getName(): string
     {
         return $this->name;
@@ -225,7 +229,12 @@ class Entreprise
         $this->idEntreprise = $idEntreprise;
         return $this;
     }
+    public function setUiid($uiid)
+    {
+        $this->uiid = $uiid;
 
+        return $this;
+    }
     public function setName(string $name): static
     {
         $this->name = $name;

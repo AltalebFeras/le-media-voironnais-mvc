@@ -12,7 +12,7 @@
         <div class="max-width-50">
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
-            <form action="<?= HOME_URL . 'entreprise/modifier?uiid=' . $entreprise->getIdEntreprise() ?>" method="post" enctype="multipart/form-data">
+            <form action="<?= HOME_URL . 'entreprise/modifier?uiid=' . $entreprise->getUiid() ?>" method="post" enctype="multipart/form-data">
                 <div class="card">
                     <div>
                         <div>
@@ -39,23 +39,28 @@
                                 value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['address'])) ? htmlspecialchars($_SESSION['form_data']['address']) : htmlspecialchars($entreprise->getAddress() ?? '') ?>">
                         </div>
                         <!-- New postal code and city fields -->
+                          <!-- Postal code and city fields -->
                         <div class="flex-row">
                             <div class="max-width-50">
                                 <div>
                                     <label for="codePostal">Code postal</label>
-                                    <input type="text" id="codePostal" name="codePostal" maxlength="5"
-                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['codePostal'])) ? htmlspecialchars($_SESSION['form_data']['codePostal']) : '' ?>">
+                                    <input type="text" id="codePostal" name="codePostal" maxlength="5" 
+                                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['codePostal'])) ? htmlspecialchars($_SESSION['form_data']['codePostal']) : ($ville ? htmlspecialchars($ville['ville_code_postal']) : '') ?>">
                                     <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
                                 </div>
                             </div>
                             <div class="max-width-50">
                                 <div>
                                     <label for="ville">Ville</label>
-                                    <select id="ville" name="ville" disabled>
-                                        <option value="">Sélectionnez une ville</option>
+                                    <select id="ville" name="ville">
+                                        <?php if ($ville): ?>
+                                            <option value="<?= $ville['ville_nom_reel'] ?>" selected><?= $ville['ville_nom_reel'] ?></option>
+                                        <?php else: ?>
+                                            <option value="">Sélectionnez une ville</option>
+                                        <?php endif; ?>
                                     </select>
-                                    <input type="hidden" id="idVille" name="idVille"
-                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['idVille'])) ? htmlspecialchars($_SESSION['form_data']['idVille']) : '' ?>">
+                                    <input type="hidden" id="idVille" name="idVille" 
+                                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['idVille'])) ? htmlspecialchars($_SESSION['form_data']['idVille']) : htmlspecialchars($entreprise->getIdVille()) ?>">
                                 </div>
                             </div>
                         </div>
@@ -109,7 +114,7 @@
                     </div>
 
                     <div class="flex-row justify-content-between mt">
-                        <a href="<?= HOME_URL . 'mes_entreprises' ?>" class="btn">Annuler</a>
+                        <a href="<?= HOME_URL . 'mes_entreprises?action=voir&uiid=' . $entreprise->getUiid() ?>" class="btn">Annuler</a>
                         <button type="submit" class="btn">Enregistrer les modifications</button>
                     </div>
                 </div>

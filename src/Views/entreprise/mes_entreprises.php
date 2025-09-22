@@ -60,7 +60,7 @@
                         </div>
 
                         <div class="flex-row justify-content-between mt">
-                            <a href="<?= HOME_URL . 'mes_entreprises?action=voir&uiid=' . $entreprise->getIdEntreprise() ?>" class="btn linkNotDecorated">
+                            <a href="<?= HOME_URL . 'mes_entreprises?action=voir&uiid=' . $entreprise->getUiid() ?>" class="btn linkNotDecorated">
                                 Voir
                             </a>
                         </div>

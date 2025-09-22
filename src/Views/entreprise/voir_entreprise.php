@@ -123,7 +123,7 @@
                         
                         <?php if ($isOwner): ?>
                             <div class="flex-row justify-content-between mt-4">
-                                <a href="<?= HOME_URL.'entreprise/modifier?uiid='.$entreprise->getIdEntreprise() ?>" class="btn linkNotDecorated">
+                                <a href="<?= HOME_URL.'entreprise/modifier?uiid='.$entreprise->getUiid() ?>" class="btn linkNotDecorated">
                                     Modifier l'entreprise
                                 </a>
                                 <button type="button" class="btn btn-danger"
@@ -180,7 +180,7 @@
                     </div>
                     <div class="flex-row justify-content-between">
                         <button type="button" class="btn" onclick="document.getElementById('deleteModal').style.display='none'">Annuler</button>
-                        <form action="<?= HOME_URL . 'mes_entreprises?action=delete&uiid=' . $entreprise->getIdEntreprise() ?>" method="post">
+                        <form action="<?= HOME_URL . 'mes_entreprises?action=delete&uiid=' . $entreprise->getUiid() ?>" method="post">
                             <button type="submit" class="btn deconnexion">Supprimer</button>
                         </form>
                     </div>

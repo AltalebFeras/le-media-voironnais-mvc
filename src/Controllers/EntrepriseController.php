@@ -124,8 +124,10 @@ class EntrepriseController extends AbstractController
                 ->setBannerPath($bannerPath);
             // Generate unique slug
             $helper = new Helper();
-            $slug = $helper->generateSlug($name);
+            $slug = $helper->generateSlug($nameVille, $name);
             $existSlug = $this->repo->isSlugExists($slug);
+            $uiid = $helper->generateUiid();
+            $entreprise->setUiid($uiid);
 
             if ($existSlug) {
                 $suffix = 1;
@@ -160,7 +162,7 @@ class EntrepriseController extends AbstractController
 
         try {
             $idUser = $_SESSION['idUser'];
-            $idEntreprise = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
+            $idEntreprise = $this->getId();
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
 
             if (!$entreprise || !$idEntreprise) {
@@ -171,9 +173,10 @@ class EntrepriseController extends AbstractController
             if ($entreprise->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
             }
-
+            $ville = $this->AssocRepo->getVilleById($entreprise->getIdVille());
             $this->render('entreprise/modifier_entreprise', [
                 'entreprise' => $entreprise,
+                'ville' => $ville,
                 'title' => 'Modifier l\'entreprise'
             ]);
         } catch (Exception $e) {
@@ -190,7 +193,8 @@ class EntrepriseController extends AbstractController
 
         try {
             $idUser = $_SESSION['idUser'];
-            $idEntreprise = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $idEntreprise = $this->getId();
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
 
             if (!$entreprise || !$idEntreprise) {
@@ -246,8 +250,7 @@ class EntrepriseController extends AbstractController
             // Regenerate slug if name changed - compare with original name
             if ($name !== $originalName) {
                 $helper = new Helper();
-                $slug = $helper->generateSlug($name);
-
+                $slug = $helper->generateSlug($nameVille, $name);
                 $existSlug = $this->repo->isSlugExists($slug);
 
                 if ($existSlug) {
@@ -266,16 +269,16 @@ class EntrepriseController extends AbstractController
             // Use model validation
             $modelErrors = $entreprise->validate();
             $errors = array_merge($errors, $modelErrors);
-            $this->returnAllErrors($errors, 'entreprise/modifier?id=' . $idEntreprise . '&error=true');
+            $this->returnAllErrors($errors, 'entreprise/modifier?uiid=' . $uiid . '&error=true');
 
             $this->repo->updateEntreprise($entreprise);
 
             $_SESSION['success'] = "L'entreprise a été mise à jour avec succès";
-            $this->redirect('mes_entreprises');
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid);
         } catch (Exception $e) {
             $_SESSION['form_data'] = $_POST;
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('entreprise/modifier?id=' . $idEntreprise . '&error=true');
+            $this->redirect('entreprise/modifier?uiid=' . $uiid . '&error=true');
         }
     }
 
@@ -286,7 +289,8 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $idEntreprise = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $idEntreprise = $this->getId();
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
 
             if (!$entreprise || !$idEntreprise) {
@@ -308,7 +312,7 @@ class EntrepriseController extends AbstractController
             $this->redirect('mes_entreprises');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_entreprises');
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid . '&error=true');
         }
     }
 }
