@@ -280,4 +280,5 @@
             </div>
         <?php endif; ?>
 </main>
+<script src="<?= HOME_URL . 'assets/javascript/banner-logo-management.js' ?>"></script>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
