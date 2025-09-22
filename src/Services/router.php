@@ -98,7 +98,7 @@ switch ($route) {
     // events public routes
     case HOME_URL . 'evenements':
         $evenementController->listEvents();
-    break;
+        break;
         // User routes
 
     case HOME_URL . 'dashboard':

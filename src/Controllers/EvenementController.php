@@ -693,20 +693,30 @@ class EvenementController extends AbstractController
 
     public function listEvents()
     {
- try {
+        try {
+            // Get upcoming events (next 3 events)
+            $upcomingEvents = $this->repo->getUpcomingEvents(3);
+            
+            // Get recent events (last 4 events that already happened)
+            $recentEvents = $this->repo->getRecentEvents(4);
+            
+            // Get all events with pagination
             $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-            $evenementsPerPage = 9;
-            $evenements = $this->repo->getEvents($currentPage, $evenementsPerPage);
+            $evenementsPerPage = 12;
+            $allEvents = $this->repo->getEvents($currentPage, $evenementsPerPage);
             $totalEvenements = $this->repo->countEvents();
             $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
+            
             $this->render('evenement/publique_evenements_listes', [
-                'evenements' => $evenements,
-                'title' => 'Tous les événements',
+                'upcomingEvents' => $upcomingEvents,
+                'recentEvents' => $recentEvents,
+                'allEvents' => $allEvents,
+                'title' => 'Événements',
                 'total' => $totalEvenements,
                 'currentPage' => $currentPage,
                 'totalPages' => $totalPages
             ]);
         } catch (Exception $e) {
-            $this->redirect('evenements?error=true');
+            $this->redirect('?error=true');
         }    }
 }
