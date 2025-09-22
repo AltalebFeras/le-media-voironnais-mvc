@@ -9,6 +9,7 @@ use src\Models\User;
 use src\Repositories\UserRepository;
 use src\Services\Encrypt_decrypt;
 use src\Services\Mail;
+use src\Services\Helper;
 
 class UserController extends AbstractController
 {
@@ -756,233 +757,121 @@ class UserController extends AbstractController
     }
     public function editProfilePicture()
     {
-        $idUser = $_SESSION['idUser'];
-        $currentPicturePath = $_SESSION['avatarPath'] ?? null;
+        try {
+            $idUser = $_SESSION['idUser'];
+            $currentPicturePath = $_SESSION['avatarPath'] ?? null;
 
-        // Use the correct avatars directory for both upload and reference
-        $uploadDir = __DIR__ . '/../../public/assets/images/uploads/avatars/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
+            // Handle image upload using Helper
+            $helper = new Helper();
+            $avatarPath = $helper->handleImageUpload('profilePicture', 'avatars');
 
-        // check if a file was uploaded
-        if (!empty($_FILES) && isset($_FILES['profilePicture']) && $_FILES['profilePicture']['error'] == UPLOAD_ERR_OK) {
-            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-            $maxFileSize = 10 * 1024 * 1024; // 10MB (adjust as needed)
-
-            $fileTmpPath = $_FILES['profilePicture']['tmp_name'];
-            $fileNameOriginal = $_FILES['profilePicture']['name'];
-            $fileSize = $_FILES['profilePicture']['size'];
-            $fileType = mime_content_type($fileTmpPath);
-            $fileExtension = strtolower(pathinfo($fileNameOriginal, PATHINFO_EXTENSION));
-
-            // Validate file type and size
-            if (!in_array($fileType, $allowedMimeTypes) || !in_array($fileExtension, $allowedExtensions)) {
-                $_SESSION['error'] = 'Format de fichier non autorisé. Veuillez télécharger une image (jpg, jpeg, png, gif, webp).';
-                $this->redirect('mon_compte?error=true');
-            }
-            if ($fileSize > $maxFileSize) {
-                $_SESSION['error'] = 'La taille de l\'image ne doit pas dépasser ' . ($maxFileSize / (1024 * 1024)) . ' Mo.';
-                $this->redirect('mon_compte?error=true');
+            // Delete old profile picture if not default
+            if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') === false) {
+                $oldImagePath = str_replace(DOMAIN . HOME_URL, '', $currentPicturePath);
+                $helper->handleDeleteImage($oldImagePath);
             }
 
-            $fileName = uniqid() . '_' . basename($fileNameOriginal);
-            $uploadFile = "{$uploadDir}{$fileName}";
+            // Build new profile picture URL
+            $newProfilePicturePath = DOMAIN . HOME_URL . $avatarPath;
+            
+            // Update database
+            $this->repo->updateProfilePicture($idUser, $newProfilePicturePath);
+            $_SESSION['avatarPath'] = $newProfilePicturePath;
 
-            // move the uploaded file to the target directory
-            if (move_uploaded_file($fileTmpPath, $uploadFile)) {
-                // delete the old profile picture from the server if it's not the default picture
-                if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') === false) {
-                    $oldFilePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/avatars/', __DIR__ . '/../../public/assets/images/uploads/avatars/', $currentPicturePath);
-                    if (file_exists($oldFilePath)) {
-                        unlink($oldFilePath);
-                    }
-                }
-                $newProfilePicturePath = DOMAIN . HOME_URL . 'assets/images/uploads/avatars/' . $fileName;
-                $this->repo->updateProfilePicture($idUser, $newProfilePicturePath);
-
-                $_SESSION['avatarPath'] = $newProfilePicturePath;
-
-                $_SESSION['success'] = 'Votre photo de profil a été mise à jour avec succès!';
-                $this->redirect('mon_compte');
-            } else {
-                $_SESSION['error'] = 'Une erreur s\'est produite lors du téléchargement de la photo de profil. Veuillez réessayer.';
-                $this->redirect('mon_compte?error=true');
-            }
-        } else {
-            $_SESSION['error'] = 'Veuillez sélectionner une image à télécharger.';
+            $_SESSION['success'] = 'Votre photo de profil a été mise à jour avec succès!';
+            $this->redirect('mon_compte');
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
             $this->redirect('mon_compte?error=true');
         }
     }
+
     public function deleteProfilePicture()
     {
-        $idUser = $_SESSION['idUser'];
-        $currentPicturePath = $_SESSION['avatarPath']   ?? null;
-        // check if the current profile picture is not the default one
-        if (!$currentPicturePath || strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') !== false) {
-            $_SESSION['error'] = 'Aucun avatar à supprimer.';
+        try {
+            $idUser = $_SESSION['idUser'];
+            $currentPicturePath = $_SESSION['avatarPath'] ?? null;
+
+            // Check if current profile picture is not the default one
+            if (!$currentPicturePath || strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') !== false) {
+                throw new Exception('Aucun avatar à supprimer.');
+            }
+
+            // Delete file from server using Helper
+            $helper = new Helper();
+            $oldImagePath = str_replace(DOMAIN . HOME_URL, '', $currentPicturePath);
+            $helper->handleDeleteImage($oldImagePath);
+
+            // Set to default profile picture
+            $defaultProfilePicturePath = DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
+            $this->repo->updateProfilePicture($idUser, $defaultProfilePicturePath);
+            $_SESSION['avatarPath'] = $defaultProfilePicturePath;
+
+            $_SESSION['success'] = 'Votre photo de profil a été supprimée avec succès!';
+            $this->redirect('mon_compte');
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
             $this->redirect('mon_compte');
         }
-        // here we delete file from server if it's not the default picture
-        if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') === false) {
-            $filePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/avatars/', __DIR__ . '/../../public/assets/images/uploads/avatars/', $currentPicturePath);
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
-        }
-
-        // then we update profile picture path in the database to the default picture
-        $defaultProfilePicturePath = DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
-        $this->repo->updateProfilePicture($idUser, $defaultProfilePicturePath);
-
-        // we set default profile picture in session
-        $_SESSION['avatarPath'] = $defaultProfilePicturePath;
-
-        // finally we redirect with success message
-        $_SESSION['success'] = 'Votre photo de profil a été supprimée avec succès!';
-        $this->redirect('mon_compte');
     }
+
     public function editBanner()
     {
-        $idUser = $_SESSION['idUser'];
-        $currentBannerPath = $_SESSION['bannerPath'] ?? null;
+        try {
+            $idUser = $_SESSION['idUser'];
+            $currentBannerPath = $_SESSION['bannerPath'] ?? null;
 
-        if (!empty($_FILES) && isset($_FILES['banner'])) {
-            // Handle upload errors
-            if ($_FILES['banner']['error'] !== UPLOAD_ERR_OK) {
-                $errorMsg = 'Erreur lors du téléchargement de la bannière.';
-                switch ($_FILES['banner']['error']) {
-                    case UPLOAD_ERR_INI_SIZE:
-                    case UPLOAD_ERR_FORM_SIZE:
-                        $errorMsg = "Le fichier est trop volumineux. Limite serveur : " . ini_get('upload_max_filesize') . ".";
-                        break;
-                    case UPLOAD_ERR_PARTIAL:
-                        $errorMsg = "Le fichier n'a été que partiellement téléchargé.";
-                        break;
-                    case UPLOAD_ERR_NO_FILE:
-                        $errorMsg = "Aucun fichier n'a été téléchargé.";
-                        break;
-                    case UPLOAD_ERR_NO_TMP_DIR:
-                        $errorMsg = "Dossier temporaire manquant.";
-                        break;
-                    case UPLOAD_ERR_CANT_WRITE:
-                        $errorMsg = "Échec de l'écriture du fichier sur le disque.";
-                        break;
-                    case UPLOAD_ERR_EXTENSION:
-                        $errorMsg = "Une extension PHP a arrêté le téléchargement du fichier.";
-                        break;
-                }
-                $_SESSION['error'] = $errorMsg;
-                $this->redirect('mon_compte?error=true');
-            }
+            // Handle image upload using Helper
+            $helper = new Helper();
+            $bannerPath = $helper->handleImageUpload('banner', 'banners');
 
-            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-            $maxFileSize = 5 * 1024 * 1024; // 5MB
-
-            $uploadDir = __DIR__ . '/../../public/assets/images/uploads/banners/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-
-            $fileTmpPath = $_FILES['banner']['tmp_name'];
-            $fileNameOriginal = $_FILES['banner']['name'];
-            $fileSize = $_FILES['banner']['size'];
-            $fileType = mime_content_type($fileTmpPath);
-            $fileExtension = strtolower(pathinfo($fileNameOriginal, PATHINFO_EXTENSION));
-
-            // Check if file is actually uploaded
-            if (!is_uploaded_file($fileTmpPath)) {
-                $_SESSION['error'] = 'Le fichier n\'a pas été téléchargé correctement.';
-                $this->redirect('mon_compte?error=true');
-            }
-
-            // Validate file type and size
-            if (!in_array($fileType, $allowedMimeTypes) || !in_array($fileExtension, $allowedExtensions)) {
-                $_SESSION['error'] = 'Format de fichier non autorisé. Veuillez télécharger une image (jpg, jpeg, png, gif, webp).';
-                $this->redirect('mon_compte?error=true');
-            }
-            if ($fileSize > $maxFileSize) {
-                $_SESSION['error'] = 'La taille de l\'image ne doit pas dépasser 2 Mo.';
-                $this->redirect('mon_compte?error=true');
-            }
-
-            $fileName = uniqid() . '_' . basename($fileNameOriginal);
-            $uploadFile = "{$uploadDir}{$fileName}";
-
-            // Handle EXIF orientation for JPEG images
-            if ($fileExtension === 'jpg' || $fileExtension === 'jpeg') {
-                $image = @imagecreatefromjpeg($fileTmpPath);
-                if ($image && function_exists('exif_read_data')) {
-                    $exif = @exif_read_data($fileTmpPath);
-                    if (!empty($exif['Orientation'])) {
-                        switch ($exif['Orientation']) {
-                            case 3:
-                                $image = imagerotate($image, 180, 0);
-                                break;
-                            case 6:
-                                $image = imagerotate($image, -90, 0);
-                                break;
-                            case 8:
-                                $image = imagerotate($image, 90, 0);
-                                break;
-                        }
-                    }
-                }
-                if ($image) {
-                    imagejpeg($image, $uploadFile, 90);
-                    imagedestroy($image);
-                } else {
-                    $_SESSION['error'] = 'Impossible de traiter l\'image JPEG.';
-                    $this->redirect('mon_compte?error=true');
-                }
-            } else {
-                // Move uploaded file for non-JPEG images
-                if (!move_uploaded_file($fileTmpPath, $uploadFile)) {
-                    $_SESSION['error'] = 'Erreur lors du déplacement du fichier téléchargé.';
-                    $this->redirect('mon_compte?error=true');
-                }
-            }
-
-            // Delete old banner if not empty
+            // Delete old banner if not default
             if ($currentBannerPath && strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') === false) {
-                $oldFilePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/banners/', __DIR__ . '/../../public/assets/images/uploads/banners/', $currentBannerPath);
-                if (file_exists($oldFilePath)) {
-                    unlink($oldFilePath);
-                }
+                $oldImagePath = str_replace(DOMAIN . HOME_URL, '', $currentBannerPath);
+                $helper->handleDeleteImage($oldImagePath);
             }
-            $newBannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/' . $fileName;
-            $this->repo->updateBanner($idUser, $newBannerPath);
 
+            // Build new banner URL
+            $newBannerPath = DOMAIN . HOME_URL . $bannerPath;
+            
+            // Update database
+            $this->repo->updateBanner($idUser, $newBannerPath);
             $_SESSION['bannerPath'] = $newBannerPath;
+
             $_SESSION['success'] = 'Votre bannière a été mise à jour avec succès!';
             $this->redirect('mon_compte');
-        } else {
-            $_SESSION['error'] = 'Veuillez sélectionner une image à télécharger.';
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
             $this->redirect('mon_compte?error=true');
         }
     }
 
     public function deleteBanner()
     {
-        $idUser = $_SESSION['idUser'];
-        $currentBannerPath = $_SESSION['bannerPath'] ?? null;
-        if (!$currentBannerPath || strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') !== false) {
-            $_SESSION['error'] = 'Aucune bannière à supprimer.';
+        try {
+            $idUser = $_SESSION['idUser'];
+            $currentBannerPath = $_SESSION['bannerPath'] ?? null;
+
+            // Check if current banner is not the default one
+            if (!$currentBannerPath || strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') !== false) {
+                throw new Exception('Aucune bannière à supprimer.');
+            }
+
+            // Delete file from server using Helper
+            $helper = new Helper();
+            $oldImagePath = str_replace(DOMAIN . HOME_URL, '', $currentBannerPath);
+            $helper->handleDeleteImage($oldImagePath);
+
+            // Set to default banner
+            $defaultBannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.jpg';
+            $this->repo->updateBanner($idUser, $defaultBannerPath);
+            $_SESSION['bannerPath'] = $defaultBannerPath;
+
+            $_SESSION['success'] = 'Votre bannière a été supprimée avec succès!';
+            $this->redirect('mon_compte');
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
             $this->redirect('mon_compte');
         }
-        // Delete file from server
-        if ($currentBannerPath) {
-            $filePath = str_replace(DOMAIN . HOME_URL . 'assets/images/uploads/banners/', __DIR__ . '/../../public/assets/images/uploads/banners/', $currentBannerPath);
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
-        }
-        $defaultBannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.jpg';
-        $this->repo->updateBanner($idUser, $defaultBannerPath);
-        $_SESSION['bannerPath'] = $defaultBannerPath;
-        $_SESSION['success'] = 'Votre bannière a été supprimée avec succès!';
-        $this->redirect('mon_compte');
     }
 }
