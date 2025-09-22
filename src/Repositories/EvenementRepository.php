@@ -249,7 +249,7 @@ class EvenementRepository
     public function getUserEntreprise($idUser): array
     {
         $sql = "SELECT e.idEntreprise, e.name FROM entreprise e 
-                WHERE e.idUser = :idUser  AND e.isDeleted = 0
+                WHERE e.idUser = :idUser  AND e.isDeleted = 0 AND e.isActive = 1
                 ORDER BY e.name ASC";
 
         $stmt = $this->pdo->prepare($sql);
@@ -257,6 +257,15 @@ class EvenementRepository
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function isEntrepriseActiveAndPublic($idEntreprise): bool
+    {
+        $sql = "SELECT COUNT(*) FROM entreprise WHERE idEntreprise = :idEntreprise AND isActive = 1 AND isDeleted = 0 AND isPublic = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idEntreprise', $idEntreprise, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() > 0;
     }
     /**
      * Get villes by postal code

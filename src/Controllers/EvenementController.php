@@ -142,6 +142,11 @@ class EvenementController extends AbstractController
             if ($idEntreprise && !in_array($idEntreprise, $entrepriseIds)) {
                 $errors['idEntreprise'] = "L'entreprise sélectionnée est invalide";
             }
+            // verify if the entreprise is active
+            $isActiveEntreprise = $this->repo->isEntrepriseActiveAndPublic($idEntreprise);
+            if (!$isActiveEntreprise) {
+                $errors['idEntreprise'] = "L'entreprise sélectionnée n'est pas active ni publique";
+            }
             // Ville and category existence
             $nameVille = $this->repo->isVilleExists($idVille);
             if (!$nameVille) {
@@ -300,6 +305,7 @@ class EvenementController extends AbstractController
             $currency = isset($_POST['currency']) ? htmlspecialchars(trim($_POST['currency'])) : 'EUR';
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
             $idAssociation = isset($_POST['idAssociation']) && !empty($_POST['idAssociation']) ? (int)$_POST['idAssociation'] : null;
+            $idEntreprise = isset($_POST['idEntreprise']) && !empty($_POST['idEntreprise']) ? (int)$_POST['idEntreprise'] : null;
             $idEventCategory = isset($_POST['idEventCategory']) ? (int)$_POST['idEventCategory'] : null;
             $isPublic = isset($_POST['isPublic']) ? 1 : 0;
             $requiresApproval = isset($_POST['requiresApproval']) ? 1 : 0;
@@ -316,6 +322,19 @@ class EvenementController extends AbstractController
             }, $userAssociations);
             if ($idAssociation && !in_array($idAssociation, $associationIds)) {
                 $errors['idAssociation'] = "L'association sélectionnée est invalide";
+            }
+            // validation entreprise ownership
+            $userEntreprises = $this->repo->getUserEntreprise($idUser);
+            $entrepriseIds = array_map(function ($ent) {
+                return is_object($ent) ? $ent->getIdEntreprise() : $ent['idEntreprise'];
+            }, $userEntreprises);
+            if ($idEntreprise && !in_array($idEntreprise, $entrepriseIds)) {
+                $errors['idEntreprise'] = "L'entreprise sélectionnée est invalide";
+            }
+            // verify if the entreprise is active
+            $isActiveEntreprise = $this->repo->isEntrepriseActiveAndPublic($idEntreprise);
+            if (!$isActiveEntreprise) {
+                $errors['idEntreprise'] = "L'entreprise sélectionnée n'est pas active ni publique";
             }
             $nameVille = $this->repo->isVilleExists($idVille);
             if (!$nameVille) {
@@ -696,17 +715,17 @@ class EvenementController extends AbstractController
         try {
             // Get upcoming events (next 3 events)
             $upcomingEvents = $this->repo->getUpcomingEvents(3);
-            
+
             // Get recent events (last 4 events that already happened)
             $recentEvents = $this->repo->getRecentEvents(4);
-            
+
             // Get all events with pagination
             $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
             $evenementsPerPage = 12;
             $allEvents = $this->repo->getEvents($currentPage, $evenementsPerPage);
             $totalEvenements = $this->repo->countEvents();
             $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
-            
+
             $this->render('evenement/publique_evenements_listes', [
                 'upcomingEvents' => $upcomingEvents,
                 'recentEvents' => $recentEvents,
@@ -718,5 +737,6 @@ class EvenementController extends AbstractController
             ]);
         } catch (Exception $e) {
             $this->redirect('?error=true');
-        }    }
+        }
+    }
 }
