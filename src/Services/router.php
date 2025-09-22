@@ -197,7 +197,19 @@ switch ($route) {
     case HOME_URL . 'entreprise/modifier':
         if ($connectionSecured) {
             if ($method === 'POST') {
-                $entrepriseController->updateEntreprise();
+                if (isset($_GET['action']) && $_GET['action'] === 'modifier_banner') {
+                    $entrepriseController->updateBanner();
+                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_banner') {
+                    $entrepriseController->deleteBanner();
+                } elseif (isset($_GET['action']) && $_GET['action'] === 'modifier_logo') {
+                    $entrepriseController->updateLogo();
+                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_logo') {
+                    $entrepriseController->deleteLogo();
+                } elseif (!isset($_GET['action'])) {
+                    $entrepriseController->updateEntreprise();
+                } else {
+                    $homeController->page404();
+                }
             } elseif ($method === 'GET' && isset($_GET['uiid'])) {
                 $entrepriseController->showEditForm();
             } else {

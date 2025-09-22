@@ -21,7 +21,7 @@
             
             <?php if ($isOwner): ?>
                 <div class="entreprise-banner-actions">
-                    <form method="post" action="<?= HOME_URL . 'entreprise/edit_banner?uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
+                    <form method="post" action="<?= HOME_URL . 'entreprise/modifier?action=modifier_banner&uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
                         <label for="bannerInput" class="btn">
                             Changer bannière
                             <input type="file" id="bannerInput" name="banner" accept="image/*" required>
@@ -30,7 +30,7 @@
                         <button type="button" id="cancelBannerBtn" class="btn" style="display:none;">Annuler</button>
                     </form>
                     <?php if ($entreprise->getBannerPath()): ?>
-                        <form method="post" action="<?= HOME_URL . 'entreprise/delete_banner?uiid=' . $entreprise->getUiid() ?>">
+                        <form method="post" action="<?= HOME_URL . 'entreprise/modifier?action=supprimer_banner&uiid=' . $entreprise->getUiid() ?>">
                             <button type="submit" class="btn bg-danger">Supprimer</button>
                         </form>
                     <?php endif; ?>
@@ -45,7 +45,7 @@
                          data-original-src="<?= $entreprise->getLogoPath() ?: HOME_URL . 'assets/images/default-entreprise-logo.png' ?>"
                          alt="Logo de <?= $entreprise->getName() ?>">
                     
-                    <form method="post" action="<?= HOME_URL . 'entreprise/edit_logo?uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
+                    <form method="post" action="<?= HOME_URL . 'entreprise/modifier?action=modifier_logo&uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
                         <label for="logoInput" class="btn">
                             Modifier logo
                             <input type="file" id="logoInput" name="logo" accept="image/*" required>
@@ -54,7 +54,7 @@
                         <button type="button" id="cancelLogo" class="btn" style="display:none;">Annuler</button>
                     </form>
                     <?php if ($entreprise->getLogoPath()): ?>
-                        <form action="<?= HOME_URL . 'entreprise/delete_logo?uiid=' . $entreprise->getUiid() ?>" method="post">
+                        <form action="<?= HOME_URL . 'entreprise/modifier?action=supprimer_logo&uiid=' . $entreprise->getUiid() ?>" method="post">
                             <button type="submit" class="btn">Supprimer</button>
                         </form>
                     <?php endif; ?>
@@ -67,6 +67,8 @@
                 </div>
             <?php endif; ?>
         </div>
+
+        <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
         <!-- Main Content Below Banner -->
         <div class="entreprise-main-content" >

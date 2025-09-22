@@ -552,4 +552,46 @@ class EntrepriseRepository
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function updateEntrepriseBanner(Entreprise $entreprise): bool
+    {
+        try {
+            $query = "UPDATE entreprise SET 
+                     bannerPath = :bannerPath,
+                     updatedAt = :updatedAt
+                     WHERE idEntreprise = :idEntreprise";
+
+            $stmt = $this->DB->prepare($query);
+            $result = $stmt->execute([
+                'bannerPath' => $entreprise->getBannerPath(),
+                'updatedAt' => $entreprise->getUpdatedAt(),
+                'idEntreprise' => $entreprise->getIdEntreprise()
+            ]);
+
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception("Error updating entreprise banner: " . $e->getMessage());
+        }
+    }
+
+    public function updateEntrepriseLogo(Entreprise $entreprise): bool
+    {
+        try {
+            $query = "UPDATE entreprise SET 
+                     logoPath = :logoPath,
+                     updatedAt = :updatedAt
+                     WHERE idEntreprise = :idEntreprise";
+
+            $stmt = $this->DB->prepare($query);
+            $result = $stmt->execute([
+                'logoPath' => $entreprise->getLogoPath(),
+                'updatedAt' => $entreprise->getUpdatedAt(),
+                'idEntreprise' => $entreprise->getIdEntreprise()
+            ]);
+
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception("Error updating entreprise logo: " . $e->getMessage());
+        }
+    }
 }

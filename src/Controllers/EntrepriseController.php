@@ -103,8 +103,8 @@ class EntrepriseController extends AbstractController
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
             // default paths for logo and banner
-            $logoPath = DOMAIN . HOME_URL . 'assets/images/uploads/logos/default_logo.png';
-            $bannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
+            $logoPath = 'assets/images/uploads/logos/default_logo.png';
+            $bannerPath = 'assets/images/uploads/banners/default_banner.png';
 
             // Create new company
             $entreprise = new Entreprise();
@@ -310,6 +310,166 @@ class EntrepriseController extends AbstractController
 
             $_SESSION['success'] = "L'entreprise a été supprimée avec succès";
             $this->redirect('mes_entreprises');
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+
+    public function updateBanner()
+    {
+        try {
+            $idEntreprise = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            if (!$idEntreprise) {
+                throw new Exception("ID d'entreprise invalide");
+            }
+
+            $idUser = $_SESSION['idUser'];
+            $entreprise = $this->repo->getEntrepriseById($idEntreprise);
+
+            if (!$entreprise) {
+                throw new Exception("L'entreprise demandée n'existe pas");
+            }
+
+            if ($entreprise->getIdUser() != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
+            }
+
+            // Handle image upload
+            $helper = new Helper();
+            $bannerPath = $helper->handleImageUpload('banner', 'banners');
+
+            // Update entreprise banner path
+            $entreprise->setBannerPath($bannerPath)
+                ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+            $this->repo->updateEntrepriseBanner($entreprise);
+
+            $_SESSION['success'] = "La bannière a été mise à jour avec succès";
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+
+    public function deleteBanner(): void
+    {
+        try {
+            $idEntreprise = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            if (!$idEntreprise) {
+                throw new Exception("ID d'entreprise invalide");
+            }
+
+            $idUser = $_SESSION['idUser'];
+            $entreprise = $this->repo->getEntrepriseById($idEntreprise);
+
+            if (!$entreprise) {
+                throw new Exception("L'entreprise demandée n'existe pas");
+            }
+
+            if ($entreprise->getIdUser() != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
+            }
+
+            // Set banner path to default
+            $defaultBannerPath = 'assets/images/uploads/banners/default_banner.png';
+            if ($entreprise->getBannerPath() === $defaultBannerPath) {
+                throw new Exception("La bannière est déjà la bannière par défaut");
+            }
+            // remove the file from server if not default
+            $helper = new Helper();
+            $helper->handleDeleteImage($entreprise->getBannerPath());
+
+            $entreprise->setBannerPath($defaultBannerPath)
+                ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+            $this->repo->updateEntrepriseBanner($entreprise);
+
+            $_SESSION['success'] = "La bannière a été réinitialisée avec succès";
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+
+    public function updateLogo()
+    {
+        try {
+            $idEntreprise = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            if (!$idEntreprise) {
+                throw new Exception("ID d'entreprise invalide");
+            }
+
+            $idUser = $_SESSION['idUser'];
+            $entreprise = $this->repo->getEntrepriseById($idEntreprise);
+
+            if (!$entreprise) {
+                throw new Exception("L'entreprise demandée n'existe pas");
+            }
+
+            if ($entreprise->getIdUser() != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
+            }
+
+            // Handle image upload
+            $helper = new Helper();
+            $logoPath = $helper->handleImageUpload('logo', 'logos');
+
+            // Update entreprise logo path
+            $entreprise->setLogoPath($logoPath)
+                ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+            $this->repo->updateEntrepriseLogo($entreprise);
+
+            $_SESSION['success'] = "Le logo a été mis à jour avec succès";
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+
+    public function deleteLogo(): void
+    {
+        try {
+            $idEntreprise = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            if (!$idEntreprise) {
+                throw new Exception("ID d'entreprise invalide");
+            }
+
+            $idUser = $_SESSION['idUser'];
+            $entreprise = $this->repo->getEntrepriseById($idEntreprise);
+
+            if (!$entreprise) {
+                throw new Exception("L'entreprise demandée n'existe pas");
+            }
+
+            if ($entreprise->getIdUser() != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
+            }
+
+            // Set logo path to default
+            $defaultLogoPath = 'assets/images/uploads/logos/default_logo.png';
+            if ($entreprise->getLogoPath() === $defaultLogoPath) {
+                throw new Exception("Le logo est déjà le logo par défaut");
+            }
+            // remove the file from server if not default
+            $helper = new Helper();
+            $helper->handleDeleteImage($entreprise->getLogoPath());
+
+            $entreprise->setLogoPath($defaultLogoPath)
+                ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
+
+            $this->repo->updateEntrepriseLogo($entreprise);
+
+            $_SESSION['success'] = "Le logo a été réinitialisé avec succès";
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid . '&error=true');
