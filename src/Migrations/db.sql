@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 18, 2025 at 05:29 PM
+-- Generation Time: Sep 22, 2025 at 08:21 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `association`;
 CREATE TABLE IF NOT EXISTS `association` (
   `idAssociation` int NOT NULL AUTO_INCREMENT,
+  `uiid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `name` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `slug` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
@@ -43,24 +44,17 @@ CREATE TABLE IF NOT EXISTS `association` (
   `isPublic` tinyint(1) NOT NULL DEFAULT '0',
   `isDeleted` tinyint(1) NOT NULL DEFAULT '0',
   `idUser` int NOT NULL,
-  `idVille` int NOT NULL DEFAULT '14329',
+  `idVille` mediumint UNSIGNED NOT NULL DEFAULT '14329',
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`idAssociation`),
   UNIQUE KEY `UQ_idAssociation` (`idAssociation`),
   UNIQUE KEY `slug` (`slug`),
+  UNIQUE KEY `uiid` (`uiid`),
   KEY `idx_association_user` (`idUser`),
   KEY `idx_association_active` (`isActive`),
   KEY `idx_association_ville` (`idVille`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `association`
---
-
-INSERT INTO `association` (`idAssociation`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `isActive`, `isPublic`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
-(16, 'Feras ALTALEBssssssssss', 'feras-altaleb', '', 'http://le-media-voironnais/assets/images/uploads/logos/default_logo.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 0, 3, 38100, '2025-09-18 16:34:30', '2025-09-18 16:34:54'),
-(17, 'Feras ALTALEB', 'feras-altaleb-1', '', 'http://le-media-voironnais/assets/images/uploads/logos/default_logo.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 0, 3, 38100, '2025-09-18 16:37:49', NULL);
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -80,8 +74,9 @@ CREATE TABLE IF NOT EXISTS `association_invitation` (
   PRIMARY KEY (`idAssociationInvitation`),
   UNIQUE KEY `unique_association_user_invitation` (`idAssociation`,`idUser`),
   KEY `FK_user_TO_association_invitation_user` (`idUser`),
-  KEY `FK_user_TO_association_invitation_inviter` (`idInviter`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  KEY `FK_user_TO_association_invitation_inviter` (`idInviter`),
+  KEY `idAssociation` (`idAssociation`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -140,6 +135,7 @@ CREATE TABLE IF NOT EXISTS `chat_participant` (
 DROP TABLE IF EXISTS `entreprise`;
 CREATE TABLE IF NOT EXISTS `entreprise` (
   `idEntreprise` int NOT NULL AUTO_INCREMENT,
+  `uiid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `name` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `slug` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
@@ -153,27 +149,31 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   `status` enum('brouillon','actif','suspendu') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'actif',
   `isActive` tinyint(1) NOT NULL DEFAULT '0',
   `isPublic` tinyint(1) NOT NULL DEFAULT '0',
+  `isPartner` tinyint(1) NOT NULL DEFAULT '0',
   `isDeleted` tinyint(1) NOT NULL DEFAULT '0',
   `idUser` int NOT NULL,
-  `idVille` int NOT NULL DEFAULT '14329',
+  `idVille` mediumint UNSIGNED NOT NULL DEFAULT '14329',
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` datetime DEFAULT NULL,
+  `partnerStartDate` datetime DEFAULT NULL,
+  `partnerEndDate` datetime DEFAULT NULL,
   PRIMARY KEY (`idEntreprise`),
   UNIQUE KEY `UQ_idEntreprise` (`idEntreprise`),
   UNIQUE KEY `slug` (`slug`),
   UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `uiid` (`uiid`),
   KEY `idx_entreprise_user` (`idUser`),
   KEY `idx_entreprise_active` (`isActive`),
   KEY `idx_entreprise_status` (`status`),
   KEY `idx_entreprise_ville` (`idVille`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `entreprise`
 --
 
-INSERT INTO `entreprise` (`idEntreprise`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `status`, `isActive`, `isPublic`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
-(19, 'dgsdgsdfsdfsdfsdfsdf', 'dgsdgsdfsdfsdfsdfsdf', 'ffffffffffffffffffff', 'http://le-media-voironnais/assets/images/uploads/logos/default_logo.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', '', '0780773302', 'feras.altalib@gmail.com', '', '', 'brouillon', 0, 0, 0, 3, 38100, '2025-09-18 17:07:34', NULL);
+INSERT INTO `entreprise` (`idEntreprise`, `uiid`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `status`, `isActive`, `isPublic`, `isPartner`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`, `partnerStartDate`, `partnerEndDate`) VALUES
+(23, 'c88bcc52447511ee', 'Feras ALTALEB', 'grenoble-38100-feras-altaleb', 'sdfsdfffffffffff', 'http://le-media-voironnais/assets/images/uploads/logos/default_logo.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', '', '0780773302', 'feras.altalib@gmail.com', '', '', 'brouillon', 0, 0, 0, 0, 3, 38100, '2025-09-22 09:49:01', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -184,6 +184,7 @@ INSERT INTO `entreprise` (`idEntreprise`, `name`, `slug`, `description`, `logoPa
 DROP TABLE IF EXISTS `evenement`;
 CREATE TABLE IF NOT EXISTS `evenement` (
   `idEvenement` int NOT NULL AUTO_INCREMENT,
+  `uiid` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
   `title` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `slug` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
@@ -206,11 +207,12 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   `idUser` int NOT NULL,
   `idAssociation` int DEFAULT NULL,
   `idEntreprise` int DEFAULT NULL,
-  `idVille` int NOT NULL,
+  `idVille` mediumint UNSIGNED NOT NULL,
   `idEventCategory` int DEFAULT NULL,
   PRIMARY KEY (`idEvenement`),
   UNIQUE KEY `UQ_idEvenement` (`idEvenement`),
   UNIQUE KEY `slug` (`slug`),
+  UNIQUE KEY `uiid` (`uiid`),
   KEY `FK_user_TO_evenement_creator` (`idUser`),
   KEY `FK_ville_TO_evenement` (`idVille`),
   KEY `idx_evenement_date` (`startDate`),
@@ -219,15 +221,14 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   KEY `idx_evenement_association` (`idAssociation`),
   KEY `idx_evenement_entreprise` (`idEntreprise`),
   KEY `idx_evenement_category` (`idEventCategory`)
-) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `evenement`
 --
 
-INSERT INTO `evenement` (`idEvenement`, `title`, `slug`, `description`, `shortDescription`, `startDate`, `endDate`, `registrationDeadline`, `maxParticipants`, `currentParticipants`, `address`, `bannerPath`, `status`, `isPublic`, `isDeleted`, `requiresApproval`, `price`, `currency`, `createdAt`, `updatedAt`, `idUser`, `idAssociation`, `idEntreprise`, `idVille`, `idEventCategory`) VALUES
-(21, 'dfsdfsdfsdfsdfsdfsdfsdf', 'dfsdfsdfsdfsdfsdfsdfsdf', 'dddddddddddddddddddddddd', 'ddddddddddddddd', '2025-10-11 15:17:00', '2025-10-12 15:17:00', '2025-10-01 15:17:00', 55, 0, '42 Rue Henri Duhamel', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', 'brouillon', 0, 0, 0, 0.00, 'EUR', '2025-09-18 15:18:03', '2025-09-18 18:04:06', 3, NULL, NULL, 38100, 16),
-(22, 'ffffffffff', 'ffffffffff', 'ffffffff', 'fffffffffffffffffffffff', '2025-10-11 16:52:00', '2025-10-31 16:53:00', '2025-10-01 16:53:00', 5, 0, '42 Rue Henri Duhamel', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', 'brouillon', 0, 0, 0, 0.00, 'EUR', '2025-09-18 16:53:47', '2025-09-18 18:03:41', 3, 16, 19, 38100, 5);
+INSERT INTO `evenement` (`idEvenement`, `uiid`, `title`, `slug`, `description`, `shortDescription`, `startDate`, `endDate`, `registrationDeadline`, `maxParticipants`, `currentParticipants`, `address`, `bannerPath`, `status`, `isPublic`, `isDeleted`, `requiresApproval`, `price`, `currency`, `createdAt`, `updatedAt`, `idUser`, `idAssociation`, `idEntreprise`, `idVille`, `idEventCategory`) VALUES
+(24, 'c58d7968021a0448', 'fgggggggg', '1-fgggggggg-1', 'gffffffffffffffffffffffffffffff', '', '2025-10-03 10:03:00', '2025-10-10 10:03:00', '2025-09-24 10:03:00', 11, 0, '42 Rue Henri Duhamel', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.png', 'brouillon', 0, 1, 0, 0.00, 'EUR', '2025-09-22 10:03:58', '2025-09-22 10:09:15', 3, NULL, NULL, 38100, 16);
 
 -- --------------------------------------------------------
 
@@ -246,26 +247,26 @@ CREATE TABLE IF NOT EXISTS `event_category` (
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idEventCategory`),
   UNIQUE KEY `UQ_idEventCategory` (`idEventCategory`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `event_category`
 --
 
 INSERT INTO `event_category` (`idEventCategory`, `name`, `description`, `color`, `icon`, `isActive`, `createdAt`) VALUES
-(13, 'Théâtre', 'Pièces de théâtre et spectacles', '#E17055', NULL, 1, '2025-09-11 12:00:01'),
-(12, 'Environnement', 'Événements écologiques et durables', '#00CEC9', NULL, 1, '2025-09-11 12:00:01'),
+(1, 'Sport', 'Événements sportifs et activités physiques', '#FF6B6B', NULL, 1, '2025-09-11 12:00:01'),
+(2, 'Culture', 'Événements culturels et expositions', '#4ECDC4', NULL, 1, '2025-09-11 12:00:01'),
+(3, 'Social', 'Rassemblements sociaux et réseautage', '#45B7D1', NULL, 1, '2025-09-11 12:00:01'),
+(4, 'Éducation', 'Ateliers éducatifs et séminaires', '#96CEB4', NULL, 1, '2025-09-11 12:00:01'),
+(5, 'Affaires', 'Réunions d\'affaires et conférences', '#FFEAA7', NULL, 1, '2025-09-11 12:00:01'),
+(6, 'Musique', 'Concerts et événements musicaux', '#A29BFE', NULL, 1, '2025-09-11 12:00:01'),
+(7, 'Gastronomie', 'Festivals culinaires et dégustations', '#FD79A8', NULL, 1, '2025-09-11 12:00:01'),
+(8, 'Art', 'Expositions d\'art et ateliers créatifs', '#FDCB6E', NULL, 1, '2025-09-11 12:00:01'),
+(9, 'Technologie', 'Événements tech et innovations', '#6C5CE7', NULL, 1, '2025-09-11 12:00:01'),
 (10, 'Famille', 'Activités familiales et événements pour enfants', '#55A3FF', NULL, 1, '2025-09-11 12:00:01'),
 (11, 'Santé', 'Bien-être et événements de santé', '#00B894', NULL, 1, '2025-09-11 12:00:01'),
-(9, 'Technologie', 'Événements tech et innovations', '#6C5CE7', NULL, 1, '2025-09-11 12:00:01'),
-(8, 'Art', 'Expositions d\'art et ateliers créatifs', '#FDCB6E', NULL, 1, '2025-09-11 12:00:01'),
-(7, 'Gastronomie', 'Festivals culinaires et dégustations', '#FD79A8', NULL, 1, '2025-09-11 12:00:01'),
-(6, 'Musique', 'Concerts et événements musicaux', '#A29BFE', NULL, 1, '2025-09-11 12:00:01'),
-(5, 'Affaires', 'Réunions d\'affaires et conférences', '#FFEAA7', NULL, 1, '2025-09-11 12:00:01'),
-(4, 'Éducation', 'Ateliers éducatifs et séminaires', '#96CEB4', NULL, 1, '2025-09-11 12:00:01'),
-(3, 'Social', 'Rassemblements sociaux et réseautage', '#45B7D1', NULL, 1, '2025-09-11 12:00:01'),
-(2, 'Culture', 'Événements culturels et expositions', '#4ECDC4', NULL, 1, '2025-09-11 12:00:01'),
-(1, 'Sport', 'Événements sportifs et activités physiques', '#FF6B6B', NULL, 1, '2025-09-11 12:00:01'),
+(12, 'Environnement', 'Événements écologiques et durables', '#00CEC9', NULL, 1, '2025-09-11 12:00:01'),
+(13, 'Théâtre', 'Pièces de théâtre et spectacles', '#E17055', NULL, 1, '2025-09-11 12:00:01'),
 (14, 'Marché', 'Marchés locaux et foires', '#81ECEC', NULL, 1, '2025-09-11 12:00:01'),
 (15, 'Religion', 'Événements religieux et spirituels', '#DDA0DD', NULL, 1, '2025-09-11 12:00:01'),
 (16, 'Autre', 'Événements divers et variés', '#CCCCCC', NULL, 1, '2025-09-18 10:44:01');
@@ -288,7 +289,7 @@ CREATE TABLE IF NOT EXISTS `event_image` (
   PRIMARY KEY (`idEventImage`),
   UNIQUE KEY `UQ_idEventImage` (`idEventImage`),
   KEY `FK_evenement_TO_event_image` (`idEvenement`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -310,7 +311,7 @@ CREATE TABLE IF NOT EXISTS `event_invitation` (
   UNIQUE KEY `unique_event_user_invitation` (`idEvenement`,`idUser`),
   KEY `FK_user_TO_event_invitation_user` (`idUser`),
   KEY `FK_user_TO_event_invitation_inviter` (`idInviter`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -333,7 +334,7 @@ CREATE TABLE IF NOT EXISTS `event_participant` (
   KEY `idx_event_participant_evenement` (`idEvenement`),
   KEY `idx_event_participant_user` (`idUser`),
   KEY `idx_event_participant_status` (`status`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -404,7 +405,7 @@ CREATE TABLE IF NOT EXISTS `notification` (
   KEY `idx_notification_user` (`idUser`),
   KEY `idx_notification_read` (`isRead`),
   KEY `idx_notification_created` (`createdAt`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -421,16 +422,16 @@ CREATE TABLE IF NOT EXISTS `role` (
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idRole`),
   UNIQUE KEY `UQ_idRole` (`idRole`)
-) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `role`
 --
 
 INSERT INTO `role` (`idRole`, `name`, `description`, `permissions`, `createdAt`) VALUES
+(1, 'super_admin', NULL, NULL, '2025-09-11 12:00:01'),
 (2, 'admin', NULL, NULL, '2025-09-11 12:00:01'),
-(3, 'user', NULL, NULL, '2025-09-11 12:00:01'),
-(1, 'super_admin', NULL, NULL, '2025-09-11 12:00:01');
+(3, 'user', NULL, NULL, '2025-09-11 12:00:01');
 
 -- --------------------------------------------------------
 
@@ -473,16 +474,16 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_user_email` (`email`(250)),
   KEY `idx_user_online` (`isOnline`),
   KEY `idx_user_last_seen` (`lastSeen`)
-) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
-(1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-16 11:37:02', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
+(1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-19 09:37:31', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
 (2, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-18 18:28:48', '2025-09-15 09:47:56', NULL, 'a52e8d44b60c88b404fb2995c3d57e91', '2025-09-15 09:47:56', '2025-09-16 11:37:06', '2025-09-15 10:10:17', '2025-09-15 10:00:51', NULL),
+(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', NULL, NULL, 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-22 10:20:09', '2025-09-15 09:47:56', NULL, '18aab59f6829597f2a447a393b407e35', '2025-09-15 09:47:56', '2025-09-16 11:37:06', '2025-09-15 10:10:17', '2025-09-19 09:35:59', NULL),
 (4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-17 19:16:31', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -502,17 +503,7 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   PRIMARY KEY (`idUserAssociation`),
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `user_association`
---
-
-INSERT INTO `user_association` (`idUserAssociation`, `idUser`, `idAssociation`, `role`, `joinedAt`, `isActive`) VALUES
-(17, 3, 14, 'admin', '2025-09-18 14:41:45', 1),
-(18, 3, 15, 'admin', '2025-09-18 16:23:20', 1),
-(19, 3, 16, 'admin', '2025-09-18 16:34:30', 1),
-(20, 3, 17, 'admin', '2025-09-18 16:37:49', 1);
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -550,13 +541,124 @@ CREATE TABLE IF NOT EXISTS `ville` (
   KEY `ville_code_postal` (`ville_code_postal`),
   KEY `ville_longitude_latitude_deg` (`ville_longitude_deg`,`ville_latitude_deg`),
   KEY `ville_nom_simple` (`ville_nom_simple`)
-) ENGINE=MyISAM AUTO_INCREMENT=38101 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=38101 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `ville`
 --
 
 INSERT INTO `ville` (`idVille`, `ville_departement`, `ville_slug`, `ville_nom`, `ville_nom_simple`, `ville_nom_reel`, `ville_code_postal`, `ville_commune`, `ville_code_commune`, `ville_population_2012`, `ville_longitude_deg`, `ville_latitude_deg`, `ville_longitude_grd`, `ville_latitude_grd`, `ville_longitude_dms`, `ville_latitude_dms`, `ville_zmin`, `ville_zmax`) VALUES
+(14329, '38', 'voiron', 'VOIRON', 'voiron', 'Voiron', '38500', '563', '38563', 20400, 5.58333, 45.3667, '3615', '50404', '+53524', '452148', 222, 846),
+(14330, '38', 'reaumont', 'REAUMONT', 'reaumont', 'Réaumont', '38140', '331', '38331', 900, 5.51667, 45.3667, '3544', '50411', '+53133', '452211', 309, 436),
+(14331, '38', 'terrasse', 'LA TERRASSE', 'la terrasse', 'La Terrasse', '38660', '503', '38503', 2300, 5.93333, 45.3333, '3994', '50360', '+55552', '451925', 229, 1045),
+(14332, '38', 'perier', 'LE PERIER', 'le perier', 'Le Périer', '38740', '302', '38302', 100, 5.96667, 44.9333, '4041', '49930', '+55824', '445613', 815, 2992),
+(14333, '38', 'nantoin', 'NANTOIN', 'nantoin', 'Nantoin', '38260', '274', '38274', 400, 5.26667, 45.4333, '3258', '50484', '+51609', '452608', 430, 609),
+(14334, '38', 'saint-vincent-de-mercuze', 'SAINT-VINCENT-DE-MERCUZE', 'saint vincent de mercuze', 'Saint-Vincent-de-Mercuze', '38660', '466', '38466', 1400, 5.95, 45.3667, '4015', '50416', '+55659', '452227', 238, 863),
+(14335, '38', 'saint-laurent-en-beaumont', 'SAINT-LAURENT-EN-BEAUMONT', 'saint laurent en beaumont', 'Saint-Laurent-en-Beaumont', '38350', '413', '38413', 400, 5.85, 44.8833, '3904', '49866', '+55101', '445245', 557, 1492),
+(14336, '38', 'frontonas', 'FRONTONAS', 'frontonas', 'Frontonas', '38290', '176', '38176', 1800, 5.18333, 45.65, '3164', '50721', '+51103', '453856', 207, 401),
+(14337, '38', 'massieu', 'MASSIEU', 'massieu', 'Massieu', '38620', '222', '38222', 800, 5.58333, 45.4333, '3622', '50489', '+53547', '452623', 422, 867),
+(14338, '38', 'bouchage-38', 'LE BOUCHAGE', 'le bouchage', 'Le Bouchage', '38510', '050', '38050', 600, 5.53333, 45.6667, '3544', '50745', '+53133', '454013', 207, 210),
+(14339, '38', 'beaurepaire-38', 'BEAUREPAIRE', 'beaurepaire', 'Beaurepaire', '38270', '034', '38034', 4500, 5.05, 45.3333, '3020', '50376', '+50316', '452018', 225, 315),
+(14340, '38', 'chapelle-de-surieu', 'LA CHAPELLE-DE-SURIEU', 'la chapelle de surieu', 'La Chapelle-de-Surieu', '38150', '077', '38077', 700, 4.9, 45.4, '2859', '50435', '+45436', '452328', 252, 407),
+(14341, '38', 'clavans-en-haut-oisans', 'CLAVANS-EN-HAUT-OISANS', 'clavans en haut oisans', 'Clavans-en-Haut-Oisans', '38142', '112', '38112', 100, 6.15, 45.0667, '4251', '50093', '+60946', '450501', 1024, 3464),
+(14342, '38', 'cras-38', 'CRAS', 'cras', 'Cras', '38210', '137', '38137', 400, 5.45, 45.2667, '3459', '50299', '+52700', '451608', 280, 773),
+(14343, '38', 'beaulieu-38', 'BEAULIEU', 'beaulieu', 'Beaulieu', '38470', '033', '38033', 600, 5.38333, 45.2, '3395', '50214', '+52332', '451133', 160, 355),
+(14344, '38', 'peage-de-roussillon', 'LE PEAGE-DE-ROUSSILLON', 'le peage de roussillon', 'Le Péage-de-Roussillon', '38550', '298', '38298', 6600, 4.8, 45.3667, '2734', '50414', '+44751', '452223', 134, 263),
+(14345, '38', 'batie-divisin', 'LA BATIE-DIVISIN', 'la batie divisin', 'La Bâtie-Divisin', '38490', '028', '38028', 900, 5.6, 45.5, '3623', '50567', '+53552', '453036', 360, 615),
+(14346, '38', 'montbonnot-saint-martin', 'MONTBONNOT-SAINT-MARTIN', 'montbonnot saint martin', 'Montbonnot-Saint-Martin', '38330', '249', '38249', 4500, 5.8, 45.2333, '3851', '50252', '+54809', '451337', 215, 356),
+(14347, '38', 'pin-38', 'LE PIN', 'le pin', 'Le Pin', '38730', '305', '38305', 1200, 5.5, 45.45, '3521', '50507', '+53020', '452724', 487, 767),
+(14348, '38', 'autrans', 'AUTRANS', 'autrans', 'Autrans', '38880', '021', '38021', 1700, 5.55, 45.1667, '3562', '50195', '+53232', '451030', 1005, 1711),
+(14349, '38', 'saint-pierre-de-mearoz', 'SAINT-PIERRE-DE-MEAROZ', 'saint pierre de mearoz', 'Saint-Pierre-de-Méaroz', '38350', '444', '38444', 100, 5.81667, 44.8833, '3874', '49861', '+54925', '445230', 508, 868),
+(14350, '38', 'colombe-38', 'COLOMBE', 'colombe', 'Colombe', '38690', '118', '38118', 1400, 5.45, 45.4, '3459', '50443', '+52658', '452356', 448, 738),
+(14351, '38', 'treffort', 'TREFFORT', 'treffort', 'Treffort', '38650', '513', '38513', 200, 5.65806, 44.9156, '3690', '49906', '+53929', '445456', 486, 1070),
+(14352, '38', 'leyrieu', 'LEYRIEU', 'leyrieu', 'Leyrieu', '38460', '210', '38210', 700, 5.25, 45.75, '3243', '50842', '+51518', '454528', 203, 420),
+(14353, '38', 'saint-martin-d-heres', 'SAINT-MARTIN-D\'HERES', 'saint martin d heres', 'Saint-Martin-d\'Hères', '38400', '421', '38421', 35600, 5.76667, 45.1667, '3809', '50185', '+54553', '450959', 206, 610),
+(14354, '38', 'viriville', 'VIRIVILLE', 'viriville', 'Viriville', '38980', '561', '38561', 1400, 5.2, 45.3167, '3186', '50351', '+51215', '451857', 306, 606),
+(14355, '38', 'sainte-agnes-38', 'SAINTE-AGNES', 'sainte agnes', 'Sainte-Agnès', '38190', '350', '38350', 500, 5.91667, 45.2333, '3983', '50263', '+55516', '451412', 270, 2969),
+(14356, '38', 'velanne', 'VELANNE', 'velanne', 'Velanne', '38620', '531', '38531', 500, 5.63333, 45.4833, '3680', '50543', '+53854', '452918', 380, 641),
+(14357, '38', 'notre-dame-de-vaulx', 'NOTRE-DAME-DE-VAULX', 'notre dame de vaulx', 'Notre-Dame-de-Vaulx', '38144', '280', '38280', 600, 5.75, 44.9833, '3791', '49985', '+54456', '445911', 877, 1712),
+(14358, '38', 'cornillon-en-trieves', 'CORNILLON-EN-TRIEVES', 'cornillon en trieves', 'Cornillon-en-Trièves', '38710', '127', '38127', 200, 5.7, 44.8333, '3756', '49811', '+54303', '444946', 493, 1106),
+(14359, '38', 'quet-en-beaumont', 'QUET-EN-BEAUMONT', 'quet en beaumont', 'Quet-en-Beaumont', '38970', '329', '38329', 100, 5.86667, 44.8333, '3930', '49816', '+55225', '445005', 581, 1664),
+(14360, '38', 'ambel', 'AMBEL', 'ambel', 'Ambel', '38970', '008', '38008', 0, 5.93333, 44.8167, '3993', '49783', '+55550', '444818', 735, 1596),
+(14361, '38', 'vignieu', 'VIGNIEU', 'vignieu', 'Vignieu', '38890', '546', '38546', 900, 5.41667, 45.6333, '3431', '50698', '+52529', '453741', 220, 444),
+(14362, '38', 'bossieu', 'BOSSIEU', 'bossieu', 'Bossieu', '38260', '049', '38049', 300, 5.15, 45.4167, '3124', '50463', '+50853', '452501', 361, 524),
+(14363, '38', 'oytier-saint-oblas', 'OYTIER-SAINT-OBLAS', 'oytier saint oblas', 'Oytier-Saint-Oblas', '38780', '288', '38288', 1500, 5.01667, 45.5667, '2983', '50623', '+50115', '453340', 232, 376),
+(14364, '38', 'saint-hilaire-38', 'SAINT-HILAIRE', 'saint hilaire', 'Saint-Hilaire', '38660', '395', '38395', 1600, 5.88333, 45.3, '3945', '50344', '+55314', '451834', 647, 2060),
+(14365, '38', 'varacieux', 'VARACIEUX', 'varacieux', 'Varacieux', '38470', '523', '38523', 800, 5.33333, 45.2333, '3334', '50258', '+52015', '451355', 326, 704),
+(14366, '38', 'cholonge', 'CHOLONGE', 'cholonge', 'Cholonge', '38220', '106', '38106', 300, 5.8, 45, '3844', '50005', '+54748', '450015', 905, 2140),
+(14367, '38', 'goncelin', 'GONCELIN', 'goncelin', 'Goncelin', '38570', '181', '38181', 2200, 5.98333, 45.3333, '4047', '50381', '+55845', '452034', 235, 1278),
+(14368, '38', 'coublevie', 'COUBLEVIE', 'coublevie', 'Coublevie', '38500', '133', '38133', 4200, 5.61667, 45.35, '3644', '50395', '+53660', '452120', 250, 651),
+(14369, '38', 'saint-pierre-d-entremont-38', 'SAINT-PIERRE-D\'ENTREMONT', 'saint pierre d entremont', 'Saint-Pierre-d\'Entremont', '73670', '446', '38446', 600, 5.85389, 45.4153, '3908', '50461', '+55114', '452455', 598, 2047),
+(14370, '38', 'brezins', 'BREZINS', 'brezins', 'Brézins', '38590', '058', '38058', 1600, 5.31667, 45.35, '3300', '50388', '+51824', '452057', 356, 407),
+(14371, '38', 'sainte-marie-d-alloix', 'SAINTE-MARIE-D\'ALLOIX', 'sainte marie d alloix', 'Sainte-Marie-d\'Alloix', '38660', '417', '38417', 600, 5.96667, 45.3833, '4033', '50421', '+55759', '452245', 242, 380),
+(14372, '38', 'cotes-d-arey', 'LES COTES-D\'AREY', 'les cotes d arey', 'Côtes-d\'Arey', '38138', '131', '38131', 1800, 4.86695, 45.4559, '2812', '50507', '+45201', '452721', 217, 409),
+(14373, '38', 'rovon', 'ROVON', 'rovon', 'Rovon', '38470', '345', '38345', 600, 5.46667, 45.2, '3472', '50225', '+52741', '451209', 172, 1471),
+(14374, '38', 'montseveroux', 'MONTSEVEROUX', 'montseveroux', 'Montseveroux', '38122', '259', '38259', 900, 4.96667, 45.4333, '2927', '50477', '+45815', '452544', 289, 452),
+(14375, '38', 'sablons-38', 'SABLONS', 'sablons', 'Sablons', '38550', '349', '38349', 1800, 4.76667, 45.3167, '2707', '50353', '+44623', '451905', 135, 154),
+(14376, '38', 'saint-aupre', 'SAINT-AUPRE', 'saint aupre', 'Saint-Aupre', '38960', '362', '38362', 1100, 5.66667, 45.3833, '3704', '50444', '+54014', '452358', 436, 925),
+(14377, '38', 'villard-de-lans', 'VILLARD-DE-LANS', 'villard de lans', 'Villard-de-Lans', '38250', '548', '38548', 4000, 5.55, 45.0667, '3571', '50078', '+53302', '450412', 720, 2286),
+(14378, '38', 'saint-michel-en-beaumont', 'SAINT-MICHEL-EN-BEAUMONT', 'saint michel en beaumont', 'Saint-Michel-en-Beaumont', '38350', '428', '38428', 0, 5.9, 44.8667, '3959', '49854', '+55359', '445206', 958, 2020),
+(14379, '38', 'chatelus-38', 'CHATELUS', 'chatelus', 'Châtelus', '38680', '092', '38092', 100, 5.36667, 45.05, '3373', '50064', '+52221', '450329', 229, 1269),
+(14380, '38', 'mottier', 'MOTTIER', 'mottier', 'Mottier', '38260', '267', '38267', 700, 5.31667, 45.4167, '3312', '50466', '+51902', '452508', 448, 641),
+(14381, '38', 'notre-dame-de-commiers', 'NOTRE-DAME-DE-COMMIERS', 'notre dame de commiers', 'Notre-Dame-de-Commiers', '38450', '277', '38277', 500, 5.7, 45.0167, '3737', '50011', '+54160', '450036', 317, 1323),
+(14382, '38', 'moissieu-sur-dolon', 'MOISSIEU-SUR-DOLON', 'moissieu sur dolon', 'Moissieu-sur-Dolon', '38270', '240', '38240', 700, 4.98333, 45.3833, '2946', '50429', '+45916', '452310', 287, 463),
+(14383, '38', 'lumbin', 'LUMBIN', 'lumbin', 'Lumbin', '38660', '214', '38214', 1900, 5.91667, 45.3167, '3973', '50341', '+55445', '451824', 222, 880),
+(14384, '38', 'corps', 'CORPS', 'corps', 'Corps', '38970', '128', '38128', 500, 5.95, 44.8167, '4011', '49798', '+55649', '444906', 639, 1840),
+(14385, '38', 'charette', 'CHARETTE', 'charette', 'Charette', '38390', '083', '38083', 400, 5.36667, 45.8167, '3371', '50900', '+52214', '454837', 240, 350),
+(14386, '38', 'saint-etienne-de-saint-geoirs', 'SAINT-ETIENNE-DE-SAINT-GEOIRS', 'saint etienne de saint geoirs', 'Saint-Étienne-de-Saint-Geoirs', '38590', '384', '38384', 2700, 5.35, 45.3333, '3343', '50377', '+52043', '452020', 369, 545),
+(14387, '38', 'buisse', 'LA BUISSE', 'la buisse', 'La Buisse', '38500', '061', '38061', 2700, 5.61667, 45.3333, '3650', '50372', '+53718', '452006', 184, 935),
+(14388, '38', 'commelle', 'COMMELLE', 'commelle', 'Commelle', '38260', '121', '38121', 700, 5.21667, 45.4167, '3211', '50476', '+51335', '452541', 396, 587),
+(14389, '38', 'saint-jean-d-herans', 'SAINT-JEAN-D\'HERANS', 'saint jean d herans', 'Saint-Jean-d\'Hérans', '38710', '403', '38403', 300, 5.76667, 44.85, '3805', '49837', '+54539', '445112', 486, 1101),
+(14390, '38', 'notre-dame-de-l-osier', 'NOTRE-DAME-DE-L\'OSIER', 'notre dame de l osier', 'Notre-Dame-de-l\'Osier', '38470', '278', '38278', 500, 5.4, 45.2333, '3410', '50265', '+52419', '451418', 315, 556),
+(14391, '38', 'burcin', 'BURCIN', 'burcin', 'Burcin', '38690', '063', '38063', 400, 5.43333, 45.4333, '3445', '50479', '+52615', '452553', 453, 734),
+(14392, '38', 'saint-barthelemy-38', 'SAINT-BARTHELEMY', 'saint barthelemy', 'Saint-Barthélemy', '38270', '363', '38363', 900, 5.075, 45.35, '3048', '50385', '+50449', '452047', 258, 326),
+(14393, '38', 'chateauvilain', 'CHATEAUVILAIN', 'chateauvilain', 'Châteauvilain', '38300', '091', '38091', 600, 5.33001, 45.5167, '3326', '50574', '+51948', '453100', 345, 644),
+(14394, '38', 'meylan', 'MEYLAN', 'meylan', 'Meylan', '38240', '229', '38229', 17200, 5.78333, 45.2333, '3825', '50232', '+54646', '451231', 206, 1313),
+(14395, '38', 'saint-jean-de-soudain', 'SAINT-JEAN-DE-SOUDAIN', 'saint jean de soudain', 'Saint-Jean-de-Soudain', '38110', '401', '38401', 1400, 5.43333, 45.5667, '3436', '50636', '+52544', '453421', 303, 471),
+(14396, '38', 'eparres', 'LES EPARRES', 'les eparres', 'Éparres', '38300', '156', '38156', 900, 5.3, 45.5333, '3285', '50593', '+51734', '453201', 319, 501),
+(14397, '38', 'voissant', 'VOISSANT', 'voissant', 'Voissant', '38620', '564', '38564', 200, 5.7, 45.4833, '3748', '50537', '+54236', '452901', 269, 788),
+(14398, '38', 'chasselay-38', 'CHASSELAY', 'chasselay', 'Chasselay', '38470', '086', '38086', 400, 5.33333, 45.25, '3335', '50284', '+52019', '451521', 418, 729),
+(14399, '38', 'sainte-marie-du-mont-38', 'SAINTE-MARIE-DU-MONT', 'sainte marie du mont', 'Sainte-Marie-du-Mont', '38660', '418', '38418', 200, 5.93333, 45.4, '4010', '50451', '+55644', '452422', 522, 1880),
+(14400, '38', 'monestier-d-ambel', 'MONESTIER-D\'AMBEL', 'monestier d ambel', 'Monestier-d\'Ambel', '38970', '241', '38241', 0, 5.93333, 44.7833, '3989', '49753', '+55537', '444640', 746, 2378),
+(14401, '38', 'treminis', 'TREMINIS', 'treminis', 'Tréminis', '38710', '514', '38514', 200, 5.76667, 44.75, '3814', '49720', '+54608', '444451', 792, 2755),
+(14402, '38', 'montagnieu-38', 'MONTAGNIEU', 'montagnieu', 'Montagnieu', '38110', '246', '38246', 800, 5.45, 45.5167, '3462', '50583', '+52709', '453127', 380, 582),
+(14403, '38', 'chanas', 'CHANAS', 'chanas', 'Chanas', '38150', '072', '38072', 2300, 4.81667, 45.3, '2758', '50354', '+44909', '451906', 142, 223),
+(14404, '38', 'engins', 'ENGINS', 'engins', 'Engins', '38360', '153', '38153', 500, 5.61667, 45.1833, '3644', '50201', '+53700', '451052', 560, 1704),
+(14405, '38', 'chatte', 'CHATTE', 'chatte', 'Chatte', '38160', '095', '38095', 2500, 5.28333, 45.15, '3274', '50159', '+51659', '450837', 164, 443),
+(14406, '38', 'charvieu-chavagneux', 'CHARVIEU-CHAVAGNEUX', 'charvieu chavagneux', 'Charvieu-Chavagneux', '38230', '085', '38085', 7700, 5.16389, 45.7456, '3142', '50829', '+50950', '454444', 200, 251),
+(14407, '38', 'pont-de-cheruy', 'PONT-DE-CHERUY', 'pont de cheruy', 'Pont-de-Chéruy', '38230', '316', '38316', 4900, 5.18333, 45.75, '3152', '50834', '+51023', '454502', 196, 236),
+(14408, '38', 'abrets', 'LES ABRETS', 'les abrets', 'Abrets', '38490', '001', '38001', 3000, 5.58333, 45.5333, '3609', '50596', '+53506', '453213', 261, 434),
+(14409, '38', 'saint-didier-de-bizonnes', 'SAINT-DIDIER-DE-BIZONNES', 'saint didier de bizonnes', 'Saint-Didier-de-Bizonnes', '38690', '380', '38380', 300, 5.35, 45.45, '3349', '50519', '+52104', '452802', 514, 647),
+(14410, '38', 'saint-victor-de-cessieu', 'SAINT-VICTOR-DE-CESSIEU', 'saint victor de cessieu', 'Saint-Victor-de-Cessieu', '38110', '464', '38464', 2100, 5.4, 45.55, '3394', '50601', '+52329', '453227', 310, 555),
+(14411, '38', 'villard-saint-christophe', 'VILLARD-SAINT-CHRISTOPHE', 'villard saint christophe', 'Villard-Saint-Christophe', '38119', '552', '38552', 400, 5.8, 44.9667, '3855', '49977', '+54821', '445844', 940, 2176),
+(14412, '38', 'paladru', 'PALADRU', 'paladru', 'Paladru', '38137', '292', '38292', 1000, 5.55, 45.4667, '3574', '50529', '+53312', '452833', 488, 711),
+(14413, '38', 'saint-arey', 'SAINT-AREY', 'saint arey', 'Saint-Arey', '38350', '361', '38361', 100, 5.73333, 44.8667, '3775', '49858', '+54402', '445219', 487, 1483),
+(14414, '38', 'laval-38', 'LAVAL', 'laval', 'Laval', '38190', '206', '38206', 1000, 5.93333, 45.25, '3995', '50281', '+55557', '451511', 320, 2600),
+(14415, '38', 'saint-theoffrey', 'SAINT-THEOFFREY', 'saint theoffrey', 'Saint-Théoffrey', '38119', '462', '38462', 400, 5.76667, 44.9833, '3818', '49999', '+54623', '445956', 905, 1240),
+(14416, '38', 'verpilliere', 'LA VERPILLIERE', 'la verpilliere', 'La Verpillière', '38290', '537', '38537', 6200, 5.15, 45.6333, '3118', '50708', '+50834', '453813', 205, 305),
+(14417, '38', 'vizille', 'VIZILLE', 'vizille', 'Vizille', '38220', '562', '38562', 7700, 5.76667, 45.0833, '3817', '50087', '+54619', '450442', 268, 1016),
+(14418, '38', 'saint-clair-de-la-tour', 'SAINT-CLAIR-DE-LA-TOUR', 'saint clair de la tour', 'Saint-Clair-de-la-Tour', '38110', '377', '38377', 3200, 5.48333, 45.5667, '3495', '50638', '+52855', '453426', 314, 425),
+(14419, '38', 'jarrie-38', 'JARRIE', 'jarrie', 'Jarrie', '38560', '200', '38200', 3800, 5.76667, 45.1167, '3784', '50108', '+54433', '450549', 259, 733),
+(14420, '38', 'faverges-de-la-tour', 'FAVERGES-DE-LA-TOUR', 'faverges de la tour', 'Faverges-de-la-Tour', '38110', '162', '38162', 1300, 5.51667, 45.5833, '3541', '50657', '+53125', '453528', 285, 432),
+(14421, '38', 'monestier-du-percy', 'LE MONESTIER-DU-PERCY', 'le monestier du percy', 'Le Monestier-du-Percy', '38930', '243', '38243', 200, 5.65, 44.8, '3691', '49771', '+53932', '444739', 597, 1896),
+(14422, '38', 'tour-du-pin', 'LA TOUR-DU-PIN', 'la tour du pin', 'La Tour-du-Pin', '38110', '509', '38509', 7700, 5.45, 45.5667, '3454', '50629', '+52642', '453357', 309, 461),
+(14423, '38', 'beaufin', 'BEAUFIN', 'beaufin', 'Beaufin', '38970', '031', '38031', 0, 5.95, 44.7833, '4026', '49764', '+55736', '444716', 744, 2080),
+(14424, '38', 'lentiol', 'LENTIOL', 'lentiol', 'Lentiol', '38270', '209', '38209', 200, 5.11667, 45.3, '3085', '50332', '+50648', '451757', 337, 479),
+(14425, '38', 'saint-martin-de-vaulserre', 'SAINT-MARTIN-DE-VAULSERRE', 'saint martin de vaulserre', 'Saint-Martin-de-Vaulserre', '38480', '420', '38420', 200, 5.66667, 45.4833, '3718', '50549', '+54058', '452939', 320, 584),
+(14426, '38', 'lalley', 'LALLEY', 'lalley', 'Lalley', '38930', '204', '38204', 200, 5.68333, 44.75, '3710', '49731', '+54034', '444528', 673, 2045),
+(14427, '38', 'lans-en-vercors', 'LANS-EN-VERCORS', 'lans en vercors', 'Lans-en-Vercors', '38250', '205', '38205', 2500, 5.58333, 45.1167, '3613', '50142', '+53519', '450741', 902, 1960),
+(14428, '38', 'roussillon-38', 'ROUSSILLON', 'roussillon', 'Roussillon', '38150', '344', '38344', 8000, 4.81667, 45.3667, '2750', '50413', '+44842', '452219', 146, 265),
+(14429, '38', 'percy-38', 'PERCY', 'percy', 'Percy', '38930', '301', '38301', 100, 5.64973, 44.8014, '3681', '49779', '+53859', '444805', 591, 1880),
+(14430, '38', 'saint-maurice-en-trieves', 'SAINT-MAURICE-EN-TRIEVES', 'saint maurice en trieves', 'Saint-Maurice-en-Trièves', '38930', '424', '38424', 200, 5.66667, 44.75, '3697', '49738', '+53950', '444552', 671, 1975),
+(14431, '38', 'roches-de-condrieu', 'LES ROCHES-DE-CONDRIEU', 'les roches de condrieu', 'Roches-de-Condrieu', '38370', '340', '38340', 1900, 4.76667, 45.45, '2701', '50503', '+44604', '452711', 155, 200),
+(14432, '38', 'moretel-de-mailles', 'MORETEL-DE-MAILLES', 'moretel de mailles', 'Morêtel-de-Mailles', '38570', '262', '38262', 400, 6, 45.3667, '4089', '50408', '+60060', '452203', 250, 1178),
+(14433, '38', 'badinieres', 'BADINIERES', 'badinieres', 'Badinières', '38300', '024', '38024', 600, 5.3, 45.5, '3295', '50566', '+51809', '453033', 396, 550),
+(14434, '38', 'meyrieu-les-etangs', 'MEYRIEU-LES-ETANGS', 'meyrieu les etangs', 'Meyrieu-les-Étangs', '38440', '231', '38231', 800, 5.20001, 45.5137, '3181', '50571', '+51160', '453049', 410, 527),
+(14435, '38', 'noyarey', 'NOYAREY', 'noyarey', 'Noyarey', '38360', '281', '38281', 2200, 5.63333, 45.25, '3661', '50271', '+53753', '451437', 191, 1649),
+(14436, '38', 'saint-ismier', 'SAINT-ISMIER', 'saint ismier', 'Saint-Ismier', '38330', '397', '38397', 6200, 5.83333, 45.25, '3878', '50276', '+54937', '451455', 216, 1489),
+(14437, '38', 'oris-en-rattier', 'ORIS-EN-RATTIER', 'oris en rattier', 'Oris-en-Rattier', '38350', '283', '38283', 100, 5.86667, 44.9167, '3926', '49912', '+55212', '445516', 768, 2606),
+(14438, '38', 'jarcieu', 'JARCIEU', 'jarcieu', 'Jarcieu', '38270', '198', '38198', 1000, 4.95, 45.3333, '2900', '50371', '+45647', '452002', 205, 248),
+(14439, '38', 'heyrieux', 'HEYRIEUX', 'heyrieux', 'Heyrieux', '38540', '189', '38189', 4700, 5.05, 45.6333, '3030', '50699', '+50348', '453745', 259, 381),
 (14440, '38', 'chateau-bernard', 'CHATEAU-BERNARD', 'chateau bernard', 'Château-Bernard', '38650', '090', '38090', 300, 5.58333, 44.9833, '3600', '49972', '+53435', '445830', 754, 2286),
 (14441, '38', 'sonnay', 'SONNAY', 'sonnay', 'Sonnay', '38150', '496', '38496', 1300, 4.9, 45.35, '2856', '50394', '+45425', '452117', 225, 407),
 (14442, '38', 'fontaine-38', 'FONTAINE', 'fontaine', 'Fontaine', '38600', '169', '38169', 22100, 5.66667, 45.1833, '3720', '50214', '+54105', '451135', 202, 1007),
@@ -622,8 +724,6 @@ INSERT INTO `ville` (`idVille`, `ville_departement`, `ville_slug`, `ville_nom`, 
 (14502, '38', 'hieres-sur-amby', 'HIERES-SUR-AMBY', 'hieres sur amby', 'Hières-sur-Amby', '38118', '190', '38190', 1200, 5.28333, 45.8, '3286', '50886', '+51738', '454751', 193, 429),
 (14503, '38', 'bresson', 'BRESSON', 'bresson', 'Bresson', '38320', '057', '38057', 700, 5.75, 45.1333, '3792', '50152', '+54458', '450811', 228, 533),
 (14504, '38', 'montalieu-vercieu', 'MONTALIEU-VERCIEU', 'montalieu vercieu', 'Montalieu-Vercieu', '38390', '247', '38247', 2900, 5.4, 45.8167, '3408', '50905', '+52413', '454851', 200, 347),
-(38000, '38', 'grenoble-38000', 'GRENOBLE-38000', 'grenoble 38000', 'Grenoble-38000', '38000', '185', '38185', 156700, 5.71667, 45.1667, '3766', '50208', '+54335', '451113', 204, 600),
-(38100, '38', 'grenoble-38100', 'GRENOBLE-38100', 'grenoble 38100', 'Grenoble-38100', '38100', NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (14506, '38', 'varces-allieres-et-risset', 'VARCES-ALLIERES-ET-RISSET', 'varces allieres et risset', 'Varces-Allières-et-Risset', '38760', '524', '38524', 6500, 5.68195, 45.0867, '3717', '50096', '+54055', '450512', 247, 1960),
 (14507, '38', 'brangues', 'BRANGUES', 'brangues', 'Brangues', '38510', '055', '38055', 600, 5.53333, 45.7, '3550', '50770', '+53152', '454135', 204, 236),
 (14508, '38', 'saint-simeon-de-bressieux', 'SAINT-SIMEON-DE-BRESSIEUX', 'saint simeon de bressieux', 'Saint-Siméon-de-Bressieux', '38870', '457', '38457', 2700, 5.25, 45.3333, '3250', '50365', '+51542', '451942', 337, 627),
@@ -732,7 +832,8 @@ INSERT INTO `ville` (`idVille`, `ville_departement`, `ville_slug`, `ville_nom`, 
 (14611, '38', 'eclose', 'ECLOSE', 'eclose', 'Eclose', '38300', '152', '38152', 700, 5.3, 45.5, '3292', '50554', '+51758', '452955', 478, 640),
 (14612, '38', 'livet-et-gavet', 'LIVET-ET-GAVET', 'livet et gavet', 'Livet-et-Gavet', '38220', '212', '38212', 1300, 5.93333, 45.1, '3962', '50101', '+55409', '450528', 366, 2763),
 (14613, '38', 'saint-lattier', 'SAINT-LATTIER', 'saint lattier', 'Saint-Lattier', '38840', '410', '38410', 1200, 5.2, 45.0833, '3183', '50098', '+51204', '450516', 144, 406),
-(14614, '38', 'saint-just-chaleyssin', 'SAINT-JUST-CHALEYSSIN', 'saint just chaleyssin', 'Saint-Just-Chaleyssin', '38540', '408', '38408', 2500, 5, 45.5833, '2959', '50650', '+45957', '453506', 218, 373),
+(14614, '38', 'saint-just-chaleyssin', 'SAINT-JUST-CHALEYSSIN', 'saint just chaleyssin', 'Saint-Just-Chaleyssin', '38540', '408', '38408', 2500, 5, 45.5833, '2959', '50650', '+45957', '453506', 218, 373);
+INSERT INTO `ville` (`idVille`, `ville_departement`, `ville_slug`, `ville_nom`, `ville_nom_simple`, `ville_nom_reel`, `ville_code_postal`, `ville_commune`, `ville_code_commune`, `ville_population_2012`, `ville_longitude_deg`, `ville_latitude_deg`, `ville_longitude_grd`, `ville_latitude_grd`, `ville_longitude_dms`, `ville_latitude_dms`, `ville_zmin`, `ville_zmax`) VALUES
 (14615, '38', 'anjou', 'ANJOU', 'anjou', 'Anjou', '38150', '009', '38009', 1000, 4.88333, 45.35, '2828', '50385', '+45255', '452049', 218, 383),
 (14616, '38', 'culin', 'CULIN', 'culin', 'Culin', '38300', '141', '38141', 600, 5.25, 45.5167, '3240', '50582', '+51509', '453127', 421, 536),
 (14617, '38', 'cote-saint-andre', 'LA COTE-SAINT-ANDRE', 'la cote saint andre', 'La Côte-Saint-André', '38260', '130', '38130', 4700, 5.25, 45.3833, '3249', '50437', '+51538', '452337', 335, 582),
@@ -843,8 +944,7 @@ INSERT INTO `ville` (`idVille`, `ville_departement`, `ville_slug`, `ville_nom`, 
 (14722, '38', 'saint-marcel-bel-accueil', 'SAINT-MARCEL-BEL-ACCUEIL', 'saint marcel bel accueil', 'Saint-Marcel-Bel-Accueil', '38080', '415', '38415', 1300, 5.23333, 45.65, '3221', '50720', '+51409', '453851', 210, 452),
 (14723, '38', 'saint-chef', 'SAINT-CHEF', 'saint chef', 'Saint-Chef', '38890', '374', '38374', 3400, 5.36667, 45.6333, '3366', '50704', '+52157', '453802', 218, 440),
 (14724, '38', 'vaujany', 'VAUJANY', 'vaujany', 'Vaujany', '38114', '527', '38527', 300, 6.08333, 45.15, '4156', '50175', '+60437', '450928', 752, 3464),
-(14725, '38', 'ville-sous-anjou', 'VILLE-SOUS-ANJOU', 'ville sous anjou', 'Ville-sous-Anjou', '38150', '556', '38556', 1100, 4.85, 45.3667, '2808', '50402', '+45149', '452143', 186, 401);
-INSERT INTO `ville` (`idVille`, `ville_departement`, `ville_slug`, `ville_nom`, `ville_nom_simple`, `ville_nom_reel`, `ville_code_postal`, `ville_commune`, `ville_code_commune`, `ville_population_2012`, `ville_longitude_deg`, `ville_latitude_deg`, `ville_longitude_grd`, `ville_latitude_grd`, `ville_longitude_dms`, `ville_latitude_dms`, `ville_zmin`, `ville_zmax`) VALUES
+(14725, '38', 'ville-sous-anjou', 'VILLE-SOUS-ANJOU', 'ville sous anjou', 'Ville-sous-Anjou', '38150', '556', '38556', 1100, 4.85, 45.3667, '2808', '50402', '+45149', '452143', 186, 401),
 (14726, '38', 'saint-pierre-d-allevard', 'SAINT-PIERRE-D\'ALLEVARD', 'saint pierre d allevard', 'Saint-Pierre-d\'Allevard', '38830', '439', '38439', 2800, 6.05, 45.3667, '4124', '50416', '+60253', '452229', 429, 1766),
 (14727, '38', 'champier', 'CHAMPIER', 'champier', 'Champier', '38260', '069', '38069', 1200, 5.28333, 45.45, '3283', '50504', '+51728', '452712', 470, 631),
 (14728, '38', 'courtenay-38', 'COURTENAY', 'courtenay', 'Courtenay', '38510', '135', '38135', 1100, 5.38333, 45.7333, '3381', '50810', '+52245', '454345', 219, 375),
@@ -981,117 +1081,76 @@ INSERT INTO `ville` (`idVille`, `ville_departement`, `ville_slug`, `ville_nom`, 
 (14859, '38', 'cognet', 'COGNET', 'cognet', 'Cognet', '38350', '116', '38116', 0, 5.78333, 44.8833, '3823', '49868', '+54637', '445252', 491, 920),
 (14860, '38', 'chantesse', 'CHANTESSE', 'chantesse', 'Chantesse', '38470', '074', '38074', 300, 5.45, 45.2333, '3453', '50270', '+52640', '451434', 247, 489),
 (14861, '38', 'susville', 'SUSVILLE', 'susville', 'Susville', '38350', '499', '38499', 1400, 5.78028, 44.9159, '3826', '49906', '+54649', '445457', 874, 1600),
-(14329, '38', 'voiron', 'VOIRON', 'voiron', 'Voiron', '38500', '563', '38563', 20400, 5.58333, 45.3667, '3615', '50404', '+53524', '452148', 222, 846),
-(14330, '38', 'reaumont', 'REAUMONT', 'reaumont', 'Réaumont', '38140', '331', '38331', 900, 5.51667, 45.3667, '3544', '50411', '+53133', '452211', 309, 436),
-(14331, '38', 'terrasse', 'LA TERRASSE', 'la terrasse', 'La Terrasse', '38660', '503', '38503', 2300, 5.93333, 45.3333, '3994', '50360', '+55552', '451925', 229, 1045),
-(14332, '38', 'perier', 'LE PERIER', 'le perier', 'Le Périer', '38740', '302', '38302', 100, 5.96667, 44.9333, '4041', '49930', '+55824', '445613', 815, 2992),
-(14333, '38', 'nantoin', 'NANTOIN', 'nantoin', 'Nantoin', '38260', '274', '38274', 400, 5.26667, 45.4333, '3258', '50484', '+51609', '452608', 430, 609),
-(14334, '38', 'saint-vincent-de-mercuze', 'SAINT-VINCENT-DE-MERCUZE', 'saint vincent de mercuze', 'Saint-Vincent-de-Mercuze', '38660', '466', '38466', 1400, 5.95, 45.3667, '4015', '50416', '+55659', '452227', 238, 863),
-(14335, '38', 'saint-laurent-en-beaumont', 'SAINT-LAURENT-EN-BEAUMONT', 'saint laurent en beaumont', 'Saint-Laurent-en-Beaumont', '38350', '413', '38413', 400, 5.85, 44.8833, '3904', '49866', '+55101', '445245', 557, 1492),
-(14336, '38', 'frontonas', 'FRONTONAS', 'frontonas', 'Frontonas', '38290', '176', '38176', 1800, 5.18333, 45.65, '3164', '50721', '+51103', '453856', 207, 401),
-(14337, '38', 'massieu', 'MASSIEU', 'massieu', 'Massieu', '38620', '222', '38222', 800, 5.58333, 45.4333, '3622', '50489', '+53547', '452623', 422, 867),
-(14338, '38', 'bouchage-38', 'LE BOUCHAGE', 'le bouchage', 'Le Bouchage', '38510', '050', '38050', 600, 5.53333, 45.6667, '3544', '50745', '+53133', '454013', 207, 210),
-(14339, '38', 'beaurepaire-38', 'BEAUREPAIRE', 'beaurepaire', 'Beaurepaire', '38270', '034', '38034', 4500, 5.05, 45.3333, '3020', '50376', '+50316', '452018', 225, 315),
-(14340, '38', 'chapelle-de-surieu', 'LA CHAPELLE-DE-SURIEU', 'la chapelle de surieu', 'La Chapelle-de-Surieu', '38150', '077', '38077', 700, 4.9, 45.4, '2859', '50435', '+45436', '452328', 252, 407),
-(14341, '38', 'clavans-en-haut-oisans', 'CLAVANS-EN-HAUT-OISANS', 'clavans en haut oisans', 'Clavans-en-Haut-Oisans', '38142', '112', '38112', 100, 6.15, 45.0667, '4251', '50093', '+60946', '450501', 1024, 3464),
-(14342, '38', 'cras-38', 'CRAS', 'cras', 'Cras', '38210', '137', '38137', 400, 5.45, 45.2667, '3459', '50299', '+52700', '451608', 280, 773),
-(14343, '38', 'beaulieu-38', 'BEAULIEU', 'beaulieu', 'Beaulieu', '38470', '033', '38033', 600, 5.38333, 45.2, '3395', '50214', '+52332', '451133', 160, 355),
-(14344, '38', 'peage-de-roussillon', 'LE PEAGE-DE-ROUSSILLON', 'le peage de roussillon', 'Le Péage-de-Roussillon', '38550', '298', '38298', 6600, 4.8, 45.3667, '2734', '50414', '+44751', '452223', 134, 263),
-(14345, '38', 'batie-divisin', 'LA BATIE-DIVISIN', 'la batie divisin', 'La Bâtie-Divisin', '38490', '028', '38028', 900, 5.6, 45.5, '3623', '50567', '+53552', '453036', 360, 615),
-(14346, '38', 'montbonnot-saint-martin', 'MONTBONNOT-SAINT-MARTIN', 'montbonnot saint martin', 'Montbonnot-Saint-Martin', '38330', '249', '38249', 4500, 5.8, 45.2333, '3851', '50252', '+54809', '451337', 215, 356),
-(14347, '38', 'pin-38', 'LE PIN', 'le pin', 'Le Pin', '38730', '305', '38305', 1200, 5.5, 45.45, '3521', '50507', '+53020', '452724', 487, 767),
-(14348, '38', 'autrans', 'AUTRANS', 'autrans', 'Autrans', '38880', '021', '38021', 1700, 5.55, 45.1667, '3562', '50195', '+53232', '451030', 1005, 1711),
-(14349, '38', 'saint-pierre-de-mearoz', 'SAINT-PIERRE-DE-MEAROZ', 'saint pierre de mearoz', 'Saint-Pierre-de-Méaroz', '38350', '444', '38444', 100, 5.81667, 44.8833, '3874', '49861', '+54925', '445230', 508, 868),
-(14350, '38', 'colombe-38', 'COLOMBE', 'colombe', 'Colombe', '38690', '118', '38118', 1400, 5.45, 45.4, '3459', '50443', '+52658', '452356', 448, 738),
-(14351, '38', 'treffort', 'TREFFORT', 'treffort', 'Treffort', '38650', '513', '38513', 200, 5.65806, 44.9156, '3690', '49906', '+53929', '445456', 486, 1070),
-(14352, '38', 'leyrieu', 'LEYRIEU', 'leyrieu', 'Leyrieu', '38460', '210', '38210', 700, 5.25, 45.75, '3243', '50842', '+51518', '454528', 203, 420),
-(14353, '38', 'saint-martin-d-heres', 'SAINT-MARTIN-D\'HERES', 'saint martin d heres', 'Saint-Martin-d\'Hères', '38400', '421', '38421', 35600, 5.76667, 45.1667, '3809', '50185', '+54553', '450959', 206, 610),
-(14354, '38', 'viriville', 'VIRIVILLE', 'viriville', 'Viriville', '38980', '561', '38561', 1400, 5.2, 45.3167, '3186', '50351', '+51215', '451857', 306, 606),
-(14355, '38', 'sainte-agnes-38', 'SAINTE-AGNES', 'sainte agnes', 'Sainte-Agnès', '38190', '350', '38350', 500, 5.91667, 45.2333, '3983', '50263', '+55516', '451412', 270, 2969),
-(14356, '38', 'velanne', 'VELANNE', 'velanne', 'Velanne', '38620', '531', '38531', 500, 5.63333, 45.4833, '3680', '50543', '+53854', '452918', 380, 641),
-(14357, '38', 'notre-dame-de-vaulx', 'NOTRE-DAME-DE-VAULX', 'notre dame de vaulx', 'Notre-Dame-de-Vaulx', '38144', '280', '38280', 600, 5.75, 44.9833, '3791', '49985', '+54456', '445911', 877, 1712),
-(14358, '38', 'cornillon-en-trieves', 'CORNILLON-EN-TRIEVES', 'cornillon en trieves', 'Cornillon-en-Trièves', '38710', '127', '38127', 200, 5.7, 44.8333, '3756', '49811', '+54303', '444946', 493, 1106),
-(14359, '38', 'quet-en-beaumont', 'QUET-EN-BEAUMONT', 'quet en beaumont', 'Quet-en-Beaumont', '38970', '329', '38329', 100, 5.86667, 44.8333, '3930', '49816', '+55225', '445005', 581, 1664),
-(14360, '38', 'ambel', 'AMBEL', 'ambel', 'Ambel', '38970', '008', '38008', 0, 5.93333, 44.8167, '3993', '49783', '+55550', '444818', 735, 1596),
-(14361, '38', 'vignieu', 'VIGNIEU', 'vignieu', 'Vignieu', '38890', '546', '38546', 900, 5.41667, 45.6333, '3431', '50698', '+52529', '453741', 220, 444),
-(14362, '38', 'bossieu', 'BOSSIEU', 'bossieu', 'Bossieu', '38260', '049', '38049', 300, 5.15, 45.4167, '3124', '50463', '+50853', '452501', 361, 524),
-(14363, '38', 'oytier-saint-oblas', 'OYTIER-SAINT-OBLAS', 'oytier saint oblas', 'Oytier-Saint-Oblas', '38780', '288', '38288', 1500, 5.01667, 45.5667, '2983', '50623', '+50115', '453340', 232, 376),
-(14364, '38', 'saint-hilaire-38', 'SAINT-HILAIRE', 'saint hilaire', 'Saint-Hilaire', '38660', '395', '38395', 1600, 5.88333, 45.3, '3945', '50344', '+55314', '451834', 647, 2060),
-(14365, '38', 'varacieux', 'VARACIEUX', 'varacieux', 'Varacieux', '38470', '523', '38523', 800, 5.33333, 45.2333, '3334', '50258', '+52015', '451355', 326, 704),
-(14366, '38', 'cholonge', 'CHOLONGE', 'cholonge', 'Cholonge', '38220', '106', '38106', 300, 5.8, 45, '3844', '50005', '+54748', '450015', 905, 2140),
-(14367, '38', 'goncelin', 'GONCELIN', 'goncelin', 'Goncelin', '38570', '181', '38181', 2200, 5.98333, 45.3333, '4047', '50381', '+55845', '452034', 235, 1278),
-(14368, '38', 'coublevie', 'COUBLEVIE', 'coublevie', 'Coublevie', '38500', '133', '38133', 4200, 5.61667, 45.35, '3644', '50395', '+53660', '452120', 250, 651),
-(14369, '38', 'saint-pierre-d-entremont-38', 'SAINT-PIERRE-D\'ENTREMONT', 'saint pierre d entremont', 'Saint-Pierre-d\'Entremont', '73670', '446', '38446', 600, 5.85389, 45.4153, '3908', '50461', '+55114', '452455', 598, 2047),
-(14370, '38', 'brezins', 'BREZINS', 'brezins', 'Brézins', '38590', '058', '38058', 1600, 5.31667, 45.35, '3300', '50388', '+51824', '452057', 356, 407),
-(14371, '38', 'sainte-marie-d-alloix', 'SAINTE-MARIE-D\'ALLOIX', 'sainte marie d alloix', 'Sainte-Marie-d\'Alloix', '38660', '417', '38417', 600, 5.96667, 45.3833, '4033', '50421', '+55759', '452245', 242, 380),
-(14372, '38', 'cotes-d-arey', 'LES COTES-D\'AREY', 'les cotes d arey', 'Côtes-d\'Arey', '38138', '131', '38131', 1800, 4.86695, 45.4559, '2812', '50507', '+45201', '452721', 217, 409),
-(14373, '38', 'rovon', 'ROVON', 'rovon', 'Rovon', '38470', '345', '38345', 600, 5.46667, 45.2, '3472', '50225', '+52741', '451209', 172, 1471),
-(14374, '38', 'montseveroux', 'MONTSEVEROUX', 'montseveroux', 'Montseveroux', '38122', '259', '38259', 900, 4.96667, 45.4333, '2927', '50477', '+45815', '452544', 289, 452),
-(14375, '38', 'sablons-38', 'SABLONS', 'sablons', 'Sablons', '38550', '349', '38349', 1800, 4.76667, 45.3167, '2707', '50353', '+44623', '451905', 135, 154),
-(14376, '38', 'saint-aupre', 'SAINT-AUPRE', 'saint aupre', 'Saint-Aupre', '38960', '362', '38362', 1100, 5.66667, 45.3833, '3704', '50444', '+54014', '452358', 436, 925),
-(14377, '38', 'villard-de-lans', 'VILLARD-DE-LANS', 'villard de lans', 'Villard-de-Lans', '38250', '548', '38548', 4000, 5.55, 45.0667, '3571', '50078', '+53302', '450412', 720, 2286),
-(14378, '38', 'saint-michel-en-beaumont', 'SAINT-MICHEL-EN-BEAUMONT', 'saint michel en beaumont', 'Saint-Michel-en-Beaumont', '38350', '428', '38428', 0, 5.9, 44.8667, '3959', '49854', '+55359', '445206', 958, 2020),
-(14379, '38', 'chatelus-38', 'CHATELUS', 'chatelus', 'Châtelus', '38680', '092', '38092', 100, 5.36667, 45.05, '3373', '50064', '+52221', '450329', 229, 1269),
-(14380, '38', 'mottier', 'MOTTIER', 'mottier', 'Mottier', '38260', '267', '38267', 700, 5.31667, 45.4167, '3312', '50466', '+51902', '452508', 448, 641),
-(14381, '38', 'notre-dame-de-commiers', 'NOTRE-DAME-DE-COMMIERS', 'notre dame de commiers', 'Notre-Dame-de-Commiers', '38450', '277', '38277', 500, 5.7, 45.0167, '3737', '50011', '+54160', '450036', 317, 1323),
-(14382, '38', 'moissieu-sur-dolon', 'MOISSIEU-SUR-DOLON', 'moissieu sur dolon', 'Moissieu-sur-Dolon', '38270', '240', '38240', 700, 4.98333, 45.3833, '2946', '50429', '+45916', '452310', 287, 463),
-(14383, '38', 'lumbin', 'LUMBIN', 'lumbin', 'Lumbin', '38660', '214', '38214', 1900, 5.91667, 45.3167, '3973', '50341', '+55445', '451824', 222, 880),
-(14384, '38', 'corps', 'CORPS', 'corps', 'Corps', '38970', '128', '38128', 500, 5.95, 44.8167, '4011', '49798', '+55649', '444906', 639, 1840),
-(14385, '38', 'charette', 'CHARETTE', 'charette', 'Charette', '38390', '083', '38083', 400, 5.36667, 45.8167, '3371', '50900', '+52214', '454837', 240, 350),
-(14386, '38', 'saint-etienne-de-saint-geoirs', 'SAINT-ETIENNE-DE-SAINT-GEOIRS', 'saint etienne de saint geoirs', 'Saint-Étienne-de-Saint-Geoirs', '38590', '384', '38384', 2700, 5.35, 45.3333, '3343', '50377', '+52043', '452020', 369, 545),
-(14387, '38', 'buisse', 'LA BUISSE', 'la buisse', 'La Buisse', '38500', '061', '38061', 2700, 5.61667, 45.3333, '3650', '50372', '+53718', '452006', 184, 935),
-(14388, '38', 'commelle', 'COMMELLE', 'commelle', 'Commelle', '38260', '121', '38121', 700, 5.21667, 45.4167, '3211', '50476', '+51335', '452541', 396, 587),
-(14389, '38', 'saint-jean-d-herans', 'SAINT-JEAN-D\'HERANS', 'saint jean d herans', 'Saint-Jean-d\'Hérans', '38710', '403', '38403', 300, 5.76667, 44.85, '3805', '49837', '+54539', '445112', 486, 1101),
-(14390, '38', 'notre-dame-de-l-osier', 'NOTRE-DAME-DE-L\'OSIER', 'notre dame de l osier', 'Notre-Dame-de-l\'Osier', '38470', '278', '38278', 500, 5.4, 45.2333, '3410', '50265', '+52419', '451418', 315, 556),
-(14391, '38', 'burcin', 'BURCIN', 'burcin', 'Burcin', '38690', '063', '38063', 400, 5.43333, 45.4333, '3445', '50479', '+52615', '452553', 453, 734),
-(14392, '38', 'saint-barthelemy-38', 'SAINT-BARTHELEMY', 'saint barthelemy', 'Saint-Barthélemy', '38270', '363', '38363', 900, 5.075, 45.35, '3048', '50385', '+50449', '452047', 258, 326),
-(14393, '38', 'chateauvilain', 'CHATEAUVILAIN', 'chateauvilain', 'Châteauvilain', '38300', '091', '38091', 600, 5.33001, 45.5167, '3326', '50574', '+51948', '453100', 345, 644),
-(14394, '38', 'meylan', 'MEYLAN', 'meylan', 'Meylan', '38240', '229', '38229', 17200, 5.78333, 45.2333, '3825', '50232', '+54646', '451231', 206, 1313),
-(14395, '38', 'saint-jean-de-soudain', 'SAINT-JEAN-DE-SOUDAIN', 'saint jean de soudain', 'Saint-Jean-de-Soudain', '38110', '401', '38401', 1400, 5.43333, 45.5667, '3436', '50636', '+52544', '453421', 303, 471),
-(14396, '38', 'eparres', 'LES EPARRES', 'les eparres', 'Éparres', '38300', '156', '38156', 900, 5.3, 45.5333, '3285', '50593', '+51734', '453201', 319, 501),
-(14397, '38', 'voissant', 'VOISSANT', 'voissant', 'Voissant', '38620', '564', '38564', 200, 5.7, 45.4833, '3748', '50537', '+54236', '452901', 269, 788),
-(14398, '38', 'chasselay-38', 'CHASSELAY', 'chasselay', 'Chasselay', '38470', '086', '38086', 400, 5.33333, 45.25, '3335', '50284', '+52019', '451521', 418, 729),
-(14399, '38', 'sainte-marie-du-mont-38', 'SAINTE-MARIE-DU-MONT', 'sainte marie du mont', 'Sainte-Marie-du-Mont', '38660', '418', '38418', 200, 5.93333, 45.4, '4010', '50451', '+55644', '452422', 522, 1880),
-(14400, '38', 'monestier-d-ambel', 'MONESTIER-D\'AMBEL', 'monestier d ambel', 'Monestier-d\'Ambel', '38970', '241', '38241', 0, 5.93333, 44.7833, '3989', '49753', '+55537', '444640', 746, 2378),
-(14401, '38', 'treminis', 'TREMINIS', 'treminis', 'Tréminis', '38710', '514', '38514', 200, 5.76667, 44.75, '3814', '49720', '+54608', '444451', 792, 2755),
-(14402, '38', 'montagnieu-38', 'MONTAGNIEU', 'montagnieu', 'Montagnieu', '38110', '246', '38246', 800, 5.45, 45.5167, '3462', '50583', '+52709', '453127', 380, 582),
-(14403, '38', 'chanas', 'CHANAS', 'chanas', 'Chanas', '38150', '072', '38072', 2300, 4.81667, 45.3, '2758', '50354', '+44909', '451906', 142, 223),
-(14404, '38', 'engins', 'ENGINS', 'engins', 'Engins', '38360', '153', '38153', 500, 5.61667, 45.1833, '3644', '50201', '+53700', '451052', 560, 1704),
-(14405, '38', 'chatte', 'CHATTE', 'chatte', 'Chatte', '38160', '095', '38095', 2500, 5.28333, 45.15, '3274', '50159', '+51659', '450837', 164, 443),
-(14406, '38', 'charvieu-chavagneux', 'CHARVIEU-CHAVAGNEUX', 'charvieu chavagneux', 'Charvieu-Chavagneux', '38230', '085', '38085', 7700, 5.16389, 45.7456, '3142', '50829', '+50950', '454444', 200, 251),
-(14407, '38', 'pont-de-cheruy', 'PONT-DE-CHERUY', 'pont de cheruy', 'Pont-de-Chéruy', '38230', '316', '38316', 4900, 5.18333, 45.75, '3152', '50834', '+51023', '454502', 196, 236),
-(14408, '38', 'abrets', 'LES ABRETS', 'les abrets', 'Abrets', '38490', '001', '38001', 3000, 5.58333, 45.5333, '3609', '50596', '+53506', '453213', 261, 434),
-(14409, '38', 'saint-didier-de-bizonnes', 'SAINT-DIDIER-DE-BIZONNES', 'saint didier de bizonnes', 'Saint-Didier-de-Bizonnes', '38690', '380', '38380', 300, 5.35, 45.45, '3349', '50519', '+52104', '452802', 514, 647),
-(14410, '38', 'saint-victor-de-cessieu', 'SAINT-VICTOR-DE-CESSIEU', 'saint victor de cessieu', 'Saint-Victor-de-Cessieu', '38110', '464', '38464', 2100, 5.4, 45.55, '3394', '50601', '+52329', '453227', 310, 555),
-(14411, '38', 'villard-saint-christophe', 'VILLARD-SAINT-CHRISTOPHE', 'villard saint christophe', 'Villard-Saint-Christophe', '38119', '552', '38552', 400, 5.8, 44.9667, '3855', '49977', '+54821', '445844', 940, 2176),
-(14412, '38', 'paladru', 'PALADRU', 'paladru', 'Paladru', '38137', '292', '38292', 1000, 5.55, 45.4667, '3574', '50529', '+53312', '452833', 488, 711),
-(14413, '38', 'saint-arey', 'SAINT-AREY', 'saint arey', 'Saint-Arey', '38350', '361', '38361', 100, 5.73333, 44.8667, '3775', '49858', '+54402', '445219', 487, 1483),
-(14414, '38', 'laval-38', 'LAVAL', 'laval', 'Laval', '38190', '206', '38206', 1000, 5.93333, 45.25, '3995', '50281', '+55557', '451511', 320, 2600),
-(14415, '38', 'saint-theoffrey', 'SAINT-THEOFFREY', 'saint theoffrey', 'Saint-Théoffrey', '38119', '462', '38462', 400, 5.76667, 44.9833, '3818', '49999', '+54623', '445956', 905, 1240),
-(14416, '38', 'verpilliere', 'LA VERPILLIERE', 'la verpilliere', 'La Verpillière', '38290', '537', '38537', 6200, 5.15, 45.6333, '3118', '50708', '+50834', '453813', 205, 305),
-(14417, '38', 'vizille', 'VIZILLE', 'vizille', 'Vizille', '38220', '562', '38562', 7700, 5.76667, 45.0833, '3817', '50087', '+54619', '450442', 268, 1016),
-(14418, '38', 'saint-clair-de-la-tour', 'SAINT-CLAIR-DE-LA-TOUR', 'saint clair de la tour', 'Saint-Clair-de-la-Tour', '38110', '377', '38377', 3200, 5.48333, 45.5667, '3495', '50638', '+52855', '453426', 314, 425),
-(14419, '38', 'jarrie-38', 'JARRIE', 'jarrie', 'Jarrie', '38560', '200', '38200', 3800, 5.76667, 45.1167, '3784', '50108', '+54433', '450549', 259, 733),
-(14420, '38', 'faverges-de-la-tour', 'FAVERGES-DE-LA-TOUR', 'faverges de la tour', 'Faverges-de-la-Tour', '38110', '162', '38162', 1300, 5.51667, 45.5833, '3541', '50657', '+53125', '453528', 285, 432),
-(14421, '38', 'monestier-du-percy', 'LE MONESTIER-DU-PERCY', 'le monestier du percy', 'Le Monestier-du-Percy', '38930', '243', '38243', 200, 5.65, 44.8, '3691', '49771', '+53932', '444739', 597, 1896),
-(14422, '38', 'tour-du-pin', 'LA TOUR-DU-PIN', 'la tour du pin', 'La Tour-du-Pin', '38110', '509', '38509', 7700, 5.45, 45.5667, '3454', '50629', '+52642', '453357', 309, 461),
-(14423, '38', 'beaufin', 'BEAUFIN', 'beaufin', 'Beaufin', '38970', '031', '38031', 0, 5.95, 44.7833, '4026', '49764', '+55736', '444716', 744, 2080),
-(14424, '38', 'lentiol', 'LENTIOL', 'lentiol', 'Lentiol', '38270', '209', '38209', 200, 5.11667, 45.3, '3085', '50332', '+50648', '451757', 337, 479),
-(14425, '38', 'saint-martin-de-vaulserre', 'SAINT-MARTIN-DE-VAULSERRE', 'saint martin de vaulserre', 'Saint-Martin-de-Vaulserre', '38480', '420', '38420', 200, 5.66667, 45.4833, '3718', '50549', '+54058', '452939', 320, 584),
-(14426, '38', 'lalley', 'LALLEY', 'lalley', 'Lalley', '38930', '204', '38204', 200, 5.68333, 44.75, '3710', '49731', '+54034', '444528', 673, 2045),
-(14427, '38', 'lans-en-vercors', 'LANS-EN-VERCORS', 'lans en vercors', 'Lans-en-Vercors', '38250', '205', '38205', 2500, 5.58333, 45.1167, '3613', '50142', '+53519', '450741', 902, 1960),
-(14428, '38', 'roussillon-38', 'ROUSSILLON', 'roussillon', 'Roussillon', '38150', '344', '38344', 8000, 4.81667, 45.3667, '2750', '50413', '+44842', '452219', 146, 265),
-(14429, '38', 'percy-38', 'PERCY', 'percy', 'Percy', '38930', '301', '38301', 100, 5.64973, 44.8014, '3681', '49779', '+53859', '444805', 591, 1880),
-(14430, '38', 'saint-maurice-en-trieves', 'SAINT-MAURICE-EN-TRIEVES', 'saint maurice en trieves', 'Saint-Maurice-en-Trièves', '38930', '424', '38424', 200, 5.66667, 44.75, '3697', '49738', '+53950', '444552', 671, 1975),
-(14431, '38', 'roches-de-condrieu', 'LES ROCHES-DE-CONDRIEU', 'les roches de condrieu', 'Roches-de-Condrieu', '38370', '340', '38340', 1900, 4.76667, 45.45, '2701', '50503', '+44604', '452711', 155, 200),
-(14432, '38', 'moretel-de-mailles', 'MORETEL-DE-MAILLES', 'moretel de mailles', 'Morêtel-de-Mailles', '38570', '262', '38262', 400, 6, 45.3667, '4089', '50408', '+60060', '452203', 250, 1178),
-(14433, '38', 'badinieres', 'BADINIERES', 'badinieres', 'Badinières', '38300', '024', '38024', 600, 5.3, 45.5, '3295', '50566', '+51809', '453033', 396, 550),
-(14434, '38', 'meyrieu-les-etangs', 'MEYRIEU-LES-ETANGS', 'meyrieu les etangs', 'Meyrieu-les-Étangs', '38440', '231', '38231', 800, 5.20001, 45.5137, '3181', '50571', '+51160', '453049', 410, 527),
-(14435, '38', 'noyarey', 'NOYAREY', 'noyarey', 'Noyarey', '38360', '281', '38281', 2200, 5.63333, 45.25, '3661', '50271', '+53753', '451437', 191, 1649),
-(14436, '38', 'saint-ismier', 'SAINT-ISMIER', 'saint ismier', 'Saint-Ismier', '38330', '397', '38397', 6200, 5.83333, 45.25, '3878', '50276', '+54937', '451455', 216, 1489),
-(14437, '38', 'oris-en-rattier', 'ORIS-EN-RATTIER', 'oris en rattier', 'Oris-en-Rattier', '38350', '283', '38283', 100, 5.86667, 44.9167, '3926', '49912', '+55212', '445516', 768, 2606),
-(14438, '38', 'jarcieu', 'JARCIEU', 'jarcieu', 'Jarcieu', '38270', '198', '38198', 1000, 4.95, 45.3333, '2900', '50371', '+45647', '452002', 205, 248),
-(14439, '38', 'heyrieux', 'HEYRIEUX', 'heyrieux', 'Heyrieux', '38540', '189', '38189', 4700, 5.05, 45.6333, '3030', '50699', '+50348', '453745', 259, 381);
+(38000, '38', 'grenoble-38000', 'GRENOBLE-38000', 'grenoble 38000', 'Grenoble-38000', '38000', '185', '38185', 156700, 5.71667, 45.1667, '3766', '50208', '+54335', '451113', 204, 600),
+(38100, '38', 'grenoble-38100', 'GRENOBLE-38100', 'grenoble 38100', 'Grenoble-38100', '38100', NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `association_invitation`
+--
+ALTER TABLE `association_invitation`
+  ADD CONSTRAINT `FK_association_TO_association_invitation` FOREIGN KEY (`idAssociation`) REFERENCES `association` (`idAssociation`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_user_TO_association_invitation_inviter` FOREIGN KEY (`idInviter`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_user_TO_association_invitation_user` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `entreprise`
+--
+ALTER TABLE `entreprise`
+  ADD CONSTRAINT `FK_user_TO_entreprise` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--
+-- Constraints for table `evenement`
+--
+ALTER TABLE `evenement`
+  ADD CONSTRAINT `FK_association_TO_evenement` FOREIGN KEY (`idAssociation`) REFERENCES `association` (`idAssociation`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_entreprise_TO_evenement` FOREIGN KEY (`idEntreprise`) REFERENCES `entreprise` (`idEntreprise`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_event_category_TO_evenement` FOREIGN KEY (`idEventCategory`) REFERENCES `event_category` (`idEventCategory`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_user_TO_evenement_creator` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_ville_TO_evenement` FOREIGN KEY (`idVille`) REFERENCES `ville` (`idVille`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--
+-- Constraints for table `event_image`
+--
+ALTER TABLE `event_image`
+  ADD CONSTRAINT `FK_evenement_TO_event_image` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `event_invitation`
+--
+ALTER TABLE `event_invitation`
+  ADD CONSTRAINT `FK_evenement_TO_event_invitation` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_user_TO_event_invitation_inviter` FOREIGN KEY (`idInviter`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_user_TO_event_invitation_user` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `event_participant`
+--
+ALTER TABLE `event_participant`
+  ADD CONSTRAINT `FK_evenement_TO_event_participant` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_user_TO_event_participant` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `notification`
+--
+ALTER TABLE `notification`
+  ADD CONSTRAINT `FK_user_TO_notification` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user`
+--
+ALTER TABLE `user`
+  ADD CONSTRAINT `FK_role_TO_user` FOREIGN KEY (`idRole`) REFERENCES `role` (`idRole`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_association`
+--
+ALTER TABLE `user_association`
+  ADD CONSTRAINT `FK_association_TO_user_association` FOREIGN KEY (`idAssociation`) REFERENCES `association` (`idAssociation`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_user_TO_user_association` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
