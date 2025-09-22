@@ -4,7 +4,7 @@
 <main>
     <div class="flex-row justify-content-between">
         <h1>Modifier l'entreprise</h1>
-        <a href="<?= HOME_URL . 'mes_entreprises?action=voir&uiid=' . $entreprise->getIdEntreprise() ?>" class="">
+        <a href="<?= HOME_URL . 'mes_entreprises?action=voir&uiid=' . $entreprise->getUiid() ?>" class="">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>

@@ -5,7 +5,7 @@
     <div class="event-header">
         <div class="flex-row align-items-center">
             <h1>Modifier l'événement</h1>
-            <a href="<?= HOME_URL ?>mes_evenements?action=voir&uiid=<?= $evenement['idEvenement'] ?>">
+            <a href="<?= HOME_URL ?>mes_evenements?action=voir&uiid=<?= $evenement['uiid'] ?>">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
             </a>
         </div>
@@ -141,7 +141,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn">Mettre à jour l'événement</button>
-                <a href="<?= HOME_URL . 'mes_evenements?action=voir&uiid=' . $evenement['idEvenement'] ?>" class="btn btn-secondary">Annuler</a>
+                <a href="<?= HOME_URL . 'mes_evenements?action=voir&uiid=' . $evenement['uiid'] ?>" class="btn btn-secondary">Annuler</a>
             </div>
         </form>
     </div>
@@ -170,19 +170,6 @@
 .current-image, .current-banner {
     margin-top: 0.5rem;
     padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    display: inline-block;
-}
-
-@media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-    }
-}
-</style>
-
-<?php include_once __DIR__ . '/../includes/footer.php'; ?>
     border: 1px solid #ddd;
     border-radius: 8px;
     display: inline-block;

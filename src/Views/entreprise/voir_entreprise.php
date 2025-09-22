@@ -1,168 +1,220 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/banners-logos.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-<main>
-    <div class="flex-row justify-content-between mb">
-        <div>
-            <h1><?= $entreprise->getName() ?></h1>
-        </div>
-        <div>
-            <a href="<?= HOME_URL . 'mes_entreprises' ?>" class="">
-                <span class="material-icons btn" style="color:white;">arrow_back</span>
-            </a>
-        </div>
-    </div>
 
+<main style="padding:0;">
     <?php if (!$entreprise): ?>
-        <div class="custom-alert custom-alert-danger">
+        <div class="custom-alert custom-alert-danger" style="margin: 20px;">
             <p>L'entreprise demandée n'existe pas ou vous n'avez pas les permissions nécessaires pour y accéder.</p>
         </div>
     <?php else: ?>
-        <div class="flex-row">
-            <!-- Main Content -->
-            <div class="max-width-66">
-                <div class="card mb">
-                    <!-- Banner -->
+        <!-- Banner and Logo Section (like Facebook) -->
+        <div class="entreprise-banner-section">
+            <div class="entreprise-banner-wrapper">
+                <?php if ($entreprise->getBannerPath()): ?>
+                    <img id="currentBanner" src="<?= $entreprise->getBannerPath() ?>" alt="Bannière de <?= $entreprise->getName() ?>" class="entreprise-banner-img">
+                <?php else: ?>
+                    <div id="currentBanner" class="entreprise-banner-placeholder">Aucune bannière</div>
+                <?php endif; ?>
+                <img id="bannerPreview" style="display:none;">
+            </div>
+            
+            <?php if ($isOwner): ?>
+                <div class="entreprise-banner-actions">
+                    <form method="post" action="<?= HOME_URL . 'entreprise/edit_banner?uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
+                        <label for="bannerInput" class="btn">
+                            Changer bannière
+                            <input type="file" id="bannerInput" name="banner" accept="image/*" required>
+                        </label>
+                        <button type="submit" class="btn" id="bannerSubmitBtn" disabled>Valider</button>
+                        <button type="button" id="cancelBannerBtn" class="btn" style="display:none;">Annuler</button>
+                    </form>
                     <?php if ($entreprise->getBannerPath()): ?>
-                        <div class="entreprise-banner">
-                            <img src="<?= $entreprise->getBannerPath() ?>" alt="Bannière de <?= $entreprise->getName() ?>" style="width:100%; max-height:300px; object-fit:cover;">
-                        </div>
+                        <form method="post" action="<?= HOME_URL . 'entreprise/delete_banner?uiid=' . $entreprise->getUiid() ?>">
+                            <button type="submit" class="btn bg-danger">Supprimer</button>
+                        </form>
                     <?php endif; ?>
+                </div>
+            <?php endif; ?>
+            
+            <!-- Logo overlaps banner -->
+            <?php if ($isOwner): ?>
+                <div class="entreprise-logo-picture">
+                    <img id="currentLogo" src="<?= $entreprise->getLogoPath() ?: HOME_URL . 'assets/images/default-entreprise-logo.png' ?>" alt="Logo de <?= $entreprise->getName() ?>">
+                    <form method="post" action="<?= HOME_URL . 'entreprise/edit_logo?uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
+                        <label for="logoInput" class="btn">
+                            Modifier logo
+                            <input type="file" id="logoInput" name="logo" accept="image/*" required>
+                        </label>
+                        <button type="submit" class="btn">Valider</button>
+                        <button type="button" id="cancelLogo" class="btn" style="display:none;">Annuler</button>
+                    </form>
+                    <?php if ($entreprise->getLogoPath()): ?>
+                        <form action="<?= HOME_URL . 'entreprise/delete_logo?uiid=' . $entreprise->getUiid() ?>" method="post">
+                            <button type="submit" class="btn">Supprimer</button>
+                        </form>
+                    <?php endif; ?>
+                </div>
+            <?php else: ?>
+                <div class="entreprise-logo-display">
+                    <?php if ($entreprise->getLogoPath()): ?>
+                        <img src="<?= $entreprise->getLogoPath() ?>" alt="Logo de <?= $entreprise->getName() ?>">
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
 
-                    <!-- Header with logo and title -->
-                    <div class="flex-row align-items-center mb p-3">
-                        <?php if ($entreprise->getLogoPath()): ?>
-                            <img src="<?= $entreprise->getLogoPath() ?>" style="width:100px; height:100px; border-radius:50%; margin-right:20px;" alt="Logo de <?= $entreprise->getName() ?>">
-                        <?php endif; ?>
-                        <div>
-                            <h2><?= $entreprise->getName() ?></h2>
-                            <div class="flex-row">
-                                <span class="badge <?= $entreprise->getIsActive() ? 'badge-success' : 'badge-secondary' ?> mr-2">
-                                    <?= $entreprise->getIsActive() ? 'Active' : 'Inactive' ?>
-                                </span>
-                                <span class="badge <?= $entreprise->getStatus() === 'validee' ? 'badge-info' : ($entreprise->getStatus() === 'brouillon' ? 'badge-warning' : 'badge-danger') ?>">
-                                    <?= ucfirst($entreprise->getStatus()) ?>
-                                </span>
-                            </div>
-                        </div>
+        <!-- Main Content Below Banner -->
+        <div class="entreprise-main-content" >
+            <!-- Header with back button and title -->
+            <div class="flex-row justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 style="margin: 0;"><?= $entreprise->getName() ?></h1>
+                    <div class="flex-row mt-2">
+                        <span class="badge <?= $entreprise->getIsActive() ? 'badge-success' : 'badge-secondary' ?> mr-2">
+                            <?= $entreprise->getIsActive() ? 'Active' : 'Inactive' ?>
+                        </span>
+                        <span class="badge <?= $entreprise->getStatus() === 'validee' ? 'badge-info' : ($entreprise->getStatus() === 'brouillon' ? 'badge-warning' : 'badge-danger') ?>">
+                            <?= ucfirst($entreprise->getStatus()) ?>
+                        </span>
                     </div>
+                </div>
+                <div>
+                    <a href="<?= HOME_URL . 'mes_entreprises' ?>" class="">
+                        <span class="material-icons btn" style="color:white;">arrow_back</span>
+                    </a>
+                </div>
+            </div>
 
-                    <!-- Details -->
-                    <div class="p-3">
-                        <div class="mb-3">
+            <div class="flex-row" style="gap: 20px;">
+                <!-- Main Details Section -->
+                <div class="max-width-66">
+                    <div class="card mb-4">
+                        <!-- Description -->
+                        <div class="p-3">
                             <h4>Description</h4>
                             <div class="card p-3 bg-light">
                                 <p><?= nl2br($entreprise->getDescription() ?? 'Aucune description disponible') ?></p>
                             </div>
                         </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <h4>Coordonnées</h4>
-                                <dl>
-                                    <dt>Adresse</dt>
-                                    <dd><?= $entreprise->getAddress() ?? 'Non renseignée' ?></dd>
-                                    
-                                    <dt>Ville</dt>
-                                    <dd>
-                                        <?php if ($ville): ?>
-                                            <?= $ville['ville_nom_reel'] ?> (<?= $ville['ville_code_postal'] ?>)
-                                        <?php else: ?>
-                                            Non renseignée
-                                        <?php endif; ?>
-                                    </dd>
-                                    
-                                    <dt>Téléphone</dt>
-                                    <dd>
-                                        <?php if ($entreprise->getPhone()): ?>
-                                            <a href="tel:<?= $entreprise->getPhone() ?>">
-                                                <?= $entreprise->getPhone() ?>
-                                            </a>
-                                        <?php else: ?>
-                                            Non renseigné
-                                        <?php endif; ?>
-                                    </dd>
-                                    
-                                    <dt>Email</dt>
-                                    <dd>
-                                        <?php if ($entreprise->getEmail()): ?>
-                                            <a href="mailto:<?= $entreprise->getEmail() ?>">
-                                                <?= $entreprise->getEmail() ?>
-                                            </a>
-                                        <?php else: ?>
-                                            Non renseigné
-                                        <?php endif; ?>
-                                    </dd>
-                                    
-                                    <dt>Site web</dt>
-                                    <dd>
-                                        <?php if ($entreprise->getWebsite()): ?>
-                                            <a href="<?= $entreprise->getWebsite() ?>" target="_blank">
-                                                <?= $entreprise->getWebsite() ?>
-                                            </a>
-                                        <?php else: ?>
-                                            Non renseigné
-                                        <?php endif; ?>
-                                    </dd>
-                                </dl>
+                    </div>
+
+                    <div class="card mb-4">
+                        <!-- Contact and Administrative Info -->
+                        <div class="p-3">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <h4>Coordonnées</h4>
+                                    <dl>
+                                        <dt>Adresse</dt>
+                                        <dd><?= $entreprise->getAddress() ?? 'Non renseignée' ?></dd>
+                                        
+                                        <dt>Ville</dt>
+                                        <dd>
+                                            <?php if ($ville): ?>
+                                                <?= $ville['ville_nom_reel'] ?> (<?= $ville['ville_code_postal'] ?>)
+                                            <?php else: ?>
+                                                Non renseignée
+                                            <?php endif; ?>
+                                        </dd>
+                                        
+                                        <dt>Téléphone</dt>
+                                        <dd>
+                                            <?php if ($entreprise->getPhone()): ?>
+                                                <a href="tel:<?= $entreprise->getPhone() ?>">
+                                                    <?= $entreprise->getPhone() ?>
+                                                </a>
+                                            <?php else: ?>
+                                                Non renseigné
+                                            <?php endif; ?>
+                                        </dd>
+                                        
+                                        <dt>Email</dt>
+                                        <dd>
+                                            <?php if ($entreprise->getEmail()): ?>
+                                                <a href="mailto:<?= $entreprise->getEmail() ?>">
+                                                    <?= $entreprise->getEmail() ?>
+                                                </a>
+                                            <?php else: ?>
+                                                Non renseigné
+                                            <?php endif; ?>
+                                        </dd>
+                                        
+                                        <dt>Site web</dt>
+                                        <dd>
+                                            <?php if ($entreprise->getWebsite()): ?>
+                                                <a href="<?= $entreprise->getWebsite() ?>" target="_blank">
+                                                    <?= $entreprise->getWebsite() ?>
+                                                </a>
+                                            <?php else: ?>
+                                                Non renseigné
+                                            <?php endif; ?>
+                                        </dd>
+                                    </dl>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <h4>Informations administratives</h4>
+                                    <dl>
+                                        <dt>SIRET</dt>
+                                        <dd><?= $entreprise->getSiret() ?? 'Non renseigné' ?></dd>
+                                        
+                                        <dt>Créée le</dt>
+                                        <dd><?= $entreprise->getCreatedAtFormatted() ?></dd>
+                                        
+                                        <dt>Dernière mise à jour</dt>
+                                        <dd><?= $entreprise->getUpdatedAtFormatted() ?? 'Jamais' ?></dd>
+                                    </dl>
+                                </div>
                             </div>
                             
-                            <div class="col-md-6">
-                                <h4>Informations administratives</h4>
-                                <dl>
-                                    <dt>SIRET</dt>
-                                    <dd><?= $entreprise->getSiret() ?? 'Non renseigné' ?></dd>
-                                    
-                                    <dt>Créée le</dt>
-                                    <dd><?= $entreprise->getCreatedAtFormatted() ?></dd>
-                                    
-                                    <dt>Dernière mise à jour</dt>
-                                    <dd><?= $entreprise->getUpdatedAtFormatted() ?? 'Jamais' ?></dd>
-                                </dl>
-                            </div>
+                            <?php if ($isOwner): ?>
+                                <div class="flex-row justify-content-between mt-4">
+                                    <a href="<?= HOME_URL.'entreprise/modifier?uiid='.$entreprise->getUiid() ?>" class="btn linkNotDecorated">
+                                        Modifier l'entreprise
+                                    </a>
+                                    <button type="button" class="btn btn-danger"
+                                        onclick="document.getElementById('deleteModal').style.display='flex'">
+                                        Supprimer l'entreprise
+                                    </button>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        
-                        <?php if ($isOwner): ?>
-                            <div class="flex-row justify-content-between mt-4">
-                                <a href="<?= HOME_URL.'entreprise/modifier?uiid='.$entreprise->getUiid() ?>" class="btn linkNotDecorated">
-                                    Modifier l'entreprise
-                                </a>
-                                <button type="button" class="btn btn-danger"
-                                    onclick="document.getElementById('deleteModal').style.display='flex'">
-                                    Supprimer l'entreprise
-                                </button>
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Services/Products Sidebar -->
-            <div class="max-width-33">
-                <div class="card">
-                    <h3>Services & Produits</h3>
-                    <?php if (!empty($services)): ?>
-                        <div class="services-list">
-                            <?php foreach ($services as $service): ?>
-                                <div class="service-item p-2 mb-2 border-bottom">
-                                    <strong><?= $service['name'] ?></strong>
-                                    <br>
-                                    <small class="text-muted"><?= $service['description'] ?></small>
+                
+                <!-- Services/Products Sidebar -->
+                <div class="max-width-33">
+                    <div class="card">
+                        <div class="p-3">
+                            <h3>Services & Produits</h3>
+                            <?php if (!empty($services)): ?>
+                                <div class="services-list">
+                                    <?php foreach ($services as $service): ?>
+                                        <div class="service-item p-2 mb-2 border-bottom">
+                                            <strong><?= $service['name'] ?></strong>
+                                            <br>
+                                            <small class="text-muted"><?= $service['description'] ?></small>
+                                        </div>
+                                    <?php endforeach; ?>
                                 </div>
-                            <?php endforeach; ?>
+                            <?php else: ?>
+                                <p class="text-muted">Aucun service ou produit renseigné pour le moment.</p>
+                            <?php endif; ?>
                         </div>
-                    <?php else: ?>
-                        <p class="text-muted">Aucun service ou produit renseigné pour le moment.</p>
-                    <?php endif; ?>
+                    </div>
                     
                     <div class="card mt-3">
-                        <h4>Statistiques</h4>
-                        <dl>
-                            <dt>Vues du profil</dt>
-                            <dd><?= $stats['views'] ?? 0 ?></dd>
-                            
-                            <dt>Dernière activité</dt>
-                            <dd><?= $stats['last_activity'] ?? 'Inconnue' ?></dd>
-                        </dl>
+                        <div class="p-3">
+                            <h4>Statistiques</h4>
+                            <dl>
+                                <dt>Vues du profil</dt>
+                                <dd><?= $stats['views'] ?? 0 ?></dd>
+                                
+                                <dt>Dernière activité</dt>
+                                <dd><?= $stats['last_activity'] ?? 'Inconnue' ?></dd>
+                            </dl>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -189,4 +241,70 @@
         <?php endif; ?>
     <?php endif; ?>
 </main>
+
+<script>
+// Banner preview functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const bannerInput = document.getElementById('bannerInput');
+    const bannerPreview = document.getElementById('bannerPreview');
+    const currentBanner = document.getElementById('currentBanner');
+    const bannerSubmitBtn = document.getElementById('bannerSubmitBtn');
+    const cancelBannerBtn = document.getElementById('cancelBannerBtn');
+
+    if (bannerInput) {
+        bannerInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    bannerPreview.src = e.target.result;
+                    bannerPreview.style.display = 'block';
+                    currentBanner.style.display = 'none';
+                    bannerSubmitBtn.disabled = false;
+                    cancelBannerBtn.style.display = 'inline-block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        if (cancelBannerBtn) {
+            cancelBannerBtn.addEventListener('click', function() {
+                bannerPreview.style.display = 'none';
+                currentBanner.style.display = 'block';
+                bannerInput.value = '';
+                bannerSubmitBtn.disabled = true;
+                cancelBannerBtn.style.display = 'none';
+            });
+        }
+    }
+
+    // Logo preview functionality
+    const logoInput = document.getElementById('logoInput');
+    const currentLogo = document.getElementById('currentLogo');
+    const cancelLogo = document.getElementById('cancelLogo');
+
+    if (logoInput) {
+        logoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentLogo.src = e.target.result;
+                    cancelLogo.style.display = 'inline-block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        if (cancelLogo) {
+            cancelLogo.addEventListener('click', function() {
+                logoInput.value = '';
+                currentLogo.src = '<?= $entreprise->getLogoPath() ?: HOME_URL . "assets/images/default-entreprise-logo.png" ?>';
+                cancelLogo.style.display = 'none';
+            });
+        }
+    }
+});
+</script>
+
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

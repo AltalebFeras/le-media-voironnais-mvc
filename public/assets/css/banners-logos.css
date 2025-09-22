@@ -1,7 +1,7 @@
-/* General Banner and Profile/Logo Styles - Shared between User Account and Association */
+/* General Banner and Profile/Logo Styles - Shared between User Account, Association, Entreprise, and Evenement */
 
 /* Banner Section Base Styles */
-.banner-section, .account-banner-section, .association-banner-section {
+.banner-section, .account-banner-section, .association-banner-section, .entreprise-banner-section, .evenement-banner-section {
     position: relative;
     width: 100%;
     min-height: 220px;
@@ -18,7 +18,7 @@
 }
 
 /* Banner Wrapper */
-.banner-wrapper, .account-banner-wrapper, .association-banner-wrapper {
+.banner-wrapper, .account-banner-wrapper, .association-banner-wrapper, .entreprise-banner-wrapper, .evenement-banner-wrapper {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -30,7 +30,9 @@
 /* Banner Image and Placeholder */
 .banner-img, .banner-placeholder,
 .account-banner-img, .account-banner-placeholder,
-.association-banner-img, .association-banner-placeholder {
+.association-banner-img, .association-banner-placeholder,
+.entreprise-banner-img, .entreprise-banner-placeholder,
+.evenement-banner-img, .evenement-banner-placeholder {
     width: 100%;
     height: 270px;
     object-fit: cover;
@@ -39,7 +41,7 @@
     border-radius: 0 0 18px 18px;
 }
 
-.banner-placeholder, .account-banner-placeholder, .association-banner-placeholder {
+.banner-placeholder, .account-banner-placeholder, .association-banner-placeholder, .entreprise-banner-placeholder, .evenement-banner-placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -62,7 +64,7 @@
 }
 
 /* Banner Action Buttons */
-.banner-actions, .account-banner-actions, .association-banner-actions {
+.banner-actions, .account-banner-actions, .association-banner-actions, .entreprise-banner-actions, .evenement-banner-actions {
     position: absolute;
     top: 16px;
     right: 24px;
@@ -80,7 +82,13 @@
 .account-banner-actions label,
 .association-banner-actions form,
 .association-banner-actions button,
-.association-banner-actions label {
+.association-banner-actions label,
+.entreprise-banner-actions form,
+.entreprise-banner-actions button,
+.entreprise-banner-actions label,
+.evenement-banner-actions form,
+.evenement-banner-actions button,
+.evenement-banner-actions label {
     margin: 0;
     padding: 0;
 }
@@ -93,7 +101,13 @@
 .account-banner-actions label,
 .association-banner-actions .btn,
 .association-banner-actions button,
-.association-banner-actions label {
+.association-banner-actions label,
+.entreprise-banner-actions .btn,
+.entreprise-banner-actions button,
+.entreprise-banner-actions label,
+.evenement-banner-actions .btn,
+.evenement-banner-actions button,
+.evenement-banner-actions label {
     font-size: 0.95rem;
     padding: 0.45rem 1.1rem;
     border-radius: 8px;
@@ -108,7 +122,9 @@
 
 .banner-actions .btn.bg-danger,
 .account-banner-actions .btn.bg-danger,
-.association-banner-actions .btn.bg-danger {
+.association-banner-actions .btn.bg-danger,
+.entreprise-banner-actions .btn.bg-danger,
+.evenement-banner-actions .btn.bg-danger {
     background: #dc3545;
     color: #fff;
     border: none;
@@ -119,19 +135,25 @@
 .account-banner-actions .btn:hover,
 .account-banner-actions label:hover,
 .association-banner-actions .btn:hover,
-.association-banner-actions label:hover {
+.association-banner-actions label:hover,
+.entreprise-banner-actions .btn:hover,
+.entreprise-banner-actions label:hover,
+.evenement-banner-actions .btn:hover,
+.evenement-banner-actions label:hover {
     background: #3a7ca5;
     color: #fff;
 }
 
 .banner-actions input[type="file"],
 .account-banner-actions input[type="file"],
-.association-banner-actions input[type="file"] {
+.association-banner-actions input[type="file"],
+.entreprise-banner-actions input[type="file"],
+.evenement-banner-actions input[type="file"] {
     display: none;
 }
 
 /* Profile Picture / Logo Base Styles */
-.profile-picture, .account-profile-picture, .association-logo-picture {
+.profile-picture, .account-profile-picture, .association-logo-picture, .entreprise-logo-picture {
     position: absolute;
     left: 25%;
     bottom: 0px;
@@ -149,7 +171,8 @@
 /* Profile Picture / Logo Image */
 .profile-picture img,
 .account-profile-picture img,
-.association-logo-picture img {
+.association-logo-picture img,
+.entreprise-logo-picture img {
     width: 140px;
     height: 140px;
     border-radius: 50%;
@@ -161,7 +184,7 @@
 }
 
 /* Profile Picture / Logo Display (non-editable) */
-.profile-display, .association-logo-display {
+.profile-display, .association-logo-display, .entreprise-logo-display {
     position: absolute;
     bottom: -50px;
     left: 25%;
@@ -169,7 +192,7 @@
     z-index: 20;
 }
 
-.profile-display img, .association-logo-display img {
+.profile-display img, .association-logo-display img, .entreprise-logo-display img {
     width: 140px;
     height: 140px;
     border-radius: 50%;
@@ -181,7 +204,8 @@
 /* Profile Picture / Logo Forms */
 .profile-picture form,
 .account-profile-picture form,
-.association-logo-picture form {
+.association-logo-picture form,
+.entreprise-logo-picture form {
     margin-bottom: 0.5rem;
     width: 100%;
     display: flex;
@@ -192,7 +216,8 @@
 
 .profile-picture .btn,
 .account-profile-picture .btn,
-.association-logo-picture .btn {
+.association-logo-picture .btn,
+.entreprise-logo-picture .btn {
     font-size: 0.95rem;
     padding: 0.35rem 1rem;
     border-radius: 8px;
@@ -201,7 +226,8 @@
 
 .profile-picture label,
 .account-profile-picture label,
-.association-logo-picture label {
+.association-logo-picture label,
+.entreprise-logo-picture label {
     background: #e3eafc;
     color: #2a7ae2;
     border: 2px dashed #2a7ae2;
@@ -215,19 +241,21 @@
 
 .profile-picture label:hover,
 .account-profile-picture label:hover,
-.association-logo-picture label:hover {
+.association-logo-picture label:hover,
+.entreprise-logo-picture label:hover {
     background: #2a7ae2;
     color: #fff;
 }
 
 .profile-picture input[type="file"],
 .account-profile-picture input[type="file"],
-.association-logo-picture input[type="file"] {
+.association-logo-picture input[type="file"],
+.entreprise-logo-picture input[type="file"] {
     display: none;
 }
 
-/* Association specific styles */
-.association-main-content {
+/* Specific content styles */
+.association-main-content, .entreprise-main-content, .evenement-main-content {
     width: 100%;
     position: relative;
     z-index: 5;
@@ -235,38 +263,41 @@
 
 /* Responsive Styles */
 @media (max-width: 1000px) {
-    .banner-section, .account-banner-section, .association-banner-section {
+    .banner-section, .account-banner-section, .association-banner-section, .entreprise-banner-section, .evenement-banner-section {
         max-width: 100vw;
     }
 }
 
 @media (max-width: 900px) {
-    .banner-section, .account-banner-section, .association-banner-section,
+    .banner-section, .account-banner-section, .association-banner-section, .entreprise-banner-section, .evenement-banner-section,
     .banner-img, .banner-placeholder,
     .account-banner-img, .account-banner-placeholder,
     .association-banner-img, .association-banner-placeholder,
+    .entreprise-banner-img, .entreprise-banner-placeholder,
+    .evenement-banner-img, .evenement-banner-placeholder,
     #bannerPreview {
         min-height: 160px;
         height: 160px;
         max-height: 160px;
     }
     
-    .profile-picture, .account-profile-picture, .association-logo-picture {
+    .profile-picture, .account-profile-picture, .association-logo-picture, .entreprise-logo-picture {
         bottom: -50px;
     }
     
     .profile-picture img,
     .account-profile-picture img,
-    .association-logo-picture img {
+    .association-logo-picture img,
+    .entreprise-logo-picture img {
         width: 100px;
         height: 100px;
     }
     
-    .profile-display, .association-logo-display {
+    .profile-display, .association-logo-display, .entreprise-logo-display {
         left: 20%;
     }
     
-    .profile-display img, .association-logo-display img {
+    .profile-display img, .association-logo-display img, .entreprise-logo-display img {
         width: 100px;
         height: 100px;
         border: 3px solid white;
@@ -274,75 +305,88 @@
 }
 
 @media (max-width: 600px) {
-    .banner-section, .account-banner-section, .association-banner-section,
+    .banner-section, .account-banner-section, .association-banner-section, .entreprise-banner-section, .evenement-banner-section,
     .banner-img, .banner-placeholder,
     .account-banner-img, .account-banner-placeholder,
     .association-banner-img, .association-banner-placeholder,
+    .entreprise-banner-img, .entreprise-banner-placeholder,
+    .evenement-banner-img, .evenement-banner-placeholder,
     #bannerPreview {
         min-height: 100px;
         height: 100px;
         max-height: 100px;
     }
     
-    .profile-picture, .account-profile-picture, .association-logo-picture {
+    .profile-picture, .account-profile-picture, .association-logo-picture, .entreprise-logo-picture {
         bottom: -35px;
     }
     
     .profile-picture img,
     .account-profile-picture img,
-    .association-logo-picture img {
+    .association-logo-picture img,
+    .entreprise-logo-picture img {
         width: 70px;
         height: 70px;
     }
     
-    .profile-display, .association-logo-display {
+    .profile-display, .association-logo-display, .entreprise-logo-display {
         left: 15%;
     }
     
-    .profile-display img, .association-logo-display img {
+    .profile-display img, .association-logo-display img, .entreprise-logo-display img {
         width: 70px;
         height: 70px;
         border: 2px solid white;
     }
     
-    .association-main-content {
+    .association-main-content, .entreprise-main-content, .evenement-main-content {
         padding: 50px 10px 20px 10px !important;
+    }
+    
+    .banner-actions, .account-banner-actions, .association-banner-actions, .entreprise-banner-actions, .evenement-banner-actions {
+        top: 8px;
+        right: 8px;
+        flex-direction: column;
+        gap: 0.3rem;
     }
 }
 
 @media (max-width: 400px) {
-    .banner-section, .account-banner-section, .association-banner-section,
+    .banner-section, .account-banner-section, .association-banner-section, .entreprise-banner-section, .evenement-banner-section,
     .banner-img, .banner-placeholder,
     .account-banner-img, .account-banner-placeholder,
     .association-banner-img, .association-banner-placeholder,
+    .entreprise-banner-img, .entreprise-banner-placeholder,
+    .evenement-banner-img, .evenement-banner-placeholder,
     #bannerPreview {
         min-height: 60px;
         height: 60px;
         max-height: 60px;
     }
     
-    .profile-picture, .account-profile-picture, .association-logo-picture {
+    .profile-picture, .account-profile-picture, .association-logo-picture, .entreprise-logo-picture {
         bottom: -20px;
     }
     
     .profile-picture img,
     .account-profile-picture img,
-    .association-logo-picture img {
+    .association-logo-picture img,
+    .entreprise-logo-picture img {
         width: 40px;
         height: 40px;
     }
     
-    .profile-display, .association-logo-display {
+    .profile-display, .association-logo-display, .entreprise-logo-display {
         left: 10%;
     }
     
-    .profile-display img, .association-logo-display img {
+    .profile-display img, .association-logo-display img, .entreprise-logo-display img {
         width: 40px;
         height: 40px;
         border: 2px solid white;
     }
     
-    .association-main-content {
+    .association-main-content, .entreprise-main-content, .evenement-main-content {
         padding: 30px 5px 20px 5px !important;
     }
 }

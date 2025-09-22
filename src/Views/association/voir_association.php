@@ -1,5 +1,5 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
-<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/banner-profile.css' ?>">
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/banners-logos.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <main style="padding:0;">
@@ -65,7 +65,7 @@
         </div>
 
         <!-- Main Content Below Banner -->
-        <div class="association-main-content" style="padding: 80px 20px 20px 20px; max-width: 1200px; margin: 0 auto;">
+        <div class="association-main-content">
             <!-- Header with back button and title -->
             <div class="flex-row justify-content-between align-items-center mb-4">
                 <div>
