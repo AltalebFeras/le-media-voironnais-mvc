@@ -40,7 +40,11 @@
             <!-- Logo overlaps banner -->
             <?php if ($isOwner): ?>
                 <div class="entreprise-logo-picture">
-                    <img id="currentLogo" src="<?= $entreprise->getLogoPath() ?: HOME_URL . 'assets/images/default-entreprise-logo.png' ?>" alt="Logo de <?= $entreprise->getName() ?>">
+                    <img id="currentLogo" 
+                         src="<?= $entreprise->getLogoPath() ?: HOME_URL . 'assets/images/default-entreprise-logo.png' ?>" 
+                         data-original-src="<?= $entreprise->getLogoPath() ?: HOME_URL . 'assets/images/default-entreprise-logo.png' ?>"
+                         alt="Logo de <?= $entreprise->getName() ?>">
+                    
                     <form method="post" action="<?= HOME_URL . 'entreprise/edit_logo?uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
                         <label for="logoInput" class="btn">
                             Modifier logo
@@ -242,69 +246,6 @@
     <?php endif; ?>
 </main>
 
-<script>
-// Banner preview functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const bannerInput = document.getElementById('bannerInput');
-    const bannerPreview = document.getElementById('bannerPreview');
-    const currentBanner = document.getElementById('currentBanner');
-    const bannerSubmitBtn = document.getElementById('bannerSubmitBtn');
-    const cancelBannerBtn = document.getElementById('cancelBannerBtn');
-
-    if (bannerInput) {
-        bannerInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    bannerPreview.src = e.target.result;
-                    bannerPreview.style.display = 'block';
-                    currentBanner.style.display = 'none';
-                    bannerSubmitBtn.disabled = false;
-                    cancelBannerBtn.style.display = 'inline-block';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        if (cancelBannerBtn) {
-            cancelBannerBtn.addEventListener('click', function() {
-                bannerPreview.style.display = 'none';
-                currentBanner.style.display = 'block';
-                bannerInput.value = '';
-                bannerSubmitBtn.disabled = true;
-                cancelBannerBtn.style.display = 'none';
-            });
-        }
-    }
-
-    // Logo preview functionality
-    const logoInput = document.getElementById('logoInput');
-    const currentLogo = document.getElementById('currentLogo');
-    const cancelLogo = document.getElementById('cancelLogo');
-
-    if (logoInput) {
-        logoInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    currentLogo.src = e.target.result;
-                    cancelLogo.style.display = 'inline-block';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        if (cancelLogo) {
-            cancelLogo.addEventListener('click', function() {
-                logoInput.value = '';
-                currentLogo.src = '<?= $entreprise->getLogoPath() ?: HOME_URL . "assets/images/default-entreprise-logo.png" ?>';
-                cancelLogo.style.display = 'none';
-            });
-        }
-    }
-});
-</script>
+<script src="<?= HOME_URL . 'assets/javascript/banner-logo-management.js' ?>"></script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

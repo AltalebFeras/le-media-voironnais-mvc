@@ -286,50 +286,6 @@
     <?php endif; ?>
 </main>
 
-<script>
-// Banner preview functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const bannerInput = document.getElementById('bannerInput');
-    const bannerPreview = document.getElementById('bannerPreview');
-    const currentBanner = document.getElementById('currentBanner');
-    const bannerSubmitBtn = document.getElementById('bannerSubmitBtn');
-    const cancelBannerBtn = document.getElementById('cancelBannerBtn');
-
-    if (bannerInput) {
-        bannerInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    bannerPreview.src = e.target.result;
-                    bannerPreview.style.display = 'block';
-                    currentBanner.style.display = 'none';
-                    bannerSubmitBtn.disabled = false;
-                    cancelBannerBtn.style.display = 'inline-block';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        if (cancelBannerBtn) {
-            cancelBannerBtn.addEventListener('click', function() {
-                bannerPreview.style.display = 'none';
-                currentBanner.style.display = 'block';
-                bannerInput.value = '';
-                bannerSubmitBtn.disabled = true;
-                cancelBannerBtn.style.display = 'none';
-            });
-        }
-    }
-});
-</script>
-
-<style>
-/* Event-specific status badges */
-.status-brouillon { background: #fff3cd; color: #856404; }
-.status-actif { background: #d4edda; color: #155724; }
-.status-suspendu { background: #f8d7da; color: #721c24; }
-.badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-</style>
+<script src="<?= HOME_URL . 'assets/javascript/banner-logo-management.js' ?>"></script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
