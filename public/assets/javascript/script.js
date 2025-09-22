@@ -1,4 +1,3 @@
-
 /**
  * adds a loading overlay to all forms on the page when they are submitted.
  * The overlay contains a loading image and disables the submit button to prevent multiple submissions.
@@ -27,7 +26,7 @@ document.querySelectorAll("form").forEach(function (form) {
       });
 
       const loaderImage = document.createElement("img");
-      loaderImage.src = "assets/images/loader/loader.svg";
+      loaderImage.src = "/assets/images/loader/loader.svg";
       loaderImage.alt = "Chargement...";
       loaderImage.style.width = "150px";
       loaderImage.style.zIndex = 9999;
