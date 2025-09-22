@@ -17,6 +17,11 @@ class EvenementController extends AbstractController
     {
         $this->repo = new EvenementRepository();
     }
+    private function getId()
+    {
+        $uiid =  isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+        return $this->repo->getIdByUiid($uiid);
+    }
 
     /**
      * Display list of user events
@@ -30,7 +35,6 @@ class EvenementController extends AbstractController
             $evenements = $this->repo->getUserEvents($idUser, $currentPage, $evenementsPerPage);
             $totalEvenements = $this->repo->countUserEvents($idUser);
             $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
-
             $this->render('evenement/mes_evenements', [
                 'evenements' => $evenements,
                 'title' => 'Mes événements',
@@ -50,7 +54,7 @@ class EvenementController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $idEvenement = isset($_GET['id']) ? htmlspecialchars(trim($_GET['id'])) : null;
+            $idEvenement = $this->getId();
             $evenement = $this->repo->getEventCompleteById($idEvenement);
 
 
@@ -141,8 +145,8 @@ class EvenementController extends AbstractController
             if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
-            $existingCategory = $this->repo->isEventCategoryExists($idEventCategory);
-            if (!$existingCategory) {
+            $nameCategory = $this->repo->isEventCategoryExists($idEventCategory);
+            if (!$nameCategory) {
                 $errors['idEventCategory'] = "La catégorie sélectionnée est invalide";
             }
             // verify if the title is not empty and is unique for the user only
@@ -153,7 +157,6 @@ class EvenementController extends AbstractController
             }
 
             $this->returnAllErrors($errors, 'evenement/ajouter?error=true');
-            $helper = new Helper();
 
             // default path for banner
             $bannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
@@ -184,8 +187,11 @@ class EvenementController extends AbstractController
             $modelErrors = $evenement->validate();
             $errors = array_merge($errors, $modelErrors);
             // Ensure unique slug
-            $slug = $helper->generateSlug($title);
+            $helper = new Helper();
+            $slug = $helper->generateSlug($nameVille, $nameCategory, $title);
             $existSlug = $this->repo->isSlugExists($slug);
+            $uiid = $helper->generateUiid();
+            $evenement->setUiid($uiid);
 
             if ($existSlug) {
                 $suffix = 1;
@@ -222,8 +228,8 @@ class EvenementController extends AbstractController
     public function showEditEventForm()
     {
         try {
-            $idEvenement = isset($_GET['id']) ? (int)$_GET['id'] : null;
             $idUser = $_SESSION['idUser'];
+            $idEvenement = $this->getId();
             $evenement = $this->repo->getEventCompleteById($idEvenement);
 
             if (!$evenement || !$idEvenement) {
@@ -257,13 +263,14 @@ class EvenementController extends AbstractController
     public function updateEvent()
     {
         try {
-            $idEvenement = isset($_GET['id']) ? (int)$_GET['id'] : null;
-
+            
+            $idUser = $_SESSION['idUser'];
+            $uiid =  isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $idEvenement =  $this->getId();
             if (!$idEvenement) {
                 throw new Exception("ID d'événement invalide");
             }
 
-            $idUser = $_SESSION['idUser'];
             $evenement = $this->repo->getEventCompleteById($idEvenement);
 
             if (!$evenement) {
@@ -310,8 +317,8 @@ class EvenementController extends AbstractController
             if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
-            $existingCategory = $this->repo->isEventCategoryExists($idEventCategory);
-            if (!$existingCategory) {
+            $nameCategory = $this->repo->isEventCategoryExists($idEventCategory);
+            if (!$nameCategory) {
                 $errors['idEventCategory'] = "La catégorie sélectionnée est invalide";
             }
             // verify if the title is not empty and is unique for the user only (exclude current event)
@@ -320,7 +327,7 @@ class EvenementController extends AbstractController
             } elseif ($this->repo->isTitleExistsForUser($title, $idUser, $idEvenement)) {
                 $errors['title'] = "Vous avez déjà un événement avec ce titre";
             }
-            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true');
+            $this->returnAllErrors($errors, 'evenement/modifier?uiid=' . $uiid . '&error=true');
 
             // Update event data
             $evenementModel = new Evenement();
@@ -352,7 +359,7 @@ class EvenementController extends AbstractController
             // Handle slug generation
             if ($title !== $originalTitle) {
                 // Regenerate slug if title changed
-                $slug = $helper->generateSlug($title);
+                $slug = $helper->generateSlug($nameVille, $nameCategory, $title);
                 $existSlug = $this->repo->isSlugExists($slug);
 
                 if ($existSlug) {
@@ -370,17 +377,17 @@ class EvenementController extends AbstractController
                 $evenementModel->setSlug($originalSlug);
             }
 
-            $this->returnAllErrors($errors, 'evenement/modifier?id=' . $idEvenement . '&error=true');
+            $this->returnAllErrors($errors, 'evenement/modifier?uiid=' . $uiid . '&error=true');
 
             $this->repo->updateEvent($evenementModel);
 
             $_SESSION['success'] = "L'événement a été mis à jour avec succès";
-            $this->redirect('mes_evenements');
+            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
         } catch (Exception $e) {
             // Preserve form data on exception
             $_SESSION['form_data'] = $_POST;
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('evenement/modifier?id=' . ($idEvenement ?? '') . '&error=true');
+            $this->redirect('evenement/modifier?uiid=' . ($uiid ?? '') . '&error=true');
         }
     }
 
@@ -390,9 +397,10 @@ class EvenementController extends AbstractController
     public function deleteEvent()
     {
         try {
-            $idEvenement = isset($_GET['id']) ? htmlspecialchars($_GET['id']) : null;
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $idEvenement = $this->getId();
             if (!$idEvenement) {
-                throw new Exception("ID d'événement invalide");
+                throw new Exception("l'événement invalide");
             }
             $idUser = $_SESSION['idUser'];
 
@@ -405,7 +413,7 @@ class EvenementController extends AbstractController
             $this->redirect('mes_evenements');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_evenements');
+            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
         }
     }
 

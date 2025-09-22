@@ -198,7 +198,7 @@
 
                 <?php if ($isOwner): ?>
                 <div class="event-actions">
-                    <a href="<?= HOME_URL ?>evenement/modifier?uiid=<?= $evenement['idEvenement'] ?>" class="btn linkNotDecorated mr">
+                    <a href="<?= HOME_URL ?>evenement/modifier?uiid=<?= $evenement['uiid'] ?>" class="btn linkNotDecorated mr">
                         Modifier
                     </a>
                     <button type="button" class="btn btn-danger"
@@ -216,7 +216,7 @@
                             </div>
                             <div class="flex-row justify-content-between">
                                 <button type="button" class="btn" onclick="document.getElementById('deleteModal').style.display='none'">Annuler</button>
-                                <form action="<?= HOME_URL . 'mes_evenements?action=delete&uiid=' . $evenement['idEvenement'] ?>" method="post">
+                                <form action="<?= HOME_URL . 'mes_evenements?action=delete&uiid=' . $evenement['uiid'] ?>" method="post">
                                     <button type="submit" class="btn deconnexion">Supprimer</button>
                                 </form>
                             </div>

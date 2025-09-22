@@ -13,7 +13,7 @@
 
     <?php include_once __DIR__ . '/../includes/messages.php'; ?>
     <div class="card max-width-75">
-        <form action="<?= HOME_URL ?>evenement/modifier?uiid=<?= $evenement['idEvenement'] ?>" method="POST" enctype="multipart/form-data">
+        <form action="<?= HOME_URL ?>evenement/modifier?uiid=<?= $evenement['uiid'] ?>" method="POST" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group">
                     <label for="title">Titre de l'événement *</label>

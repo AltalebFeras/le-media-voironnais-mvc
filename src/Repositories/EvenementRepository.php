@@ -52,6 +52,15 @@ class EvenementRepository
 
         return (int)$stmt->fetchColumn();
     }
+    public function getIdByUiid($uiid)
+    {
+        $sql = "SELECT idEvenement FROM evenement WHERE uiid = :uiid AND isDeleted = 0";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':uiid', $uiid, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchColumn();
+    }
 
     /**
      * Get event by ID
@@ -72,7 +81,7 @@ class EvenementRepository
         $stmt->execute();
 
         $event = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if (!$event) {
             return null;
         }
@@ -124,14 +133,15 @@ class EvenementRepository
      */
     public function createEvent(Evenement $event): bool
     {
-        $sql = "INSERT INTO evenement (title, slug, description, shortDescription, startDate, endDate, 
+        $sql = "INSERT INTO evenement (uiid, title, slug, description, shortDescription, startDate, endDate, 
                 registrationDeadline, maxParticipants, currentParticipants, address, bannerPath, status, isPublic, isDeleted, price, currency, createdAt, idUser, idAssociation, idVille, idEventCategory) 
-                VALUES (:title, :slug, :description, :shortDescription, :startDate, :endDate, 
+                VALUES (:uiid, :title, :slug, :description, :shortDescription, :startDate, :endDate, 
                 :registrationDeadline, :maxParticipants, :currentParticipants, :address, :bannerPath, :status, :isPublic, :isDeleted, :price, :currency, :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory)";
 
         $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
+            ':uiid' => $event->getUiid(),
             ':title' => $event->getTitle(),
             ':slug' => $event->getSlug(),
             ':description' => $event->getDescription(),
@@ -266,22 +276,26 @@ class EvenementRepository
      */
     public function isVilleExists(int $idVille): bool
     {
-        $sql = "SELECT COUNT(*) FROM ville WHERE idVille = :idVille";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':idVille', $idVille, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchColumn() > 0;
+        try {
+            $query = "SELECT ville_slug FROM ville WHERE idVille = :idVille";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['idVille' => $idVille]);
+            return $stmt->fetchColumn();
+        } catch (Exception $e) {
+            throw new Exception("Error checking if ville exists: " . $e->getMessage());
+        }
     }
 
     public function isEventCategoryExists(int $idEventCategory): bool
     {
-        $sql = "SELECT COUNT(*) FROM event_category WHERE idEventCategory = :idEventCategory AND isActive = 1";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':idEventCategory', $idEventCategory, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchColumn() > 0;
+        try {
+            $query = "SELECT name FROM event_category WHERE idEventCategory = :idEventCategory AND isActive = 1";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['idEventCategory' => $idEventCategory]);
+            return $stmt->fetchColumn();
+        } catch (Exception $e) {
+            throw new Exception("Error checking if event category exists: " . $e->getMessage());
+        }
     }
 
     /**

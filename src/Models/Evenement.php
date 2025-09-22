@@ -7,6 +7,7 @@ use DateTime;
 class Evenement
 {
     private int $idEvenement;
+    private string $uiid;
     private string $title;
     private string $slug;
     private ?string $description = null;
@@ -35,6 +36,10 @@ class Evenement
     public function getIdEvenement(): ?int
     {
         return $this->idEvenement;
+    }
+    public function getUiid()
+    {
+        return $this->uiid;
     }
     public function getTitle(): ?string
     {
@@ -134,6 +139,12 @@ class Evenement
     public function setIdEvenement(?int $idEvenement): self
     {
         $this->idEvenement = $idEvenement;
+        return $this;
+    }
+    public function setUiid($uiid)
+    {
+        $this->uiid = $uiid;
+
         return $this;
     }
 
