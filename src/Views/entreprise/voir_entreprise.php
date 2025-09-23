@@ -188,32 +188,18 @@
                 
                 <!-- Services/Products Sidebar -->
                 <div class="max-width-33">
-                    <div class="card">
-                        <div class="p-3">
-                            <h3>Services & Produits</h3>
-                            <?php if (!empty($services)): ?>
-                                <div class="services-list">
-                                    <?php foreach ($services as $service): ?>
-                                        <div class="service-item p-2 mb-2 border-bottom">
-                                            <strong><?= $service['name'] ?></strong>
-                                            <br>
-                                            <small class="text-muted"><?= $service['description'] ?></small>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php else: ?>
-                                <p class="text-muted">Aucun service ou produit renseigné pour le moment.</p>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    
                     <div class="card mt-3">
                         <div class="p-3">
                             <h4>Mes réalisations</h4>
                             <p>Vous avez <strong><?= $totalRealisations ?></strong> réalisation(s) pour cette entreprise.</p>
                             <?php if ($totalRealisations > 0): ?>
-                                <a href="<?= HOME_URL . 'realisation/mes_realisations?entreprise_uiid=' . $entreprise->getUiid() ?>" class="btn">
+                                <a href="<?= HOME_URL . 'entreprise/mes_realisations?entreprise_uiid=' . $entreprise->getUiid() ?>" class="btn linkNotDecorated">
                                     Voir mes réalisations
+                                </a>
+                            <?php else: ?>
+                                <p class="text-muted">Vous n'avez pas encore créé de réalisations pour cette entreprise.</p>
+                                <a href="<?= HOME_URL . 'realisation/ajouter?uiid=' . $entreprise->getUiid() ?>" class="btn">
+                                    Créer ma première réalisation
                                 </a>
                             <?php endif; ?>
                         </div>

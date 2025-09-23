@@ -227,7 +227,7 @@ switch ($route) {
         }
         break;
     // Realisation routes
-    case HOME_URL . 'entreprise/mes_realisations?uiid_entreprise=':
+    case HOME_URL . 'entreprise/mes_realisations':
         if ($connectionSecured) {
             if ($method === 'GET' && isset($_GET['entreprise_uiid']) && !isset($_GET['action'])) {
                 $realisationController->mesRealisations();

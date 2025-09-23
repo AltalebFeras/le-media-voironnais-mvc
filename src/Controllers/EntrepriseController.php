@@ -20,12 +20,12 @@ class EntrepriseController extends AbstractController
         $this->repo = new EntrepriseRepository();
         $this->AssocRepo = new AssociationRepository();
     }
-    private function getId()
+    private function getId(): mixed
     {
         $uiid =  isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
         return $this->repo->getIdByUiid($uiid);
     }
-    public function mesEntreprises()
+    public function mesEntreprises(): void
     {
         try {
             $idUser = $_SESSION['idUser'];
@@ -46,7 +46,7 @@ class EntrepriseController extends AbstractController
             $this->redirect('mes_entreprises?error=true');
         }
     }
-    public function displayEntrepriseDetails()
+    public function displayEntrepriseDetails(): void
     {
         try {
             $idUser = $_SESSION['idUser'];
@@ -64,14 +64,13 @@ class EntrepriseController extends AbstractController
                 throw new Exception("Vous n'avez pas l'autorisation de voir cette entreprise");
             }
 
-            // Get ville information
-            
-            // Get total realisations from the entreprise object
-            $totalRealisations = $entreprise->totalRealisations ?? 0;
-var_dump($realisation, $entreprise ,$ville); die; // Debug line, can be removed later
+            // Calculate total realisations
+            $totalRealisations = is_array($realisation) ? count($realisation) : 0;
+
             $this->render('entreprise/voir_entreprise', [
                 'entreprise' => $entreprise,
                 'ville' => $ville,
+                'realisation' => $realisation,
                 'totalRealisations' => $totalRealisations,
                 'title' => 'Détails de l\'entreprise',
                 'isOwner' => true

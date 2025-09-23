@@ -36,7 +36,7 @@ class RealisationController extends AbstractController
     /**
      * Display list of entreprise realisations
      */
-    public function mesRealisations()
+    public function mesRealisations(): void
     {
         try {
             $idEntreprise = $this->getEntrepriseId();
@@ -63,7 +63,7 @@ class RealisationController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_entreprises?error=true');
+            $this->redirect('mes_entreprises?action=voir&uiid=' . ($entreprise->getUiid() ?? '').'&error=true');
         }
     }
 
@@ -417,4 +417,3 @@ class RealisationController extends AbstractController
         }
     }
 }
-          

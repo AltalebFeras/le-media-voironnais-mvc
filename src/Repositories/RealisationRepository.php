@@ -34,7 +34,22 @@ class RealisationRepository
         $realisations = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $realisation = new Realisation();
-            $realisation->hydrate($row);
+            $realisation->setIdRealisation($row['idRealisation'])
+                ->setUiid($row['uiid'])
+                ->setTitle($row['title'])
+                ->setSlug($row['slug'])
+                ->setDescription($row['description'])
+                ->setDateRealized($row['dateRealized'])
+                ->setIsPublic((bool)$row['isPublic'])
+                ->setIsFeatured((bool)$row['isFeatured'])
+                ->setIsDeleted((bool)$row['isDeleted'])
+                ->setIdEntreprise($row['idEntreprise'])
+                ->setCreatedAt($row['createdAt']);
+            
+            if ($row['updatedAt']) {
+                $realisation->setUpdatedAt($row['updatedAt']);
+            }
+            
             $realisations[] = $realisation;
         }
         
@@ -63,7 +78,22 @@ class RealisationRepository
         }
         
         $realisation = new Realisation();
-        $realisation->hydrate($row);
+        $realisation->setIdRealisation($row['idRealisation'])
+            ->setUiid($row['uiid'])
+            ->setTitle($row['title'])
+            ->setSlug($row['slug'])
+            ->setDescription($row['description'])
+            ->setDateRealized($row['dateRealized'])
+            ->setIsPublic((bool)$row['isPublic'])
+            ->setIsFeatured((bool)$row['isFeatured'])
+            ->setIsDeleted((bool)$row['isDeleted'])
+            ->setIdEntreprise($row['idEntreprise'])
+            ->setCreatedAt($row['createdAt']);
+        
+        if ($row['updatedAt']) {
+            $realisation->setUpdatedAt($row['updatedAt']);
+        }
+        
         return $realisation;
     }
 
