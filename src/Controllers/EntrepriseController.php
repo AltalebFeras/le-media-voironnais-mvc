@@ -52,6 +52,8 @@ class EntrepriseController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $idEntreprise = $this->getId();
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
+            $realisation = $this->repo->getAllRealisationByEntrepriseId($idEntreprise);
+            $ville = $this->AssocRepo->getVilleById($entreprise->getIdVille());
 
             if (!$entreprise || !$idEntreprise) {
                 throw new Exception("L'entreprise demandée n'existe pas");
@@ -62,8 +64,15 @@ class EntrepriseController extends AbstractController
                 throw new Exception("Vous n'avez pas l'autorisation de voir cette entreprise");
             }
 
+            // Get ville information
+            
+            // Get total realisations from the entreprise object
+            $totalRealisations = $entreprise->totalRealisations ?? 0;
+var_dump($realisation, $entreprise ,$ville); die; // Debug line, can be removed later
             $this->render('entreprise/voir_entreprise', [
                 'entreprise' => $entreprise,
+                'ville' => $ville,
+                'totalRealisations' => $totalRealisations,
                 'title' => 'Détails de l\'entreprise',
                 'isOwner' => true
             ]);

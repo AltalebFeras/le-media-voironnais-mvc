@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 23, 2025 at 12:05 PM
+-- Generation Time: Sep 23, 2025 at 12:58 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -452,6 +452,55 @@ CREATE TABLE IF NOT EXISTS `notification` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `realisation`
+--
+
+DROP TABLE IF EXISTS `realisation`;
+CREATE TABLE IF NOT EXISTS `realisation` (
+  `idRealisation` int NOT NULL AUTO_INCREMENT,
+  `uiid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `title` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `slug` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `dateRealized` date DEFAULT NULL,
+  `isPublic` tinyint(1) NOT NULL DEFAULT '1',
+  `isFeatured` tinyint(1) NOT NULL DEFAULT '0',
+  `isDeleted` tinyint(1) NOT NULL DEFAULT '0',
+  `idEntreprise` int NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`idRealisation`),
+  UNIQUE KEY `UQ_idRealisation` (`idRealisation`),
+  UNIQUE KEY `slug` (`slug`),
+  UNIQUE KEY `uiid` (`uiid`),
+  KEY `idx_realisation_entreprise` (`idEntreprise`),
+  KEY `idx_realisation_public` (`isPublic`),
+  KEY `idx_realisation_featured` (`isFeatured`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `realisation_image`
+--
+
+DROP TABLE IF EXISTS `realisation_image`;
+CREATE TABLE IF NOT EXISTS `realisation_image` (
+  `idRealisationImage` int NOT NULL AUTO_INCREMENT,
+  `idRealisation` int NOT NULL,
+  `imagePath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `altText` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `isMain` tinyint(1) NOT NULL DEFAULT '0',
+  `sortOrder` int NOT NULL DEFAULT '0',
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idRealisationImage`),
+  UNIQUE KEY `UQ_idRealisationImage` (`idRealisationImage`),
+  KEY `FK_realisation_TO_realisation_image` (`idRealisation`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `role`
 --
 
@@ -595,6 +644,9 @@ CREATE TABLE IF NOT EXISTS `ville` (
 --
 -- Dumping data for table `ville`
 --
+
+
+--
 -- Constraints for dumped tables
 --
 
@@ -648,6 +700,18 @@ ALTER TABLE `event_participant`
 --
 ALTER TABLE `notification`
   ADD CONSTRAINT `FK_user_TO_notification` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `realisation`
+--
+ALTER TABLE `realisation`
+  ADD CONSTRAINT `FK_entreprise_TO_realisation` FOREIGN KEY (`idEntreprise`) REFERENCES `entreprise` (`idEntreprise`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `realisation_image`
+--
+ALTER TABLE `realisation_image`
+  ADD CONSTRAINT `FK_realisation_TO_realisation_image` FOREIGN KEY (`idRealisation`) REFERENCES `realisation` (`idRealisation`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user`

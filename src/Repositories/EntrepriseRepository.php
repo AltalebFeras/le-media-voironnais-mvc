@@ -86,17 +86,17 @@ class EntrepriseRepository
             throw new Exception("Error fetching company: " . $e->getMessage());
         }
     }
-    public function getEntrepriseBySlug($slug): ?Entreprise
+    public function getAllRealisationByEntrepriseId($idEntreprise)
     {
         try {
-            $query = "SELECT * FROM entreprise WHERE slug = :slug";
+            $query = 'SELECT * FROM realisation WHERE idEntreprise = :idEntreprise AND isDeleted = 0';
             $stmt = $this->DB->prepare($query);
-            $stmt->execute(['slug' => $slug]);
+            $stmt->execute(['idEntreprise' => $idEntreprise]);
 
-            $entreprise = $stmt->fetchObject(Entreprise::class);
-            return $entreprise !== false ? $entreprise : null;
+            $realisations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $realisations !== false ? $realisations : null;
         } catch (Exception $e) {
-            throw new Exception("Error fetching company by slug: " . $e->getMessage());
+            throw new Exception("Error fetching company with realisations: " . $e->getMessage());
         }
     }
     public function getEntrepriseByName($name): ?Entreprise 

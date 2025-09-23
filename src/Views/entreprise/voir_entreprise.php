@@ -209,14 +209,13 @@
                     
                     <div class="card mt-3">
                         <div class="p-3">
-                            <h4>Statistiques</h4>
-                            <dl>
-                                <dt>Vues du profil</dt>
-                                <dd><?= $stats['views'] ?? 0 ?></dd>
-                                
-                                <dt>Dernière activité</dt>
-                                <dd><?= $stats['last_activity'] ?? 'Inconnue' ?></dd>
-                            </dl>
+                            <h4>Mes réalisations</h4>
+                            <p>Vous avez <strong><?= $totalRealisations ?></strong> réalisation(s) pour cette entreprise.</p>
+                            <?php if ($totalRealisations > 0): ?>
+                                <a href="<?= HOME_URL . 'realisation/mes_realisations?entreprise_uiid=' . $entreprise->getUiid() ?>" class="btn">
+                                    Voir mes réalisations
+                                </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

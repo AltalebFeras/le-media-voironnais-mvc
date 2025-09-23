@@ -3,6 +3,7 @@
 use src\Controllers\AdminController;
 use src\Controllers\EvenementController;
 use src\Controllers\HomeController;
+use src\Controllers\RealisationController;
 use src\Controllers\UserController;
 use src\Controllers\AssociationController;
 use src\Controllers\EntrepriseController;
@@ -14,6 +15,7 @@ $adminController = new AdminController();
 $associationController = new AssociationController();
 $entrepriseController = new EntrepriseController();
 $evenementController = new EvenementController();
+$realisationController = new RealisationController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
 $method = ConfigRouter::getMethod();
@@ -99,7 +101,7 @@ switch ($route) {
     case HOME_URL . 'evenements':
         $evenementController->listEvents();
         break;
-        // User routes
+    // User routes
 
     case HOME_URL . 'dashboard':
         if ($connectionSecured) {
@@ -216,6 +218,50 @@ switch ($route) {
                 }
             } elseif ($method === 'GET' && isset($_GET['uiid'])) {
                 $entrepriseController->showEditForm();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+    // Realisation routes
+    case HOME_URL . 'entreprise/mes_realisations?uiid_entreprise=':
+        if ($connectionSecured) {
+            if ($method === 'GET' && isset($_GET['entreprise_uiid']) && !isset($_GET['action'])) {
+                $realisationController->mesRealisations();
+            } elseif ($method === 'GET' && isset($_GET['entreprise_uiid']) && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['realisation_uiid'])) {
+                $realisationController->displayRealisationDetails();
+            } elseif ($method === 'POST' && isset($_GET['entreprise_uiid']) && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['realisation_uiid'])) {
+                $realisationController->deleteRealisation();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+    case HOME_URL . 'entreprise/mes_realisations/ajouter':
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $realisationController->addRealisation();
+            } elseif ($method === 'GET') {
+                $realisationController->showAddRealisationForm();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
+    case HOME_URL . 'entreprise/mes_realisations/modifier':
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $realisationController->updateRealisation();
+            } elseif ($method === 'GET' && isset($_GET['realisation_uiid'])) {
+                $realisationController->showEditRealisationForm();
             } else {
                 $homeController->page404();
             }
