@@ -9,18 +9,18 @@ class Realisation
 {
     use Hydration;
 
-    private int $idRealisation ;
-    private string $uiid ;
-    private string $title ;
-    private string $slug ;
-    private ?string $description ;
-    private string $dateRealized ;
+    private int $idRealisation;
+    private string $uiid;
+    private string $title;
+    private string $slug;
+    private ?string $description;
+    private string $dateRealized;
     private bool $isPublic;
-    private bool $isFeatured ;
-    private bool $isDeleted ;
-    private int $idEntreprise ;
-    private DateTime $createdAt ;
-    private ?DateTime $updatedAt ;
+    private bool $isFeatured;
+    private bool $isDeleted;
+    private int $idEntreprise;
+    private ?DateTime $createdAt = null;
+    private ?DateTime $updatedAt = null;
 
     // Getters
     public function getIdRealisation(): ?int
@@ -179,26 +179,38 @@ class Realisation
         return $errors;
     }
 
-    /**
-     * Format createdAt for display
-     */
-    public function getFormattedCreatedAt(): string
+    public function getCreatedAtFormatted(): string|null
     {
-        if ($this->createdAt) {
+        if ($this->createdAt === null) {
+            return null;
+        }
+        if ($this->createdAt instanceof DateTime) {
             return $this->createdAt->format('d/m/Y à H:i');
         }
-        return '';
+        // If it's a string, try to parse it as a DateTime
+        try {
+            $dt = new DateTime($this->createdAt);
+            return $dt->format('d/m/Y à H:i');
+        } catch (\Exception $e) {
+            return $this->createdAt;
+        }
     }
 
-    /**
-     * Format updatedAt for display
-     */
-    public function getFormattedUpdatedAt(): string
+
+    public function getUpdatedAtFormatted(): string|null
     {
-        if ($this->updatedAt) {
+        if ($this->updatedAt === null) {
+            return null;
+        }
+        if ($this->updatedAt instanceof DateTime) {
             return $this->updatedAt->format('d/m/Y à H:i');
         }
-        return '';
+        try {
+            $dt = new DateTime($this->updatedAt);
+            return $dt->format('d/m/Y à H:i');
+        } catch (\Exception $e) {
+            return $this->updatedAt;
+        }
     }
 
     /**

@@ -5,8 +5,8 @@
 <main>
     <!-- Header with back button and title -->
     <div class="flex-row justify-content-between">
-        <h1><?= htmlspecialchars($realisation->getTitle()) ?></h1>
-        <a href="<?= HOME_URL . 'realisation/mes_realisations?uiid=' . htmlspecialchars($entreprise->getUiid()) ?>" class="">
+        <h1><?= $realisation->getTitle() ?></h1>
+        <a href="<?= HOME_URL . 'entreprise/mes_realisations?entreprise_uiid=' . $entreprise->getUiid() ?>" class="">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
@@ -19,12 +19,12 @@
             <div class="card mb">
                 <div class="p">
                     <div class="flex-row align-items-center mb">
-                        <h3>Entreprise : <?= htmlspecialchars($entreprise->getName()) ?></h3>
+                        <h3>Entreprise : <?= $entreprise->getName() ?></h3>
                         <?php if ($isOwner): ?>
                             <div>
-                                <a href="<?= HOME_URL . 'realisation/modifier?realisation_uiid=' . htmlspecialchars($realisation->getUiid()) ?>" 
+                                <a href="<?= HOME_URL . 'entreprise/mes_realisations/modifier?realisation_uiid=' . $realisation->getUiid() ?>" 
                                    class="btn linkNotDecorated">Modifier</a>
-                                <a href="<?= HOME_URL . 'realisation/supprimer?realisation_uiid=' . htmlspecialchars($realisation->getUiid()) ?>" 
+                                <a href="<?= HOME_URL . 'entreprise/mes_realisations?action=delete&realisation_uiid=' . $realisation->getUiid() ?>&entreprise_uiid=<?= $entreprise->getUiid() ?>" 
                                    class="btn bg-danger" 
                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réalisation ?');">
                                     Supprimer
@@ -48,7 +48,7 @@
                 <div class="p-3">
                     <h4>Description</h4>
                     <div class="card p-3 bg-light">
-                        <p><?= nl2br(htmlspecialchars($realisation->getDescription() ?? 'Aucune description disponible')) ?></p>
+                        <p><?= nl2br($realisation->getDescription() ?? 'Aucune description disponible') ?></p>
                     </div>
                 </div>
             </div>
@@ -59,15 +59,15 @@
                     <dl>
                         <?php if ($realisation->getDateRealized()): ?>
                             <dt>Date de réalisation</dt>
-                            <dd><?= htmlspecialchars($realisation->getFormattedDateRealized()) ?></dd>
+                            <dd><?= ($realisation->getFormattedDateRealized()) ?></dd>
                         <?php endif; ?>
                         
                         <dt>Créé le</dt>
-                        <dd><?= htmlspecialchars($realisation->getFormattedCreatedAt()) ?></dd>
+                        <dd><?= ($realisation->getCreatedAtFormatted()) ?></dd>
                         
                         <?php if ($realisation->getUpdatedAt()): ?>
                             <dt>Modifié le</dt>
-                            <dd><?= htmlspecialchars($realisation->getFormattedUpdatedAt()) ?></dd>
+                            <dd><?= ($realisation->getUpdatedAtFormatted()) ?></dd>
                         <?php endif; ?>
                     </dl>
                 </div>
@@ -90,7 +90,7 @@
                     <!-- Add Image Form -->
                     <?php if ($isOwner): ?>
                         <div id="addImageForm" style="display: none;" class="mb-3">
-                            <form method="post" action="<?= HOME_URL . 'realisation/add_image?realisation_uiid=' . htmlspecialchars($realisation->getUiid()) ?>" enctype="multipart/form-data">
+                            <form method="post" action="<?= HOME_URL . 'realisation/add_image?realisation_uiid=' . $realisation->getUiid() ?>" enctype="multipart/form-data">
                                 <div>
                                     <label for="realisationImage">Image :</label>
                                     <input type="file" name="realisationImage" id="realisationImage" accept="image/*" required>
@@ -117,12 +117,12 @@
                             <div class="carousel-container">
                                 <?php foreach ($realisationImages as $index => $image): ?>
                                     <div class="carousel-slide <?= $index === 0 ? 'active' : '' ?>">
-                                        <img src="<?= HOME_URL . htmlspecialchars($image['imagePath']) ?>" 
-                                             alt="<?= htmlspecialchars($image['altText'] ?: $realisation->getTitle()) ?>">
+                                        <img src="<?= HOME_URL . $image['imagePath'] ?>" 
+                                             alt="<?= $image['altText'] ?: $realisation->getTitle() ?>">
                                         
                                         <?php if ($isOwner): ?>
                                             <div class="image-actions">
-                                                <a href="<?= HOME_URL . 'realisation/delete_image?realisation_uiid=' . htmlspecialchars($realisation->getUiid()) . '&imageId=' . $image['idRealisationImage'] ?>" 
+                                                <a href="<?= HOME_URL . 'realisation/delete_image?realisation_uiid=' . $realisation->getUiid() ?>&imageId=<?= $image['idRealisationImage'] ?>" 
                                                    class="btn bg-danger btn-sm"
                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?');">
                                                     Supprimer

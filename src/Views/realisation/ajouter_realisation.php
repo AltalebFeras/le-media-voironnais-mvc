@@ -4,7 +4,7 @@
 <main>
     <div class="flex-row justify-content-between">
         <h1><?= htmlspecialchars($title ?? 'Ajouter une réalisation') ?></h1>
-        <a href="<?= HOME_URL . 'realisation/mes_realisations?uiid=' . htmlspecialchars($entreprise->getUiid()) ?>" class="">
+        <a href="<?= HOME_URL . 'entreprise/mes_realisations?entreprise_uiid=' . htmlspecialchars($entreprise->getUiid()) ?>" class="">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="flex-row justify-content-between mt">
-                        <a href="<?= HOME_URL . 'realisation/mes_realisations?uiid=' . htmlspecialchars($entreprise->getUiid()) ?>" class="btn linkNotDecorated">Annuler</a>
+                        <a href="<?= HOME_URL . 'entreprise/mes_realisations?entreprise_uiid=' . htmlspecialchars($entreprise->getUiid()) ?>" class="btn linkNotDecorated">Annuler</a>
                         <button type="submit" class="btn">Créer la réalisation</button>
                     </div>
                 </div>

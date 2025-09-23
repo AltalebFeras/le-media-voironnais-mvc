@@ -13,7 +13,7 @@
         <div class="p-3">
             <h3>Entreprise : <?= htmlspecialchars($entreprise->getName()) ?></h3>
             <div class="flex-row justify-content-between mt-3">
-                <a href="<?= HOME_URL . 'realisation/ajouter?uiid=' . htmlspecialchars($entreprise->getUiid()) ?>" class="btn linkNotDecorated">
+                <a href="<?= HOME_URL . 'entreprise/mes_realisations/ajouter?entreprise_uiid=' . $entreprise->getUiid() ?>" class="btn linkNotDecorated">
                     Ajouter une réalisation
                 </a>
             </div>
@@ -40,10 +40,10 @@
                                     color: white; font-size: 1.2rem; margin-bottom: 1rem;">
                             <?= htmlspecialchars(substr($realisation->getTitle(), 0, 2)) ?>
                         </div>
-                        
+
                         <div>
                             <h5><?= htmlspecialchars($realisation->getTitle()) ?></h5>
-                            
+
                             <?php if ($realisation->getDateRealized()): ?>
                                 <p><small class="text-muted">Réalisé le : <?= htmlspecialchars($realisation->getFormattedDateRealized()) ?></small></p>
                             <?php endif; ?>
@@ -61,8 +61,8 @@
                         </div>
 
                         <div class="flex-row justify-content-between mt">
-                            <a href="<?= HOME_URL . 'realisation/voir?realisation_uiid=' . htmlspecialchars($realisation->getUiid()) ?>" 
-                               class="btn linkNotDecorated">Voir</a>
+                            <a href="<?= HOME_URL . 'entreprise/mes_realisations?action=voir&entreprise_uiid=' . $entreprise->getUiid() . '&realisation_uiid=' . $realisation->getUiid() ?>"
+                                class="btn linkNotDecorated">Voir</a>
                         </div>
                     </div>
                 </div>

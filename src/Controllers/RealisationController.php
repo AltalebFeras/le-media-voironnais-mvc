@@ -97,7 +97,7 @@ class RealisationController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_entreprises?error=true');
+            $this->redirect('mes_entreprises?action=voir&uiid=' . ($entreprise->getUiid() ?? '').'&error=true');
         }
     }
 
@@ -121,7 +121,7 @@ class RealisationController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_entreprises?error=true');
+            $this->redirect('mes_entreprises?action=voir&uiid=' . ($entreprise->getUiid() ?? '').'&error=true');
         }
     }
 
@@ -188,15 +188,15 @@ class RealisationController extends AbstractController
             $modelErrors = $realisation->validate();
             $errors = array_merge($errors, $modelErrors);
 
-            $this->returnAllErrors($errors, 'realisation/ajouter?uiid=' . $entreprise->getUiid() . '&error=true');
+            $this->returnAllErrors($errors, 'entreprise/mes_realisations/ajouter?entreprise_uiid=' . $entreprise->getUiid() . '&error=true');
 
             $this->repo->createRealisation($realisation);
 
             $_SESSION['success'] = "La réalisation a été créée avec succès";
-            $this->redirect('realisation/mes_realisations?uiid=' . $entreprise->getUiid());
+            $this->redirect('entreprise/mes_realisations?entreprise_uiid=' . $entreprise->getUiid());
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('realisation/ajouter?uiid=' . ($entreprise->getUiid() ?? '') . '&error=true');
+            $this->redirect('entreprise/mes_realisations/ajouter?entreprise_uiid=' . ($entreprise->getUiid() ?? '') . '&error=true');
         }
     }
 

@@ -247,7 +247,7 @@ switch ($route) {
         if ($connectionSecured) {
             if ($method === 'POST') {
                 $realisationController->addRealisation();
-            } elseif ($method === 'GET') {
+            } elseif ($method === 'GET' && isset($_GET['entreprise_uiid'])) {
                 $realisationController->showAddRealisationForm();
             }
         } else {
