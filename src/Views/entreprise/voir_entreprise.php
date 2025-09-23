@@ -80,9 +80,6 @@
                         <span class="badge <?= $entreprise->getIsActive() ? 'badge-success' : 'badge-secondary' ?> mr-2">
                             <?= $entreprise->getIsActive() ? 'Active' : 'Inactive' ?>
                         </span>
-                        <span class="badge <?= $entreprise->getStatus() === 'validee' ? 'badge-info' : ($entreprise->getStatus() === 'brouillon' ? 'badge-warning' : 'badge-danger') ?>">
-                            <?= ucfirst($entreprise->getStatus()) ?>
-                        </span>
                     </div>
                 </div>
                 <div>

@@ -1,3 +1,5 @@
+@import url('/assets/css/animation.css'); 
+
 /* New color palette and font */
 * {
     margin: 0;
@@ -488,6 +490,47 @@ input[type="submit"] {
 .bg-transparent {
     background-color: transparent;
 }
+.badge-success {
+    background-color: #28a745;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.badge-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.badge-info {
+    background-color: #17a2b8;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.badge-danger {
+    background-color: #dc3545;
+    color: #fff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
 
 
 /* general classes end */
@@ -954,3 +997,4 @@ ul {
     color: #fff;
     border-color: #3a7ca5;
 }
+/* End Pagination */

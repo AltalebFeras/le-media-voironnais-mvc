@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="flex-row justify-content-between mb">
-        <a href="<?= HOME_URL . 'entreprise/ajouter' ?>" class="btn linkNotDecorated">
+        <a href="<?= HOME_URL . 'entreprise/ajouter' ?>" class="btn  linkNotDecorated">
             Ajouter une entreprise
         </a>
     </div>
@@ -33,7 +33,7 @@
                         <?php endif; ?>
 
                         <div>
-                            <div class="flex-row align-items-center mb">
+                            <div class="flex-row align-items-center mb ">
                                 <?php if ($entreprise->getLogoPath()): ?>
                                     <img src="<?= $entreprise->getLogoPath() ?>" style="width:50px; height:50px; border-radius:50%;" alt="Logo de <?= ($entreprise->getName()) ?>">
                                 <?php endif; ?>
@@ -47,16 +47,6 @@
                             <?php if ($entreprise->getSiret()): ?>
                                 <p><small class="text-muted">SIRET: <?= ($entreprise->getSiret()) ?></small></p>
                             <?php endif; ?>
-
-                            <div>
-                                <span class="text-success"><?= $entreprise->getStatusLabel() ?></span>
-
-                                <?php if ($entreprise->getIsActive()): ?>
-                                    <span class="text-info">Publié</span>
-                                <?php else: ?>
-                                    <span class="text-muted">Non publié</span>
-                                <?php endif; ?>
-                            </div>
                         </div>
 
                         <div class="flex-row justify-content-between mt">

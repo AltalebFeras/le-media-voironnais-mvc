@@ -100,7 +100,7 @@
                 <p>Les champs marqués d'un * sont obligatoires.</p>
                 <p>Le logo et la bannière sont optionnels mais recommandés pour personnaliser votre entreprise.</p>
                 <p>Par défaut, votre entreprise sera enregistrée en mode "Brouillon" et ne sera pas visible publiquement.</p>
-                <p>Vous pourrez la rendre visible ultérieurement depuis le formulaire de modification.</p>
+                <p>Pour rendre votre entreprise visible, activez-la en transmettant un extrait Kbis.</p>
             </div>
         </div>
     </div>
