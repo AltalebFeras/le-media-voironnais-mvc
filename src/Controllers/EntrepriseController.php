@@ -115,7 +115,6 @@ class EntrepriseController extends AbstractController
                 ->setEmail($email)
                 ->setWebsite($website)
                 ->setSiret($siret)
-                ->setStatus('brouillon') // Default status
                 ->setIsActive(0) // Default to inactive
                 ->setIdUser($idUser)
                 ->setIdVille($idVille)
@@ -215,7 +214,6 @@ class EntrepriseController extends AbstractController
             $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
             $siret = isset($_POST['siret']) ? htmlspecialchars(trim($_POST['siret'])) : null;
-            $status = 'brouillon'; // Default status
 
             $errors = [];
             $_SESSION['form_data'] = $_POST;
@@ -242,7 +240,6 @@ class EntrepriseController extends AbstractController
                 ->setEmail($email)
                 ->setWebsite($website)
                 ->setSiret($siret)
-                ->setStatus($status)
                 ->setIdVille($idVille)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
 

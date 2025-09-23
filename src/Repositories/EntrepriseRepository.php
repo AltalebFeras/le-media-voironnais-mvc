@@ -148,9 +148,9 @@ class EntrepriseRepository
     {
         try {
             $query = "INSERT INTO entreprise 
-                     (uiid, name, slug, description, logoPath, bannerPath, address, phone, email, website, siret, status, isActive, idUser, idVille, createdAt) 
+                     (uiid, name, slug, description, logoPath, bannerPath, address, phone, email, website, siret, isActive, idUser, idVille, createdAt) 
                      VALUES 
-                     (:uiid, :name, :slug, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :status, :isActive, :idUser, :idVille, :createdAt)";
+                     (:uiid, :name, :slug, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :isActive, :idUser, :idVille, :createdAt)";
 
             $stmt = $this->DB->prepare($query);
             $stmt->execute([
@@ -165,7 +165,6 @@ class EntrepriseRepository
                 'email' => $entreprise->getEmail(),
                 'website' => $entreprise->getWebsite(),
                 'siret' => $entreprise->getSiret(),
-                'status' => $entreprise->getStatus(),
                 'isActive' => $entreprise->getIsActive(),
                 'idUser' => $entreprise->getIdUser(),
                 'idVille' => $entreprise->getIdVille(),
@@ -194,7 +193,6 @@ class EntrepriseRepository
                      email = :email, 
                      website = :website,
                      siret = :siret,
-                     status = :status,
                      isActive = :isActive,
                      updatedAt = :updatedAt
                      WHERE idEntreprise = :idEntreprise";
@@ -209,7 +207,6 @@ class EntrepriseRepository
                 'email' => $entreprise->getEmail(),
                 'website' => $entreprise->getWebsite(),
                 'siret' => $entreprise->getSiret(),
-                'status' => $entreprise->getStatus(),
                 'isActive' => $entreprise->getIsActive(),
                 'updatedAt' => $entreprise->getUpdatedAt(),
                 'idEntreprise' => $entreprise->getIdEntreprise()
@@ -374,8 +371,8 @@ class EntrepriseRepository
 
     public function create(Entreprise $entreprise)
     {
-        $sql = "INSERT INTO entreprise (name, description, logoPath, bannerPath, address, phone, email, website, siret, status, isActive, isPublic, idUser, idVille, createdAt) 
-                VALUES (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :status, :isActive, :isPublic, :idUser, :idVille, NOW())";
+        $sql = "INSERT INTO entreprise (name, description, logoPath, bannerPath, address, phone, email, website, siret, isActive, isPublic, idUser, idVille, createdAt) 
+                VALUES (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :isActive, :isPublic, :idUser, :idVille, NOW())";
 
         $stmt = $this->DB->prepare($sql);
 
@@ -388,7 +385,6 @@ class EntrepriseRepository
         $stmt->bindParam(':email', $entreprise->getEmail());
         $stmt->bindParam(':website', $entreprise->getWebsite());
         $stmt->bindParam(':siret', $entreprise->getSiret());
-        $stmt->bindParam(':status', $entreprise->getStatus());
         $stmt->bindParam(':isActive', $entreprise->getIsActive(), PDO::PARAM_BOOL);
         $stmt->bindParam(':isPublic', $entreprise->getIsPublic(), PDO::PARAM_BOOL);
         $stmt->bindParam(':idUser', $entreprise->getIdUser(), PDO::PARAM_INT);
@@ -414,7 +410,6 @@ class EntrepriseRepository
                 email = :email, 
                 website = :website, 
                 siret = :siret, 
-                status = :status, 
                 isActive = :isActive, 
                 isPublic = :isPublic, 
                 idVille = :idVille, 
@@ -432,7 +427,6 @@ class EntrepriseRepository
         $stmt->bindParam(':email', $entreprise->getEmail());
         $stmt->bindParam(':website', $entreprise->getWebsite());
         $stmt->bindParam(':siret', $entreprise->getSiret());
-        $stmt->bindParam(':status', $entreprise->getStatus());
         $stmt->bindParam(':isActive', $entreprise->getIsActive(), PDO::PARAM_BOOL);
         $stmt->bindParam(':isPublic', $entreprise->getIsPublic(), PDO::PARAM_BOOL);
         $stmt->bindParam(':idVille', $entreprise->getIdVille(), PDO::PARAM_INT);
@@ -483,35 +477,6 @@ class EntrepriseRepository
         return $stmt->execute();
     }
 
-    public function findByStatus($status, $includeDeleted = false)
-    {
-        $sql = "SELECT e.*, v.ville_nom, u.firstName, u.lastName 
-                FROM entreprise e 
-                LEFT JOIN ville v ON e.idVille = v.idVille 
-                LEFT JOIN user u ON e.idUser = u.idUser 
-                WHERE e.status = :status";
-
-        if (!$includeDeleted) {
-            $sql .= " AND e.isDeleted = 0";
-        }
-
-        $sql .= " ORDER BY e.createdAt DESC";
-
-        $stmt = $this->DB->prepare($sql);
-        $stmt->bindParam(':status', $status);
-        $stmt->execute();
-
-        $entreprises = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $entreprise = new Entreprise($row);
-            $entreprise->ville_nom = $row['ville_nom'];
-            $entreprise->owner_name = $row['firstName'] . ' ' . $row['lastName'];
-            $entreprises[] = $entreprise;
-        }
-
-        return $entreprises;
-    }
-
     public function searchByName($query)
     {
         $sql = "SELECT e.*, v.ville_nom, u.firstName, u.lastName 
@@ -535,22 +500,6 @@ class EntrepriseRepository
         }
 
         return $entreprises;
-    }
-
-    public function getStatistics()
-    {
-        $sql = "SELECT 
-                    COUNT(*) as total,
-                    SUM(CASE WHEN status = 'actif' THEN 1 ELSE 0 END) as actives,
-                    SUM(CASE WHEN status = 'brouillon' THEN 1 ELSE 0 END) as brouillons,
-                    SUM(CASE WHEN status = 'suspendu' THEN 1 ELSE 0 END) as suspendues,
-                    SUM(CASE WHEN isDeleted = 1 THEN 1 ELSE 0 END) as supprimees
-                FROM entreprise";
-
-        $stmt = $this->DB->prepare($sql);
-        $stmt->execute();
-
-        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function updateEntrepriseBanner(Entreprise $entreprise): bool

@@ -90,16 +90,6 @@
                         </div>
 
                         <div>
-                            <label for="status">Statut</label>
-                            <select id="status" name="status">
-                                <?php $selectedStatus = (isset($_GET['error']) && isset($_SESSION['form_data']['status'])) ? $_SESSION['form_data']['status'] : $entreprise->getStatus(); ?>
-                                <option value="brouillon" <?= $selectedStatus === 'brouillon' ? 'selected' : '' ?>>Brouillon</option>
-                                <option value="actif" <?= $selectedStatus === 'actif' ? 'selected' : '' ?>>Actif</option>
-                                <option value="suspendu" <?= $selectedStatus === 'suspendu' ? 'selected' : '' ?>>Suspendu</option>
-                            </select>
-                        </div>
-
-                        <div>
                             <div class="flex-row align-items-center">
                                 <input type="checkbox" id="isActive" name="isActive"
                                     <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['isActive'])) ? $_SESSION['form_data']['isActive'] : $entreprise->getIsActive()) ? 'checked' : '' ?>>

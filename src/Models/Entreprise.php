@@ -19,7 +19,6 @@ class Entreprise
     private ?string $email;
     private ?string $website;
     private ?string $siret;
-    private ?string $status;
     private bool $isActive;
     private bool $isPublic;
     private bool $isPartner;
@@ -89,11 +88,6 @@ class Entreprise
     public function getSiret(): ?string
     {
         return $this->siret;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
     }
 
     public function getIsActive(): bool
@@ -294,12 +288,6 @@ class Entreprise
         return $this;
     }
 
-    public function setStatus(?string $status): static
-    {
-        $this->status = $status;
-        return $this;
-    }
-
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
@@ -458,12 +446,6 @@ class Entreprise
             $errors['siret'] = 'Le numéro SIRET doit contenir exactement 14 chiffres.';
         }
 
-        // Validation du statut
-        $validStatuses = ['brouillon', 'actif', 'suspendu'];
-        if (!in_array($this->status, $validStatuses)) {
-            $errors['status'] = 'Le statut doit être : brouillon, actif ou suspendu.';
-        }
-
         // Validation de l'ID utilisateur (obligatoire)
         if (empty($this->idUser)) {
             $errors['idUser'] = 'L\'utilisateur est obligatoire.';
@@ -481,15 +463,6 @@ class Entreprise
     {
         return empty($this->validate());
     }
-    public function getStatusLabel(): string
-    {
-        return match ($this->status) {
-            'brouillon' => 'Brouillon',
-            'actif' => 'Actif',
-            'suspendu' => 'Suspendu',
-            default => 'Inconnu',
-        };
-    }
 
     public function toArray(): array
     {
@@ -504,7 +477,6 @@ class Entreprise
             'email' => $this->email,
             'website' => $this->website,
             'siret' => $this->siret,
-            'status' => $this->status,
             'isActive' => $this->isActive,
             'isPublic' => $this->isPublic,
             'isDeleted' => $this->isDeleted,
