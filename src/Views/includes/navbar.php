@@ -3,7 +3,7 @@
 <body>
   <header>
     <nav class="navbar">
-      <div class="logo" style="display: flex; align-items: center;">
+      <div class="logo" style="display: flex; align-items: center; position: relative;">
         <a href="<?= HOME_URL ?>"><img
             src="<?= DOMAIN . HOME_URL . 'assets/images/logo/logo.png' ?>"
             alt="Logo"
@@ -13,6 +13,7 @@
           <a class="link" href="<?= HOME_URL . 'mon_compte' ?>">
             <img id="currentProfilePictureInNavbar" src="<?= $_SESSION['avatarPath'] ?>" alt="user profile image" width="44" height="44" style="margin-left: 1rem;">
           </a>
+          <?php include __DIR__ . '/notification_badge.php'; ?>
         <?php endif; ?>
       </div>
       <div class="burger mr ml" id="burger-menu">
