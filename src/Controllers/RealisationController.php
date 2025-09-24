@@ -93,7 +93,7 @@ class RealisationController extends AbstractController
                 'entreprise' => $entreprise,
                 'title' => 'Détails de la réalisation',
                 'realisationImages' => $images,
-                'isOwner' => true
+                'isOwner' => 'true'
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
