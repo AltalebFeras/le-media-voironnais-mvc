@@ -918,14 +918,15 @@ class UserController extends AbstractController
 
             $items = array_map(function ($r) {
                 return [
+                    // include both for compatibility with the frontend
+                    'idNotification' => (int)$r['idNotification'],
                     'id' => (int)$r['idNotification'],
                     'title' => (string)$r['title'],
                     'message' => (string)$r['message'],
                     'type' => (string)$r['type'],
                     'isRead' => (int)$r['isRead'],
                     'createdAt' => (string)$r['createdAt'],
-                    // Optional deep-link. Compute later if needed (e.g., from idEvenement).
-                    'url' => null,
+                    'url' => $r['url'] ?? null,
                 ];
             }, $rows);
 
