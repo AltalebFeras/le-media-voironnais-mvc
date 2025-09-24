@@ -4,7 +4,7 @@
 <main>
     <div class="flex-row justify-content-between">
         <h1><?= htmlspecialchars($title ?? 'Ajouter une réalisation') ?></h1>
-        <a href="<?= HOME_URL . 'entreprise/mes_realisations?entreprise_uiid=' . htmlspecialchars($entreprise->getUiid()) ?>" class="">
+        <a href="<?= isset($_GET['back_to']) && $_GET['back_to'] ? HOME_URL . 'mes_entreprises?action=voir&uiid=' . htmlspecialchars($entreprise->getUiid()) : HOME_URL . 'entreprise/mes_realisations?entreprise_uiid=' . htmlspecialchars($entreprise->getUiid())?>" class="">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
@@ -19,7 +19,7 @@
                 </div>
             </div>
 
-            <form method="post" action="<?= HOME_URL . 'realisation/ajouter?uiid=' . htmlspecialchars($entreprise->getUiid()) ?>">
+            <form method="post" action="<?= HOME_URL . 'entreprise/mes_realisations/ajouter?entreprise_uiid=' . htmlspecialchars($entreprise->getUiid()) ?>">
                 <div class="card">
                     <div>
                         <div>

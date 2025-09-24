@@ -226,7 +226,7 @@ class RealisationController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_entreprises?error=true');
+            $this->redirect('entreprise/mes_realisations', ['action' => 'voir', 'entreprise_uiid' => $entreprise->getUiid(), 'realisation_uiid' => $idRealisation, 'error' => true]);
         }
     }
 
@@ -296,15 +296,15 @@ class RealisationController extends AbstractController
             $modelErrors = $realisation->validate();
             $errors = array_merge($errors, $modelErrors);
 
-            $this->returnAllErrors($errors, 'realisation/modifier?realisation_uiid=' . $realisationUiid . '&error=true');
+            $this->returnAllErrors($errors, 'entreprise/mes_realisations/modifier?realisation_uiid=' . $realisationUiid . '&error=true');
 
             $this->repo->updateRealisation($realisation);
 
             $_SESSION['success'] = "La réalisation a été mise à jour avec succès";
-            $this->redirect('realisation/voir?realisation_uiid=' . $realisationUiid);
+            $this->redirect('entreprise/mes_realisations', ['action' => 'voir', 'entreprise_uiid' => $entreprise->getUiid(), 'realisation_uiid' => $realisationUiid]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('realisation/modifier?realisation_uiid=' . $realisationUiid . '&error=true');
+            $this->redirect('entreprise/mes_realisations/modifier', ['realisation_uiid' => $realisationUiid, 'error' => true]);
         }
     }
 
@@ -331,10 +331,10 @@ class RealisationController extends AbstractController
             $this->repo->deleteRealisation($idRealisation);
 
             $_SESSION['success'] = "La réalisation a été supprimée avec succès";
-            $this->redirect('realisation/mes_realisations?uiid=' . $entreprise->getUiid());
+            $this->redirect('entreprise/mes_realisations?entreprise_uiid=' . $entreprise->getUiid());
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('realisation/voir?realisation_uiid=' . $realisationUiid . '&error=true');
+            $this->redirect('entreprise/mes_realisations', ['action' => 'voir', 'entreprise_uiid' => $entreprise->getUiid(), 'realisation_uiid' => $realisationUiid, 'error' => true]);
         }
     }
 

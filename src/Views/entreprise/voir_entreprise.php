@@ -198,7 +198,7 @@
                                 </a>
                             <?php else: ?>
                                 <p class="text-muted">Vous n'avez pas encore créé de réalisations pour cette entreprise.</p>
-                                <a href="<?= HOME_URL . 'entreprise/mes_realisations/ajouter?entreprise_uiid=' . $entreprise->getUiid() ?>&realisation_uiid=<?= $realisation->getUiid() ?>" class="btn">
+                                <a href="<?= HOME_URL . 'entreprise/mes_realisations/ajouter?entreprise_uiid=' . $entreprise->getUiid() . '&back_to=mes_entreprises&action=voir' ?>" class="btn linkNotDecorated">
                                     Créer ma première réalisation
                                 </a>
                             <?php endif; ?>

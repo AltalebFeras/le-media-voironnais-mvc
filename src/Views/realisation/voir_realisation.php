@@ -24,11 +24,9 @@
                             <div>
                                 <a href="<?= HOME_URL . 'entreprise/mes_realisations/modifier?realisation_uiid=' . $realisation->getUiid() ?>" 
                                    class="btn linkNotDecorated">Modifier</a>
-                                <a href="<?= HOME_URL . 'entreprise/mes_realisations?action=delete&realisation_uiid=' . $realisation->getUiid() ?>&entreprise_uiid=<?= $entreprise->getUiid() ?>" 
-                                   class="btn bg-danger" 
-                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réalisation ?');">
-                                    Supprimer
-                                </a>
+                                   <form action="<?= HOME_URL . 'entreprise/mes_realisations?action=delete&realisation_uiid=' . $realisation->getUiid() ?>&entreprise_uiid=<?= $entreprise->getUiid() ?>" method="post" style="display:inline;">
+                                       <button type="submit" class="btn bg-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réalisation ?');">Supprimer</button>
+                                   </form>
                             </div>
                         <?php endif; ?>
                     </div>

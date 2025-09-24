@@ -3,7 +3,7 @@
 // should see the modification made on function add list in ListsController to adapte this type of error returing in order to be applied on all ctrls
 if (isset($_SESSION['error'])): ?>
     <!-- Alert Messages -->
-    <div class="custom-alert custom-alert-danger">
+    <div class="custom-alert custom-alert-danger fade-out">
         <p>
             <?= $_SESSION['error']; ?>
         </p>
@@ -13,7 +13,7 @@ if (isset($_SESSION['error'])): ?>
 <?php endif; ?>
 
 <?php if (isset($_SESSION['success'])): ?>
-    <div class="custom-alert custom-alert-success">
+    <div class="custom-alert custom-alert-success fade-out">
         <p>
             <?= $_SESSION['success']; ?>
         </p>
@@ -25,7 +25,7 @@ if (isset($_SESSION['error'])): ?>
 <?php
 // display all errors when making ctrl on submit button so all the cases of if withe the results errors should be stocked at the last verification of the form data and it display by throw and exception to allow the code to jump to catch case so we can get the errors .
 if (!empty($_SESSION['errors'])): ?>
-    <ul class="error-list">
+    <ul class="error-list fade-out">
         <?php foreach ($_SESSION['errors'] as $key => $error): ?>
             <li class="error-item">
                 <?= $error ?>
@@ -42,3 +42,22 @@ if (!empty($_SESSION['errors'])): ?>
     </ul>
     <?php unset($_SESSION['errors']); ?>
 <?php endif; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto fade-out alerts and error lists after 5 seconds
+    const alerts = document.querySelectorAll('.custom-alert, .error-list');
+    
+    alerts.forEach(function(alert) {
+        setTimeout(function() {
+            alert.classList.add('fade-out');
+            
+            // Remove element after animation completes (assuming 1s animation duration)
+            setTimeout(function() {
+                if (alert.parentElement) {
+                    alert.remove();
+                }
+            }, 1000);
+        }, 10000);
+    });
+});
+</script>
