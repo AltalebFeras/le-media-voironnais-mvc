@@ -878,88 +878,106 @@ class UserController extends AbstractController
     public function notificationsCount(): void
     {
         header('Content-Type: application/json');
+        http_response_code(200);
+
         try {
             $idUser = $_SESSION['idUser'] ?? null;
             if (!$idUser) {
-                http_response_code(401);
-                echo json_encode(['success' => false, 'error' => 'Unauthenticated']);
+                echo json_encode(['success' => true, 'count' => 0]);
                 return;
             }
-            $count = $this->repo->fetchUnreadNotificationCount((int)$idUser);
-            echo json_encode(['success' => true, 'count' => $count]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Server error']);
+            $count = $this->repo->getUnreadNotificationsCount((int)$idUser);
+            echo json_encode(['success' => true, 'count' => (int)$count]);
+        } catch (\Throwable $e) {
+            echo json_encode(['success' => false, 'count' => 0]);
         }
     }
 
     public function notificationsList(): void
     {
         header('Content-Type: application/json');
+        http_response_code(200);
+
         try {
             $idUser = $_SESSION['idUser'] ?? null;
+            $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+            $limit = isset($_GET['limit']) ? max(1, min(50, (int)$_GET['limit'])) : 10;
+
             if (!$idUser) {
-                http_response_code(401);
-                echo json_encode(['success' => false, 'error' => 'Unauthenticated']);
+                echo json_encode(['success' => true, 'items' => [], 'page' => $page, 'hasMore' => false]);
                 return;
             }
-            $limit = isset($_GET['limit']) ? max(1, min(50, (int)$_GET['limit'])) : 10;
-            $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+
             $offset = ($page - 1) * $limit;
+            $rows = $this->repo->getNotificationsPage((int)$idUser, $limit + 1, $offset);
 
-            $items = $this->repo->fetchNotifications((int)$idUser, $limit, $offset);
-            $hasMore = count($items) === $limit;
+            $hasMore = count($rows) > $limit;
+            if ($hasMore) {
+                array_pop($rows);
+            }
 
-            echo json_encode(['success' => true, 'items' => $items, 'page' => $page, 'hasMore' => $hasMore]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Server error']);
+            $items = array_map(function ($r) {
+                return [
+                    'id' => (int)$r['idNotification'],
+                    'title' => (string)$r['title'],
+                    'message' => (string)$r['message'],
+                    'type' => (string)$r['type'],
+                    'isRead' => (int)$r['isRead'],
+                    'createdAt' => (string)$r['createdAt'],
+                    // Optional deep-link. Compute later if needed (e.g., from idEvenement).
+                    'url' => null,
+                ];
+            }, $rows);
+
+            echo json_encode([
+                'success' => true,
+                'items' => $items,
+                'page' => $page,
+                'hasMore' => $hasMore
+            ]);
+        } catch (\Throwable $e) {
+            echo json_encode(['success' => false, 'items' => [], 'page' => 1, 'hasMore' => false]);
         }
     }
 
     public function notificationMarkRead(): void
     {
         header('Content-Type: application/json');
+        http_response_code(200);
+
         try {
-            $idUser = $_SESSION['idUser'] ?? null;
-            if (!$idUser) {
-                http_response_code(401);
-                echo json_encode(['success' => false, 'error' => 'Unauthenticated']);
-                return;
-            }
-            $payload = $_POST;
-            if (empty($payload)) {
-                $payload = json_decode(file_get_contents('php://input'), true) ?: [];
-            }
+            $payload = json_decode(file_get_contents('php://input'), true) ?: [];
             $id = isset($payload['id']) ? (int)$payload['id'] : 0;
-            if ($id <= 0) {
-                http_response_code(400);
-                echo json_encode(['success' => false, 'error' => 'Invalid id']);
+            $idUser = $_SESSION['idUser'] ?? null;
+
+            if (!$idUser || $id <= 0) {
+                echo json_encode(['success' => false]);
                 return;
             }
-            $ok = $this->repo->markNotificationAsRead($id, (int)$idUser);
-            echo json_encode(['success' => $ok]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Server error']);
+
+            $ok = $this->repo->markNotificationRead((int)$idUser, $id);
+            echo json_encode(['success' => (bool)$ok]);
+        } catch (\Throwable $e) {
+            echo json_encode(['success' => false]);
         }
     }
 
     public function notificationsMarkAllRead(): void
     {
         header('Content-Type: application/json');
+        http_response_code(200);
+
         try {
             $idUser = $_SESSION['idUser'] ?? null;
             if (!$idUser) {
-                http_response_code(401);
-                echo json_encode(['success' => false, 'error' => 'Unauthenticated']);
+                echo json_encode(['success' => false]);
                 return;
             }
-            $ok = $this->repo->markAllNotificationsAsRead((int)$idUser);
-            echo json_encode(['success' => $ok]);
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode(['success' => false, 'error' => 'Server error']);
+            $affected = $this->repo->markAllNotificationsRead((int)$idUser);
+            echo json_encode(['success' => $affected >= 0]);
+        } catch (\Throwable $e) {
+            echo json_encode(['success' => false]);
         }
     }
 }
+

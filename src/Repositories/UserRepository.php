@@ -12,15 +12,18 @@ class UserRepository
 {
     private $DBuser;
 
+    // You may adapt getPDO() to your Database service API if named differently.
+    private PDO $pdo;
+
     public function __construct()
     {
-        $this->DBuser = Database::getInstance()->getDB();
+        $$this->pdo = Database::getInstance()->getDB();
     }
     public function getUser($email): ?User
     {
         try {
             $query = 'SELECT u.*, r.name AS roleName FROM user u JOIN role r ON u.idRole = r.idRole WHERE u.email = :email';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['email' => $email]);
             $user = $req->fetchObject(User::class);
             return $user !== false ? $user : null;
@@ -32,7 +35,7 @@ class UserRepository
     {
         try {
             $query  = 'SELECT * FROM user WHERE token = :token';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['token' => $token]);
             $user = $req->fetchObject(User::class);
             return $user !== false ? $user : null;
@@ -44,7 +47,7 @@ class UserRepository
     {
         try {
             $query = 'SELECT * FROM user WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['idUser' => $idUser]);
             $user = $req->fetchObject(User::class);
             return $user !== false ? $user : null;
@@ -56,7 +59,7 @@ class UserRepository
     {
         try {
             $query = 'SELECT * FROM user WHERE authCode = :authCode';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['authCode' => $authCode]);
             $user = $req->fetchObject(User::class);
             return $user !== false ? $user : null;
@@ -71,7 +74,7 @@ class UserRepository
             $query = 'INSERT INTO user (firstName, lastName, email, password, isActivated, isBanned, isDeleted, token, rgpdAcceptedDate, createdAt, idRole) 
             VALUES (:firstName, :lastName, :email, :password, :isActivated, :isBanned, :isDeleted, :token, :rgpdAcceptedDate, :createdAt, :idRole)';
 
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute([
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
@@ -85,7 +88,7 @@ class UserRepository
                 'rgpdAcceptedDate' => $user->getRgpdAcceptedDate(),
                 'idRole' => $user->getIdRole()
             ]);
-            $user->setIdUser($this->DBuser->lastInsertId());
+            $user->setIdUser($$this->pdo->lastInsertId());
             return $user;
         } catch (Exception $e) {
             throw new Exception('An unexpected error occurred: ' . $e->getMessage());
@@ -95,7 +98,7 @@ class UserRepository
     {
         try {
             $query = 'UPDATE user SET isOnline = 0 WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['idUser' => $idUser]);
             return true;
         } catch (Exception $e) {
@@ -106,7 +109,7 @@ class UserRepository
     {
         try {
             $query = 'UPDATE user SET token = :token, passwordResetAt = :passwordResetAt WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['token' => $token, 'passwordResetAt' => $passwordResetAt, 'idUser' => $idUser]);
             return true;
         } catch (Exception $e) {
@@ -117,7 +120,7 @@ class UserRepository
     {
         try {
             $query = 'UPDATE user SET authCode = :authCode, emailChangedAt = :emailChangedAt WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['authCode' => $authCode, 'emailChangedAt' => $emailChangedAt, 'idUser' => $idUser]);
             return true;
         } catch (Exception $e) {
@@ -129,7 +132,7 @@ class UserRepository
     {
         try {
             $query = 'UPDATE user SET lastSeen = :lastSeen, isOnline = 1 WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['idUser' => $idUser, 'lastSeen' => $lastSeen]);
             return true;
         } catch (Exception $e) {
@@ -140,7 +143,7 @@ class UserRepository
     {
         try {
             $query = 'UPDATE user SET isActivated = 1, token = NULL WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['idUser' => $idUser]);
             return true;
         } catch (Exception $e) {
@@ -151,7 +154,7 @@ class UserRepository
     {
         try {
             $query = 'UPDATE user SET firstName = :firstName, lastName = :lastName, phone = :phone, bio = :bio, dateOfBirth = :dateOfBirth, updatedAt = :updatedAt WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute([
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
@@ -170,7 +173,7 @@ class UserRepository
     {
         try {
             $query = 'UPDATE user SET email = :email WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['email' => $newEmail, 'idUser' => $idUser]);
             return true;
         } catch (PDOException $e) {
@@ -182,7 +185,7 @@ class UserRepository
     {
         try {
             $query = 'UPDATE user SET authCode = NULL WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute(['idUser' => $idUser]);
             return true;
         } catch (PDOException $e) {
@@ -193,7 +196,7 @@ class UserRepository
     {
         try {
             $query = 'UPDATE user SET phone = :phone WHERE idUser = :idUser';
-            $req = $this->DBuser->prepare($query);
+            $req = $$this->pdo->prepare($query);
             $req->execute([
                 'phone' => $user->getPhone(),
                 'idUser' => $user->getIdUser()
@@ -206,7 +209,7 @@ class UserRepository
     public function updateUserBio($user): bool
     {
         try {
-            $query = $this->DBuser->prepare('UPDATE user SET bio = :bio WHERE idUser = :idUser');
+            $query = $$this->pdo->prepare('UPDATE user SET bio = :bio WHERE idUser = :idUser');
             $query->execute([
                 'bio' => $user->getBio(),
                 'idUser' => $user->getIdUser()
@@ -219,7 +222,7 @@ class UserRepository
     public function updateUserDateOfBirth($user): bool
     {
         try {
-            $query = $this->DBuser->prepare('UPDATE user SET dateOfBirth = :dateOfBirth WHERE idUser = :idUser');
+            $query = $$this->pdo->prepare('UPDATE user SET dateOfBirth = :dateOfBirth WHERE idUser = :idUser');
             $query->execute([
                 'dateOfBirth' => $user->getDateOfBirth(),
                 'idUser' => $user->getIdUser()
@@ -232,7 +235,7 @@ class UserRepository
     public function updatePassword($idUser, $newPassword): bool
     {
         try {
-            $query = $this->DBuser->prepare('UPDATE user SET password = :password WHERE idUser = :idUser');
+            $query = $$this->pdo->prepare('UPDATE user SET password = :password WHERE idUser = :idUser');
             $query->execute([
                 'password' => $newPassword,
                 'idUser' => $idUser
@@ -245,7 +248,7 @@ class UserRepository
     public function resetPassword($idUser, $passwordHash): bool
     {
         try {
-            $query = $this->DBuser->prepare('UPDATE user SET password = :password , token = NULL WHERE idUser = :idUser');
+            $query = $$this->pdo->prepare('UPDATE user SET password = :password , token = NULL WHERE idUser = :idUser');
             $query->execute([
                 'password' => $passwordHash,
                 'idUser' => $idUser
@@ -258,7 +261,7 @@ class UserRepository
     public function deleteUser($idUser, $deletedAt): bool
     {
         try {
-            $query = $this->DBuser->prepare('UPDATE user SET isDeleted = 1, isOnline = 0, authCode = NULL ,token = NULL, deletedAt = :deletedAt WHERE idUser = :idUser');
+            $query = $$this->pdo->prepare('UPDATE user SET isDeleted = 1, isOnline = 0, authCode = NULL ,token = NULL, deletedAt = :deletedAt WHERE idUser = :idUser');
             $query->execute(['idUser' => $idUser, 'deletedAt' => $deletedAt]);
             return true;
         } catch (PDOException $e) {
@@ -267,7 +270,7 @@ class UserRepository
     }
     public function updateProfilePicture($idUser, $avatarPath)
     {
-        $query = $this->DBuser->prepare('UPDATE user SET avatarPath = :avatarPath WHERE idUser = :idUser');
+        $query = $$this->pdo->prepare('UPDATE user SET avatarPath = :avatarPath WHERE idUser = :idUser');
         $query->execute([
             'avatarPath' => $avatarPath,
             'idUser' => $idUser
@@ -275,7 +278,7 @@ class UserRepository
     }
     public function updateBanner($idUser, $bannerPath)
     {
-        $query = $this->DBuser->prepare('UPDATE user SET bannerPath = :bannerPath WHERE idUser = :idUser');
+        $query = $$this->pdo->prepare('UPDATE user SET bannerPath = :bannerPath WHERE idUser = :idUser');
         $query->execute([
             'bannerPath' => $bannerPath,
             'idUser' => $idUser
@@ -284,14 +287,14 @@ class UserRepository
 
     public function fetchUnreadNotificationCount(int $idUser): int
     {
-        $stmt = $this->DBuser->prepare('SELECT COUNT(*) FROM notification WHERE idUser = :idUser AND isRead = 0');
+        $stmt = $$this->pdo->prepare('SELECT COUNT(*) FROM notification WHERE idUser = :idUser AND isRead = 0');
         $stmt->execute([':idUser' => $idUser]);
         return (int)$stmt->fetchColumn();
     }
 
     public function fetchNotifications(int $idUser, int $limit = 10, int $offset = 0): array
     {
-        $stmt = $this->DBuser->prepare(
+        $stmt = $$this->pdo->prepare(
             'SELECT idNotification, type, title, message, url, isRead, readAt, createdAt
              FROM notification
              WHERE idUser = :idUser
@@ -307,7 +310,7 @@ class UserRepository
 
     public function markNotificationAsRead(int $idNotification, int $idUser): bool
     {
-        $stmt = $this->DBuser->prepare(
+        $stmt = $$this->pdo->prepare(
             'UPDATE notification
              SET isRead = 1, readAt = NOW()
              WHERE idNotification = :id AND idUser = :idUser AND isRead = 0'
@@ -317,7 +320,7 @@ class UserRepository
 
     public function markAllNotificationsAsRead(int $idUser): bool
     {
-        $stmt = $this->DBuser->prepare(
+        $stmt = $$this->pdo->prepare(
             'UPDATE notification
              SET isRead = 1, readAt = NOW()
              WHERE idUser = :idUser AND isRead = 0'
@@ -327,7 +330,7 @@ class UserRepository
 
     public function addNotification(int $idUser, string $title, string $message = '', ?string $url = null, string $type = 'info'): bool
     {
-        $stmt = $this->DBuser->prepare(
+        $stmt = $$this->pdo->prepare(
             'INSERT INTO notification (idUser, type, title, message, url, isRead, createdAt)
              VALUES (:idUser, :type, :title, :message, :url, 0, NOW())'
         );
