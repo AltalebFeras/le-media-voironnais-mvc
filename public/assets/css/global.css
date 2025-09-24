@@ -1,5 +1,5 @@
 @import url('/assets/css/animation.css'); 
-@import url('/assets/css/notification.css');
+@import url('/assets/css/notification.css'); 
 
 /* New color palette and font */
 * {
@@ -708,7 +708,6 @@ ul {
     display: none;
     /* Caché par défaut */
 }
-
 
 @media (max-width: 768px) {
     .burger {

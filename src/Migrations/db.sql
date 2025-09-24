@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 24, 2025 at 03:28 PM
+-- Generation Time: Sep 24, 2025 at 06:19 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -200,7 +200,7 @@ INSERT INTO `entreprise` (`idEntreprise`, `uiid`, `name`, `slug`, `description`,
 DROP TABLE IF EXISTS `evenement`;
 CREATE TABLE IF NOT EXISTS `evenement` (
   `idEvenement` int NOT NULL AUTO_INCREMENT,
-  `uiid` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
+  `uiid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `title` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `slug` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
@@ -435,12 +435,12 @@ CREATE TABLE IF NOT EXISTS `notification` (
   `idUser` int NOT NULL,
   `idEvenement` int DEFAULT NULL,
   `actorId` int DEFAULT NULL,
-  `type` enum('invitation_evenement','mise_a_jour_evenement','message','invitation_association','rappel_evenement','systeme','alert','autre') NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `message` text NOT NULL,
-  `url` varchar(512) DEFAULT NULL,
+  `type` enum('invitation_evenement','mise_a_jour_evenement','message','invitation_association','rappel_evenement','systeme','alert','autre') COLLATE utf8mb4_general_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `message` text COLLATE utf8mb4_general_ci NOT NULL,
+  `url` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `metadata` json DEFAULT NULL,
-  `priority` tinyint unsigned NOT NULL DEFAULT '0',
+  `priority` tinyint UNSIGNED NOT NULL DEFAULT '0',
   `isRead` tinyint(1) NOT NULL DEFAULT '0',
   `readAt` datetime DEFAULT NULL,
   `deliveredAt` datetime DEFAULT NULL,
@@ -453,10 +453,16 @@ CREATE TABLE IF NOT EXISTS `notification` (
   KEY `idx_notification_user_read_created` (`idUser`,`isRead`,`createdAt`),
   KEY `idx_notification_type_created` (`type`,`createdAt`),
   KEY `idx_notification_priority_created` (`priority`,`createdAt`),
-  CONSTRAINT `FK_user_TO_notification` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_evenement_TO_notification` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_actor_TO_notification` FOREIGN KEY (`actorId`) REFERENCES `user` (`idUser`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  KEY `FK_evenement_TO_notification` (`idEvenement`),
+  KEY `FK_actor_TO_notification` (`actorId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notification`
+--
+
+INSERT INTO `notification` (`idNotification`, `idUser`, `idEvenement`, `actorId`, `type`, `title`, `message`, `url`, `metadata`, `priority`, `isRead`, `readAt`, `deliveredAt`, `expiresAt`, `createdAt`) VALUES
+(1, 3, 82, 3, 'alert', 'title', 'messagessssssssssss', 'ddd', NULL, 0, 1, '2025-09-24 19:26:45', NULL, NULL, '2025-09-24 19:23:19');
 
 -- --------------------------------------------------------
 
@@ -589,9 +595,9 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
-(1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-19 09:37:31', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
+(1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-24 20:18:25', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
 (2, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-24 16:30:37', '2025-09-15 09:47:56', NULL, '18aab59f6829597f2a447a393b407e35', '2025-09-15 09:47:56', '2025-09-22 11:38:58', '2025-09-15 10:10:17', '2025-09-19 09:35:59', NULL),
+(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 0, '2025-09-24 16:30:37', '2025-09-15 09:47:56', NULL, '18aab59f6829597f2a447a393b407e35', '2025-09-15 09:47:56', '2025-09-22 11:38:58', '2025-09-15 10:10:17', '2025-09-19 09:35:59', NULL),
 (4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-17 19:16:31', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
@@ -716,6 +722,8 @@ ALTER TABLE `event_participant`
 -- Constraints for table `notification`
 --
 ALTER TABLE `notification`
+  ADD CONSTRAINT `FK_actor_TO_notification` FOREIGN KEY (`actorId`) REFERENCES `user` (`idUser`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_evenement_TO_notification` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_user_TO_notification` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --

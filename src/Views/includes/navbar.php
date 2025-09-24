@@ -13,6 +13,7 @@
           <a class="link" href="<?= HOME_URL . 'mon_compte' ?>">
             <img id="currentProfilePictureInNavbar" src="<?= $_SESSION['avatarPath'] ?>" alt="user profile image" width="44" height="44" style="margin-left: 1rem;">
           </a>
+          <!-- Notification Badge include -->
           <?php include __DIR__ . '/notification_badge.php'; ?>
         <?php endif; ?>
       </div>
