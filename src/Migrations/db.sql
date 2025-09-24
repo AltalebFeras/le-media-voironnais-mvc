@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 23, 2025 at 12:58 PM
+-- Generation Time: Sep 24, 2025 at 03:28 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -186,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
 INSERT INTO `entreprise` (`idEntreprise`, `uiid`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `isActive`, `isPublic`, `isPartner`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`, `partnerStartDate`, `partnerEndDate`) VALUES
 (30, 'ent1b2c3d4e5f6g7', 'TechnoSoft Solutions', 'technosoft-solutions', 'Société de développement logiciel spécialisée dans les solutions métiers.', 'assets/images/uploads/logos/techno_logo.jpg', 'assets/images/uploads/banners/tech_banner.jpg', '25 Zone Industrielle, Voiron', '0476060201', 'contact@technosoft.fr', 'https://www.technosoft.fr', '12345678901234', 1, 1, 0, 0, 2, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL),
 (31, 'ent2c3d4e5f6g7h8', 'Boulangerie des Chartreuses', 'boulangerie-chartreuses', 'Boulangerie artisanale proposant pains traditionnels et pâtisseries locales.', 'assets/images/uploads/logos/boulangerie_logo.jpg', 'assets/images/uploads/banners/boulangerie_banner.jpg', '5 Rue de la Boulangerie, Voiron', '0476060202', 'info@boulangerie-chartreuses.fr', 'https://www.boulangerie-chartreuses.fr', '23456789012345', 1, 1, 1, 0, 2, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL),
-(32, 'ent3d4e5f6g7h8i9', 'Consulting Alpes Isère', 'consulting-alpes-isere', 'Cabinet de conseil en management et stratégie d entreprise.', 'assets/images/uploads/logos/68d24aa3a9936_1758612131.webp', 'assets/images/uploads/banners/68d24aae16403_1758612142.webp', '18 Avenue Jean Jaurès, Grenoble', '0476060203', 'direction@consulting-alpes.com', 'https://www.consulting-alpes.com', '34567890123456', 0, 0, 0, 0, 3, 38100, '2025-09-22 15:49:23', '2025-09-23 09:27:51', NULL, NULL),
+(32, 'ent3d4e5f6g7h8i9', 'Consulting Alpes Isère', 'consulting-alpes-isere', 'Cabinet de conseil en management et stratégie d entreprise.', 'assets/images/uploads/logos/68d24aa3a9936_1758612131.webp', 'assets/images/uploads/banners/68d24aae16403_1758612142.webp', '18 Avenue Jean Jaurès, Grenoble', '0476060203', 'direction@consulting-alpes.com', 'https://www.consulting-alpes.com', '34567890123456', 0, 0, 0, 1, 3, 38100, '2025-09-22 15:49:23', '2025-09-23 09:27:51', NULL, NULL),
 (33, 'ent4e5f6g7h8i9j0', 'EcoVert Jardinage', 'ecoverts-jardinage', 'Entreprise de jardinage écologique et aménagement paysager durable.', 'assets/images/uploads/logos/68d24a836ea40_1758612099.webp', 'assets/images/uploads/banners/68d24a900a4d4_1758612112.webp', '33 Route de Lyon, Grenoble', '0476060204', 'devis@ecoverts.fr', 'https://www.ecoverts.fr', '45678901234567', 1, 1, 1, 0, 3, 38100, '2025-09-22 15:49:23', '2025-09-23 09:21:55', NULL, NULL),
 (34, 'ent5f6g7h8i9j0k1', 'Artisan Menuiserie Dauphiné', 'menuiserie-dauphine', 'Menuiserie traditionnelle spécialisée dans la restauration de bâtiments anciens.', 'assets/images/uploads/logos/menuiserie_logo.jpg', 'assets/images/uploads/banners/menuiserie_banner.jpg', '7 Impasse des Artisans, Voiron', '0476060205', 'atelier@menuiserie-dauphine.fr', 'https://www.menuiserie-dauphine.fr', '56789012345678', 1, 1, 0, 0, 4, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL),
 (35, 'ent6g7h8i9j0k1l2', 'Café-Restaurant Le Montagnard', 'cafe-montagnard', 'Restaurant traditionnel proposant spécialités savoyardes et cuisine de montagne.', 'assets/images/uploads/logos/restaurant_logo.jpg', 'assets/images/uploads/banners/restaurant_banner.jpg', '14 Place du Marché, Voiron', '0476060206', 'reservation@montagnard.fr', 'https://www.montagnard.fr', '67890123456789', 1, 1, 1, 0, 4, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL);
@@ -434,13 +434,11 @@ CREATE TABLE IF NOT EXISTS `notification` (
   `idNotification` int NOT NULL AUTO_INCREMENT,
   `idUser` int NOT NULL,
   `idEvenement` int DEFAULT NULL,
-  `type` enum('invitation_evenement','mise_a_jour_evenement','message','invitation_association','rappel_evenement','systeme') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `type` enum('invitation_evenement','mise_a_jour_evenement','message','invitation_association','rappel_evenement','systeme','alert','autre') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `isRead` tinyint(1) NOT NULL DEFAULT '0',
   `readAt` datetime DEFAULT NULL,
-  `relatedId` int DEFAULT NULL,
-  `relatedType` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idNotification`),
   UNIQUE KEY `UQ_idNotification` (`idNotification`),
@@ -476,7 +474,15 @@ CREATE TABLE IF NOT EXISTS `realisation` (
   KEY `idx_realisation_entreprise` (`idEntreprise`),
   KEY `idx_realisation_public` (`isPublic`),
   KEY `idx_realisation_featured` (`isFeatured`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `realisation`
+--
+
+INSERT INTO `realisation` (`idRealisation`, `uiid`, `title`, `slug`, `description`, `dateRealized`, `isPublic`, `isFeatured`, `isDeleted`, `idEntreprise`, `createdAt`, `updatedAt`) VALUES
+(1, 'dffdg12d6fg6', 'dfffffffffffffffffffffff', 'fffffffffffffffffffffffffff', 'ffffffdgggggggggggggggggggggggggggg', '2025-09-23', 1, 0, 1, 32, '2025-09-23 15:35:40', '2025-09-24 14:39:10'),
+(2, '7e2a452f26f09435', 'ddddddds', 'ecovert-jardinage-ddddddds', 'sdsdfsdfsd', '2025-10-03', 0, 0, 0, 33, '2025-09-24 13:53:48', '2025-09-24 14:24:49');
 
 -- --------------------------------------------------------
 
@@ -574,7 +580,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
 (1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/68c803d9271c3_1745690908790.jpg', 'http://le-media-voironnais/assets/images/uploads/banners/68c803d3be008_1745690908717.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-19 09:37:31', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
 (2, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-23 10:49:09', '2025-09-15 09:47:56', NULL, '18aab59f6829597f2a447a393b407e35', '2025-09-15 09:47:56', '2025-09-22 11:38:58', '2025-09-15 10:10:17', '2025-09-19 09:35:59', NULL),
+(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-24 16:30:37', '2025-09-15 09:47:56', NULL, '18aab59f6829597f2a447a393b407e35', '2025-09-15 09:47:56', '2025-09-22 11:38:58', '2025-09-15 10:10:17', '2025-09-19 09:35:59', NULL),
 (4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-17 19:16:31', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
