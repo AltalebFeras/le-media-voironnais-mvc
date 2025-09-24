@@ -3,6 +3,7 @@
 use src\Controllers\AdminController;
 use src\Controllers\EvenementController;
 use src\Controllers\HomeController;
+use src\Controllers\NotificationController;
 use src\Controllers\RealisationController;
 use src\Controllers\UserController;
 use src\Controllers\AssociationController;
@@ -16,6 +17,7 @@ $associationController = new AssociationController();
 $entrepriseController = new EntrepriseController();
 $evenementController = new EvenementController();
 $realisationController = new RealisationController();
+$notificationController = new NotificationController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
 $method = ConfigRouter::getMethod();
@@ -438,11 +440,15 @@ switch ($route) {
         $homeController->page404();
         break;
 
-    // Notifications page (redirect for now)
+    // Notifications page
     case HOME_URL . 'notifications':
         if ($method === 'GET') {
-            // Redirect to a valid page until a full notifications page exists
-            $userController->redirect('dashboard');
+            if ($connectionSecured) {
+                $notificationController->displayNotifications();
+            } else {
+                $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+                $homeController->displayAuth();
+            }
         } else {
             $homeController->page404();
         }
@@ -451,7 +457,7 @@ switch ($route) {
     // Notifications API routes (JSON) — must be BEFORE default:
     case HOME_URL . 'notifications/count':
         if ($method === 'GET') {
-            $userController->notificationsCount();
+            $notificationController->notificationsCount();
         } else {
             $homeController->page404();
         }
@@ -459,7 +465,7 @@ switch ($route) {
 
     case HOME_URL . 'notifications/list':
         if ($method === 'GET') {
-            $userController->notificationsList();
+            $notificationController->notificationsList();
         } else {
             $homeController->page404();
         }
@@ -467,7 +473,7 @@ switch ($route) {
 
     case HOME_URL . 'notifications/mark-read':
         if ($method === 'POST') {
-            $userController->notificationMarkRead();
+            $notificationController->notificationMarkRead();
         } else {
             $homeController->page404();
         }
@@ -475,7 +481,7 @@ switch ($route) {
 
     case HOME_URL . 'notifications/mark-all-read':
         if ($method === 'POST') {
-            $userController->notificationsMarkAllRead();
+            $notificationController->notificationsMarkAllRead();
         } else {
             $homeController->page404();
         }

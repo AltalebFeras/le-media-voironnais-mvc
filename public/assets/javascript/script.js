@@ -258,3 +258,118 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
   startPolling();
 })();
 
+// Notifications page (full list + load more + mark all)
+(function () {
+  const listEl = document.getElementById('pageNotifList');
+  const loadMoreBtn = document.getElementById('pageLoadMore');
+  const markAllBtn = document.getElementById('pageMarkAll');
+  const bellBadge = document.getElementById('notifCount');
+  if (!listEl || !loadMoreBtn) return;
+
+  let page = 1;
+  const limit = 15;
+  let loading = false;
+  let hasMore = true;
+
+  const apiGet = (path) => fetch(`/${path}`, { headers: { 'Accept': 'application/json' } });
+  const apiPost = (path, body) =>
+    fetch(`/${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(body || {})
+    });
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function renderItem(item) {
+    const li = document.createElement('li');
+    li.className = `notif-item ${item.isRead ? 'read' : 'unread'}`;
+    li.dataset.id = item.idNotification || item.id;
+    li.innerHTML = `
+      <div class="notif-title">${escapeHtml(item.title || '(sans titre)')}</div>
+      ${item.message ? `<div class="notif-message">${escapeHtml(item.message)}</div>` : ''}
+      <div class="notif-meta">
+        <span class="notif-type ${item.type || 'info'}">${item.type || 'info'}</span>
+        <time class="notif-date">${new Date(item.createdAt).toLocaleString()}</time>
+      </div>
+    `;
+    li.addEventListener('click', async () => {
+      if (!item.isRead) {
+        try {
+          await apiPost('notifications/mark-read', { id: item.idNotification || item.id });
+          li.classList.remove('unread');
+          li.classList.add('read');
+          item.isRead = 1;
+          if (bellBadge && !bellBadge.classList.contains('d-none')) {
+            const current = parseInt(bellBadge.textContent || '0', 10);
+            if (current > 1) bellBadge.textContent = String(current - 1);
+            else bellBadge.classList.add('d-none');
+          }
+        } catch (_) { /* ignore */ }
+      }
+      if (item.url) {
+        window.location.href = item.url;
+      }
+    });
+    return li;
+  }
+
+  async function loadPage() {
+    if (loading || !hasMore) return;
+    loading = true;
+    loadMoreBtn.textContent = 'Chargement…';
+    try {
+      const res = await apiGet(`notifications/list?page=${page}&limit=${limit}`);
+      const data = await res.json();
+      if (!data || data.success !== true) throw new Error('bad response');
+
+      if (page === 1 && (!data.items || data.items.length === 0)) {
+        listEl.innerHTML = '<li class="notif-item muted">Aucune notification</li>';
+        hasMore = false;
+        loadMoreBtn.classList.add('d-none');
+        return;
+      }
+
+      data.items.forEach((item) => listEl.appendChild(renderItem(item)));
+      hasMore = !!data.hasMore;
+      if (!hasMore) loadMoreBtn.classList.add('d-none');
+      page += 1;
+    } catch (_) {
+      if (page === 1) {
+        listEl.innerHTML = '<li class="notif-item muted">Erreur lors du chargement</li>';
+      }
+    } finally {
+      loading = false;
+      loadMoreBtn.textContent = 'Charger plus';
+    }
+  }
+
+  loadMoreBtn.addEventListener('click', loadPage);
+
+  if (markAllBtn) {
+    markAllBtn.addEventListener('click', async () => {
+      try {
+        const res = await apiPost('notifications/mark-all-read', {});
+        const data = await res.json();
+        if (data && data.success) {
+          listEl.querySelectorAll('.notif-item.unread').forEach(li => {
+            li.classList.remove('unread');
+            li.classList.add('read');
+          });
+          if (bellBadge) bellBadge.classList.add('d-none');
+        }
+      } catch (_) { /* ignore */ }
+    });
+  }
+
+  // initial load
+  loadPage();
+})();
+
