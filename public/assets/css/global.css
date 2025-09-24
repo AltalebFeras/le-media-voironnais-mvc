@@ -745,8 +745,8 @@ ul {
 
 .notif-dropdown {
     position: absolute;
-    top: 46px;
-    right: 0;
+    top: 67px;
+    right: -40px;
     width: 340px;
     max-height: 420px;
     overflow: auto;

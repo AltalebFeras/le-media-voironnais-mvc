@@ -437,12 +437,19 @@ switch ($route) {
     case HOME_URL . '404':
         $homeController->page404();
         break;
-    default:
-        $homeController->page404();
+
+    // Notifications page (redirect for now)
+    case HOME_URL . 'notifications':
+        if ($method === 'GET') {
+            // Redirect to a valid page until a full notifications page exists
+            $userController->redirect('dashboard');
+        } else {
+            $homeController->page404();
+        }
         break;
-    // Notifications API routes (JSON)
+
+    // Notifications API routes (JSON) — must be BEFORE default:
     case HOME_URL . 'notifications/count':
-        // GET -> returns unread count (JSON)
         if ($method === 'GET') {
             $userController->notificationsCount();
         } else {
@@ -451,7 +458,6 @@ switch ($route) {
         break;
 
     case HOME_URL . 'notifications/list':
-        // GET -> returns paginated list (JSON)
         if ($method === 'GET') {
             $userController->notificationsList();
         } else {
@@ -460,7 +466,6 @@ switch ($route) {
         break;
 
     case HOME_URL . 'notifications/mark-read':
-        // POST -> mark single notification as read (JSON)
         if ($method === 'POST') {
             $userController->notificationMarkRead();
         } else {
@@ -469,11 +474,14 @@ switch ($route) {
         break;
 
     case HOME_URL . 'notifications/mark-all-read':
-        // POST -> mark all notifications as read (JSON)
         if ($method === 'POST') {
             $userController->notificationsMarkAllRead();
         } else {
             $homeController->page404();
         }
+        break;
+
+    default:
+        $homeController->page404();
         break;
 }
