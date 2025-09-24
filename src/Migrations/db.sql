@@ -434,17 +434,28 @@ CREATE TABLE IF NOT EXISTS `notification` (
   `idNotification` int NOT NULL AUTO_INCREMENT,
   `idUser` int NOT NULL,
   `idEvenement` int DEFAULT NULL,
-  `type` enum('invitation_evenement','mise_a_jour_evenement','message','invitation_association','rappel_evenement','systeme','alert','autre') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `actorId` int DEFAULT NULL,
+  `type` enum('invitation_evenement','mise_a_jour_evenement','message','invitation_association','rappel_evenement','systeme','alert','autre') NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `url` varchar(512) DEFAULT NULL,
+  `metadata` json DEFAULT NULL,
+  `priority` tinyint unsigned NOT NULL DEFAULT '0',
   `isRead` tinyint(1) NOT NULL DEFAULT '0',
   `readAt` datetime DEFAULT NULL,
+  `deliveredAt` datetime DEFAULT NULL,
+  `expiresAt` datetime DEFAULT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idNotification`),
-  UNIQUE KEY `UQ_idNotification` (`idNotification`),
   KEY `idx_notification_user` (`idUser`),
   KEY `idx_notification_read` (`isRead`),
-  KEY `idx_notification_created` (`createdAt`)
+  KEY `idx_notification_created` (`createdAt`),
+  KEY `idx_notification_user_read_created` (`idUser`,`isRead`,`createdAt`),
+  KEY `idx_notification_type_created` (`type`,`createdAt`),
+  KEY `idx_notification_priority_created` (`priority`,`createdAt`),
+  CONSTRAINT `FK_user_TO_notification` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_evenement_TO_notification` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_actor_TO_notification` FOREIGN KEY (`actorId`) REFERENCES `user` (`idUser`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

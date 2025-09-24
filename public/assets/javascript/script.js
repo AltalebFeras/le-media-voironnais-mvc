@@ -98,3 +98,163 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
     });
   });
 
+// Notifications (polling + dropdown)
+(function () {
+  const bell = document.getElementById('notifBell');
+  const badge = document.getElementById('notifCount');
+  const dropdown = document.getElementById('notifDropdown');
+  const list = document.getElementById('notifList');
+  const markAllBtn = document.getElementById('notifMarkAll');
+
+  if (!bell || !badge || !dropdown || !list) return;
+
+  let polling = null;
+  let lastOpenAt = 0;
+
+  const apiGet = (path) => fetch(`/${path}`, { headers: { 'Accept': 'application/json' } });
+  const apiPost = (path, body) =>
+    fetch(`/${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(body || {})
+    });
+
+  async function refreshCount() {
+    try {
+      const res = await apiGet('notifications/count');
+      const data = await res.json();
+      if (!data || data.success !== true) return;
+      const count = Number(data.count || 0);
+      if (count > 0) {
+        badge.textContent = String(count);
+        badge.classList.remove('d-none');
+      } else {
+        badge.classList.add('d-none');
+      }
+    } catch (_) { /* silent */ }
+  }
+
+  async function loadList(page = 1, limit = 10) {
+    list.innerHTML = '<li class="notif-item muted">Chargement…</li>';
+    try {
+      const res = await apiGet(`notifications/list?page=${page}&limit=${limit}`);
+      const data = await res.json();
+      if (!data || data.success !== true) {
+        list.innerHTML = '<li class="notif-item muted">Erreur lors du chargement</li>';
+        return;
+      }
+      if (!data.items || data.items.length === 0) {
+        list.innerHTML = '<li class="notif-item muted">Aucune notification</li>';
+        return;
+      }
+      list.innerHTML = '';
+      data.items.forEach(item => {
+        const li = document.createElement('li');
+        li.className = `notif-item ${item.isRead ? 'read' : 'unread'}`;
+        li.dataset.id = item.idNotification;
+        li.innerHTML = `
+          <div class="notif-title">${escapeHtml(item.title || '(sans titre)')}</div>
+          ${item.message ? `<div class="notif-message">${escapeHtml(item.message)}</div>` : ''}
+          <div class="notif-meta">
+            <span class="notif-type ${item.type || 'info'}">${item.type || 'info'}</span>
+            <time class="notif-date">${new Date(item.createdAt).toLocaleString()}</time>
+          </div>
+        `;
+        li.addEventListener('click', async () => {
+          if (!item.isRead) {
+            try {
+              await apiPost('notifications/mark-read', { id: item.idNotification });
+              li.classList.remove('unread');
+              li.classList.add('read');
+              // decrement badge
+              const current = parseInt(badge.textContent || '0', 10);
+              if (current > 1) {
+                badge.textContent = String(current - 1);
+              } else {
+                badge.classList.add('d-none');
+              }
+            } catch (_) { /* ignore */ }
+          }
+          if (item.url) {
+            window.location.href = item.url;
+          }
+        });
+        list.appendChild(li);
+      });
+    } catch (_) {
+      list.innerHTML = '<li class="notif-item muted">Erreur lors du chargement</li>';
+    }
+  }
+
+  // basic HTML escaping
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function openDropdown() {
+    dropdown.classList.remove('d-none');
+    bell.setAttribute('aria-expanded', 'true');
+    const now = Date.now();
+    if (now - lastOpenAt > 800) {
+      loadList(1, 10);
+      lastOpenAt = now;
+    }
+    // click-outside to close
+    const closeOnOutside = (e) => {
+      if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
+        closeDropdown();
+        document.removeEventListener('click', closeOnOutside, true);
+      }
+    };
+    setTimeout(() => document.addEventListener('click', closeOnOutside, true), 0);
+  }
+
+  function closeDropdown() {
+    dropdown.classList.add('d-none');
+    bell.setAttribute('aria-expanded', 'false');
+  }
+
+  bell.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (dropdown.classList.contains('d-none')) openDropdown();
+    else closeDropdown();
+  });
+
+  if (markAllBtn) {
+    markAllBtn.addEventListener('click', async () => {
+      try {
+        const res = await apiPost('notifications/mark-all-read', {});
+        const data = await res.json();
+        if (data && data.success) {
+          badge.classList.add('d-none');
+          list.querySelectorAll('.notif-item.unread').forEach(li => {
+            li.classList.remove('unread');
+            li.classList.add('read');
+          });
+        }
+      } catch (_) { /* ignore */ }
+    });
+  }
+
+  // Start polling when tab visible, stop when hidden
+  function startPolling() {
+    if (polling) return;
+    polling = setInterval(refreshCount, 20000);
+    refreshCount();
+  }
+  function stopPolling() {
+    if (polling) clearInterval(polling);
+    polling = null;
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopPolling();
+    else startPolling();
+  });
+  startPolling();
+})();
+

@@ -281,4 +281,62 @@ class UserRepository
             'idUser' => $idUser
         ]);
     }
+
+    public function fetchUnreadNotificationCount(int $idUser): int
+    {
+        $stmt = $this->DBuser->prepare('SELECT COUNT(*) FROM notification WHERE idUser = :idUser AND isRead = 0');
+        $stmt->execute([':idUser' => $idUser]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function fetchNotifications(int $idUser, int $limit = 10, int $offset = 0): array
+    {
+        $stmt = $this->DBuser->prepare(
+            'SELECT idNotification, type, title, message, url, isRead, readAt, createdAt
+             FROM notification
+             WHERE idUser = :idUser
+             ORDER BY isRead ASC, createdAt DESC
+             LIMIT :limit OFFSET :offset'
+        );
+        $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
+    public function markNotificationAsRead(int $idNotification, int $idUser): bool
+    {
+        $stmt = $this->DBuser->prepare(
+            'UPDATE notification
+             SET isRead = 1, readAt = NOW()
+             WHERE idNotification = :id AND idUser = :idUser AND isRead = 0'
+        );
+        return $stmt->execute([':id' => $idNotification, ':idUser' => $idUser]);
+    }
+
+    public function markAllNotificationsAsRead(int $idUser): bool
+    {
+        $stmt = $this->DBuser->prepare(
+            'UPDATE notification
+             SET isRead = 1, readAt = NOW()
+             WHERE idUser = :idUser AND isRead = 0'
+        );
+        return $stmt->execute([':idUser' => $idUser]);
+    }
+
+    public function addNotification(int $idUser, string $title, string $message = '', ?string $url = null, string $type = 'info'): bool
+    {
+        $stmt = $this->DBuser->prepare(
+            'INSERT INTO notification (idUser, type, title, message, url, isRead, createdAt)
+             VALUES (:idUser, :type, :title, :message, :url, 0, NOW())'
+        );
+        return $stmt->execute([
+            ':idUser' => $idUser,
+            ':type' => $type,
+            ':title' => $title,
+            ':message' => $message,
+            ':url' => $url
+        ]);
+    }
 }

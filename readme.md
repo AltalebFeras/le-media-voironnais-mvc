@@ -3,7 +3,9 @@
 Projet PHP (PDO + MVC léger) pour la gestion d'événements, associations, entreprises et système de chat/notifications.
 
 ## Présentation
+
 Application web minimale organisée en logique contrôleur / repository / modèle. Comprend :
+
 - Gestion utilisateurs (inscription, activation, réinitialisation MDp)
 - Événements, associations, entreprises
 - Chats et notifications
@@ -11,12 +13,14 @@ Application web minimale organisée en logique contrôleur / repository / modèl
 - Templates d'e-mails via PHPMailer
 
 ## Prérequis
+
 - PHP 8.0+ (extensions : pdo_mysql, mbstring, fileinfo, openssl, exif pour orientation JPEG)
 - Composer
 - MySQL / MariaDB
 - Serveur web (Apache/Nginx) ou serveur PHP intégré
 
 ## Installation rapide
+
 1. Cloner le dépôt dans votre environnement de développement.
 2. Installer les dépendances :
    - composer install
@@ -27,9 +31,10 @@ Application web minimale organisée en logique contrôleur / repository / modèl
    - Exemple : mysql -u user -p le-media-voironnais < src/Migrations/db.sql
 
 ## Configuration
+
 - `config.php` doit définir au minimum :
   - DB_HOST, DB_NAME, DB_USER, DB_PWD
-  - DOMAIN (ex : http://localhost)
+  - DOMAIN (ex : <http://localhost>)
   - HOME_URL (chemin racine de l'app, ex : /)
   - SEL (chaîne utilisée comme "pepper" pour le hash des mots de passe)
   - ADMIN_EMAIL, ADMIN_SENDER_NAME
@@ -39,15 +44,19 @@ Application web minimale organisée en logique contrôleur / repository / modèl
 Remarque : ne pas committer `config.php` contenant des secrets.
 
 ## Lancer l'application en local
+
 Option 1 — serveur PHP intégré (développement) :
+
 - Depuis la racine `public/` :
   - php -S 127.0.0.1:8000
 
 Option 2 — Apache/Nginx :
+
 - Pointer la racine web sur le dossier `public/`.
 - `.htaccess` présent pour la réécriture vers `index.php`.
 
 ## Structure du projet (repères rapides)
+
 - public/ — point d'entrée (index.php), assets (css, js, images)
 - src/
   - Controllers/ — logique des actions (HomeController, UserController, ...)
@@ -60,6 +69,7 @@ Option 2 — Apache/Nginx :
 - composer.json — dépendances (PHPMailer, ...)
 
 ## Base de données
+
 - Les fichiers SQL utiles :
   - `src/Migrations/db.sql` — dump DB complet
   - `src/Migrations/erd.sql` — schéma amélioré + données d'exemple

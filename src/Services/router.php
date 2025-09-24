@@ -440,4 +440,40 @@ switch ($route) {
     default:
         $homeController->page404();
         break;
+    // Notifications API routes (JSON)
+    case HOME_URL . 'notifications/count':
+        // GET -> returns unread count (JSON)
+        if ($method === 'GET') {
+            $userController->notificationsCount();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    case HOME_URL . 'notifications/list':
+        // GET -> returns paginated list (JSON)
+        if ($method === 'GET') {
+            $userController->notificationsList();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    case HOME_URL . 'notifications/mark-read':
+        // POST -> mark single notification as read (JSON)
+        if ($method === 'POST') {
+            $userController->notificationMarkRead();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    case HOME_URL . 'notifications/mark-all-read':
+        // POST -> mark all notifications as read (JSON)
+        if ($method === 'POST') {
+            $userController->notificationsMarkAllRead();
+        } else {
+            $homeController->page404();
+        }
+        break;
 }

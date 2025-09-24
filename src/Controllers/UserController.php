@@ -874,4 +874,92 @@ class UserController extends AbstractController
             $this->redirect('mon_compte');
         }
     }
+
+    public function notificationsCount(): void
+    {
+        header('Content-Type: application/json');
+        try {
+            $idUser = $_SESSION['idUser'] ?? null;
+            if (!$idUser) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'error' => 'Unauthenticated']);
+                return;
+            }
+            $count = $this->repo->fetchUnreadNotificationCount((int)$idUser);
+            echo json_encode(['success' => true, 'count' => $count]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Server error']);
+        }
+    }
+
+    public function notificationsList(): void
+    {
+        header('Content-Type: application/json');
+        try {
+            $idUser = $_SESSION['idUser'] ?? null;
+            if (!$idUser) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'error' => 'Unauthenticated']);
+                return;
+            }
+            $limit = isset($_GET['limit']) ? max(1, min(50, (int)$_GET['limit'])) : 10;
+            $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+            $offset = ($page - 1) * $limit;
+
+            $items = $this->repo->fetchNotifications((int)$idUser, $limit, $offset);
+            $hasMore = count($items) === $limit;
+
+            echo json_encode(['success' => true, 'items' => $items, 'page' => $page, 'hasMore' => $hasMore]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Server error']);
+        }
+    }
+
+    public function notificationMarkRead(): void
+    {
+        header('Content-Type: application/json');
+        try {
+            $idUser = $_SESSION['idUser'] ?? null;
+            if (!$idUser) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'error' => 'Unauthenticated']);
+                return;
+            }
+            $payload = $_POST;
+            if (empty($payload)) {
+                $payload = json_decode(file_get_contents('php://input'), true) ?: [];
+            }
+            $id = isset($payload['id']) ? (int)$payload['id'] : 0;
+            if ($id <= 0) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'error' => 'Invalid id']);
+                return;
+            }
+            $ok = $this->repo->markNotificationAsRead($id, (int)$idUser);
+            echo json_encode(['success' => $ok]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Server error']);
+        }
+    }
+
+    public function notificationsMarkAllRead(): void
+    {
+        header('Content-Type: application/json');
+        try {
+            $idUser = $_SESSION['idUser'] ?? null;
+            if (!$idUser) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'error' => 'Unauthenticated']);
+                return;
+            }
+            $ok = $this->repo->markAllNotificationsAsRead((int)$idUser);
+            echo json_encode(['success' => $ok]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'error' => 'Server error']);
+        }
+    }
 }

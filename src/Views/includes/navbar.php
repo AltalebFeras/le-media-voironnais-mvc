@@ -23,6 +23,7 @@
       </div>
       <ul class="nav-links" id="nav-links">
         <?php if (isset($_SESSION['connected'])) : ?>
+          <?php  ?>
           <li><a class="link" href="<?= HOME_URL . 'dashboard' ?>">Dashboard</a></li>
           <li><a class="link" href="<?= HOME_URL . 'mes_associations' ?>">Mes Associations</a></li>
           <li><a class="link" href="<?= HOME_URL . 'mes_entreprises' ?>">Mes Entreprises</a></li>
