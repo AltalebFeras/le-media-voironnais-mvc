@@ -24,9 +24,11 @@
                             <div>
                                 <a href="<?= HOME_URL . 'entreprise/mes_realisations/modifier?realisation_uiid=' . $realisation->getUiid() ?>" 
                                    class="btn linkNotDecorated">Modifier</a>
-                                   <form action="<?= HOME_URL . 'entreprise/mes_realisations?action=delete&realisation_uiid=' . $realisation->getUiid() ?>&entreprise_uiid=<?= $entreprise->getUiid() ?>" method="post" style="display:inline;">
-                                       <button type="submit" class="btn bg-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réalisation ?');">Supprimer</button>
-                                   </form>
+                                <!-- Replaced inline confirm with modal trigger -->
+                                <button type="button" class="btn bg-danger"
+                                    onclick="document.getElementById('deleteModal').style.display='flex'">
+                                    Supprimer
+                                </button>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -148,6 +150,26 @@
         </div>
     </div>
 </main>
+
+<!-- Add delete confirmation modal (same UX as voir_entreprise) -->
+<?php if ($isOwner): ?>
+    <div id="deleteModal" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; justify-content:center; align-items:center;">
+        <div class="card" style="max-width:500px; position:relative;">
+            <h3>Confirmer la suppression</h3>
+            <button type="button" onclick="document.getElementById('deleteModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
+            <div class="mt mb">
+                <p>Êtes-vous sûr de vouloir supprimer la réalisation "<?= $realisation->getTitle() ?>" ?</p>
+                <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
+            </div>
+            <div class="flex-row justify-content-between">
+                <button type="button" class="btn" onclick="document.getElementById('deleteModal').style.display='none'">Annuler</button>
+                <form action="<?= HOME_URL . 'entreprise/mes_realisations?action=delete&realisation_uiid=' . $realisation->getUiid() ?>&entreprise_uiid=<?= $entreprise->getUiid() ?>" method="post">
+                    <button type="submit" class="btn deconnexion">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 
 <script src="<?= HOME_URL . 'assets/javascript/carousel.js' ?>"></script>
 
