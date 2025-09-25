@@ -204,6 +204,16 @@
                             </div>
                         </div>
                     </div>
+                <?php elseif ($entreprise->getIsActive()== false && $entreprise->getHasRequestForActivation()): ?>
+                    <div class="max-width-33">
+                        <div class="card mt-3">
+                            <div class="p-3">
+                                <h4>Demande en cours</h4>
+                                <p>Date de la demande : <?= $entreprise->getRequestDateFormatted() ?></p>
+                                <p class="text-muted">Vous avez déjà une demande d'activation en cours. Notre équipe examine votre demande et vous contactera sous 2-3 jours ouvrés.</p>
+                            </div>
+                        </div>
+                    </div>
                 <?php else: ?>
                     <div class="max-width-33">
                         <div class="card mt-3">

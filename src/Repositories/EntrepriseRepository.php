@@ -543,4 +543,24 @@ class EntrepriseRepository
             throw new Exception("Error updating entreprise logo: " . $e->getMessage());
         }
     }
+    public function markActivationRequested($idEntreprise, $requestDate): bool
+    {
+        try {
+            $query = "UPDATE entreprise SET 
+                     hasRequestForActivation = 1,
+                     requestDate = :requestDate,
+                     updatedAt = NOW()
+                     WHERE idEntreprise = :idEntreprise";
+
+            $stmt = $this->DB->prepare($query);
+            $result = $stmt->execute([
+                'requestDate' => $requestDate,
+                'idEntreprise' => $idEntreprise
+            ]);
+
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception("Error marking activation request: " . $e->getMessage());
+        }
+    }
 }
