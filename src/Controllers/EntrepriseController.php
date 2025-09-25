@@ -501,7 +501,19 @@ class EntrepriseController extends AbstractController
             if ($entreprise->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
             }
-
+            if ($entreprise->getIsActive()) {
+                throw new Exception("L'entreprise est déjà active");
+            }
+           
+            $lastRequestDate = $entreprise->getRequestDate();
+            if ($lastRequestDate) {
+                $lastRequestDateTime = new DateTime($lastRequestDate);
+                $currentDateTime = new DateTime();
+                $interval = $currentDateTime->diff($lastRequestDateTime);
+                if ($interval->days < 3) {
+                    throw new Exception("Vous avez déjà fait une demande d'activation récemment. Veuillez attendre avant de faire une nouvelle demande.");
+                }
+            }
             // Handle Kbis file upload validation
             if (!isset($_FILES['kbis']) || $_FILES['kbis']['error'] !== UPLOAD_ERR_OK) {
                 throw new Exception("Veuillez fournir un fichier Kbis valide");

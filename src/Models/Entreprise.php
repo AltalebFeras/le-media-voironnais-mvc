@@ -31,6 +31,7 @@ class Entreprise
     private DateTime|string|null $partnerStartDate;
     private DateTime|string|null $partnerEndDate;
     private DateTime|string|null $requestDate;
+    private DateTime|string|null $activationDate;
 
 
     use Hydration;
@@ -250,6 +251,19 @@ class Entreprise
             return $this->requestDate;
         }
     }
+    public function getActivationDate(): DateTime|string|null
+    {
+        if ($this->activationDate === null) {
+            return null;
+        }
+        if (is_string($this->activationDate)) {
+            return $this->activationDate;
+        }
+        if (is_a($this->activationDate, DateTime::class)) {
+            return $this->activationDate->format('Y-m-d H:i:s');
+        }
+        return null;
+    }
 
 
     // Setters
@@ -390,6 +404,17 @@ class Entreprise
             $this->requestDate = new DateTime($requestDate);
         } elseif (is_a($requestDate, DateTime::class)) {
             $this->requestDate = $requestDate;
+        }
+        return $this;
+    }
+    public function setActivationDate(DateTime|string|null $activationDate): self
+    {
+        if ($activationDate === null) {
+            $this->activationDate = null;
+        } elseif (is_string($activationDate)) {
+            $this->activationDate = new DateTime($activationDate);
+        } elseif (is_a($activationDate, DateTime::class)) {
+            $this->activationDate = $activationDate;
         }
         return $this;
     }

@@ -563,4 +563,24 @@ class EntrepriseRepository
             throw new Exception("Error marking activation request: " . $e->getMessage());
         }
     }
+    public function activateEntreprise($idEntreprise): bool
+    {
+        try {
+            $query = "UPDATE entreprise SET 
+                     isActive = 1,
+                     hasRequestForActivation = 0,
+                     requestDate = NULL,
+                     updatedAt = NOW()
+                     WHERE idEntreprise = :idEntreprise";
+
+            $stmt = $this->DB->prepare($query);
+            $result = $stmt->execute([
+                'idEntreprise' => $idEntreprise
+            ]);
+
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception("Error activating entreprise: " . $e->getMessage());
+        }
+    }
 }
