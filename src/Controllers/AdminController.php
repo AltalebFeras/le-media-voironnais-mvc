@@ -169,7 +169,7 @@ class AdminController extends AbstractController
         $allRequests = $this->repo->findAllActivationRequests($currentPage, $requestsPerPage);
         $totalRequests = $this->repo->countActivationRequests();
         $totalPages = (int)ceil($totalRequests / $requestsPerPage);
-
+var_dump($allRequests ,$totalRequests , $totalPages, $currentPage);
         $this->render('admin/toutes_demandes_dactivation_entreprise', [
             'allRequests' => $allRequests,
             'currentPage' => $currentPage,
