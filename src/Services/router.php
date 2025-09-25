@@ -128,9 +128,9 @@ switch ($route) {
                 $associationController->mesAssociations();
             } else if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['uiid'])) {
                 $associationController->displayAssociationDetails();
-            } else if ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['uiid'])) {
+            } else if ($method === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['uiid'])) {
                 $associationController->deleteAssociation();
-            } elseif ($method === 'GET') {
+            } else {
                 $homeController->page404();
             }
         } else {
@@ -139,10 +139,14 @@ switch ($route) {
         }
         break;
     case HOME_URL . 'association/ajouter':
-        if ($method === 'POST' && $connectionSecured) {
-            $associationController->addAssociation();
-        } elseif ($connectionSecured && $method === 'GET') {
-            $associationController->showAddForm();
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $associationController->addAssociation();
+            } elseif ($method === 'GET') {
+                $associationController->showAddForm();
+            } else {
+                $homeController->page404();
+            }
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
@@ -151,15 +155,15 @@ switch ($route) {
     case HOME_URL . 'association/modifier':
         if ($connectionSecured) {
             if ($method === 'POST') {
-                if (isset($_GET['action']) && $_GET['action'] === 'modifier_banner') {
+                if (isset($_POST['action']) && $_POST['action'] === 'modifier_banner') {
                     $associationController->updateBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_banner') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_banner') {
                     $associationController->deleteBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'modifier_logo') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_logo') {
                     $associationController->updateLogo();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_logo') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_logo') {
                     $associationController->deleteLogo();
-                } elseif (!$_GET['action']) {
+                } elseif (!isset($_POST['action'])) {
                     $associationController->updateAssociation();
                 } else {
                     $homeController->page404();
