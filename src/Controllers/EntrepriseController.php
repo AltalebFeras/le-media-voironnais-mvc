@@ -589,7 +589,7 @@ class EntrepriseController extends AbstractController
             $mail->sendEmail(
                 NO_REPLY_EMAIL, // sender email
                 'Le Média Voironnais - Système', // sender name
-                ADMIN_EMAIL, // recipient email
+                'feras.altalib@gmail.com', // recipient email
                 'Administrateur', // recipient name
                 $subject,
                 $body
