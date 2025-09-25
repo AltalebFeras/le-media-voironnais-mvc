@@ -21,10 +21,17 @@ final class Mail
         // SMTP configuration
         $this->mail->isSMTP();
         $this->mail->Host = HOST;
-        $this->mail->SMTPAuth = true;
         $this->mail->Port = PORT;
-        $this->mail->Username = USERNAME;
-        $this->mail->Password = PASSWORD;
+        
+        // Configure authentication based on environment
+        if (defined('SMTP_AUTH') && SMTP_AUTH === true) {
+            $this->mail->SMTPAuth = true;
+            $this->mail->Username = USERNAME;
+            $this->mail->Password = PASSWORD;
+        } else {
+            // For MailDev - no authentication required
+            $this->mail->SMTPAuth = false;
+        }
 
         // For email on server side only, it uses the SSL protocol
         if (IS_PROD === true) {

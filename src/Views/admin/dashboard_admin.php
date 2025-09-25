@@ -19,12 +19,13 @@
             <h2>Mon compte</h2>
             <p>Voir et modifier mon profil, gérer mes événements, associations, entreprises, et accéder à la messagerie.</p>
         </a>
-        <a href="<?= HOME_URL . "deconnexion" ?>" class="cardDashboard">
-            <h2>Se déconnecter</h2>
-            <p>Déconnexion de votre compte.</p>
+        <a href="<?= HOME_URL . "admin/toutes_demandes_dactivation_entreprise" ?>" class="cardDashboard">
+            <h2>Toutes les demandes d'activation d'entreprise</h2>
+            <p>Voir toutes les demandes d'activation d'entreprise.</p>
         </a>
 
     </div>
 </main>
+
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
