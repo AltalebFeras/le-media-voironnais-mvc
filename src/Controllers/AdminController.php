@@ -188,9 +188,9 @@ class AdminController extends AbstractController
     public function acceptEntrepriseActivationRequest(): void
     {
         try {
-
-            $uiid = isset($_GET['entreprise_uiid']) ? trim($_GET['entreprise_uiid']) : '';
-
+            $uiid = isset($_POST['entreprise_uiid']) ? trim($_POST['entreprise_uiid']) : '';
+            $message = isset($_POST['message']) ? trim($_POST['message']) : '';
+            
             if (empty($uiid)) {
                 throw new Exception("UIID de l'entreprise manquant.");
             }
@@ -207,9 +207,10 @@ class AdminController extends AbstractController
             if ($acceptSuccess && !empty($entreprise['email'])) {
                 $mail = new Mail();
                 $subject = "Activation de votre compte entreprise";
-                $body = "Bonjour " . htmlspecialchars($entreprise['name']) . ",<br><br>" .
-                    "Votre compte entreprise a été activé avec succès. Vous pouvez désormais accéder à toutes les fonctionnalités.<br><br>" .
+                $body = "Votre compte entreprise a été activé avec succès. Vous pouvez désormais accéder à toutes les fonctionnalités.<br><br>" .
                     "Cordialement,<br>L'équipe du Média Voironnais";
+                $body .= !empty($message) ? "<br><br>Message de l'administrateur :<br>" . nl2br(htmlspecialchars($message)) : "";
+
                 $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $entreprise['email'], $entreprise['name'], $subject, $body);
             }
             if ($acceptSuccess) {
@@ -239,10 +240,13 @@ class AdminController extends AbstractController
     public function refuseEntrepriseActivationRequest(): void
     {
         try {
-            $uiid = isset($_GET['entreprise_uiid']) ? trim($_GET['entreprise_uiid']) : '';
+            $message = isset($_POST['message']) ? trim($_POST['message']) : '';
+            $uiid = isset($_POST['entreprise_uiid']) ? trim($_POST['entreprise_uiid']) : '';
+            
             if (empty($uiid)) {
                 throw new Exception("UIID de l'entreprise manquant.");
             }
+            
             $entreprise = $this->repo->findEntrepriseByUiid($uiid);
             if (!$entreprise) {
                 throw new Exception("Entreprise non trouvée.");
@@ -254,9 +258,8 @@ class AdminController extends AbstractController
             if ($refuseSuccess && !empty($entreprise['email'])) {
                 $mail = new Mail();
                 $subject = "Refus de l'activation de votre compte entreprise";
-                $body = "Bonjour " . $entreprise['name'] . ",<br><br>" .
-                    "Nous regrettons de vous informer que votre demande d'activation de compte entreprise a été refusée. Pour plus d'informations, veuillez nous contacter.<br><br>" .
-                    "Cordialement,<br>L'équipe du Média Voironnais";
+                $body = "Nous regrettons de vous informer que votre demande d'activation de compte entreprise a été refusée. Pour plus d'informations, veuillez nous contacter.<br><br>";
+                $body .= !empty($message) ? "<br><br>Message de l'administrateur :<br>" . nl2br(htmlspecialchars($message)) : "";
                 $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $entreprise['email'], $entreprise['name'], $subject, $body);
             }
             if ($refuseSuccess) {

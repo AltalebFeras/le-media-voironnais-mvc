@@ -20,7 +20,7 @@ $realisationController = new RealisationController();
 $notificationController = new NotificationController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
-$method = ConfigRouter::getMethod();
+$method = $_SERVER['REQUEST_METHOD'];
 
 // var_dump($_SERVER);
 $connectionSecured = isset($_SESSION['connected']) && $_SESSION['role'] === 'user' && ConfigRouter::checkConnection();
@@ -502,18 +502,14 @@ switch ($route) {
         }
         break;
     case HOME_URL . 'admin/toutes_demandes_dactivation_entreprise':
-        if ($connectionSecuredAdmin && $method === 'POST' && isset($_GET['action'])) {
-            // POST action for accept/refuse
-            switch ($_GET['action']) {
-                case 'accepter':
-                    $adminController->acceptEntrepriseActivationRequest();
-                    break;
-                case 'refuser':
-                    $adminController->refuseEntrepriseActivationRequest();
-                    break;
-                default:
-                    $homeController->page404();
-                    break;
+        if ($connectionSecuredAdmin && $method === 'POST') {
+            if (isset($_POST['action']) && $_POST['action'] === 'accept') {
+                $adminController->acceptEntrepriseActivationRequest();
+            } elseif (isset($_POST['action']) && $_POST['action'] === 'refuse') {
+
+                $adminController->refuseEntrepriseActivationRequest();
+            } else {
+                $homeController->page404();
             }
         } elseif ($connectionSecuredAdmin && $method === 'GET') {
             $adminController->displayAllEntreprisesActivationRequests();

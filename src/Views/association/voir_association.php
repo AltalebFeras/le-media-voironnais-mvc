@@ -175,7 +175,7 @@
                                         Modifier l'association
                                     </a>
                                     <button type="button" class="btn btn-danger"
-                                        onclick="document.getElementById('deleteModal').style.display='flex'">
+                                        onclick="document.getElementById('popup').style.display='flex'">
                                         Supprimer l'association
                                     </button>
                                 </div>
@@ -224,16 +224,16 @@
 
         <!-- Delete Confirmation Modal -->
         <?php if ($isOwner): ?>
-            <div id="deleteModal" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; justify-content:center; align-items:center;">
+            <div id="popup" class="d-none popup">
                 <div class="card" style="max-width:500px;">
                     <h3>Confirmer la suppression</h3>
-                    <button type="button" onclick="document.getElementById('deleteModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
+                    <button type="button" onclick="document.getElementById('popup').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
                     <div class="mt mb">
                         <p>Êtes-vous sûr de vouloir supprimer l'association "<?= $association->getName() ?>" ?</p>
                         <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
                     </div>
                     <div class="flex-row justify-content-between">
-                        <button type="button" class="btn" onclick="document.getElementById('deleteModal').style.display='none'">Annuler</button>
+                        <button type="button" class="btn" onclick="document.getElementById('popup').style.display='none'">Annuler</button>
                         <form action="<?= HOME_URL . 'mes_associations?action=delete&uiid=' . $association->getUiid() ?>" method="post">
                             <button type="submit" class="btn deconnexion">Supprimer</button>
                         </form>
