@@ -98,4 +98,40 @@ class AdminRepository
         $stmt = $this->pdo->query($sql);
         return (int)$stmt->fetchColumn();
     }
+
+    public function acceptActivationRequest(string $uiid): bool
+    {
+        $sql = "UPDATE entreprise SET 
+                isActive = 1, 
+                hasRequestForActivation = 0, 
+                activationDate = NOW(), 
+                updatedAt = NOW() 
+                WHERE uiid = :uiid AND hasRequestForActivation = 1 AND isActive = 0";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':uiid', $uiid, PDO::PARAM_STR);
+        return $stmt->execute() && $stmt->rowCount() > 0;
+    }
+
+    public function refuseActivationRequest(string $uiid): bool
+    {
+        $sql = "UPDATE entreprise SET 
+                hasRequestForActivation = 0, 
+                isActive = 0, 
+                requestDate = NULL,
+                updatedAt = NOW() 
+                WHERE uiid = :uiid";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':uiid', $uiid, PDO::PARAM_STR);
+        return $stmt->execute() && $stmt->rowCount() > 0;
+    }
+
+    public function findEntrepriseByUiid(string $uiid): ?array
+    {
+        $sql = "SELECT * FROM entreprise WHERE uiid = :uiid";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':uiid', $uiid, PDO::PARAM_STR);
+        $stmt->execute();
+        $entreprise = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $entreprise ?: null;
+    }
 }

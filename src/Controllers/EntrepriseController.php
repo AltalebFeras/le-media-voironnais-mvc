@@ -506,7 +506,7 @@ class EntrepriseController extends AbstractController
             }
            
             $lastRequestDate = $entreprise->getRequestDate();
-            if ($lastRequestDate) {
+            if ($lastRequestDate && $entreprise->getRequestDate() !== null && $entreprise->getHasRequestForActivation() == true) {
                 $lastRequestDateTime = new DateTime($lastRequestDate);
                 $currentDateTime = new DateTime();
                 $interval = $currentDateTime->diff($lastRequestDateTime);

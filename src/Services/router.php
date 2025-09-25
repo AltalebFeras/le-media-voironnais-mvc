@@ -503,19 +503,19 @@ switch ($route) {
         break;
     case HOME_URL . 'admin/toutes_demandes_dactivation_entreprise':
         if ($connectionSecuredAdmin && $method === 'POST' && isset($_GET['action'])) {
-            // POST action for block/unblock/send_email
+            // POST action for accept/refuse
             switch ($_GET['action']) {
                 case 'accepter':
-                    $adminController->acceptEntrepriseDeactivationRequest();
+                    $adminController->acceptEntrepriseActivationRequest();
                     break;
                 case 'refuser':
-                    $adminController->refuseEntrepriseDeactivationRequest();
+                    $adminController->refuseEntrepriseActivationRequest();
                     break;
                 default:
                     $homeController->page404();
                     break;
             }
-        } elseif ($method === 'GET') {
+        } elseif ($connectionSecuredAdmin && $method === 'GET') {
             $adminController->displayAllEntreprisesActivationRequests();
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];

@@ -82,4 +82,17 @@ class NotificationRepository
     {
         return $this->markAllNotificationsAsRead($idUser);
     }
+    public function pushNotification(array $data): bool
+    {
+        $sql = "INSERT INTO notification (idUser, type, title, message, url, isRead, createdAt) 
+                VALUES (:idUser, :type, :title, :message, :url, 0, :createdAt)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':idUser', $data['idUser'], PDO::PARAM_INT);
+        $stmt->bindValue(':type', $data['type'], PDO::PARAM_STR);
+        $stmt->bindValue(':title', $data['title'], PDO::PARAM_STR);
+        $stmt->bindValue(':message', $data['message'], PDO::PARAM_STR);
+        $stmt->bindValue(':url', $data['link'] ?? null, PDO::PARAM_STR);
+        $stmt->bindValue(':createdAt', $data['createdAt'], PDO::PARAM_STR);
+        return $stmt->execute();
+    }
 }
