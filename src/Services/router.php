@@ -326,6 +326,74 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+
+    // Notifications routes
+    case HOME_URL . 'notifications':
+        if ($connectionSecured) {
+            if ($method === 'GET') {
+                $notificationController->displayNotifications();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
+    case HOME_URL . 'notifications/count':
+        if ($connectionSecured) {
+            if ($method === 'GET') {
+                $notificationController->notificationsCount();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
+    case HOME_URL . 'notifications/list':
+        if ($connectionSecured) {
+            if ($method === 'GET') {
+                $notificationController->notificationsList();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
+    case HOME_URL . 'notifications/mark-read':
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $notificationController->notificationMarkRead();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
+    case HOME_URL . 'notifications/mark-all-read':
+        if ($connectionSecured) {
+
+            if ($method === 'POST') {
+                $notificationController->notificationsMarkAllRead();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
     //  User account routes
     case HOME_URL . 'mon_compte':
         if ($method === 'POST' && $_GET['action'] && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
@@ -438,53 +506,6 @@ switch ($route) {
         break;
     case HOME_URL . '404':
         $homeController->page404();
-        break;
-
-    // Notifications page
-    case HOME_URL . 'notifications':
-        if ($method === 'GET') {
-            if ($connectionSecured) {
-                $notificationController->displayNotifications();
-            } else {
-                $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
-                $homeController->displayAuth();
-            }
-        } else {
-            $homeController->page404();
-        }
-        break;
-
-    // Notifications API routes (JSON) — must be BEFORE default:
-    case HOME_URL . 'notifications/count':
-        if ($method === 'GET') {
-            $notificationController->notificationsCount();
-        } else {
-            $homeController->page404();
-        }
-        break;
-
-    case HOME_URL . 'notifications/list':
-        if ($method === 'GET') {
-            $notificationController->notificationsList();
-        } else {
-            $homeController->page404();
-        }
-        break;
-
-    case HOME_URL . 'notifications/mark-read':
-        if ($method === 'POST') {
-            $notificationController->notificationMarkRead();
-        } else {
-            $homeController->page404();
-        }
-        break;
-
-    case HOME_URL . 'notifications/mark-all-read':
-        if ($method === 'POST') {
-            $notificationController->notificationsMarkAllRead();
-        } else {
-            $homeController->page404();
-        }
         break;
 
     default:
