@@ -162,4 +162,20 @@ class AdminController extends AbstractController
             return;
         }
     }
+    public function displayAllEntreprisesActivationRequests(): void
+    {
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $requestsPerPage = 12;
+        $allRequests = $this->repo->findAllActivationRequests($currentPage, $requestsPerPage);
+        $totalRequests = $this->repo->countActivationRequests();
+        $totalPages = (int)ceil($totalRequests / $requestsPerPage);
+
+        $this->render('admin/toutes_demandes_dactivation_entreprise', [
+            'allRequests' => $allRequests,
+            'currentPage' => $currentPage,
+            'requestsPerPage' => $requestsPerPage,
+            'totalRequests' => $totalRequests,
+            'totalPages' => $totalPages
+        ]);
+    }
 }

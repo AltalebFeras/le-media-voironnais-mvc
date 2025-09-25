@@ -79,4 +79,18 @@ class AdminRepository
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
+    public function findAllActivationRequests($currentPage, $requestsPerPage)
+    {
+        $offset = max(0, ($currentPage - 1) * $requestsPerPage);
+        $sql = "SELECT idEntreprise AS id, name, address, postalCode, city, email, phone, siret, isActivated, hasRequestForActivation, requestDate, activationDate, createdAt 
+                FROM entreprise 
+                WHERE hasRequestForActivation = 1 AND isActivated = 0 AND isDeleted = 0
+                ORDER BY requestDate ASC 
+                LIMIT :limit OFFSET :offset";
+        $stmt = $this->DBuser->prepare($sql);
+        $stmt->bindValue(':limit', $requestsPerPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

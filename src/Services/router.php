@@ -501,6 +501,27 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+    case HOME_URL . 'admin/toutes_demandes_dactivation_entreprise':
+        if ($connectionSecuredAdmin && $method === 'POST' && isset($_GET['action'])) {
+            // POST action for block/unblock/send_email
+            switch ($_GET['action']) {
+                case 'accepter':
+                    $adminController->acceptEntrepriseDeactivationRequest();
+                    break;
+                case 'refuser':
+                    $adminController->refuseEntrepriseDeactivationRequest();
+                    break;
+                default:
+                    $homeController->page404();
+                    break;
+            }
+        } elseif ($method === 'GET') {
+            $adminController->displayAllEntreprisesActivationRequests();
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
 
     case HOME_URL . 'cgu':
         $homeController->terms_of_service();
