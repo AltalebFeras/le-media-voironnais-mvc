@@ -228,6 +228,13 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+        case HOME_URL . 'entreprise/demander_activation_mon_entreprise':
+            if ($method === 'POST' && isset($_GET['uiid'])) {
+                $entrepriseController->demanderActivation();
+            } else {
+                $homeController->page404();
+            }
+            break;
     // Realisation routes
     case HOME_URL . 'entreprise/mes_realisations':
         if ($connectionSecured) {

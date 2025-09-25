@@ -18,7 +18,7 @@
                 <?php endif; ?>
                 <img id="bannerPreview" style="display:none;">
             </div>
-            
+
             <?php if ($isOwner): ?>
                 <div class="entreprise-banner-actions">
                     <form method="post" action="<?= HOME_URL . 'entreprise/modifier?action=modifier_banner&uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
@@ -36,15 +36,15 @@
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
-            
+
             <!-- Logo overlaps banner -->
             <?php if ($isOwner): ?>
                 <div class="entreprise-logo-picture">
-                    <img id="currentLogo" 
-                         src="<?= $entreprise->getLogoPath() ?: HOME_URL . 'assets/images/default-entreprise-logo.png' ?>" 
-                         data-original-src="<?= $entreprise->getLogoPath() ?: HOME_URL . 'assets/images/default-entreprise-logo.png' ?>"
-                         alt="Logo de <?= $entreprise->getName() ?>">
-                    
+                    <img id="currentLogo"
+                        src="<?= $entreprise->getLogoPath() ?: HOME_URL . 'assets/images/default-entreprise-logo.png' ?>"
+                        data-original-src="<?= $entreprise->getLogoPath() ?: HOME_URL . 'assets/images/default-entreprise-logo.png' ?>"
+                        alt="Logo de <?= $entreprise->getName() ?>">
+
                     <form method="post" action="<?= HOME_URL . 'entreprise/modifier?action=modifier_logo&uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
                         <label for="logoInput" class="btn">
                             Modifier logo
@@ -71,7 +71,7 @@
         <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
         <!-- Main Content Below Banner -->
-        <div class="entreprise-main-content" >
+        <div class="entreprise-main-content">
             <!-- Header with back button and title -->
             <div class="flex-row justify-content-between align-items-center mb-4">
                 <div>
@@ -111,7 +111,7 @@
                                     <dl>
                                         <dt>Adresse</dt>
                                         <dd><?= $entreprise->getAddress() ?? 'Non renseignée' ?></dd>
-                                        
+
                                         <dt>Ville</dt>
                                         <dd>
                                             <?php if ($ville): ?>
@@ -120,7 +120,7 @@
                                                 Non renseignée
                                             <?php endif; ?>
                                         </dd>
-                                        
+
                                         <dt>Téléphone</dt>
                                         <dd>
                                             <?php if ($entreprise->getPhone()): ?>
@@ -131,7 +131,7 @@
                                                 Non renseigné
                                             <?php endif; ?>
                                         </dd>
-                                        
+
                                         <dt>Email</dt>
                                         <dd>
                                             <?php if ($entreprise->getEmail()): ?>
@@ -142,7 +142,7 @@
                                                 Non renseigné
                                             <?php endif; ?>
                                         </dd>
-                                        
+
                                         <dt>Site web</dt>
                                         <dd>
                                             <?php if ($entreprise->getWebsite()): ?>
@@ -155,25 +155,25 @@
                                         </dd>
                                     </dl>
                                 </div>
-                                
+
                                 <div class="col-md-6">
                                     <h4>Informations administratives</h4>
                                     <dl>
                                         <dt>SIRET</dt>
                                         <dd><?= $entreprise->getSiret() ?? 'Non renseigné' ?></dd>
-                                        
+
                                         <dt>Créée le</dt>
                                         <dd><?= $entreprise->getCreatedAtFormatted() ?></dd>
-                                        
+
                                         <dt>Dernière mise à jour</dt>
                                         <dd><?= $entreprise->getUpdatedAtFormatted() ?? 'Jamais' ?></dd>
                                     </dl>
                                 </div>
                             </div>
-                            
+
                             <?php if ($isOwner): ?>
                                 <div class="flex-row justify-content-between mt-4">
-                                    <a href="<?= HOME_URL.'entreprise/modifier?uiid='.$entreprise->getUiid() ?>" class="btn linkNotDecorated">
+                                    <a href="<?= HOME_URL . 'entreprise/modifier?uiid=' . $entreprise->getUiid() ?>" class="btn linkNotDecorated">
                                         Modifier l'entreprise
                                     </a>
                                     <button type="button" class="btn btn-danger"
@@ -185,29 +185,70 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Services/Products Sidebar -->
-                <div class="max-width-33">
-                    <div class="card mt-3">
-                        <div class="p-3">
-                            <h4>Mes réalisations</h4>
-                            <p>Vous avez <strong><?= $totalRealisations ?></strong> réalisation(s) pour cette entreprise.</p>
-                            <?php if ($totalRealisations > 0): ?>
-                                <a href="<?= HOME_URL . 'entreprise/mes_realisations?entreprise_uiid=' . $entreprise->getUiid() ?>" class="btn linkNotDecorated">
-                                    Voir mes réalisations
-                                </a>
-                            <?php else: ?>
-                                <p class="text-muted">Vous n'avez pas encore créé de réalisations pour cette entreprise.</p>
-                                <a href="<?= HOME_URL . 'entreprise/mes_realisations/ajouter?entreprise_uiid=' . $entreprise->getUiid() . '&back_to=mes_entreprises&action=voir' ?>" class="btn linkNotDecorated">
-                                    Créer ma première réalisation
-                                </a>
-                            <?php endif; ?>
+                <?php if ($entreprise->getIsActive() == true): ?>
+                    <div class="max-width-33">
+                        <div class="card mt-3">
+                            <div class="p-3">
+                                <h4>Mes réalisations</h4>
+                                <p>Vous avez <strong><?= $totalRealisations ?></strong> réalisation(s) pour cette entreprise.</p>
+                                <?php if ($totalRealisations > 0): ?>
+                                    <a href="<?= HOME_URL . 'entreprise/mes_realisations?entreprise_uiid=' . $entreprise->getUiid() ?>" class="btn linkNotDecorated">
+                                        Voir mes réalisations
+                                    </a>
+                                <?php else: ?>
+                                    <p class="text-muted">Vous n'avez pas encore créé de réalisations pour cette entreprise.</p>
+                                    <a href="<?= HOME_URL . 'entreprise/mes_realisations/ajouter?entreprise_uiid=' . $entreprise->getUiid() . '&back_to=mes_entreprises&action=voir' ?>" class="btn linkNotDecorated">
+                                        Créer ma première réalisation
+                                    </a>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php else: ?>
+                    <div class="max-width-33">
+                        <div class="card mt-3">
+                            <div class="p-3">
+                                <h4>Entreprise inactive</h4>
+                                <p class="text-muted">Cette entreprise est actuellement inactive. Vous ne pouvez pas ajouter ou gérer des réalisations tant qu'elle n'est pas réactivée.</p>
+                                
+                                <div class="card p-3 bg-light mt-3">
+                                    <h5>Demande d'activation</h5>
+                                    <p class="small text-muted mb-3">Pour activer votre entreprise, veuillez fournir les documents suivants :</p>
+
+                                    <form action="<?= HOME_URL . 'entreprise/demander_activation_mon_entreprise?uiid=' . $entreprise->getUiid() ?>" method="post" enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <label for="kbis" class="form-label">
+                                                Extrait Kbis <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="file" id="kbis" name="kbis" class="form-control" accept=".pdf" required>
+                                            <small class="form-text text-muted">Fichier PDF uniquement, taille max : 5MB</small>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="message" class="form-label">Message complémentaire</label>
+                                            <textarea id="message" name="message" class="form-control" rows="3" placeholder="Ajoutez des informations complémentaires si nécessaire (optionnel)"></textarea>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <small class="text-muted">
+                                                <strong>Note :</strong> Votre demande sera examinée par nos équipes sous 2-3 jours ouvrés. 
+                                                Vous recevrez une notification par email.
+                                            </small>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <span class="material-icons" style="vertical-align: middle; font-size: 18px;">send</span>
+                                            Envoyer la demande d'activation
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
-        
+
         <!-- Delete Confirmation Modal -->
         <?php if ($isOwner): ?>
             <div id="deleteModal" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; justify-content:center; align-items:center;">

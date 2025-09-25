@@ -122,10 +122,14 @@ final class Mail
 HTML;
     }
 
-    public function addAttachment($filePath)
+    public function addAttachment($filePath, $name = '')
     {
         try {
-            $this->mail->addAttachment($filePath);
+            if (!empty($name)) {
+                $this->mail->addAttachment($filePath, $name);
+            } else {
+                $this->mail->addAttachment($filePath);
+            }
         } catch (Exception $e) {
             throw new \Exception("Failed to add attachment: " . $e->getMessage());
         }

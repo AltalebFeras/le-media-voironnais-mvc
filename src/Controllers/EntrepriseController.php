@@ -9,6 +9,7 @@ use src\Repositories\EntrepriseRepository;
 use Exception;
 use DateTime;
 use src\Services\Helper;
+use src\Services\Mail;
 
 class EntrepriseController extends AbstractController
 {
@@ -475,6 +476,130 @@ class EntrepriseController extends AbstractController
 
             $_SESSION['success'] = "Le logo a été réinitialisé avec succès";
             $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid . '&error=true');
+        }
+    }
+    // send an email to admin to activate the entreprise and send the file in attachment 
+    public function demanderActivation()
+    {
+        try {
+            $idEntreprise = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            if (!$idEntreprise) {
+                throw new Exception("ID d'entreprise invalide");
+            }
+
+            $idUser = $_SESSION['idUser'];
+            $entreprise = $this->repo->getEntrepriseById($idEntreprise);
+
+            if (!$entreprise) {
+                throw new Exception("L'entreprise demandée n'existe pas");
+            }
+
+            if ($entreprise->getIdUser() != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
+            }
+
+            // Handle Kbis file upload validation
+            if (!isset($_FILES['kbis']) || $_FILES['kbis']['error'] !== UPLOAD_ERR_OK) {
+                throw new Exception("Veuillez fournir un fichier Kbis valide");
+            }
+
+            $file = $_FILES['kbis'];
+            
+            // Validate file type (PDF only)
+            $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            if ($fileExtension !== 'pdf') {
+                throw new Exception("Seuls les fichiers PDF sont acceptés pour le Kbis");
+            }
+
+            // Validate file size (5MB max)
+            $maxSize = 5 * 1024 * 1024; // 5MB
+            if ($file['size'] > $maxSize) {
+                throw new Exception("Le fichier est trop volumineux. Taille maximum autorisée : 5MB");
+            }
+
+            // Validate MIME type
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $file['tmp_name']);
+            finfo_close($finfo);
+            
+            if ($mimeType !== 'application/pdf') {
+                throw new Exception("Le fichier doit être un PDF valide");
+            }
+
+            // Get optional message
+            $message = isset($_POST['message']) ? htmlspecialchars(trim($_POST['message'])) : '';
+
+            // Get user information
+            $userFirstName = $_SESSION['firstName'] ?? '';
+            $userLastName = $_SESSION['lastName'] ?? '';
+            $userEmail = $_SESSION['email'] ?? '';
+
+            // Prepare email content
+            $subject = "Demande d'activation d'entreprise - " . $entreprise->getName();
+            
+            $body = "
+                <h3>Nouvelle demande d'activation d'entreprise</h3>
+                
+                <h4>Informations de l'entreprise :</h4>
+                <ul>
+                    <li><strong>Nom :</strong> " . $entreprise->getName() . "</li>
+                    <li><strong>SIRET :</strong> " . ($entreprise->getSiret() ?: 'Non renseigné') . "</li>
+                    <li><strong>Adresse :</strong> " . ($entreprise->getAddress() ?: 'Non renseignée') . "</li>
+                    <li><strong>Email :</strong> " . ($entreprise->getEmail() ?: 'Non renseigné') . "</li>
+                    <li><strong>Téléphone :</strong> " . ($entreprise->getPhone() ?: 'Non renseigné') . "</li>
+                </ul>
+                
+                <h4>Informations du demandeur :</h4>
+                <ul>
+                    <li><strong>Nom :</strong> " . ($userFirstName ? $userFirstName . ' ' . $userLastName : 'Utilisateur inconnu') . "</li>
+                    <li><strong>Email :</strong> " . ($userEmail ?: 'Email inconnu') . "</li>
+                </ul>";
+
+            if (!empty($message)) {
+                $body .= "
+                <h4>Message du demandeur :</h4>
+                <p style='background-color: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 15px 0;'>
+                    " . nl2br($message) . "
+                </p>";
+            }
+
+            $body .= "
+                <hr>
+                <p><strong>Actions à effectuer :</strong></p>
+                <ol>
+                    <li>Vérifier le document Kbis ci-joint</li>
+                    <li>Valider les informations de l'entreprise</li>
+                    <li>Activer l'entreprise dans l'interface d'administration</li>
+                </ol>
+                
+                <p><em>Cette demande a été générée automatiquement le " . date('d/m/Y à H:i:s') . "</em></p>";
+
+            // Send email using your Mail service
+            $mail = new Mail();
+            
+            // Add the temporary Kbis file as attachment directly from tmp location
+            $originalFileName = 'Kbis_' . $entreprise->getName() . '_' . date('Y-m-d_H-i-s') . '.pdf';
+            $mail->addAttachment($file['tmp_name'], $originalFileName);
+
+            // Send the email
+            $mail->sendEmail(
+                NO_REPLY_EMAIL, // sender email
+                'Le Média Voironnais - Système', // sender name
+                ADMIN_EMAIL, // recipient email
+                'Administrateur', // recipient name
+                $subject,
+                $body
+            );
+
+            // No need to clean up - PHP automatically deletes temporary files
+
+            $_SESSION['success'] = "Votre demande d'activation a été envoyée avec succès. Vous recevrez une réponse sous 2-3 jours ouvrés.";
+            $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid);
+            
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid . '&error=true');
