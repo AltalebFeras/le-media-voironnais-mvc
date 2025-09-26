@@ -19,7 +19,13 @@ class AssociationController extends AbstractController
     }
     private function getId(): int|null
     {
-        $uiid =  isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+        if (isset($_GET['uiid'])) {
+            $uiid = htmlspecialchars(trim($_GET['uiid']));
+        } elseif (isset($_POST['uiid'])) {
+            $uiid = htmlspecialchars(trim($_POST['uiid']));
+        } else {
+            $uiid = null;
+        }
         return $this->repo->getIdByUiid($uiid);
     }
     /**
@@ -253,7 +259,7 @@ class AssociationController extends AbstractController
         try {
 
             $idAssociation = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idAssociation) {
                 throw new Exception("ID d'association invalide");
             }
@@ -373,7 +379,7 @@ class AssociationController extends AbstractController
     {
         try {
             $idAssociation = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idAssociation) {
                 throw new Exception("ID d'association invalide");
             }
@@ -411,7 +417,7 @@ class AssociationController extends AbstractController
     {
         try {
             $idAssociation = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idAssociation) {
                 throw new Exception("ID d'association invalide");
             }
@@ -453,7 +459,7 @@ class AssociationController extends AbstractController
     {
         try {
             $idAssociation = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idAssociation) {
                 throw new Exception("ID d'association invalide");
             }
@@ -490,7 +496,7 @@ class AssociationController extends AbstractController
     {
         try {
             $idAssociation = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idAssociation) {
                 throw new Exception("ID d'association invalide");
             }

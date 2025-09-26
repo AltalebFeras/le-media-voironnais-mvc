@@ -18,6 +18,7 @@
       <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe" <?= isset($_SESSION['form_data']['password']) ? 'value="' . $_SESSION['form_data']['password'] . '"' : '' ?> required autocomplete="current-password" />
     </div>
     <div class="g-recaptcha mb mt" data-sitekey="6Lc8mVYrAAAAAFQcZnr7_3rLS65SegjP0Yk0nX-s"></div>
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
 
     <button type="submit" class="btn btnSubmit">Se connecter</button>
   </form>

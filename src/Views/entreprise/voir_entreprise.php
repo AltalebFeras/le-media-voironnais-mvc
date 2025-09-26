@@ -21,7 +21,10 @@
 
             <?php if ($isOwner): ?>
                 <div class="entreprise-banner-actions">
-                    <form method="post" action="<?= HOME_URL . 'entreprise/modifier?action=modifier_banner&uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
+                    <form method="post" action="<?= HOME_URL . 'entreprise/modifier' ?>" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="modifier_banner">
+                        <input type="hidden" name="uiid" value="<?= $entreprise->getUiid() ?>">
+
                         <label for="bannerInput" class="btn">
                             Changer bannière
                             <input type="file" id="bannerInput" name="banner" accept="image/*" required>
@@ -30,7 +33,9 @@
                         <button type="button" id="cancelBannerBtn" class="btn" style="display:none;">Annuler</button>
                     </form>
                     <?php if ($entreprise->getBannerPath()): ?>
-                        <form method="post" action="<?= HOME_URL . 'entreprise/modifier?action=supprimer_banner&uiid=' . $entreprise->getUiid() ?>">
+                        <form method="post" action="<?= HOME_URL . 'entreprise/modifier' ?>">
+                            <input type="hidden" name="action" value="supprimer_banner">
+                            <input type="hidden" name="uiid" value="<?= $entreprise->getUiid() ?>">
                             <button type="submit" class="btn bg-danger">Supprimer</button>
                         </form>
                     <?php endif; ?>
@@ -45,7 +50,9 @@
                         data-original-src="<?= $entreprise->getLogoPath() ?: HOME_URL . 'assets/images/default-entreprise-logo.png' ?>"
                         alt="Logo de <?= $entreprise->getName() ?>">
 
-                    <form method="post" action="<?= HOME_URL . 'entreprise/modifier?action=modifier_logo&uiid=' . $entreprise->getUiid() ?>" enctype="multipart/form-data">
+                    <form method="post" action="<?= HOME_URL . 'entreprise/modifier' ?>" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="modifier_logo">
+                        <input type="hidden" name="uiid" value="<?= $entreprise->getUiid() ?>">
                         <label for="logoInput" class="btn">
                             Modifier logo
                             <input type="file" id="logoInput" name="logo" accept="image/*" required>
@@ -54,7 +61,9 @@
                         <button type="button" id="cancelLogo" class="btn" style="display:none;">Annuler</button>
                     </form>
                     <?php if ($entreprise->getLogoPath()): ?>
-                        <form action="<?= HOME_URL . 'entreprise/modifier?action=supprimer_logo&uiid=' . $entreprise->getUiid() ?>" method="post">
+                        <form action="<?= HOME_URL . 'entreprise/modifier' ?>" method="post">
+                            <input type="hidden" name="action" value="supprimer_logo">
+                            <input type="hidden" name="uiid" value="<?= $entreprise->getUiid() ?>">
                             <button type="submit" class="btn">Supprimer</button>
                         </form>
                     <?php endif; ?>
@@ -177,7 +186,7 @@
                                         Modifier l'entreprise
                                     </a>
                                     <button type="button" class="btn btn-danger"
-                                        onclick="document.getElementById('deleteModal').style.display='flex'">
+                                        onclick="document.getElementById('popup').style.display='flex'">
                                         Supprimer l'entreprise
                                     </button>
                                 </div>
@@ -204,42 +213,66 @@
                             </div>
                         </div>
                     </div>
-                <?php else: ?>
+                <?php elseif ($entreprise->getIsActive() == false && $entreprise->getHasRequestForActivation() == true && $entreprise->getRequestDate() > date('Y-m-d H:i:s', strtotime('-3 days'))) : ?>
                     <div class="max-width-33">
                         <div class="card mt-3">
                             <div class="p-3">
+                                <h4>Demande en cours</h4>
+                                <p>Date de la demande : <?= $entreprise->getRequestDateFormatted() ?></p>
+                                <p class="text-muted">Vous avez déjà une demande d'activation en cours. Notre équipe examine votre demande et vous contactera sous 2-3 jours ouvrés.</p>
+                            </div>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="max-width-33">
+                        <div class="card mt">
+                            <div class="p">
                                 <h4>Entreprise inactive</h4>
                                 <p class="text-muted">Cette entreprise est actuellement inactive. Vous ne pouvez pas ajouter ou gérer des réalisations tant qu'elle n'est pas réactivée.</p>
-                                
-                                <div class="card p-3 bg-light mt-3">
-                                    <h5>Demande d'activation</h5>
-                                    <p class="small text-muted mb-3">Pour activer votre entreprise, veuillez fournir les documents suivants :</p>
 
-                                    <form action="<?= HOME_URL . 'entreprise/demander_activation_mon_entreprise?uiid=' . $entreprise->getUiid() ?>" method="post" enctype="multipart/form-data">
+                                <div>
+                                    <h5>Demande d'activation</h5>
+                                    <p class="small text-muted mb-3">Pour activer votre entreprise, veuillez nous fournir un des documents suivants :</p>
+                                    <ul class="list-unstyled mb">
+                                        <li class="mb-1"><span class="text-primary">•</span> Extrait Kbis</li>
+                                        <li class="mb-1"><span class="text-primary">•</span> Avis de situation SIRENE + attestation URSSAF</li>
+                                        <li class="mb-1"><span class="text-primary">•</span> Attestation CMA ou RNE</li>
+                                        <li class="mb-1"><span class="text-primary">•</span> Autre document officiel prouvant l'existence légale de l'entreprise</li>
+                                    </ul>
+                                    <form class="mt" action="<?= HOME_URL . 'entreprise/demander_activation_mon_entreprise' ?>" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="uiid" value="<?= $entreprise->getUiid() ?>">
                                         <div class="mb-3">
                                             <label for="kbis" class="form-label">
-                                                Extrait Kbis <span class="text-danger">*</span>
+                                                Votre document<span class="text-danger">*</span>
                                             </label>
                                             <input type="file" id="kbis" name="kbis" class="form-control" accept=".pdf" required>
                                             <small class="form-text text-muted">Fichier PDF uniquement, taille max : 5MB</small>
                                         </div>
-                                        
+
                                         <div class="mb-3">
                                             <label for="message" class="form-label">Message complémentaire</label>
                                             <textarea id="message" name="message" class="form-control" rows="3" placeholder="Ajoutez des informations complémentaires si nécessaire (optionnel)"></textarea>
                                         </div>
-                                        
+
                                         <div class="mb-3">
                                             <small class="text-muted">
-                                                <strong>Note :</strong> Votre demande sera examinée par nos équipes sous 2-3 jours ouvrés. 
+                                                <strong>Note :</strong> Votre demande sera examinée par nos équipes sous 2-3 jours ouvrés.
                                                 Vous recevrez une notification par email.
                                             </small>
                                         </div>
-                                        
-                                        <button type="submit" class="btn btn-success w-100">
-                                            <span class="material-icons" style="vertical-align: middle; font-size: 18px;">send</span>
-                                            Envoyer la demande d'activation
-                                        </button>
+                                        <?php
+                                        if ($entreprise->getHasRequestForActivation() == true && $entreprise->getRequestDate() < date('Y-m-d H:i:s', strtotime('-3 days'))) : ?>
+                                            <p class="text-warning">Une demande d'activation a déjà été envoyée pour cette entreprise. Vous pouvez la renvoyer si nécessaire.</p>
+                                            <button type="submit" class="btn btn-success w-100">
+                                                <span class="material-icons" style="vertical-align: middle; font-size: 18px;">send</span>
+                                                Renvoyer la demande d'activation
+                                            </button>
+                                        <?php else : ?>
+                                            <button type="submit" class="btn btn-success w-100">
+                                                <span class="material-icons" style="vertical-align: middle; font-size: 18px;">send</span>
+                                                Envoyer la demande d'activation
+                                            </button>
+                                        <?php endif; ?>
                                     </form>
                                 </div>
                             </div>
@@ -251,17 +284,18 @@
 
         <!-- Delete Confirmation Modal -->
         <?php if ($isOwner): ?>
-            <div id="deleteModal" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; justify-content:center; align-items:center;">
+            <div id="popup" class="d-none popup">
                 <div class="card" style="max-width:500px;">
                     <h3>Confirmer la suppression</h3>
-                    <button type="button" onclick="document.getElementById('deleteModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
+                    <button type="button" onclick="document.getElementById('popup').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
                     <div class="mt mb">
                         <p>Êtes-vous sûr de vouloir supprimer l'entreprise "<?= $entreprise->getName() ?>" ?</p>
                         <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
                     </div>
                     <div class="flex-row justify-content-between">
-                        <button type="button" class="btn" onclick="document.getElementById('deleteModal').style.display='none'">Annuler</button>
-                        <form action="<?= HOME_URL . 'mes_entreprises?action=delete&uiid=' . $entreprise->getUiid() ?>" method="post">
+                        <button type="button" class="btn" onclick="document.getElementById('popup').style.display='none'">Annuler</button>
+                        <form action="<?= HOME_URL . 'entreprise/supprimer' ?>" method="post">
+                            <input type="hidden" name="uiid" value="<?= $entreprise->getUiid() ?>">
                             <button type="submit" class="btn deconnexion">Supprimer</button>
                         </form>
                     </div>

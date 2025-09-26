@@ -13,7 +13,8 @@
             <img id="bannerPreview" style="display:none;">
         </div>
         <div class="account-banner-actions">
-            <form method="post" action="<?= HOME_URL . 'mon_compte?action=edit_banner' ?>" enctype="multipart/form-data">
+            <form method="post" action="<?= HOME_URL . 'mon_compte' ?>" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="edit_banner">
                 <label for="bannerInput" class="btn">
                     Changer bannière
                     <input type="file" id="bannerInput" name="banner" accept="image/*" required>
@@ -22,7 +23,8 @@
                 <button type="button" id="cancelBannerBtn" class="btn" style="display:none;">Annuler</button>
             </form>
             <?php if (!empty($_SESSION['bannerPath'])): ?>
-                <form method="post" action="<?= HOME_URL . 'mon_compte?action=delete_banner' ?>">
+                <form method="post" action="<?= HOME_URL . 'mon_compte' ?>">
+                    <input type="hidden" name="action" value="delete_banner">
                     <button type="submit" class="btn bg-danger">Supprimer</button>
                 </form>
             <?php endif; ?>
@@ -30,7 +32,8 @@
         <!-- Profile picture overlaps banner -->
         <div class="account-profile-picture">
             <img id="currentProfilePicture" src="<?= $_SESSION['avatarPath'] ?>" alt="user profile image">
-            <form method="post" action="<?= HOME_URL . 'mon_compte?action=edit_profile_picture' ?>" enctype="multipart/form-data">
+            <form method="post" action="<?= HOME_URL . 'mon_compte' ?>" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="edit_profile_picture">
                 <label for="profilePicture" class="btn">
                     Modifier photo
                     <input type="file" id="profilePicture" name="profilePicture" accept="image/*" required>
@@ -38,7 +41,8 @@
                 <button type="submit" class="btn">Valider</button>
                 <button type="button" id="cancelProfilePicture" class="btn" style="display:none;">Annuler</button>
             </form>
-            <form action="<?= HOME_URL . 'mon_compte?action=delete_profile_picture' ?>" method="post">
+            <form action="<?= HOME_URL . 'mon_compte' ?>" method="post">
+                <input type="hidden" name="action" value="delete_profile_picture">
                 <button type="submit" class="btn">Supprimer</button>
             </form>
         </div>
@@ -57,7 +61,8 @@
             <div class="card">
 
                 <h3>Modifier mes infos</h3>
-                <form action="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" method="POST">
+                <form action="<?= HOME_URL . 'mon_compte' ?>" method="POST">
+                    <input type="hidden" name="action" value="edit_profile">
                     <div>
                         <label for="firstName">Prénom :</label>
                         <input type="text" id="firstName" name="firstName" placeholder="Entrez votre prénom"
@@ -106,7 +111,8 @@
         <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'phone' && empty($_SESSION['phone'])) : ?>
             <div class="card">
                 <h3>Ajouter mon numéro de téléphone</h3>
-                <form action="<?= HOME_URL . 'mon_compte?action=add_phone' ?>" method="POST">
+                <form action="<?= HOME_URL . 'mon_compte' ?>" method="POST">
+                    <input type="hidden" name="action" value="add_phone">
                     <div>
                         <label for="phone">Téléphone :</label>
                         <input type="text" id="phone" name="phone" placeholder="Entrez votre téléphone"
@@ -120,7 +126,8 @@
         <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'email') : ?>
             <div class="card">
                 <h3>Modifier mon adresse e-mail</h3>
-                <form action="<?= HOME_URL . 'mon_compte?action=edit_email' ?>" method="POST">
+                <form action="<?= HOME_URL . 'mon_compte' ?>" method="POST">
+                    <input type="hidden" name="action" value="edit_email">
                     <p>Votre adresse e-mail actuelle est : <span class="text-bold">
                             <?= htmlspecialchars($_SESSION['email']) ?>
                         </span></p>
@@ -137,7 +144,8 @@
         <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'bio' && empty($_SESSION['bio'])) : ?>
             <div class="card">
                 <h3>Ajouter ma bio</h3>
-                <form action="<?= HOME_URL . 'mon_compte?action=add_bio' ?>" method="POST">
+                <form action="<?= HOME_URL . 'mon_compte' ?>" method="POST">
+                    <input type="hidden" name="action" value="add_bio">
                     <div>
                         <label for="bio">Bio :</label>
                         <textarea id="bio" name="bio" placeholder="Entrez votre bio"><?= htmlspecialchars($_SESSION['form_data']['bio'] ?? $_SESSION['bio'] ?? '') ?></textarea>
@@ -150,7 +158,8 @@
         <?php elseif ($_GET['action'] === 'edit_profile' && $_GET['field'] == 'date_of_birth' && empty($_SESSION['dateOfBirth'])) : ?>
             <div class="card">
                 <h3>Ajouter ma date de naissance</h3>
-                <form action="<?= HOME_URL . 'mon_compte?action=add_date_of_birth' ?>" method="POST">
+                <form action="<?= HOME_URL . 'mon_compte' ?>" method="POST">
+                    <input type="hidden" name="action" value="add_date_of_birth">
                     <div>
                         <label for="dateOfBirth">Date de naissance :</label>
                         <input type="date" id="dateOfBirth" name="dateOfBirth"
@@ -164,7 +173,8 @@
         <?php elseif ($_GET['action'] === 'change_password') : ?>
             <div class="card">
                 <h3>Changer mon mot de passe</h3>
-                <form action="<?= HOME_URL . 'mon_compte?action=change_password' ?>" method="POST">
+                <form action="<?= HOME_URL . 'mon_compte' ?>" method="POST">
+                    <input type="hidden" name="action" value="change_password">
                     <div>
                         <label for="currentPassword">Mot de passe actuel :</label>
                         <input type="password" id="currentPassword" name="currentPassword" value="<?= $_SESSION['form_data']['currentPassword'] ?? ''; ?>" required />
@@ -186,7 +196,8 @@
             <div class="card">
                 <h3>Supprimer mon compte</h3>
                 <p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
-                <form action="<?= HOME_URL . 'mon_compte?action=delete_account' ?>" method="POST">
+                <form action="<?= HOME_URL . 'mon_compte' ?>" method="POST">
+                    <input type="hidden" name="action" value="delete_account">
                     <div>
                         <label for="confirmDelete">Pour confirmer, tapez "je confirme" :</label>
                         <input type="text" id="confirmDelete" name="confirmDelete" value="<?= $_SESSION['form_data']['confirmDelete'] ?? ''; ?>" placeholder="je confirme" required />
@@ -219,7 +230,8 @@
                             <div>
                                 <h6>Validation</h6>
 
-                                <form action="<?= HOME_URL . 'mon_compte?action=validate_new_email' ?>" method="POST">
+                                <form action="<?= HOME_URL . 'mon_compte' ?>" method="POST">
+                                    <input type="hidden" name="action" value="validate_new_email">
                                     <div>
                                         <label for="authCode">Code de confirmation :</label>
                                         <input type="text" id="authCode" name="authCode" placeholder="Entrez le code reçu par e-mail" value="<?= $_SESSION['form_data']['authCode'] ?? ''; ?>" required />
@@ -229,7 +241,8 @@
                                     </div>
                                 </form>
                                 <div class="d-flex flex-column pt gap-2">
-                                    <form action="<?= HOME_URL . 'mon_compte?action=cancel_email_change' ?>" method="POST">
+                                    <form action="<?= HOME_URL . 'mon_compte' ?>" method="POST">
+                                        <input type="hidden" name="action" value="cancel_email_change">
                                         <div>
                                             <button class="btn linkNotDecorated bg-danger" type="submit">Annuler la modification d'e-mail</button>
                                         </div>

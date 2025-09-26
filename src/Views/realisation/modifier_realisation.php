@@ -19,7 +19,8 @@
                     <h3>Entreprise : <?= $entreprise->getName() ?></h3>
                 </div>
             </div>
-            <form method="post" action="<?= HOME_URL . 'entreprise/mes_realisations/modifier?realisation_uiid=' . $realisation->getUiid() ?>">
+            <form method="post" action="<?= HOME_URL . 'entreprise/mes_realisations/modifier' ?>">
+                <input type="hidden" name="realisation_uiid" value="<?= $realisation->getUiid() ?>">
                 <div class="card">
                     <div>
                         <div>

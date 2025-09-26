@@ -12,8 +12,10 @@
         <div class="max-width-50">
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
-            <form action="/association/modifier?uiid=<?= $association->getUiid() ?>" method="post" enctype="multipart/form-data">
+            <form action="<?= HOME_URL . 'association/modifier' ?>" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="modifier_association">
                 <div class="card">
+                    <input type="hidden" name="uiid" value="<?= $association->getUiid() ?>">
                     <div>
                         <div>
                             <label for="name">Nom de l'association *</label>

@@ -20,9 +20,8 @@ $realisationController = new RealisationController();
 $notificationController = new NotificationController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
-$method = ConfigRouter::getMethod();
+$method = $_SERVER['REQUEST_METHOD'];
 
-// var_dump($_SERVER);
 $connectionSecured = isset($_SESSION['connected']) && $_SESSION['role'] === 'user' && ConfigRouter::checkConnection();
 $connectionSecuredAdmin = isset($_SESSION['connectedAdmin']) && $_SESSION['role'] === 'admin' && ConfigRouter::checkConnection();
 $connectionSecuredSuperAdmin = isset($_SESSION['connectedSuperAdmin']) && $_SESSION['role'] === 'super_admin' && ConfigRouter::checkConnection();
@@ -67,7 +66,7 @@ switch ($route) {
         break;
 
     case HOME_URL . 'activer_mon_compte':
-        if ($method === 'GET' && $_GET['token']) {
+        if ($method === 'POST' && $_POST['token']) {
             $userController->activateAccount();
         } else {
             $homeController->page404();
@@ -128,9 +127,7 @@ switch ($route) {
                 $associationController->mesAssociations();
             } else if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['uiid'])) {
                 $associationController->displayAssociationDetails();
-            } else if ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['uiid'])) {
-                $associationController->deleteAssociation();
-            } elseif ($method === 'GET') {
+            } else {
                 $homeController->page404();
             }
         } else {
@@ -139,10 +136,14 @@ switch ($route) {
         }
         break;
     case HOME_URL . 'association/ajouter':
-        if ($method === 'POST' && $connectionSecured) {
-            $associationController->addAssociation();
-        } elseif ($connectionSecured && $method === 'GET') {
-            $associationController->showAddForm();
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $associationController->addAssociation();
+            } elseif ($method === 'GET') {
+                $associationController->showAddForm();
+            } else {
+                $homeController->page404();
+            }
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
@@ -151,15 +152,15 @@ switch ($route) {
     case HOME_URL . 'association/modifier':
         if ($connectionSecured) {
             if ($method === 'POST') {
-                if (isset($_GET['action']) && $_GET['action'] === 'modifier_banner') {
+                if (isset($_POST['action']) && $_POST['action'] === 'modifier_banner') {
                     $associationController->updateBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_banner') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_banner') {
                     $associationController->deleteBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'modifier_logo') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_logo') {
                     $associationController->updateLogo();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_logo') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_logo') {
                     $associationController->deleteLogo();
-                } elseif (!$_GET['action']) {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_association') {
                     $associationController->updateAssociation();
                 } else {
                     $homeController->page404();
@@ -174,16 +175,21 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+    case HOME_URL . 'association/supprimer':
+        if ($method === 'POST') {
+            $associationController->deleteAssociation();
+        } else {
+            $homeController->page404();
+        }
+        break;
 
     // Entreprise routes
     case HOME_URL . 'mes_entreprises':
         if ($connectionSecured) {
-            if ($method === 'GET' && !isset($_GET['uiid'])) {
+            if ($method === 'GET' && !isset($_GET['action']) && !isset($_GET['uiid'])) {
                 $entrepriseController->mesEntreprises();
             } elseif ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['uiid'])) {
                 $entrepriseController->displayEntrepriseDetails();
-            } elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['uiid'])) {
-                $entrepriseController->deleteEntreprise();
             } else {
                 $homeController->page404();
             }
@@ -193,27 +199,32 @@ switch ($route) {
         }
         break;
     case HOME_URL . 'entreprise/ajouter':
-        if ($method === 'POST' && $connectionSecured) {
-            $entrepriseController->addEntreprise();
-        } elseif ($connectionSecured && $method === 'GET') {
-            $entrepriseController->showAddForm();
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $entrepriseController->addEntreprise();
+            } elseif ($method === 'GET') {
+                $entrepriseController->showAddForm();
+            } else {
+                $homeController->page404();
+            }
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;
+
     case HOME_URL . 'entreprise/modifier':
         if ($connectionSecured) {
             if ($method === 'POST') {
-                if (isset($_GET['action']) && $_GET['action'] === 'modifier_banner') {
+                if (isset($_POST['action']) && $_POST['action'] === 'modifier_banner') {
                     $entrepriseController->updateBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_banner') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_banner') {
                     $entrepriseController->deleteBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'modifier_logo') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_logo') {
                     $entrepriseController->updateLogo();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_logo') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_logo') {
                     $entrepriseController->deleteLogo();
-                } elseif (!isset($_GET['action'])) {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_entreprise') {
                     $entrepriseController->updateEntreprise();
                 } else {
                     $homeController->page404();
@@ -228,13 +239,22 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
-        case HOME_URL . 'entreprise/demander_activation_mon_entreprise':
-            if ($method === 'POST' && isset($_GET['uiid'])) {
-                $entrepriseController->demanderActivation();
-            } else {
-                $homeController->page404();
-            }
-            break;
+
+    case HOME_URL . 'entreprise/supprimer':
+        if ($method === 'POST') {
+            $entrepriseController->deleteEntreprise();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    case HOME_URL . 'entreprise/demander_activation_mon_entreprise':
+        if ($method === 'POST') {
+            $entrepriseController->demanderActivation();
+        } else {
+            $homeController->page404();
+        }
+        break;
     // Realisation routes
     case HOME_URL . 'entreprise/mes_realisations':
         if ($connectionSecured) {
@@ -242,8 +262,6 @@ switch ($route) {
                 $realisationController->mesRealisations();
             } elseif ($method === 'GET' && isset($_GET['entreprise_uiid']) && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['realisation_uiid'])) {
                 $realisationController->displayRealisationDetails();
-            } elseif ($method === 'POST' && isset($_GET['entreprise_uiid']) && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['realisation_uiid'])) {
-                $realisationController->deleteRealisation();
             } else {
                 $homeController->page404();
             }
@@ -258,6 +276,8 @@ switch ($route) {
                 $realisationController->addRealisation();
             } elseif ($method === 'GET' && isset($_GET['entreprise_uiid'])) {
                 $realisationController->showAddRealisationForm();
+            } else {
+                $homeController->page404();
             }
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
@@ -280,6 +300,14 @@ switch ($route) {
         }
         break;
 
+    case HOME_URL . 'entreprise/mes_realisations/supprimer':
+        if ($method === 'POST') {
+            $realisationController->deleteRealisation();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
     // Evenement routes
     case HOME_URL . 'mes_evenements':
         if ($connectionSecured) {
@@ -287,8 +315,6 @@ switch ($route) {
                 $evenementController->mesEvenements();
             } elseif ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['uiid'])) {
                 $evenementController->displayEventDetails();
-            } elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['uiid'])) {
-                $evenementController->deleteEvent();
             } else {
                 $homeController->page404();
             }
@@ -310,15 +336,15 @@ switch ($route) {
     case HOME_URL . 'evenement/modifier':
         if ($connectionSecured) {
             if ($method === 'POST') {
-                if (isset($_GET['action']) && $_GET['action'] === 'modifier_banner') {
+                if (isset($_POST['action']) && $_POST['action'] === 'modifier_banner') {
                     $evenementController->updateBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_banner') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_banner') {
                     $evenementController->deleteBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'ajouter_image') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'ajouter_image') {
                     $evenementController->addEventImage();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_image') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_image') {
                     $evenementController->deleteEventImage();
-                } elseif (!isset($_GET['action'])) {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_evenement') {
                     $evenementController->updateEvent();
                 } else {
                     $homeController->page404();
@@ -331,6 +357,13 @@ switch ($route) {
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
+        }
+        break;
+    case HOME_URL . 'evenement/supprimer':
+        if ($method === 'POST') {
+            $evenementController->deleteEvent();
+        } else {
+            $homeController->page404();
         }
         break;
 
@@ -403,8 +436,8 @@ switch ($route) {
 
     //  User account routes
     case HOME_URL . 'mon_compte':
-        if ($method === 'POST' && $_GET['action'] && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
-            switch ($_GET['action']) {
+        if ($method === 'POST' && $_POST['action'] && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
+            switch ($_POST['action']) {
                 case 'delete_account':
                     $userController->deleteAccount();
                     break;
@@ -445,7 +478,7 @@ switch ($route) {
                     $userController->deleteBanner();
                     break;
                 default:
-                    $homeController->page403();
+                    $homeController->page404();
                     break;
             }
         } elseif ($method === 'GET' && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
@@ -478,9 +511,9 @@ switch ($route) {
         break;
 
     case HOME_URL . 'admin/utilisateur_details':
-        if ($connectionSecuredAdmin && $method === 'POST' && isset($_GET['action'])) {
+        if ($connectionSecuredAdmin && $method === 'POST' && isset($_POST['action'])) {
             // POST action for block/unblock/send_email
-            switch ($_GET['action']) {
+            switch ($_POST['action']) {
                 case 'block':
                     $adminController->blockUser();
                     break;
@@ -496,6 +529,22 @@ switch ($route) {
             }
         } elseif ($connectionSecuredAdmin && $method === 'GET' && isset($_GET['id']) && is_numeric($_GET['id'])) {
             $adminController->displayUserById();
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+    case HOME_URL . 'admin/toutes_demandes_dactivation_entreprise':
+        if ($connectionSecuredAdmin && $method === 'POST') {
+            if (isset($_POST['action']) && $_POST['action'] === 'accept') {
+                $adminController->acceptEntrepriseActivationRequest();
+            } elseif (isset($_POST['action']) && $_POST['action'] === 'refuse') {
+                $adminController->refuseEntrepriseActivationRequest();
+            } else {
+                $homeController->page404();
+            }
+        } elseif ($connectionSecuredAdmin && $method === 'GET') {
+            $adminController->displayAllEntreprisesActivationRequests();
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();

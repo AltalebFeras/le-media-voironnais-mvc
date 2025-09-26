@@ -21,7 +21,9 @@
 
             <?php if ($isOwner): ?>
                 <div class="association-banner-actions">
-                    <form method="post" action="<?= HOME_URL . 'association/modifier?action=modifier_banner&uiid=' . $association->getUiid() ?>" enctype="multipart/form-data">
+                    <form method="post" action="<?= HOME_URL . 'association/modifier' ?>" enctype="multipart/form-data">
+                        <input type="hidden" name="uiid" value="<?= $association->getUiid() ?>">
+                        <input type="hidden" name="action" value="modifier_banner">
                         <label for="bannerInput" class="btn">
                             Changer bannière
                             <input type="file" id="bannerInput" name="banner" accept="image/*" required>
@@ -30,7 +32,9 @@
                         <button type="button" id="cancelBannerBtn" class="btn" style="display:none;">Annuler</button>
                     </form>
                     <?php if ($association->getBannerPath()): ?>
-                        <form method="post" action="<?= HOME_URL . 'association/modifier?action=supprimer_banner&uiid=' . $association->getUiid() ?>">
+                        <form method="post" action="<?= HOME_URL . 'association/modifier' ?>">
+                            <input type="hidden" name="uiid" value="<?= $association->getUiid() ?>">
+                            <input type="hidden" name="action" value="supprimer_banner">
                             <button type="submit" class="btn bg-danger">Supprimer</button>
                         </form>
                     <?php endif; ?>
@@ -44,7 +48,9 @@
                         src="<?= $association->getLogoPath() ? $association->getLogoPath() : HOME_URL . 'assets/images/uploads/logos/default_logo.png' ?>"
                         data-original-src="<?= $association->getLogoPath() ? $association->getLogoPath() : HOME_URL . 'assets/images/uploads/logos/default_logo.png' ?>"
                         alt="Logo de <?= $association->getName() ?>">
-                    <form method="post" action="<?= HOME_URL . 'association/modifier?action=modifier_logo&uiid=' . $association->getUiid() ?>" enctype="multipart/form-data">
+                    <form method="post" action="<?= HOME_URL . 'association/modifier' ?>" enctype="multipart/form-data">
+                        <input type="hidden" name="uiid" value="<?= $association->getUiid() ?>">
+                        <input type="hidden" name="action" value="modifier_logo">
                         <label for="logoInput" class="btn">
                             Modifier logo
                             <input type="file" id="logoInput" name="logo" accept="image/*" required>
@@ -53,7 +59,9 @@
                         <button type="button" id="cancelLogo" class="btn" style="display:none;">Annuler</button>
                     </form>
                     <?php if ($association->getLogoPath()): ?>
-                        <form action="<?= HOME_URL . 'association/modifier?action=supprimer_logo&uiid=' . $association->getUiid() ?>" method="post">
+                        <form action="<?= HOME_URL . 'association/modifier' ?>" method="post">
+                            <input type="hidden" name="uiid" value="<?= $association->getUiid() ?>">
+                            <input type="hidden" name="action" value="supprimer_logo">
                             <button type="submit" class="btn">Supprimer</button>
                         </form>
                     <?php endif; ?>
@@ -175,7 +183,7 @@
                                         Modifier l'association
                                     </a>
                                     <button type="button" class="btn btn-danger"
-                                        onclick="document.getElementById('deleteModal').style.display='flex'">
+                                        onclick="document.getElementById('popup').style.display='flex'">
                                         Supprimer l'association
                                     </button>
                                 </div>
@@ -224,17 +232,18 @@
 
         <!-- Delete Confirmation Modal -->
         <?php if ($isOwner): ?>
-            <div id="deleteModal" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; justify-content:center; align-items:center;">
+            <div id="popup" class="d-none popup">
                 <div class="card" style="max-width:500px;">
                     <h3>Confirmer la suppression</h3>
-                    <button type="button" onclick="document.getElementById('deleteModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
+                    <button type="button" onclick="document.getElementById('popup').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
                     <div class="mt mb">
                         <p>Êtes-vous sûr de vouloir supprimer l'association "<?= $association->getName() ?>" ?</p>
                         <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
                     </div>
                     <div class="flex-row justify-content-between">
-                        <button type="button" class="btn" onclick="document.getElementById('deleteModal').style.display='none'">Annuler</button>
-                        <form action="<?= HOME_URL . 'mes_associations?action=delete&uiid=' . $association->getUiid() ?>" method="post">
+                        <button type="button" class="btn" onclick="document.getElementById('popup').style.display='none'">Annuler</button>
+                        <form action="<?= HOME_URL . 'association/supprimer' ?>" method="post">
+                            <input type="hidden" name="uiid" value="<?= $association->getUiid() ?>">
                             <button type="submit" class="btn deconnexion">Supprimer</button>
                         </form>
                     </div>

@@ -20,6 +20,7 @@ class Entreprise
     private ?string $website;
     private ?string $siret;
     private bool $isActive;
+    private bool $hasRequestForActivation;
     private bool $isPublic;
     private bool $isPartner;
     private bool $isDeleted;
@@ -29,6 +30,9 @@ class Entreprise
     private DateTime|string|null $updatedAt;
     private DateTime|string|null $partnerStartDate;
     private DateTime|string|null $partnerEndDate;
+    private DateTime|string|null $requestDate;
+    private DateTime|string|null $activationDate;
+
 
     use Hydration;
 
@@ -93,6 +97,10 @@ class Entreprise
     public function getIsActive(): bool
     {
         return $this->isActive;
+    }
+    public function getHasRequestForActivation(): bool
+    {
+        return $this->hasRequestForActivation;
     }
     public function getIsPartner()
     {
@@ -215,6 +223,47 @@ class Entreprise
             return $this->partnerEndDate;
         }
     }
+    public function getRequestDate(): DateTime|string|null
+    {
+        if ($this->requestDate === null) {
+            return null;
+        }
+        if (is_string($this->requestDate)) {
+            return $this->requestDate;
+        }
+        if (is_a($this->requestDate, DateTime::class)) {
+            return $this->requestDate->format('Y-m-d H:i:s');
+        }
+        return null;
+    }
+    public function getRequestDateFormatted(): string|null
+    {
+        if ($this->requestDate === null) {
+            return null;
+        }
+        if ($this->requestDate instanceof DateTime) {
+            return $this->requestDate->format('d/m/Y à H:i');
+        }
+        try {
+            $dt = new DateTime($this->requestDate);
+            return $dt->format('d/m/Y à H:i');
+        } catch (\Exception $e) {
+            return $this->requestDate;
+        }
+    }
+    public function getActivationDate(): DateTime|string|null
+    {
+        if ($this->activationDate === null) {
+            return null;
+        }
+        if (is_string($this->activationDate)) {
+            return $this->activationDate;
+        }
+        if (is_a($this->activationDate, DateTime::class)) {
+            return $this->activationDate->format('Y-m-d H:i:s');
+        }
+        return null;
+    }
 
 
     // Setters
@@ -293,6 +342,11 @@ class Entreprise
         $this->isActive = $isActive;
         return $this;
     }
+    public function setHasRequestForActivation(bool $hasRequestForActivation): static
+    {
+        $this->hasRequestForActivation = $hasRequestForActivation;
+        return $this;
+    }
 
     public function setIdUser(int $idUser): static
     {
@@ -339,6 +393,28 @@ class Entreprise
             $this->partnerEndDate = new DateTime($partnerEndDate);
         } elseif (is_a($partnerEndDate, DateTime::class)) {
             $this->partnerEndDate = $partnerEndDate;
+        }
+        return $this;
+    }
+    public function setRequestDate(DateTime|string|null $requestDate): self
+    {
+        if ($requestDate === null) {
+            $this->requestDate = null;
+        } elseif (is_string($requestDate)) {
+            $this->requestDate = new DateTime($requestDate);
+        } elseif (is_a($requestDate, DateTime::class)) {
+            $this->requestDate = $requestDate;
+        }
+        return $this;
+    }
+    public function setActivationDate(DateTime|string|null $activationDate): self
+    {
+        if ($activationDate === null) {
+            $this->activationDate = null;
+        } elseif (is_string($activationDate)) {
+            $this->activationDate = new DateTime($activationDate);
+        } elseif (is_a($activationDate, DateTime::class)) {
+            $this->activationDate = $activationDate;
         }
         return $this;
     }

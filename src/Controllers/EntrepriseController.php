@@ -21,9 +21,15 @@ class EntrepriseController extends AbstractController
         $this->repo = new EntrepriseRepository();
         $this->AssocRepo = new AssociationRepository();
     }
-    private function getId(): mixed
+    private function getId(): int|null
     {
-        $uiid =  isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+        if (isset($_GET['uiid'])) {
+            $uiid = htmlspecialchars(trim($_GET['uiid']));
+        } elseif (isset($_POST['uiid'])) {
+            $uiid = htmlspecialchars(trim($_POST['uiid']));
+        } else {
+            $uiid = null;
+        }
         return $this->repo->getIdByUiid($uiid);
     }
     public function mesEntreprises(): void
@@ -201,7 +207,7 @@ class EntrepriseController extends AbstractController
 
         try {
             $idUser = $_SESSION['idUser'];
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             $idEntreprise = $this->getId();
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
 
@@ -295,7 +301,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             $idEntreprise = $this->getId();
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
 
@@ -326,7 +332,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idEntreprise = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idEntreprise) {
                 throw new Exception("ID d'entreprise invalide");
             }
@@ -364,7 +370,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idEntreprise = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idEntreprise) {
                 throw new Exception("ID d'entreprise invalide");
             }
@@ -406,7 +412,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idEntreprise = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idEntreprise) {
                 throw new Exception("ID d'entreprise invalide");
             }
@@ -444,7 +450,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idEntreprise = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idEntreprise) {
                 throw new Exception("ID d'entreprise invalide");
             }
@@ -486,7 +492,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idEntreprise = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idEntreprise) {
                 throw new Exception("ID d'entreprise invalide");
             }
@@ -501,14 +507,26 @@ class EntrepriseController extends AbstractController
             if ($entreprise->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
             }
+            if ($entreprise->getIsActive()) {
+                throw new Exception("L'entreprise est déjà active");
+            }
 
+            $lastRequestDate = $entreprise->getRequestDate();
+            if ($lastRequestDate && $entreprise->getRequestDate() !== null && $entreprise->getHasRequestForActivation() == true) {
+                $lastRequestDateTime = new DateTime($lastRequestDate);
+                $currentDateTime = new DateTime();
+                $interval = $currentDateTime->diff($lastRequestDateTime);
+                if ($interval->days < 3) {
+                    throw new Exception("Vous avez déjà fait une demande d'activation récemment. Veuillez attendre avant de faire une nouvelle demande.");
+                }
+            }
             // Handle Kbis file upload validation
             if (!isset($_FILES['kbis']) || $_FILES['kbis']['error'] !== UPLOAD_ERR_OK) {
                 throw new Exception("Veuillez fournir un fichier Kbis valide");
             }
 
             $file = $_FILES['kbis'];
-            
+
             // Validate file type (PDF only)
             $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
             if ($fileExtension !== 'pdf') {
@@ -525,7 +543,7 @@ class EntrepriseController extends AbstractController
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mimeType = finfo_file($finfo, $file['tmp_name']);
             finfo_close($finfo);
-            
+
             if ($mimeType !== 'application/pdf') {
                 throw new Exception("Le fichier doit être un PDF valide");
             }
@@ -537,10 +555,11 @@ class EntrepriseController extends AbstractController
             $userFirstName = $_SESSION['firstName'] ?? '';
             $userLastName = $_SESSION['lastName'] ?? '';
             $userEmail = $_SESSION['email'] ?? '';
+            $requestDate = date('Y-m-d H:i:s');
 
             // Prepare email content
             $subject = "Demande d'activation d'entreprise - " . $entreprise->getName();
-            
+
             $body = "
                 <h3>Nouvelle demande d'activation d'entreprise</h3>
                 
@@ -575,31 +594,36 @@ class EntrepriseController extends AbstractController
                     <li>Valider les informations de l'entreprise</li>
                     <li>Activer l'entreprise dans l'interface d'administration</li>
                 </ol>
+                <p>Vous trouvez en pièce jointe le document Kbis fourni par le demandeur.</p>
+                <p>Merci de traiter cette demande dans les plus brefs délais.</p>
                 
-                <p><em>Cette demande a été générée automatiquement le " . date('d/m/Y à H:i:s') . "</em></p>";
+                <p><em>Cette demande a été générée automatiquement le " . $requestDate . "</em></p>";
 
             // Send email using your Mail service
             $mail = new Mail();
-            
+
             // Add the temporary Kbis file as attachment directly from tmp location
-            $originalFileName = 'Kbis_' . $entreprise->getName() . '_' . date('Y-m-d_H-i-s') . '.pdf';
+            $originalFileName = 'Kbis_' . $entreprise->getName() . '_' . $requestDate . '.pdf';
             $mail->addAttachment($file['tmp_name'], $originalFileName);
 
             // Send the email
-            $mail->sendEmail(
+            $sendEmail =  $mail->sendEmail(
                 NO_REPLY_EMAIL, // sender email
                 'Le Média Voironnais - Système', // sender name
-                'feras.altalib@gmail.com', // recipient email
+                ADMIN_EMAIL, // recipient email
                 'Administrateur', // recipient name
                 $subject,
                 $body
             );
+            if ($sendEmail) {
+                // add has request with the date
+                $this->repo->markActivationRequested($idEntreprise, $requestDate);
+            }
 
             // No need to clean up - PHP automatically deletes temporary files
 
             $_SESSION['success'] = "Votre demande d'activation a été envoyée avec succès. Vous recevrez une réponse sous 2-3 jours ouvrés.";
             $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid);
-            
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid . '&error=true');

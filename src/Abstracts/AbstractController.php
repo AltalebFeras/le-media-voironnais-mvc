@@ -46,16 +46,16 @@ abstract class AbstractController
     /**
      * Handle and redirect all errors to a specified route.
      * This method checks if the $errors parameter is not empty, and if so, it stores the errors in the session and redirects to the specified route with an error query parameter.
-     * If the $errors parameter is empty, it unsets the 'errors' session variable.
+     * If the $errors parameter is empty, it unsets the 'errors' session variable
      * @param mixed $errors
      * @param mixed $route
      * @return void
      */
-    public function returnAllErrors($errors, $route)
+    public function returnAllErrors($errors, $route , array $query = []): void
     {
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
-            $this->redirect($route);
+            $this->redirect($route, $query);
         } else {
             unset($_SESSION['errors']);
         }
@@ -79,5 +79,41 @@ abstract class AbstractController
         } else {
             return true;
         }
+    }
+
+    /**
+     * Generate CSRF token and store it in session
+     * @return string The generated CSRF token
+     */
+    public function generateCsrfToken(): string
+    {
+        $csrfToken = bin2hex(random_bytes(64));
+        $_SESSION['csrf_token'] = $csrfToken;
+        return $csrfToken;
+    }
+
+    /**
+     * Validate CSRF token from POST request
+     * @return bool Returns true if token is valid, false otherwise
+     * @param mixed $route 
+     * @param array $errors
+     * @return bool Returns true if token is valid, false otherwise 
+     */
+    public function validateCsrfToken($route): bool
+    {
+        if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token'])) {
+            $errors['csrf'] = 'Token de sécurité invalide. Veuillez réessayer.';
+            $this->returnAllErrors($errors, $route, ['error' => 'true']);
+            // return false;
+        }
+
+        $isValid = hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
+        
+        // Regenerate token after validation (one-time use)
+        if ($isValid) {
+            unset($_SESSION['csrf_token']);
+        }
+        
+        return $isValid;
     }
 }

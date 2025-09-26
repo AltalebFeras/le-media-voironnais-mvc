@@ -8,11 +8,11 @@ use PDO;
 
 class AdminRepository
 {
-    private $DBuser;
+    private $pdo;
 
     public function __construct()
     {
-        $this->DBuser = Database::getInstance()->getDB();
+        $this->pdo = Database::getInstance()->getDB();
     }
 
     // Fetch a paginated list of users as associative arrays
@@ -21,7 +21,7 @@ class AdminRepository
         $offset = max(0, ($currentPage - 1) * $usersPerPage);
         // use actual table `user` and correct column names
         $sql = "SELECT idUser AS id, firstName, lastName, email, avatarPath, isOnline, createdAt FROM `user` WHERE idRole=3 ORDER BY idUser DESC LIMIT :limit OFFSET :offset";
-        $stmt = $this->DBuser->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':limit', $usersPerPage, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -32,10 +32,10 @@ class AdminRepository
     public function countUsers(): int
     {
         $sql = "SELECT COUNT(*) FROM `user`";
-        $stmt = $this->DBuser->query($sql);
+        $stmt = $this->pdo->query($sql);
         return (int)$stmt->fetchColumn();
     }
-   
+
     public function findById(int $id): ?array
     {
         // select columns and join role table to include role name (role.name as roleName)
@@ -65,7 +65,7 @@ class AdminRepository
 				FROM `user` u
 				LEFT JOIN `role` r ON u.idRole = r.idRole
 				WHERE u.idUser = :id AND u.idRole = 3";
-        $stmt = $this->DBuser->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -74,9 +74,64 @@ class AdminRepository
     public function setBannedStatus(int $id, bool $banned): bool
     {
         $sql = "UPDATE `user` SET isBanned = :isBanned, updatedAt = NOW() WHERE idUser = :id";
-        $stmt = $this->DBuser->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':isBanned', $banned ? 1 : 0, PDO::PARAM_INT);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();
+    }
+    public function findAllActivationRequests($currentPage, $requestsPerPage)
+    {
+        $offset = max(0, ($currentPage - 1) * $requestsPerPage);
+        $sql = "SELECT * FROM entreprise
+                WHERE hasRequestForActivation = 1 AND isActive = 0 AND isDeleted = 0
+                ORDER BY requestDate ASC 
+                LIMIT :limit OFFSET :offset";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':limit', $requestsPerPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function countActivationRequests()
+    {
+        $sql = "SELECT COUNT(*) FROM entreprise WHERE hasRequestForActivation = 1 AND isActive = 0 AND isDeleted = 0";
+        $stmt = $this->pdo->query($sql);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function acceptActivationRequest(string $uiid): bool
+    {
+        $sql = "UPDATE entreprise SET 
+                isActive = 1, 
+                hasRequestForActivation = 0, 
+                activationDate = NOW(), 
+                updatedAt = NOW() 
+                WHERE uiid = :uiid AND hasRequestForActivation = 1 AND isActive = 0";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':uiid', $uiid, PDO::PARAM_STR);
+        return $stmt->execute() && $stmt->rowCount() > 0;
+    }
+
+    public function refuseActivationRequest(string $uiid): bool
+    {
+        $sql = "UPDATE entreprise SET 
+                hasRequestForActivation = 0, 
+                isActive = 0, 
+                requestDate = NULL,
+                updatedAt = NOW() 
+                WHERE uiid = :uiid";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':uiid', $uiid, PDO::PARAM_STR);
+        return $stmt->execute() && $stmt->rowCount() > 0;
+    }
+
+    public function findEntrepriseByUiid(string $uiid): ?array
+    {
+        $sql = "SELECT * FROM entreprise WHERE uiid = :uiid";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':uiid', $uiid, PDO::PARAM_STR);
+        $stmt->execute();
+        $entreprise = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $entreprise ?: null;
     }
 }

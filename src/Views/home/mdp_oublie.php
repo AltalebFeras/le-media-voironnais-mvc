@@ -6,6 +6,7 @@
   <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
   <form class="card" action="<?= HOME_URL . 'mdp_oublie' ?>" method="POST">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
     <p>
       Veuillez entrer votre adresse e-mail pour réinitialiser votre mot de
       passe.
