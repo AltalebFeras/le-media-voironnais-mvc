@@ -262,8 +262,6 @@ switch ($route) {
                 $realisationController->mesRealisations();
             } elseif ($method === 'GET' && isset($_GET['entreprise_uiid']) && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['realisation_uiid'])) {
                 $realisationController->displayRealisationDetails();
-            } elseif ($method === 'POST' && isset($_GET['entreprise_uiid']) && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['realisation_uiid'])) {
-                $realisationController->deleteRealisation();
             } else {
                 $homeController->page404();
             }
@@ -278,6 +276,8 @@ switch ($route) {
                 $realisationController->addRealisation();
             } elseif ($method === 'GET' && isset($_GET['entreprise_uiid'])) {
                 $realisationController->showAddRealisationForm();
+            } else {
+                $homeController->page404();
             }
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
@@ -297,6 +297,14 @@ switch ($route) {
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
+        }
+        break;
+        
+    case HOME_URL . 'entreprise/mes_realisations/supprimer':
+        if ($method === 'POST') {
+            $realisationController->deleteRealisation();
+        } else {
+            $homeController->page404();
         }
         break;
 

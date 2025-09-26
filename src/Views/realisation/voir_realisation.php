@@ -22,8 +22,8 @@
                         <h3>Entreprise : <?= $entreprise->getName() ?></h3>
                         <?php if ($isOwner): ?>
                             <div>
-                                <a href="<?= HOME_URL . 'entreprise/mes_realisations/modifier?realisation_uiid=' . $realisation->getUiid() ?>" 
-                                   class="btn linkNotDecorated">Modifier</a>
+                                <a href="<?= HOME_URL . 'entreprise/mes_realisations/modifier?realisation_uiid=' . $realisation->getUiid() ?>"
+                                    class="btn linkNotDecorated">Modifier</a>
                                 <!-- Replaced inline confirm with modal trigger -->
                                 <button type="button" class="btn bg-danger"
                                     onclick="document.getElementById('popup').style.display='flex'">
@@ -61,10 +61,10 @@
                             <dt>Date de réalisation</dt>
                             <dd><?= ($realisation->getFormattedDateRealized()) ?></dd>
                         <?php endif; ?>
-                        
+
                         <dt>Créé le</dt>
                         <dd><?= ($realisation->getCreatedAtFormatted()) ?></dd>
-                        
+
                         <?php if ($realisation->getUpdatedAt()): ?>
                             <dt>Modifié le</dt>
                             <dd><?= ($realisation->getUpdatedAtFormatted()) ?></dd>
@@ -90,7 +90,8 @@
                     <!-- Add Image Form -->
                     <?php if ($isOwner): ?>
                         <div id="addImageForm" style="display: none;" class="mb-3">
-                            <form method="post" action="<?= HOME_URL . 'realisation/add_image?realisation_uiid=' . $realisation->getUiid() ?>" enctype="multipart/form-data">
+                            <form method="post" action="<?= HOME_URL . 'realisation/add_image' ?>" enctype="multipart/form-data">
+                                <input type="hidden" name="realisation_uiid" value="<?= $realisation->getUiid() ?>">
                                 <div>
                                     <label for="realisationImage">Image :</label>
                                     <input type="file" name="realisationImage" id="realisationImage" accept="image/*" required>
@@ -117,25 +118,25 @@
                             <div class="carousel-container">
                                 <?php foreach ($realisationImages as $index => $image): ?>
                                     <div class="carousel-slide <?= $index === 0 ? 'active' : '' ?>">
-                                        <img src="<?= HOME_URL . $image['imagePath'] ?>" 
-                                             alt="<?= $image['altText'] ?: $realisation->getTitle() ?>">
-                                        
+                                        <img src="<?= HOME_URL . $image['imagePath'] ?>"
+                                            alt="<?= $image['altText'] ?: $realisation->getTitle() ?>">
+
                                         <?php if ($isOwner): ?>
                                             <div class="image-actions">
-                                                <a href="<?= HOME_URL . 'realisation/delete_image?realisation_uiid=' . $realisation->getUiid() ?>&imageId=<?= $image['idRealisationImage'] ?>" 
-                                                   class="btn bg-danger btn-sm"
-                                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?');">
+                                                <a href="<?= HOME_URL . 'realisation/delete_image?realisation_uiid=' . $realisation->getUiid() ?>&imageId=<?= $image['idRealisationImage'] ?>"
+                                                    class="btn bg-danger btn-sm"
+                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?');">
                                                     Supprimer
                                                 </a>
                                             </div>
                                         <?php endif; ?>
                                     </div>
                                 <?php endforeach; ?>
-                                
+
                                 <?php if (count($realisationImages) > 1): ?>
                                     <button class="carousel-btn prev" onclick="previousSlide()">‹</button>
                                     <button class="carousel-btn next" onclick="nextSlide()">›</button>
-                                    
+
                                     <div class="carousel-indicators">
                                         <?php for ($i = 0; $i < count($realisationImages); $i++): ?>
                                             <span class="indicator <?= $i === 0 ? 'active' : '' ?>" onclick="currentSlide(<?= $i + 1 ?>)"></span>
@@ -163,7 +164,9 @@
             </div>
             <div class="flex-row justify-content-between">
                 <button type="button" class="btn" onclick="document.getElementById('popup').style.display='none'">Annuler</button>
-                <form action="<?= HOME_URL . 'entreprise/mes_realisations?action=delete&realisation_uiid=' . $realisation->getUiid() ?>&entreprise_uiid=<?= $entreprise->getUiid() ?>" method="post">
+                <form action="<?= HOME_URL . 'entreprise/mes_realisations/supprimer' ?>" method="post">
+                    <input type="hidden" name="entreprise_uiid" value="<?= $entreprise->getUiid() ?>">
+                    <input type="hidden" name="realisation_uiid" value="<?= $realisation->getUiid() ?>">
                     <button type="submit" class="btn deconnexion">Supprimer</button>
                 </form>
             </div>

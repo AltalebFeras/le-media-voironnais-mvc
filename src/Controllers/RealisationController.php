@@ -242,7 +242,7 @@ class RealisationController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $realisationUiid = isset($_GET['realisation_uiid']) ? htmlspecialchars(trim($_GET['realisation_uiid'])) : null;
+            $realisationUiid = isset($_POST['realisation_uiid']) ? htmlspecialchars(trim($_POST['realisation_uiid'])) : null;
             $idRealisation = $this->repo->getIdByUiid($realisationUiid);
             $realisation = $this->repo->getRealisationById($idRealisation);
 
@@ -320,7 +320,7 @@ class RealisationController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $realisationUiid = isset($_GET['realisation_uiid']) ? htmlspecialchars(trim($_GET['realisation_uiid'])) : null;
+            $realisationUiid = isset($_POST['realisation_uiid']) ? htmlspecialchars(trim($_POST['realisation_uiid'])) : null;
             $idRealisation = $this->repo->getIdByUiid($realisationUiid);
             $realisation = $this->repo->getRealisationById($idRealisation);
 
