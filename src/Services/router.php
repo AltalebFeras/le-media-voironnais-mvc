@@ -22,7 +22,6 @@ $notificationController = new NotificationController();
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
 $method = $_SERVER['REQUEST_METHOD'];
 
-// var_dump($_SERVER);
 $connectionSecured = isset($_SESSION['connected']) && $_SESSION['role'] === 'user' && ConfigRouter::checkConnection();
 $connectionSecuredAdmin = isset($_SESSION['connectedAdmin']) && $_SESSION['role'] === 'admin' && ConfigRouter::checkConnection();
 $connectionSecuredSuperAdmin = isset($_SESSION['connectedSuperAdmin']) && $_SESSION['role'] === 'super_admin' && ConfigRouter::checkConnection();
@@ -67,7 +66,7 @@ switch ($route) {
         break;
 
     case HOME_URL . 'activer_mon_compte':
-        if ($method === 'GET' && $_GET['token']) {
+        if ($method === 'POST' && $_POST['token']) {
             $userController->activateAccount();
         } else {
             $homeController->page404();
@@ -178,7 +177,7 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
-
+// =======>
     // Entreprise routes
     case HOME_URL . 'mes_entreprises':
         if ($connectionSecured) {

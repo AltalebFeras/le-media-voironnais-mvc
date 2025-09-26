@@ -49,6 +49,9 @@ class UserController extends AbstractController
 
     public function treatmentInscription(): void
     {
+        // Validate CSRF token first
+        $this->validateCsrfToken('inscription');
+
         $firstName = isset($_POST['firstName']) ? htmlentities(trim(ucfirst($_POST['firstName']))) : null;
         $lastName = isset($_POST['lastName']) ? htmlentities(trim(ucfirst($_POST['lastName']))) : null;
         $email = isset($_POST['email']) ? htmlentities(trim(strtolower($_POST['email']))) : null;
@@ -56,11 +59,11 @@ class UserController extends AbstractController
         $passwordConfirmation = isset($_POST['passwordConfirmation']) ? trim($_POST['passwordConfirmation']) : null;
         $rgpd = isset($_POST['rgpd']) ? htmlentities(trim($_POST['rgpd'])) : null;
 
-        $_SESSION['form_data'] = $_POST;
         $errors = [];
+        $_SESSION['form_data'] = $_POST;
 
         if ($password !== $passwordConfirmation) {
-            $errors[] = 'Les mots de passe ne correspondent pas';
+            $errors['password_not_match'] = 'Les mots de passe ne correspondent pas';
         }
 
         $activationToken = bin2hex(random_bytes(16));
@@ -81,7 +84,7 @@ class UserController extends AbstractController
             $errors['password'] = 'Le mot de passe doit contenir au moins 8 caractères';
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'L\'adresse e-mail est invalide';
+            $errors['email_invalid'] = 'L\'adresse e-mail est invalide';
         }
         if ($rgpd !== 'on') {
             $errors['rgpd'] = 'Veuillez accepter les conditions d\'utilisation et la politique de confidentialité.';
@@ -100,10 +103,10 @@ class UserController extends AbstractController
         $emailExists = $this->repo->getUser($email);
 
         if ($emailExists) {
-            $errors['email'] = 'Cette adresse e-mail est déjà utilisée';
+            $errors['email_exists'] = 'Cette adresse e-mail est déjà utilisée';
         }
         // If there are any validation errors, throw one Error with all errors
-        $this->returnAllErrors($errors, 'inscription?error=true');
+        $this->returnAllErrors($errors, 'inscription', ['error' => 'true']);
         // Use SEL as a pepper: append the secret to the plaintext before hashing
         $passwordHash = password_hash($password . SEL, PASSWORD_DEFAULT);
 
@@ -122,24 +125,28 @@ class UserController extends AbstractController
 
 
         $mail = new Mail();
-        $activationLink = DOMAIN . HOME_URL . 'activer_mon_compte?token=' . $activationToken;
+        $activationLink = DOMAIN . HOME_URL . 'activer_mon_compte';
         $subject = 'Activation de votre compte';
-        $body = "Veuillez cliquer sur le lien ci-dessous pour activer votre compte:<br>";
-        $body .= "<a href='$activationLink'>Cliquez ici</a><br><br>";
+        $body = "Veuillez cliquer sur le bouton ci-dessous pour activer votre compte :<br>";
+        $body .= "<form method='POST' action='$activationLink'>";
+        $body .= "<input type='hidden' name='token' value='$activationToken'>";
+        $body .= "<button type='submit' style='padding:10px 20px;background:#007bff;color:#fff;border:none;border-radius:4px;cursor:pointer;'>Activer mon compte</button>";
+        $body .= "</form><br>";
+        $body .= "Si vous n'avez pas créé de compte, veuillez ignorer cet e-mail.<br>";
 
         $sendEmail = $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email, $firstName, $subject, $body);
         if ($sendEmail) {
             $signUp = $this->repo->signUp($user);
         } else {
             $errors['sendEmail'] = 'Une erreur s\'est produite lors de l\'envoi de l\'e-mail d\'activation. Veuillez réessayer plus tard.';
-            $this->returnAllErrors($errors, 'inscription?error=true');
+            $this->returnAllErrors($errors, 'inscription', ['error' => 'true']);
         }
         if ($signUp) {
             $_SESSION['success'] = 'Un e-mail d\'activation a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception et cliquer sur le lien d\'activation pour activer votre compte.';
             $this->redirect('connexion');
         } else {
             $errors['signUp'] = 'Une erreur s\'est produite lors de l\'inscription. Veuillez réessayer plus tard.';
-            $this->returnAllErrors($errors, 'inscription?error=true');
+            $this->returnAllErrors($errors, 'inscription', ['error' => 'true']);
         }
     }
 
@@ -147,7 +154,7 @@ class UserController extends AbstractController
     public function activateAccount(): void
     {
         try {
-            $token = isset($_GET['token']) ? htmlspecialchars(trim($_GET['token'])) : null;
+            $token = isset($_POST['token']) ? htmlspecialchars(trim($_POST['token'])) : null;
 
             if (!$token || !preg_match('/^[a-f0-9]{32}$/', $token)) {
                 throw new Exception('Le lien d\'activation est invalide ou votre compte a déjà été activé.');
@@ -174,8 +181,10 @@ class UserController extends AbstractController
         }
     }
 
-    public function treatmentConnexion()
+    public function treatmentConnexion(): void
     {
+        // Validate CSRF token first
+        $this->validateCsrfToken('connexion');
 
         $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : null;
         $password = isset($_POST['password']) ? htmlspecialchars(trim($_POST['password'])) : null;
@@ -184,6 +193,7 @@ class UserController extends AbstractController
         if (empty($email) || empty($password)) {
             $errors['fields'] = 'Veuillez remplir tous les champs';
         }
+
         $user = $this->repo->getUser($email);
 
         if (!$user) {
@@ -210,7 +220,7 @@ class UserController extends AbstractController
         if ($user && $user->getIsDeleted() === true) {
             $errors['isDeleted'] = 'Votre compte a été supprimé, Veuillez contacter le support.';
         }
-        $this->returnAllErrors($errors, 'connexion?error=true');
+        $this->returnAllErrors($errors, 'connexion', ['error' => 'true']);
 
         $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
         $idUser = $user->getIdUser();
@@ -244,16 +254,22 @@ class UserController extends AbstractController
                 $_SESSION['success'] = 'Vous êtes connecté en tant qu\'administrateur!';
                 $this->redirect('admin/dashboard_admin');
                 exit();
-            }
-            if ($_SESSION['role'] === 'super_admin') {
+            } elseif ($_SESSION['role'] === 'super_admin') {
                 $_SESSION['connectedSuperAdmin'] = true;
                 $_SESSION['success'] = 'Vous êtes connecté en tant que super administrateur!';
                 $this->redirect('admin/dashboard_super_admin');
+            } elseif ($_SESSION['role'] === 'user') {
+                $_SESSION['connected'] = true;
+                $_SESSION['success'] = 'Vous êtes connecté avec succès!';
+                $this->redirect('dashboard');
             } else {
                 $_SESSION['connected'] = true;
                 $_SESSION['success'] = 'Vous êtes connecté avec succès!';
                 $this->redirect('dashboard');
             }
+        } else {
+            $errors['unknown'] = 'Une erreur inconnue est survenue. Veuillez réessayer plus tard.';
+            $this->returnAllErrors($errors, 'connexion', ['error' => 'true']);
         }
     }
     public function deconnexion(): void
@@ -276,8 +292,11 @@ class UserController extends AbstractController
         $this->render('user/dashboard');
     }
 
-    public function treatmentForgotMyPassword()
+    public function treatmentForgotMyPassword(): void
     {
+        // Validate CSRF token
+        $this->validateCsrfToken('mdp_oublie');
+
         $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : null;
         $_SESSION['form_data'] = $_POST;
         $errors = [];
@@ -287,14 +306,14 @@ class UserController extends AbstractController
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'L\'adresse e-mail est invalide!';
         }
-        // Verify reCAPTCHA
-        if (IS_PROD === TRUE) {
-            // Verify reCAPTCHA
-            $recaptchaStatus = $this->checkReCaptcha();
-            if ($recaptchaStatus === false) {
-                $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
-            }
-        }
+        // // Verify reCAPTCHA
+        // if (IS_PROD === TRUE) {
+        //     // Verify reCAPTCHA
+        //     $recaptchaStatus = $this->checkReCaptcha();
+        //     if ($recaptchaStatus === false) {
+        //         $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+        //     }
+        // }
         $user = $this->repo->getUser($email);
         if ($user && $user->getIsActivated() === false) {
             $errors['isActivated'] = 'Vous ne pouvez pas réinitialiser votre mot de passe avant d\'avoir activé votre compte.';
@@ -316,7 +335,7 @@ class UserController extends AbstractController
             }
         }
 
-        $this->returnAllErrors($errors, 'mdp_oublie?error=true');
+        $this->returnAllErrors($errors, 'mdp_oublie', ['error' => 'true']);
 
         if ($user) {
             $idUser = $user->getIdUser();
@@ -342,8 +361,11 @@ class UserController extends AbstractController
         }
     }
 
-    public function treatmentResetPassword()
+    public function treatmentResetPassword(): void
     {
+        // Validate CSRF token
+        $this->validateCsrfToken('reinit_mon_mot_de_passe');
+
         $token = isset($_POST['token']) ? htmlspecialchars($_POST['token']) : null;
         $newPassword = isset($_POST['newPassword']) ? htmlspecialchars($_POST['newPassword']) : null;
         $confirmPassword = isset($_POST['confirmPassword']) ? htmlspecialchars($_POST['confirmPassword']) : null;
@@ -365,16 +387,16 @@ class UserController extends AbstractController
             $errors['token'] = 'Le lien de réinitialisation du mot de passe est invalide ou a expiré.';
         }
 
-        // Verify reCAPTCHA
-        if (IS_PROD === TRUE) {
-            // Verify reCAPTCHA
-            $recaptchaStatus = $this->checkReCaptcha();
-            if ($recaptchaStatus === false) {
-                $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
-            }
-        }
+        // // Verify reCAPTCHA
+        // if (IS_PROD === TRUE) {
+        //     // Verify reCAPTCHA
+        //     $recaptchaStatus = $this->checkReCaptcha();
+        //     if ($recaptchaStatus === false) {
+        //         $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+        //     }
+        // }
 
-        $this->returnAllErrors($errors, 'reinit_mon_mot_de_passe?token=' . $token . '&error=true');
+        $this->returnAllErrors($errors, 'reinit_mon_mot_de_passe', ['token' => $token, 'error' => 'true']);
 
         // Hash new password with pepper
         $passwordHash = password_hash($newPassword . SEL, PASSWORD_DEFAULT);
@@ -385,14 +407,14 @@ class UserController extends AbstractController
             $this->redirect('connexion');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de la réinitialisation du mot de passe. Veuillez réessayer plus tard.';
-            $this->redirect('reinit_mon_mot_de_passe?token=' . $token . '&error=true');
+            $this->redirect('reinit_mon_mot_de_passe', ['token' => $token, 'error' => 'true']);
         }
     }
-    public function displayMyAccount()
+    public function displayMyAccount(): void
     {
-        $this->render('user/mon_compte', ['title' => 'Mon compte']);
+        $this->render('user/mon_compte');
     }
-    public function editProfile()
+    public function editProfile(): void
     {
         try {
             $firstName = isset($_POST['firstName']) ? htmlspecialchars(trim(ucfirst($_POST['firstName']))) : null;
@@ -439,7 +461,7 @@ class UserController extends AbstractController
             $user = $this->repo->getUserById($_SESSION['idUser']);
 
 
-            $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&error=true');
+            $this->returnAllErrors($errors, 'mon_compte', ['action' => 'edit_profile', 'error' => 'true']);
 
 
             $user = new User();
@@ -468,11 +490,11 @@ class UserController extends AbstractController
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mon_compte?action=edit_profile&error=true');
+            $this->redirect('mon_compte', ['action' => 'edit_profile', 'error' => 'true']);
             exit();
         }
     }
-    public function editEmail()
+    public function editEmail(): void
     {
         $idUser = $_SESSION['idUser'];
         $email = isset($_POST['email']) ? htmlspecialchars(trim(strtolower($_POST['email']))) : null;
@@ -497,13 +519,13 @@ class UserController extends AbstractController
         if ($user && $user->getEmail() === $email) {
             $errors['sameEmail'] = 'Veuillez entrer une nouvelle adresse e-mail différente de l\'ancienne.';
         }
-        // verify reCAPTCHA
-        if (IS_PROD === TRUE) {
-            $recaptchaStatus = $this->checkReCaptcha();
-            if ($recaptchaStatus === false) {
-                $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
-            }
-        }
+        // // verify reCAPTCHA
+        // if (IS_PROD === TRUE) {
+        //     $recaptchaStatus = $this->checkReCaptcha();
+        //     if ($recaptchaStatus === false) {
+        //         $errors['recaptcha'] = 'Veuillez vérifier que vous n\'êtes pas un robot.';
+        //     }
+        // }
         // verify the last time of the email change at least 30 days ago
         if ($user) {
             $lastEmailChange = $user->getEmailChangedAt();
@@ -516,25 +538,30 @@ class UserController extends AbstractController
                 }
             }
         }
-        $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&field=email&error=true');
+        $this->returnAllErrors($errors, 'mon_compte', ['action' => 'edit_profile','field' => 'email', 'error' => 'true']);
 
         // send conformation email with code of six numbers to new email address
         $authCode = rand(100000, 999999);
         while ($this->repo->getUserByAuthCode($authCode)) {
             $authCode = rand(100000, 999999);
         }
-        $this->repo->saveAuthCodeAndUpdateEmailChangeAt($idUser, $authCode, (new DateTime())->format('Y-m-d H:i:s'));
-        $mail = new Mail();
-        $subject = 'Confirmation de votre nouvelle adresse e-mail';
-        $body = "Veuillez utiliser le code ci-dessous pour confirmer votre nouvelle adresse e-mail:<br>";
-        $body .= "<h2>$authCode</h2><br><br>";
-        $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $_SESSION['email'], $_SESSION['firstName'], $subject, $body);
-        $_SESSION['newEmail'] = $email;
+        $authCodeSave = $this->repo->saveAuthCodeAndUpdateEmailChangeAt($idUser, $authCode, (new DateTime())->format('Y-m-d H:i:s'));
+        if ($authCodeSave) {
+            $mail = new Mail();
+            $subject = 'Confirmation de votre nouvelle adresse e-mail';
+            $body = "Veuillez utiliser le code ci-dessous pour confirmer votre nouvelle adresse e-mail:<br>";
+            $body .= "<h2>$authCode</h2><br><br>";
+            $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $_SESSION['email'], $_SESSION['firstName'], $subject, $body);
+            $_SESSION['newEmail'] = $email;
+        } else {
+            $errors['saveCode'] = 'Une erreur s\'est produite lors de la génération du code de confirmation. Veuillez réessayer plus tard.';
+            $this->returnAllErrors($errors, 'mon_compte', ['action' => 'edit_profile','field' => 'email', 'error' => 'true']);
+        }
         $_SESSION['success'] = 'Un code de confirmation a été envoyé à votre nouvelle adresse e-mail. Veuillez vérifier votre boîte de réception et entrer le code pour confirmer votre nouvelle adresse e-mail.';
-        $this->redirect('mon_compte?action=confirm_new_email');
+        $this->redirect('mon_compte', ['action' => 'confirm_new_email']);
     }
 
-    public function validateNewEmail()
+    public function validateNewEmail(): void
     {
         try {
             $idUser = $_SESSION['idUser'];
@@ -548,7 +575,7 @@ class UserController extends AbstractController
             if ($authCode && !preg_match('/^[0-9]{6}$/', $authCode)) {
                 $errors['code'] = 'Le code de confirmation est invalide.';
             }
-            $this->returnAllErrors($errors, 'mon_compte?action=confirm_new_email&error=true');
+            $this->returnAllErrors($errors, 'mon_compte' , ['action' => 'confirm_new_email', 'error' => 'true']);
 
             $user = $this->repo->getUserById($idUser);
             if (!$user) {
@@ -572,27 +599,31 @@ class UserController extends AbstractController
                     throw new Exception('Une erreur s\'est produite lors de la mise à jour de votre adresse e-mail. Veuillez réessayer plus tard.');
                 }
             } else {
-                $errors['code'] = 'Le code de confirmation est incorrect.';
-                $this->returnAllErrors($errors, 'mon_compte?action=confirm_new_email&error=true');
+               throw new Exception('Le code de confirmation est incorrect.');
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mon_compte?action=confirm_new_email&error=true');
+            $this->redirect('mon_compte', ['action' => 'confirm_new_email', 'error' => 'true']);
         }
     }
 
-    public function cancelEmailChange()
+    public function cancelEmailChange(): void
     {
-        $idUser = $_SESSION['idUser'];
-        $this->repo->clearAuthCode($idUser);
-        if (isset($_SESSION['newEmail'])) {
+        try {
+            $idUser = $_SESSION['idUser'];
+            $this->repo->clearAuthCode($idUser);
+            if (isset($_SESSION['newEmail'])) {
             unset($_SESSION['newEmail']);
+            }
+            $_SESSION['success'] = 'Le changement d\'adresse e-mail a été annulé avec succès.';
+            $this->redirect('mon_compte');
+        } catch (Exception $e) {
+            $_SESSION['error'] = 'Une erreur s\'est produite lors de l\'annulation du changement d\'adresse e-mail.';
+            $this->redirect('mon_compte', ['action' => 'confirm_new_email', 'error' => 'true']);
         }
-        $_SESSION['success'] = 'Le changement d\'adresse e-mail a été annulé avec succès.';
-        $this->redirect('mon_compte');
     }
 
-    public function addPhone()
+    public function addPhone(): void
     {
         $idUser = $_SESSION['idUser'];
         $phone = isset($_POST['phone']) ? htmlspecialchars(trim($_POST['phone'])) : null;
@@ -608,7 +639,7 @@ class UserController extends AbstractController
             }
         }
         // If there are any validation errors, throw one Error with all errors
-        $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&field=phone&error=true');
+        $this->returnAllErrors($errors, 'mon_compte' , ['action' => 'edit_profile','field' => 'phone', 'error' => 'true']);
 
 
         $user = $this->repo->getUserById($idUser);
@@ -620,10 +651,10 @@ class UserController extends AbstractController
             $this->redirect('mon_compte');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de l\'ajout de votre numéro de téléphone. Veuillez réessayer plus tard.';
-            $this->redirect('mon_compte?action=edit_profile&field=phone&error=true');
+            $this->redirect('mon_compte', ['action' => 'edit_profile', 'field' => 'phone', 'error' => 'true']);
         }
     }
-    public function addBio()
+    public function addBio(): void
     {
         $idUser = $_SESSION['idUser'];
         $bio = isset($_POST['bio']) ? htmlspecialchars(trim($_POST['bio'])) : null;
@@ -638,7 +669,7 @@ class UserController extends AbstractController
         }
         // If there are any validation errors, throw one Error with all errors
 
-        $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&field=bio&error=true');
+        $this->returnAllErrors($errors, 'mon_compte', ['action' => 'edit_profile', 'field' => 'bio', 'error' => 'true']);
 
         $user = $this->repo->getUserById($idUser);
         $user->setBio($bio);
@@ -649,10 +680,10 @@ class UserController extends AbstractController
             $this->redirect('mon_compte');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de l\'ajout de votre biographie. Veuillez réessayer plus tard.';
-            $this->redirect('mon_compte?action=edit_profile&field=bio&error=true');
+            $this->redirect('mon_compte', ['action' => 'edit_profile', 'field' => 'bio', 'error' => 'true']);
         }
     }
-    public function addDateOfBirth()
+    public function addDateOfBirth(): void
     {
         $idUser = $_SESSION['idUser'];
         $dateOfBirth = isset($_POST['dateOfBirth']) ? htmlspecialchars(trim($_POST['dateOfBirth'])) : null;
@@ -673,7 +704,7 @@ class UserController extends AbstractController
         }
         // If there are any validation errors, throw one Error with all errors
 
-        $this->returnAllErrors($errors, 'mon_compte?action=edit_profile&field=date_of_birth&error=true');
+        $this->returnAllErrors($errors, 'mon_compte', ['action' => 'edit_profile', 'field' => 'date_of_birth', 'error' => 'true']);
 
         $user = $this->repo->getUserById($idUser);
         $user->setDateOfBirth($dateOfBirth);
@@ -684,11 +715,11 @@ class UserController extends AbstractController
             $this->redirect('mon_compte');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de l\'ajout de votre date de naissance. Veuillez réessayer plus tard.';
-            $this->redirect('mon_compte?action=edit_profile&field=date_of_birth&error=true');
+            $this->redirect('mon_compte', ['action' => 'edit_profile', 'field' => 'date_of_birth', 'error' => 'true']);
         }
     }
 
-    public function changePassword()
+    public function changePassword(): void
     {
         $idUser = $_SESSION['idUser'];
         $currentPassword = isset($_POST['currentPassword']) ? htmlspecialchars($_POST['currentPassword']) : null;
@@ -712,7 +743,7 @@ class UserController extends AbstractController
         }
 
         // If there are any validation errors, throw one Error with all errors
-        $this->returnAllErrors($errors, 'mon_compte?action=change_password&error=true');
+        $this->returnAllErrors($errors, 'mon_compte', ['action' => 'change_password', 'error' => 'true']);
         // Hash du nouveau mot de passe
         $newPasswordHash = password_hash($newPassword . SEL, PASSWORD_DEFAULT);
         $changePassword = $this->repo->updatePassword($idUser, $newPasswordHash);
@@ -721,10 +752,10 @@ class UserController extends AbstractController
             $this->redirect('mon_compte');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors du changement de mot de passe. Veuillez réessayer plus tard.';
-            $this->redirect('mon_compte?action=change_password&error=true');
+            $this->redirect('mon_compte' , ['action' => 'change_password', 'error' => 'true']);
         }
     }
-    public function deleteAccount()
+    public function deleteAccount(): void
     {
         $idUser = $_SESSION['idUser'];
         $confirmDelete = isset($_POST['confirmDelete']) ? htmlspecialchars(trim(strtolower($_POST['confirmDelete']))) : null;
@@ -733,13 +764,13 @@ class UserController extends AbstractController
         // Validation the deleting account of the user connected by an his  ID and confirmDelete
         if (!$idUser || $confirmDelete !== 'je confirme') {
             $_SESSION['error'] = 'Texte de confirmation invalide!';
-            $this->redirect('mon_compte?action=delete_account&error=true');
+            $this->redirect('mon_compte', ['action' => 'delete_account', 'error' => 'true']);
         }
         $deletedAt = (new DateTime())->format('Y-m-d H:i:s');
         $deleteUser = $this->repo->deleteUser($idUser, $deletedAt);
         if (!$deleteUser) {
             $_SESSION['error'] = 'Une erreur s\'est produite lors de la suppression de votre compte. Veuillez réessayer plus tard.';
-            $this->redirect('mon_compte?action=delete_account&error=true');
+            $this->redirect('mon_compte', ['action' => 'delete_account', 'error' => 'true']);
         }
 
         // Send confirmation email of account deletion
@@ -755,7 +786,7 @@ class UserController extends AbstractController
         $_SESSION['success'] = 'Votre compte a été supprimé avec succès!';
         $this->redirect('connexion');
     }
-    public function editProfilePicture()
+    public function editProfilePicture(): void
     {
         try {
             $idUser = $_SESSION['idUser'];
@@ -782,11 +813,11 @@ class UserController extends AbstractController
             $this->redirect('mon_compte');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mon_compte?error=true');
+            $this->redirect('mon_compte', ['error' => 'true']);
         }
     }
 
-    public function deleteProfilePicture()
+    public function deleteProfilePicture(): void
     {
         try {
             $idUser = $_SESSION['idUser'];
@@ -815,7 +846,7 @@ class UserController extends AbstractController
         }
     }
 
-    public function editBanner()
+    public function editBanner(): void
     {
         try {
             $idUser = $_SESSION['idUser'];
@@ -842,11 +873,11 @@ class UserController extends AbstractController
             $this->redirect('mon_compte');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mon_compte?error=true');
+            $this->redirect('mon_compte', ['error' => 'true']);
         }
     }
 
-    public function deleteBanner()
+    public function deleteBanner(): void
     {
         try {
             $idUser = $_SESSION['idUser'];
@@ -871,7 +902,7 @@ class UserController extends AbstractController
             $this->redirect('mon_compte');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mon_compte');
+            $this->redirect('mon_compte', ['error' => 'true']);
         }
     }
 }

@@ -8,6 +8,7 @@
   <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
   <form class="card" id="connexionForm" action="<?= HOME_URL . 'inscription' ?>" method="POST" novalidate>
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
     <div>
       <label for="firstName">Prénom:</label>
       <input type="text" id="firstName" name="firstName" placeholder="Entrez votre prénom" value="<?= $_SESSION['form_data']['firstName'] ?? '' ?>" required autocomplete="given-name" />
