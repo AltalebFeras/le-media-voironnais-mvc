@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 24, 2025 at 06:19 PM
+-- Generation Time: Sep 26, 2025 at 05:49 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `association` (
   KEY `idx_association_user` (`idUser`),
   KEY `idx_association_active` (`isActive`),
   KEY `idx_association_ville` (`idVille`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `association`
@@ -63,11 +63,13 @@ CREATE TABLE IF NOT EXISTS `association` (
 INSERT INTO `association` (`idAssociation`, `uiid`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `isActive`, `isPublic`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`) VALUES
 (30, 'a1b2c3d4e5f6g7h8', 'Club de Randonnée des Alpes', 'club-randonnee-alpes', 'Association de randonneurs passionnés explorant les sentiers alpins de la région Voironnaise.', 'assets/images/uploads/logos/randonnee_logo.jpg', 'assets/images/uploads/banners/montagne_banner.jpg', '15 Avenue des Alpes, Voiron', '0476050101', 'contact@randonnee-alpes.fr', 'https://www.randonnee-alpes.fr', 1, 1, 0, 2, 14329, '2025-09-22 15:49:23', NULL),
 (31, 'b2c3d4e5f6g7h8i9', 'Association Culturelle du Voironnais', 'culture-voironnais', 'Promotion de la culture locale à travers spectacles, expositions et événements artistiques.', 'assets/images/uploads/logos/culture_logo.jpg', 'assets/images/uploads/banners/culture_banner.jpg', '8 Place de la Mairie, Voiron', '0476050102', 'info@culture-voironnais.org', 'https://www.culture-voironnais.org', 1, 1, 0, 2, 14329, '2025-09-22 15:49:23', NULL),
-(32, 'c3d4e5f6g7h8i9j0', 'Sport Club Isérois', 'sport-club-iserois', 'Club multisports proposant football, tennis et natation pour tous âges.', 'assets/images/uploads/logos/sport_logo.jpg', 'assets/images/uploads/banners/sport_banner.jpg', '22 Rue du Stade, Grenoble', '0476050103', 'secretariat@sport-iserois.com', 'https://www.sport-iserois.com', 1, 1, 0, 3, 38100, '2025-09-22 15:49:23', NULL),
-(33, 'd4e5f6g7h8i9j0k1', 'Les Amis de la Nature', 'amis-nature', 'Association environnementale dédiée à la protection de la biodiversité locale.', 'assets/images/uploads/logos/nature_logo.jpg', 'assets/images/uploads/banners/nature_banner.jpg', '45 Chemin des Bois, Grenoble', '0476050104', 'contact@amis-nature.fr', 'https://www.amis-nature.fr', 1, 1, 0, 3, 38100, '2025-09-22 15:49:23', NULL),
+(32, 'c3d4e5f6g7h8i9j0', 'Sport Club Isérois', 'sport-club-iserois', 'Club multisports proposant football, tennis et natation pour tous âges.', 'assets/images/uploads/logos/sport_logo.jpg', 'assets/images/uploads/banners/sport_banner.jpg', '22 Rue du Stade, Grenoble', '0476050103', 'secretariat@sport-iserois.com', 'https://www.sport-iserois.com', 1, 1, 1, 3, 38100, '2025-09-22 15:49:23', NULL),
+(33, 'd4e5f6g7h8i9j0k1', 'Les Amis de la Nature', 'amis-nature', 'Association environnementale dédiée à la protection de la biodiversité locale.', 'assets/images/uploads/logos/default_logo.png', 'assets/images/uploads/banners/default_banner.png', '45 Chemin des Bois, Grenoble', '0476050104', 'contact@amis-nature.fr', 'https://www.amis-nature.fr', 1, 1, 0, 3, 14527, '2025-09-22 15:49:23', '2025-09-26 19:02:26'),
 (34, 'e5f6g7h8i9j0k1l2', 'Association Jeunesse Voironnaise', 'jeunesse-voironnaise', 'Accompagnement des jeunes dans leurs projets éducatifs et professionnels.', 'assets/images/uploads/logos/jeunesse_logo.jpg', 'assets/images/uploads/banners/jeunesse_banner.jpg', '12 Boulevard de la Jeunesse, Voiron', '0476050105', 'animation@jeunesse-voironnaise.fr', 'https://www.jeunesse-voironnaise.fr', 1, 1, 0, 4, 14329, '2025-09-22 15:49:23', NULL),
 (35, 'f6g7h8i9j0k1l2m3', 'Solidarité Seniors Isère', 'solidarite-seniors', 'Aide et accompagnement des personnes âgées de la région iséroise.', 'assets/images/uploads/logos/seniors_logo.jpg', 'assets/images/uploads/banners/seniors_banner.jpg', '30 Avenue des Tilleuls, Voiron', '0476050106', 'aide@solidarite-seniors.org', 'https://www.solidarite-seniors.org', 1, 1, 0, 4, 14329, '2025-09-22 15:49:23', NULL),
-(36, 'ed0260cbaa8cc841', 'Sport Club Iséroiss', 'grenoble-38100-sport-club-iseroiss', 'Sport Club IséroisSport Club Isérois', 'assets/images/uploads/logos/68d24b776a41d_1758612343.webp', 'assets/images/uploads/banners/68d24b7eb05d5_1758612350.webp', 'Sport Club IséroisSport Club Isérois', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 0, 3, 38100, '2025-09-23 09:25:24', '2025-09-23 09:25:54');
+(36, 'ed0260cbaa8cc841', 'Sport Club Iséroiss', 'grenoble-38100-sport-club-iseroiss', 'Sport Club IséroisSport Club Isérois', 'assets/images/uploads/logos/68d24b776a41d_1758612343.webp', 'assets/images/uploads/banners/68d24b7eb05d5_1758612350.webp', 'Sport Club IséroisSport Club Isérois', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 0, 3, 38100, '2025-09-23 09:25:24', '2025-09-23 09:25:54'),
+(37, '423aa7a943934dfd', 'Feras ALTALEB', 'grenoble-38100-feras-altaleb', '', 'assets/images/uploads/logos/default_logo.png', 'assets/images/uploads/banners/default_banner.png', '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 1, 3, 38100, '2025-09-25 21:59:14', NULL),
+(38, 'fd6a304572d8d6a2', 'Feras ALTALEBssssssss', 'grenoble-38100-feras-altaleb-1', '', 'assets/images/uploads/logos/default_logo.png', 'assets/images/uploads/banners/default_banner.png', '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 1, 3, 38100, '2025-09-26 18:56:33', '2025-09-26 18:56:42');
 
 -- --------------------------------------------------------
 
@@ -160,6 +162,7 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   `website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `siret` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `isActive` tinyint(1) NOT NULL DEFAULT '0',
+  `hasRequestForActivation` tinyint NOT NULL DEFAULT '0',
   `isPublic` tinyint(1) NOT NULL DEFAULT '0',
   `isPartner` tinyint(1) NOT NULL DEFAULT '0',
   `isDeleted` tinyint(1) NOT NULL DEFAULT '0',
@@ -169,6 +172,8 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   `updatedAt` datetime DEFAULT NULL,
   `partnerStartDate` datetime DEFAULT NULL,
   `partnerEndDate` datetime DEFAULT NULL,
+  `requestDate` datetime DEFAULT NULL,
+  `activationDate` datetime DEFAULT NULL,
   PRIMARY KEY (`idEntreprise`),
   UNIQUE KEY `UQ_idEntreprise` (`idEntreprise`),
   UNIQUE KEY `slug` (`slug`),
@@ -177,19 +182,21 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   KEY `idx_entreprise_user` (`idUser`),
   KEY `idx_entreprise_active` (`isActive`),
   KEY `idx_entreprise_ville` (`idVille`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `entreprise`
 --
 
-INSERT INTO `entreprise` (`idEntreprise`, `uiid`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `isActive`, `isPublic`, `isPartner`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`, `partnerStartDate`, `partnerEndDate`) VALUES
-(30, 'ent1b2c3d4e5f6g7', 'TechnoSoft Solutions', 'technosoft-solutions', 'Société de développement logiciel spécialisée dans les solutions métiers.', 'assets/images/uploads/logos/techno_logo.jpg', 'assets/images/uploads/banners/tech_banner.jpg', '25 Zone Industrielle, Voiron', '0476060201', 'contact@technosoft.fr', 'https://www.technosoft.fr', '12345678901234', 1, 1, 0, 0, 2, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL),
-(31, 'ent2c3d4e5f6g7h8', 'Boulangerie des Chartreuses', 'boulangerie-chartreuses', 'Boulangerie artisanale proposant pains traditionnels et pâtisseries locales.', 'assets/images/uploads/logos/boulangerie_logo.jpg', 'assets/images/uploads/banners/boulangerie_banner.jpg', '5 Rue de la Boulangerie, Voiron', '0476060202', 'info@boulangerie-chartreuses.fr', 'https://www.boulangerie-chartreuses.fr', '23456789012345', 1, 1, 1, 0, 2, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL),
-(32, 'ent3d4e5f6g7h8i9', 'Consulting Alpes Isère', 'consulting-alpes-isere', 'Cabinet de conseil en management et stratégie d entreprise.', 'assets/images/uploads/logos/68d24aa3a9936_1758612131.webp', 'assets/images/uploads/banners/68d24aae16403_1758612142.webp', '18 Avenue Jean Jaurès, Grenoble', '0476060203', 'direction@consulting-alpes.com', 'https://www.consulting-alpes.com', '34567890123456', 0, 0, 0, 1, 3, 38100, '2025-09-22 15:49:23', '2025-09-23 09:27:51', NULL, NULL),
-(33, 'ent4e5f6g7h8i9j0', 'EcoVert Jardinage', 'ecoverts-jardinage', 'Entreprise de jardinage écologique et aménagement paysager durable.', 'assets/images/uploads/logos/68d24a836ea40_1758612099.webp', 'assets/images/uploads/banners/68d24a900a4d4_1758612112.webp', '33 Route de Lyon, Grenoble', '0476060204', 'devis@ecoverts.fr', 'https://www.ecoverts.fr', '45678901234567', 1, 1, 1, 0, 3, 38100, '2025-09-22 15:49:23', '2025-09-23 09:21:55', NULL, NULL),
-(34, 'ent5f6g7h8i9j0k1', 'Artisan Menuiserie Dauphiné', 'menuiserie-dauphine', 'Menuiserie traditionnelle spécialisée dans la restauration de bâtiments anciens.', 'assets/images/uploads/logos/menuiserie_logo.jpg', 'assets/images/uploads/banners/menuiserie_banner.jpg', '7 Impasse des Artisans, Voiron', '0476060205', 'atelier@menuiserie-dauphine.fr', 'https://www.menuiserie-dauphine.fr', '56789012345678', 1, 1, 0, 0, 4, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL),
-(35, 'ent6g7h8i9j0k1l2', 'Café-Restaurant Le Montagnard', 'cafe-montagnard', 'Restaurant traditionnel proposant spécialités savoyardes et cuisine de montagne.', 'assets/images/uploads/logos/restaurant_logo.jpg', 'assets/images/uploads/banners/restaurant_banner.jpg', '14 Place du Marché, Voiron', '0476060206', 'reservation@montagnard.fr', 'https://www.montagnard.fr', '67890123456789', 1, 1, 1, 0, 4, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL);
+INSERT INTO `entreprise` (`idEntreprise`, `uiid`, `name`, `slug`, `description`, `logoPath`, `bannerPath`, `address`, `phone`, `email`, `website`, `siret`, `isActive`, `hasRequestForActivation`, `isPublic`, `isPartner`, `isDeleted`, `idUser`, `idVille`, `createdAt`, `updatedAt`, `partnerStartDate`, `partnerEndDate`, `requestDate`, `activationDate`) VALUES
+(30, 'ent1b2c3d4e5f6g7', 'TechnoSoft Solutions', 'technosoft-solutions', 'Société de développement logiciel spécialisée dans les solutions métiers.', 'assets/images/uploads/logos/techno_logo.jpg', 'assets/images/uploads/banners/tech_banner.jpg', '25 Zone Industrielle, Voiron', '0476060201', 'contact@technosoft.fr', 'https://www.technosoft.fr', '12345678901234', 1, 0, 1, 0, 0, 2, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL, NULL, NULL),
+(31, 'ent2c3d4e5f6g7h8', 'Boulangerie des Chartreuses', 'boulangerie-chartreuses', 'Boulangerie artisanale proposant pains traditionnels et pâtisseries locales.', 'assets/images/uploads/logos/boulangerie_logo.jpg', 'assets/images/uploads/banners/boulangerie_banner.jpg', '5 Rue de la Boulangerie, Voiron', '0476060202', 'info@boulangerie-chartreuses.fr', 'https://www.boulangerie-chartreuses.fr', '23456789012345', 1, 0, 1, 1, 0, 2, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL, NULL, NULL),
+(32, 'ent3d4e5f6g7h8i9', 'Consulting Alpes Isère', 'consulting-alpes-isere', 'Cabinet de conseil en management et stratégie d entreprise.', 'assets/images/uploads/logos/68d24aa3a9936_1758612131.webp', 'assets/images/uploads/banners/68d24aae16403_1758612142.webp', '18 Avenue Jean Jaurès, Grenoble', '0476060203', 'direction@consulting-alpes.com', 'https://www.consulting-alpes.com', '34567890123456', 0, 0, 0, 0, 1, 3, 38100, '2025-09-22 15:49:23', '2025-09-23 09:27:51', NULL, NULL, NULL, NULL),
+(33, 'ent4e5f6g7h8i9j0', 'EcoVert Jardinage', 'ecoverts-jardinage', 'Entreprise de jardinage écologique et aménagement paysager durable.', 'assets/images/uploads/logos/68d24a836ea40_1758612099.webp', 'assets/images/uploads/banners/68d24a900a4d4_1758612112.webp', '33 Route de Lyon, Grenoble', '0476060204', 'devis@ecoverts.fr', 'https://www.ecoverts.fr', '45678901234567', 1, 0, 0, 0, 0, 3, 38100, '2025-09-22 15:49:23', '2025-09-25 12:03:52', NULL, NULL, NULL, NULL),
+(34, 'ent5f6g7h8i9j0k1', 'Artisan Menuiserie Dauphiné', 'menuiserie-dauphine', 'Menuiserie traditionnelle spécialisée dans la restauration de bâtiments anciens.', 'assets/images/uploads/logos/menuiserie_logo.jpg', 'assets/images/uploads/banners/menuiserie_banner.jpg', '7 Impasse des Artisans, Voiron', '0476060205', 'atelier@menuiserie-dauphine.fr', 'https://www.menuiserie-dauphine.fr', '56789012345678', 1, 0, 1, 0, 0, 4, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL, NULL, NULL),
+(35, 'ent6g7h8i9j0k1l2', 'Café-Restaurant Le Montagnard', 'cafe-montagnard', 'Restaurant traditionnel proposant spécialités savoyardes et cuisine de montagne.', 'assets/images/uploads/logos/restaurant_logo.jpg', 'assets/images/uploads/banners/restaurant_banner.jpg', '14 Place du Marché, Voiron', '0476060206', 'reservation@montagnard.fr', 'https://www.montagnard.fr', '67890123456789', 1, 0, 1, 1, 0, 4, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL, NULL, NULL),
+(36, 'e2f65fb38daa8443', 'Feras ALTALEB', 'grenoble-38100-feras-altaleb', '', 'assets/images/uploads/logos/default_logo.png', 'assets/images/uploads/banners/default_banner.png', '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', '', 0, 0, 0, 0, 0, 3, 38100, '2025-09-25 12:17:19', '2025-09-25 21:37:50', NULL, NULL, NULL, NULL),
+(40, 'd597ee9ebc934ec0', 'Feras ALTALEBsddddddddddd', 'saint-martin-d-heres-feras-altalebsddddddddddd', '', 'assets/images/uploads/logos/default_logo.png', 'assets/images/uploads/banners/default_banner.png', '', '0780773302', 'feras.altalib@gmail.com', '', '', 0, 1, 0, 0, 1, 3, 14353, '2025-09-26 19:11:38', '2025-09-26 19:14:47', NULL, NULL, '2025-09-26 19:14:47', NULL);
 
 -- --------------------------------------------------------
 
@@ -237,7 +244,7 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   KEY `idx_evenement_association` (`idAssociation`),
   KEY `idx_evenement_entreprise` (`idEntreprise`),
   KEY `idx_evenement_category` (`idEventCategory`)
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `evenement`
@@ -259,7 +266,8 @@ INSERT INTO `evenement` (`idEvenement`, `uiid`, `title`, `slug`, `description`, 
 (85, 'evt3691470258mn', 'Exposition Menuiserie', 'exposition-menuiserie', 'Présentation de réalisations artisanales et démonstrations de techniques traditionnelles.', 'Expo savoir-faire menuiserie', '2025-11-01 10:00:00', '2025-11-03 18:00:00', '2025-10-28 23:59:59', 100, 0, '7 Impasse des Artisans, Voiron', 'assets/images/uploads/banners/menuiserie_banner.jpg', 'actif', 1, 0, 0, 0.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 8),
 (86, 'evt4815926037no', 'Soirée Savoyarde', 'soiree-savoyarde', 'Repas traditionnel avec spécialités montagnardes et animation folklorique.', 'Soirée gastronomie savoyarde', '2025-11-22 19:00:00', '2025-11-22 23:00:00', '2025-11-19 18:00:00', 60, 0, '14 Place du Marché, Voiron', 'assets/images/uploads/banners/savoyard_banner.jpg', 'actif', 1, 0, 0, 42.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 7),
 (87, 'evt5927384061op', 'Cours de Soutien Scolaire', 'cours-soutien-scolaire', 'Aide aux devoirs et soutien scolaire pour collégiens et lycéens.', 'Soutien scolaire personnalisé', '2025-11-04 16:00:00', '2025-11-04 18:00:00', '2025-11-02 20:00:00', 10, 0, '12 Boulevard de la Jeunesse, Voiron', 'assets/images/uploads/banners/soutien_banner.jpg', 'actif', 1, 0, 0, 15.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 4),
-(88, '524b9a3027fba03e', 'qsdqqqqqsdqdqsd', 'corenc-qsdqqqqqsdqdqsd-art', 'qsqsdqsdqsdqs', 'dqsdqsdqsdqsdq', '2025-10-03 16:38:00', '2025-10-11 16:38:00', '2025-09-25 16:38:00', 33, 0, '42 Rue Henri Duhamel', 'assets/images/uploads/banners/68d24a4448918_1758612036.webp', 'brouillon', 0, 1, 0, 3.00, 'EUR', '2025-09-22 16:39:09', '2025-09-23 09:20:39', 3, NULL, NULL, 14588, 8);
+(88, '524b9a3027fba03e', 'qsdqqqqqsdqdqsd', 'corenc-qsdqqqqqsdqdqsd-art', 'qsqsdqsdqsdqs', 'dqsdqsdqsdqsdq', '2025-10-03 16:38:00', '2025-10-11 16:38:00', '2025-09-25 16:38:00', 33, 0, '42 Rue Henri Duhamel', 'assets/images/uploads/banners/68d24a4448918_1758612036.webp', 'brouillon', 0, 1, 0, 3.00, 'EUR', '2025-09-22 16:39:09', '2025-09-23 09:20:39', 3, NULL, NULL, 14588, 8),
+(89, 'cea7f232825c57fb', 'ssdfsdfdddddss', 'grenoble-38100-ssdfsdfdddddss-affaires', 'sdddddddddddddddd', 'dddddddddddddddddddddddddd', '2025-10-11 19:37:00', '2025-10-12 19:37:00', '2025-10-03 19:37:00', 55, 0, '42 Rue Henri Duhamel', 'assets/images/uploads/banners/default_banner.png', 'brouillon', 0, 1, 0, 0.00, 'EUR', '2025-09-26 19:39:50', '2025-09-26 19:40:53', 3, NULL, NULL, 38100, 5);
 
 -- --------------------------------------------------------
 
@@ -320,7 +328,7 @@ CREATE TABLE IF NOT EXISTS `event_image` (
   PRIMARY KEY (`idEventImage`),
   UNIQUE KEY `UQ_idEventImage` (`idEventImage`),
   KEY `FK_evenement_TO_event_image` (`idEvenement`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `event_image`
@@ -435,7 +443,7 @@ CREATE TABLE IF NOT EXISTS `notification` (
   `idUser` int NOT NULL,
   `idEvenement` int DEFAULT NULL,
   `actorId` int DEFAULT NULL,
-  `type` enum('invitation_evenement','mise_a_jour_evenement','message','invitation_association','rappel_evenement','systeme','alert','autre') COLLATE utf8mb4_general_ci NOT NULL,
+  `type` enum('activation','invitation','mise_a_jour','rappel','systeme','alert','message','autre') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `message` text COLLATE utf8mb4_general_ci NOT NULL,
   `url` varchar(512) COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -455,14 +463,23 @@ CREATE TABLE IF NOT EXISTS `notification` (
   KEY `idx_notification_priority_created` (`priority`,`createdAt`),
   KEY `FK_evenement_TO_notification` (`idEvenement`),
   KEY `FK_actor_TO_notification` (`actorId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `notification`
 --
 
 INSERT INTO `notification` (`idNotification`, `idUser`, `idEvenement`, `actorId`, `type`, `title`, `message`, `url`, `metadata`, `priority`, `isRead`, `readAt`, `deliveredAt`, `expiresAt`, `createdAt`) VALUES
-(1, 3, 82, 3, 'alert', 'title', 'messagessssssssssss', 'ddd', NULL, 0, 1, '2025-09-24 19:26:45', NULL, NULL, '2025-09-24 19:23:19');
+(1, 3, 82, 3, 'alert', 'title', 'messagessssssssssss', 'ddd', NULL, 0, 1, '2025-09-25 12:15:21', NULL, NULL, '2025-09-24 19:23:19'),
+(2, 3, NULL, NULL, 'activation', 'Activation de votre compte entreprise', 'Votre compte entreprise \"Feras ALTALEB\" a été activé avec succès.', '/mes_entreprises?action=voir&uiid=e2f65fb38daa8443', NULL, 0, 1, '2025-09-25 15:18:46', NULL, NULL, '2025-09-25 15:18:27'),
+(3, 3, NULL, NULL, 'activation', 'Refus de l\'activation de votre compte entreprise', 'Votre demande d\'activation de compte entreprise \"Feras ALTALEBddddd\" a été refusée.', '/mes_entreprises', NULL, 0, 1, '2025-09-25 16:12:34', NULL, NULL, '2025-09-25 16:10:45'),
+(4, 3, NULL, NULL, 'activation', 'Activation de votre compte entreprise', 'Votre compte entreprise \"Feras ALTALEBddddd\" a été activé avec succès.', '/mes_entreprises?action=voir&uiid=fc1d3e04a5e4e3b0', NULL, 0, 1, '2025-09-25 16:12:25', NULL, NULL, '2025-09-25 16:11:56'),
+(5, 3, NULL, NULL, 'activation', 'Refus de l\'activation de votre compte entreprise', 'Votre demande d\'activation de compte entreprise \"dfgdfffggggggggggggggggALEB\" a été refusée.', '/mes_entreprises', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 16:27:14'),
+(6, 3, NULL, NULL, 'activation', 'Activation de votre compte entreprise', 'Votre compte entreprise \"dfgdfffggggggggggggggggALEB\" a été activé avec succès.', '/mes_entreprises?action=voir&uiid=52a053193fbdc5f7', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 17:34:32'),
+(7, 3, NULL, NULL, 'activation', 'Refus de l\'activation de votre compte entreprise', 'Votre demande d\'activation de compte entreprise \"Ferddsdfsdfsdf\" a été refusée.', '/mes_entreprises', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 17:41:09'),
+(8, 3, NULL, NULL, 'activation', 'Refus de l\'activation de votre compte entreprise', 'Votre demande d\'activation de compte entreprise \"Feras ALTALEB\" a été refusée.', '/mes_entreprises', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 21:27:39'),
+(9, 3, NULL, NULL, 'activation', 'Activation de votre compte entreprise', 'Votre compte entreprise \"Feras ALTALEB\" a été activé avec succès.', '/mes_entreprises?action=voir&uiid=e2f65fb38daa8443', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 21:28:28'),
+(10, 3, NULL, NULL, 'activation', 'Refus de l\'activation de votre compte entreprise', 'Votre demande d\'activation de compte entreprise \"Feras ALTALEB\" a été refusée.', '/mes_entreprises', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 21:37:50');
 
 -- --------------------------------------------------------
 
@@ -491,7 +508,7 @@ CREATE TABLE IF NOT EXISTS `realisation` (
   KEY `idx_realisation_entreprise` (`idEntreprise`),
   KEY `idx_realisation_public` (`isPublic`),
   KEY `idx_realisation_featured` (`isFeatured`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `realisation`
@@ -499,7 +516,9 @@ CREATE TABLE IF NOT EXISTS `realisation` (
 
 INSERT INTO `realisation` (`idRealisation`, `uiid`, `title`, `slug`, `description`, `dateRealized`, `isPublic`, `isFeatured`, `isDeleted`, `idEntreprise`, `createdAt`, `updatedAt`) VALUES
 (1, 'dffdg12d6fg6', 'dfffffffffffffffffffffff', 'fffffffffffffffffffffffffff', 'ffffffdgggggggggggggggggggggggggggg', '2025-09-23', 1, 0, 1, 32, '2025-09-23 15:35:40', '2025-09-24 14:39:10'),
-(2, '7e2a452f26f09435', 'ddddddds', 'ecovert-jardinage-ddddddds', 'sdsdfsdfsd', '2025-10-03', 0, 0, 0, 33, '2025-09-24 13:53:48', '2025-09-24 14:24:49');
+(2, '7e2a452f26f09435', 'dddddddssdsdfsdfsdf', 'ecovert-jardinage-dddddddssdsdfsdfsdf', 'sdsdfsdfsd', '2025-10-03', 1, 0, 1, 33, '2025-09-24 13:53:48', '2025-09-26 19:24:54'),
+(3, '6b7b53e237c350d8', 'sdfsdfsdf', 'ecovert-jardinage-sdfsdfsdf', '', '0000-00-00', 1, 0, 1, 33, '2025-09-26 19:25:01', '2025-09-26 19:25:05'),
+(4, '312d4db88b646498', 'dssdfdsf', 'ecovert-jardinage-dssdfdsf', '', '0000-00-00', 1, 0, 0, 33, '2025-09-26 19:41:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -588,17 +607,18 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_user_email` (`email`(250)),
   KEY `idx_user_online` (`isOnline`),
   KEY `idx_user_last_seen` (`lastSeen`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
-(1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-24 20:18:25', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
+(1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-25 18:16:35', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
 (2, 3, 'Thomas', 'Barbier', 'thomas.barbier@example.com', NULL, '$2y$10$abcdefghijklmnopqrstuv', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-09-12 14:36:10', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 0, '2025-09-24 16:30:37', '2025-09-15 09:47:56', NULL, '18aab59f6829597f2a447a393b407e35', '2025-09-15 09:47:56', '2025-09-22 11:38:58', '2025-09-15 10:10:17', '2025-09-19 09:35:59', NULL),
-(4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-17 19:16:31', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL);
+(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-26 14:47:05', '2025-09-15 09:47:56', NULL, '062a9142824fd9b8abc20eab7ad165c5', '2025-09-15 09:47:56', '2025-09-26 15:46:28', '2025-09-26 14:53:08', '2025-09-26 14:26:07', NULL),
+(4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-17 19:16:31', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL),
+(29, 3, 'Feras', 'Altaleb', 'b@gmail.com', NULL, '$2y$10$5GwyRSR5UlskHy8jEsjmUOifcmMJFrfPFc06XH61J57WuwKmi6E9e', NULL, NULL, NULL, NULL, 1, 0, 0, 0, '2025-09-26 14:14:22', '2025-09-26 14:13:14', NULL, NULL, '2025-09-26 14:13:14', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -617,14 +637,16 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   PRIMARY KEY (`idUserAssociation`),
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user_association`
 --
 
 INSERT INTO `user_association` (`idUserAssociation`, `idUser`, `idAssociation`, `role`, `joinedAt`, `isActive`) VALUES
-(27, 3, 36, 'admin', '2025-09-23 09:25:24', 1);
+(27, 3, 36, 'admin', '2025-09-23 09:25:24', 1),
+(28, 3, 37, 'admin', '2025-09-25 21:59:14', 1),
+(29, 3, 38, 'admin', '2025-09-26 18:56:33', 1);
 
 -- --------------------------------------------------------
 
