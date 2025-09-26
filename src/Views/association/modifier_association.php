@@ -13,6 +13,7 @@
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
             <form action="<?= HOME_URL . 'association/modifier' ?>" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="modifier_association">
                 <div class="card">
                     <input type="hidden" name="uiid" value="<?= $association->getUiid() ?>">
                     <div>

@@ -21,9 +21,15 @@ class EntrepriseController extends AbstractController
         $this->repo = new EntrepriseRepository();
         $this->AssocRepo = new AssociationRepository();
     }
-    private function getId(): mixed
+    private function getId(): int|null
     {
-        $uiid =  isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+        if (isset($_GET['uiid'])) {
+            $uiid = htmlspecialchars(trim($_GET['uiid']));
+        } elseif (isset($_POST['uiid'])) {
+            $uiid = htmlspecialchars(trim($_POST['uiid']));
+        } else {
+            $uiid = null;
+        }
         return $this->repo->getIdByUiid($uiid);
     }
     public function mesEntreprises(): void
@@ -201,7 +207,7 @@ class EntrepriseController extends AbstractController
 
         try {
             $idUser = $_SESSION['idUser'];
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             $idEntreprise = $this->getId();
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
 
@@ -295,7 +301,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             $idEntreprise = $this->getId();
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
 
@@ -326,7 +332,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idEntreprise = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idEntreprise) {
                 throw new Exception("ID d'entreprise invalide");
             }
@@ -364,7 +370,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idEntreprise = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idEntreprise) {
                 throw new Exception("ID d'entreprise invalide");
             }
@@ -406,7 +412,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idEntreprise = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idEntreprise) {
                 throw new Exception("ID d'entreprise invalide");
             }
@@ -444,7 +450,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idEntreprise = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idEntreprise) {
                 throw new Exception("ID d'entreprise invalide");
             }
@@ -486,7 +492,7 @@ class EntrepriseController extends AbstractController
     {
         try {
             $idEntreprise = $this->getId();
-            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             if (!$idEntreprise) {
                 throw new Exception("ID d'entreprise invalide");
             }
@@ -504,7 +510,7 @@ class EntrepriseController extends AbstractController
             if ($entreprise->getIsActive()) {
                 throw new Exception("L'entreprise est déjà active");
             }
-           
+
             $lastRequestDate = $entreprise->getRequestDate();
             if ($lastRequestDate && $entreprise->getRequestDate() !== null && $entreprise->getHasRequestForActivation() == true) {
                 $lastRequestDateTime = new DateTime($lastRequestDate);

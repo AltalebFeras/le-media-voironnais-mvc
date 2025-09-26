@@ -127,8 +127,6 @@ switch ($route) {
                 $associationController->mesAssociations();
             } else if ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['uiid'])) {
                 $associationController->displayAssociationDetails();
-            } else if ($method === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['uiid'])) {
-                $associationController->deleteAssociation();
             } else {
                 $homeController->page404();
             }
@@ -162,7 +160,7 @@ switch ($route) {
                     $associationController->updateLogo();
                 } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_logo') {
                     $associationController->deleteLogo();
-                } elseif (!isset($_POST['action'])) {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_association') {
                     $associationController->updateAssociation();
                 } else {
                     $homeController->page404();
@@ -177,16 +175,21 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
-// =======>
+    case HOME_URL . 'association/supprimer':
+        if ($method === 'POST') {
+            $associationController->deleteAssociation();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
     // Entreprise routes
     case HOME_URL . 'mes_entreprises':
         if ($connectionSecured) {
-            if ($method === 'GET' && !isset($_GET['uiid'])) {
+            if ($method === 'GET' && !isset($_GET['action']) && !isset($_GET['uiid'])) {
                 $entrepriseController->mesEntreprises();
             } elseif ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['uiid'])) {
                 $entrepriseController->displayEntrepriseDetails();
-            } elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['uiid'])) {
-                $entrepriseController->deleteEntreprise();
             } else {
                 $homeController->page404();
             }
@@ -196,27 +199,32 @@ switch ($route) {
         }
         break;
     case HOME_URL . 'entreprise/ajouter':
-        if ($method === 'POST' && $connectionSecured) {
-            $entrepriseController->addEntreprise();
-        } elseif ($connectionSecured && $method === 'GET') {
-            $entrepriseController->showAddForm();
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $entrepriseController->addEntreprise();
+            } elseif ($method === 'GET') {
+                $entrepriseController->showAddForm();
+            } else {
+                $homeController->page404();
+            }
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
         }
         break;
+
     case HOME_URL . 'entreprise/modifier':
         if ($connectionSecured) {
             if ($method === 'POST') {
-                if (isset($_GET['action']) && $_GET['action'] === 'modifier_banner') {
+                if (isset($_POST['action']) && $_POST['action'] === 'modifier_banner') {
                     $entrepriseController->updateBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_banner') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_banner') {
                     $entrepriseController->deleteBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'modifier_logo') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_logo') {
                     $entrepriseController->updateLogo();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_logo') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_logo') {
                     $entrepriseController->deleteLogo();
-                } elseif (!isset($_GET['action'])) {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_entreprise') {
                     $entrepriseController->updateEntreprise();
                 } else {
                     $homeController->page404();
@@ -231,8 +239,17 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+
+    case HOME_URL . 'entreprise/supprimer':
+        if ($method === 'POST') {
+            $entrepriseController->deleteEntreprise();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
     case HOME_URL . 'entreprise/demander_activation_mon_entreprise':
-        if ($method === 'POST' && isset($_GET['uiid'])) {
+        if ($method === 'POST') {
             $entrepriseController->demanderActivation();
         } else {
             $homeController->page404();
@@ -481,9 +498,9 @@ switch ($route) {
         break;
 
     case HOME_URL . 'admin/utilisateur_details':
-        if ($connectionSecuredAdmin && $method === 'POST' && isset($_GET['action'])) {
+        if ($connectionSecuredAdmin && $method === 'POST' && isset($_POST['action'])) {
             // POST action for block/unblock/send_email
-            switch ($_GET['action']) {
+            switch ($_POST['action']) {
                 case 'block':
                     $adminController->blockUser();
                     break;
@@ -509,7 +526,6 @@ switch ($route) {
             if (isset($_POST['action']) && $_POST['action'] === 'accept') {
                 $adminController->acceptEntrepriseActivationRequest();
             } elseif (isset($_POST['action']) && $_POST['action'] === 'refuse') {
-
                 $adminController->refuseEntrepriseActivationRequest();
             } else {
                 $homeController->page404();

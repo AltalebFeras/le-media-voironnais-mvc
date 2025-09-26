@@ -64,7 +64,7 @@ class AdminController extends AbstractController
     public function blockUser()
     {
 
-        $idUser = is_numeric($_GET['id']) ? (int)$_GET['id'] : null;
+        $idUser = is_numeric($_POST['id']) ? (int)$_POST['id'] : null;
         $errors = [];
 
         if (!$idUser) {
@@ -85,7 +85,7 @@ class AdminController extends AbstractController
     }
     public function unblockUser()
     {
-        $idUser = is_numeric($_GET['id']) ? (int)$_GET['id'] : null;
+        $idUser = is_numeric($_POST['id']) ? (int)$_POST['id'] : null;
         $errors = [];
 
         if (!$idUser) {
@@ -108,7 +108,7 @@ class AdminController extends AbstractController
     public function sendEmailToUser(): void
     {
         try {
-            $idUser = is_numeric($_GET['id']) ? (int)$_GET['id'] : null;
+            $idUser = is_numeric($_POST['id']) ? (int)$_POST['id'] : null;
             $errors = [];
             $subject = isset($_POST['subject']) ? htmlspecialchars(trim($_POST['subject'])) : '';
             $body = isset($_POST['body']) ? htmlspecialchars(trim($_POST['body'])) : '';

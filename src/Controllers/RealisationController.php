@@ -20,10 +20,15 @@ class RealisationController extends AbstractController
         $this->repo = new RealisationRepository();
         $this->entrepriseRepo = new EntrepriseRepository();
     }
-
-    private function getRealisationId()
+    private function getRealisationId(): int|null
     {
-        $uiid = isset($_GET['realisation_uiid']) ? htmlspecialchars(trim($_GET['realisation_uiid'])) : null;
+        if (isset($_GET['realisation_uiid'])) {
+            $uiid = htmlspecialchars(trim($_GET['realisation_uiid']));
+        } elseif (isset($_POST['realisation_uiid'])) {
+            $uiid = htmlspecialchars(trim($_POST['realisation_uiid']));
+        } else {
+            $uiid = null;
+        }
         return $this->repo->getIdByUiid($uiid);
     }
 

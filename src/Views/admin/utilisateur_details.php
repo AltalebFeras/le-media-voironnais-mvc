@@ -11,10 +11,7 @@
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
             <?php
             // Sanitize user data for display and create safe URL/id values
-            $rawId = $user['id'] ?? '';
-            $id = $rawId;
-            $idUrl = urlencode($rawId);
-
+            $id = $user['id'] ?? '';
             $firstName = $user['firstName'] ?? '';
             $lastName = $user['lastName'] ?? '';
             $email = $user['email'] ?? '';
@@ -97,11 +94,15 @@
 
                     <!-- block/unblock form -->
                     <?php if ((int)($user['isBanned'] ?? 0) === 1): ?>
-                        <form method="POST" action="<?= HOME_URL . 'admin/utilisateur_details?id=' . $idUrl . '&action=unblock'; ?>">
+                        <form method="POST" action="<?= HOME_URL . 'admin/utilisateur_details'; ?>">
+                            <input type="hidden" name="id" value="<?= $id; ?>">
+                            <input type="hidden" name="action" value="unblock">
                             <button type="submit" class="btn btn-success">Débannir l'utilisateur</button>
                         </form>
                     <?php else: ?>
-                        <form method="POST" action="<?= HOME_URL . 'admin/utilisateur_details?id=' . $idUrl . '&action=block'; ?>" onsubmit="return confirm('Confirmer le bannissement de cet utilisateur ?');">
+                        <form method="POST" action="<?= HOME_URL . 'admin/utilisateur_details'; ?>" onsubmit="return confirm('Confirmer le bannissement de cet utilisateur ?');">
+                            <input type="hidden" name="id" value="<?= $id; ?>">
+                            <input type="hidden" name="action" value="block">
                             <button type="submit" class="btn btn-danger">Bannir l'utilisateur</button>
                         </form>
                     <?php endif; ?>

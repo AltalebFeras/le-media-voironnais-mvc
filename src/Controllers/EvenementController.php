@@ -17,9 +17,15 @@ class EvenementController extends AbstractController
     {
         $this->repo = new EvenementRepository();
     }
-    private function getId()
+        private function getId(): int|null
     {
-        $uiid =  isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
+        if (isset($_GET['uiid'])) {
+            $uiid = htmlspecialchars(trim($_GET['uiid']));
+        } elseif (isset($_POST['uiid'])) {
+            $uiid = htmlspecialchars(trim($_POST['uiid']));
+        } else {
+            $uiid = null;
+        }
         return $this->repo->getIdByUiid($uiid);
     }
 

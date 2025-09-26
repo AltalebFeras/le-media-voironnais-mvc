@@ -242,9 +242,8 @@
                     </div>
                     <div class="flex-row justify-content-between">
                         <button type="button" class="btn" onclick="document.getElementById('popup').style.display='none'">Annuler</button>
-                        <form action="<?= HOME_URL . 'mes_associations' ?>" method="post">
+                        <form action="<?= HOME_URL . 'association/supprimer' ?>" method="post">
                             <input type="hidden" name="uiid" value="<?= $association->getUiid() ?>">
-                            <input type="hidden" name="action" value="delete">
                             <button type="submit" class="btn deconnexion">Supprimer</button>
                         </form>
                     </div>

@@ -12,7 +12,9 @@
         <div class="max-width-50">
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
-            <form action="<?= HOME_URL . 'entreprise/modifier?uiid=' . $entreprise->getUiid() ?>" method="post" enctype="multipart/form-data">
+            <form action="<?= HOME_URL . 'entreprise/modifier' ?>" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="uiid" value="<?= $entreprise->getUiid() ?>">
+                <input type="hidden" name="action" value="modifier_entreprise">
                 <div class="card">
                     <div>
                         <div>
