@@ -22,7 +22,9 @@
             
             <?php if ($isOwner): ?>
                 <div class="evenement-banner-actions">
-                    <form method="post" action="<?= HOME_URL . 'evenement/modifier?action=modifier_banner&uiid=' . $evenement['uiid'] ?>" enctype="multipart/form-data">
+                    <form method="post" action="<?= HOME_URL . 'evenement/modifier4' ?>" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="modifier_banner">
+                        <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
                         <label for="bannerInput" class="btn">
                             Changer bannière
                             <input type="file" id="bannerInput" name="banner" accept="image/*" required>
@@ -31,7 +33,9 @@
                         <button type="button" id="cancelBannerBtn" class="btn" style="display:none;">Annuler</button>
                     </form>
                     <?php if ($evenement['bannerPath']): ?>
-                        <form method="post" action="<?= HOME_URL . 'evenement/modifier?action=supprimer_banner&uiid=' . $evenement['uiid'] ?>">
+                        <form method="post" action="<?= HOME_URL . 'evenement/modifier' ?>">
+                            <input type="hidden" name="action" value="supprimer_banner">
+                            <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
                             <button type="submit" class="btn bg-danger">Supprimer</button>
                         </form>
                     <?php endif; ?>
@@ -95,7 +99,10 @@
                                                     <img src="<?= $image['imagePath'] ?>" alt="<?= $image['altText'] ?>">
                                                     <?php if ($isOwner): ?>
                                                         <div class="image-actions">
-                                                            <form method="post" action="<?= HOME_URL . 'evenement/modifier?action=supprimer_image&uiid=' . $evenement['uiid'] . '&imageId=' . $image['idEventImage'] ?>" style="display:inline;">
+                                                            <form method="post" action="<?= HOME_URL . 'evenement/modifier' ?>" style="display:inline;">
+                                                                <input type="hidden" name="action" value="supprimer_image">
+                                                                <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
+                                                                <input type="hidden" name="imageId" value="<?= $image['idEventImage'] ?>">
                                                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?')">Supprimer</button>
                                                             </form>
                                                         </div>
@@ -194,11 +201,13 @@
         
         <!-- Add Image Modal -->
         <?php if ($isOwner): ?>
-            <div id="addImageModal" class="d-none" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; display:none; justify-content:center; align-items:center;">
+            <div id="addImageModal" class="d-none popup" >
                 <div class="card" style="max-width:500px;">
                     <h3>Ajouter une image</h3>
                     <button type="button" onclick="document.getElementById('addImageModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
-                    <form method="post" action="<?= HOME_URL . 'evenement/modifier?action=ajouter_image&uiid=' . $evenement['uiid'] ?>" enctype="multipart/form-data">
+                    <form method="post" action="<?= HOME_URL . 'evenement/modifier' ?>" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="ajouter_image">
+                        <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
                         <div class="mt mb">
                             <label for="eventImage">Sélectionner une image :</label>
                             <input type="file" id="eventImage" name="eventImage" accept="image/*" required>
@@ -224,7 +233,8 @@
                     </div>
                     <div class="flex-row justify-content-between">
                         <button type="button" class="btn" onclick="document.getElementById('popup').style.display='none'">Annuler</button>
-                        <form action="<?= HOME_URL . 'mes_evenements?action=delete&uiid=' . $evenement['uiid'] ?>" method="post">
+                        <form action="<?= HOME_URL . 'evenement/supprimer' ?>" method="post">
+                            <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
                             <button type="submit" class="btn deconnexion">Supprimer</button>
                         </form>
                     </div>

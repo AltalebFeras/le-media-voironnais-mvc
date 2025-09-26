@@ -299,7 +299,7 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
-        
+
     case HOME_URL . 'entreprise/mes_realisations/supprimer':
         if ($method === 'POST') {
             $realisationController->deleteRealisation();
@@ -315,8 +315,6 @@ switch ($route) {
                 $evenementController->mesEvenements();
             } elseif ($method === 'GET' && isset($_GET['action']) && $_GET['action'] === 'voir' && isset($_GET['uiid'])) {
                 $evenementController->displayEventDetails();
-            } elseif ($method === 'POST' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['uiid'])) {
-                $evenementController->deleteEvent();
             } else {
                 $homeController->page404();
             }
@@ -338,15 +336,15 @@ switch ($route) {
     case HOME_URL . 'evenement/modifier':
         if ($connectionSecured) {
             if ($method === 'POST') {
-                if (isset($_GET['action']) && $_GET['action'] === 'modifier_banner') {
+                if (isset($_POST['action']) && $_POST['action'] === 'modifier_banner') {
                     $evenementController->updateBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_banner') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_banner') {
                     $evenementController->deleteBanner();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'ajouter_image') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'ajouter_image') {
                     $evenementController->addEventImage();
-                } elseif (isset($_GET['action']) && $_GET['action'] === 'supprimer_image') {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_image') {
                     $evenementController->deleteEventImage();
-                } elseif (!isset($_GET['action'])) {
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_evenement') {
                     $evenementController->updateEvent();
                 } else {
                     $homeController->page404();
@@ -359,6 +357,13 @@ switch ($route) {
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
+        }
+        break;
+    case HOME_URL . 'evenement/supprimer':
+        if ($method === 'POST') {
+            $evenementController->deleteEvent();
+        } else {
+            $homeController->page404();
         }
         break;
 
