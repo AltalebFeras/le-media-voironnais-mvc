@@ -10,4 +10,8 @@
 </IfModule>
 ###### to be removed in production final version
 
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
+
   ErrorDocument 404 /page-not-found
