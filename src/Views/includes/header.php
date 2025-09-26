@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- to be removed in production final version -->
+  <meta name="robots" content="noindex, nofollow">
+  <!-- to be removed in production final version -->
 
   <?php
   /** translation title */

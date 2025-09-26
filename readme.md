@@ -282,3 +282,7 @@ define("MAIL_FROM", "your_email@example.com");
 ---
 
 **Pour toute question ou contribution, contactez l'équipe du projet.**
+
+⚠️ **Important :**
+
+Des protections contre l'indexation par les moteurs de recherche sont activées dans ce projet (balise `<meta name="robots" content="noindex, nofollow">` dans le header, directive `X-Robots-Tag` dans le `.htaccess`, et fichier `robots.txt`).

@@ -4,5 +4,10 @@
   RewriteCond %{REQUEST_URI} !\.(css|js|jpg|jpeg|png|svg|webp|gif|ico|woff2|ttf|woff|webmanifest|txt|text/html)$ [NC]
   RewriteRule   (.*)  index.php
 </IfModule>
+###### to be removed in production final version
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
+###### to be removed in production final version
 
   ErrorDocument 404 /page-not-found
