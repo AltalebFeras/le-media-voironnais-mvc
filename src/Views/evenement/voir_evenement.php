@@ -225,6 +225,7 @@
 
             <!-- Delete Confirmation Modal -->
             <div id="popup" class="d-none popup">
+                <div class="card">
                     <h3>Confirmer la suppression</h3>
                     <button type="button" onclick="document.getElementById('popup').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
                     <div class="mt mb">
