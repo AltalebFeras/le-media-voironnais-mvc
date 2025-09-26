@@ -406,8 +406,8 @@ switch ($route) {
 
     //  User account routes
     case HOME_URL . 'mon_compte':
-        if ($method === 'POST' && $_GET['action'] && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
-            switch ($_GET['action']) {
+        if ($method === 'POST' && $_POST['action'] && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {
+            switch ($_POST['action']) {
                 case 'delete_account':
                     $userController->deleteAccount();
                     break;
@@ -448,7 +448,7 @@ switch ($route) {
                     $userController->deleteBanner();
                     break;
                 default:
-                    $homeController->page403();
+                    $homeController->page404();
                     break;
             }
         } elseif ($method === 'GET' && ($connectionSecured || $connectionSecuredAdmin || $connectionSecuredSuperAdmin)) {

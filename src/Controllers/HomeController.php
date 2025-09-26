@@ -35,7 +35,7 @@ class HomeController extends AbstractController
     {
         $this->render('home/mentions_legales');
     }
-    public function display403(): void
+    public function page403(): void
     {
         header("HTTP/1.1 403 Forbidden");
         header("Content-Type: text/html; charset=utf-8");
