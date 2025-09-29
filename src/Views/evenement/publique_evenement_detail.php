@@ -4,26 +4,9 @@
 $startDate = new DateTime($evenement['startDate']);
 $endDate = new DateTime($evenement['endDate']);
 
-// Meta tags for social sharing
-$metaTitle = htmlspecialchars($evenement['title']);
-$metaDescription = htmlspecialchars(substr($evenement['shortDescription'] ?? $evenement['description'], 0, 160));
-$metaImage = !empty($evenement['bannerPath']) ? DOMAIN . HOME_URL . ltrim($evenement['bannerPath'], '/') : DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.png';
-$metaUrl = DOMAIN . $_SERVER['REQUEST_URI'];
 ?>
 
-<!-- Open Graph / Facebook Meta Tags -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="<?= $metaUrl ?>">
-<meta property="og:title" content="<?= $metaTitle ?>">
-<meta property="og:description" content="<?= $metaDescription ?>">
-<meta property="og:image" content="<?= $metaImage ?>">
 
-<!-- Twitter Meta Tags -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="<?= $metaUrl ?>">
-<meta name="twitter:title" content="<?= $metaTitle ?>">
-<meta name="twitter:description" content="<?= $metaDescription ?>">
-<meta name="twitter:image" content="<?= $metaImage ?>">
 
 <link rel="stylesheet" href="<?= HOME_URL ?>assets/css/events.css">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
@@ -75,27 +58,8 @@ $metaUrl = DOMAIN . $_SERVER['REQUEST_URI'];
                     <div class="event-closed">Inscriptions fermées</div>
                 <?php endif; ?>
                 
-                <!-- Social sharing -->
-                <div class="social-share">
-                    <span class="share-label">Partager:</span>
-                    <div class="share-buttons">
-                        <a href="<?= $shareTable['facebook'] ?>" target="_blank" title="Partager sur Facebook" class="share-btn facebook">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M22.675 0h-21.35C.595 0 0 .595 0 1.326v21.348C0 23.405.595 24 1.326 24h11.495v-9.294H9.691v-3.622h3.13V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.92.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.405 24 24 23.405 24 22.674V1.326C24 .595 23.405 0 22.675 0z"/></svg>
-                        </a>
-                        <a href="<?= $shareTable['twitter'] ?>" target="_blank" title="Partager sur Twitter" class="share-btn twitter">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M24 4.557a9.83 9.83 0 0 1-2.828.775 4.932 4.932 0 0 0 2.165-2.724c-.951.564-2.005.974-3.127 1.195A4.916 4.916 0 0 0 16.616 3c-2.717 0-4.92 2.206-4.92 4.917 0 .386.044.762.127 1.124C7.728 8.816 4.1 6.884 1.671 3.149c-.423.724-.666 1.562-.666 2.475 0 1.708.87 3.216 2.188 4.099a4.904 4.904 0 0 1-2.229-.616c-.054 2.281 1.581 4.415 3.949 4.89a4.936 4.936 0 0 1-2.224.084c.627 1.956 2.444 3.377 4.6 3.417A9.867 9.867 0 0 1 0 21.543a13.94 13.94 0 0 0 7.548 2.212c9.058 0 14.009-7.513 14.009-14.009 0-.213-.005-.425-.014-.636A10.025 10.025 0 0 0 24 4.557z"/></svg>
-                        </a>
-                        <a href="<?= $shareTable['linkedin'] ?>" target="_blank" title="Partager sur LinkedIn" class="share-btn linkedin">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.327-.027-3.037-1.849-3.037-1.851 0-2.132 1.445-2.132 2.939v5.667H9.358V9h3.414v1.561h.049c.476-.9 1.637-1.849 3.369-1.849 3.602 0 4.267 2.369 4.267 5.455v6.285zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zm1.777 13.019H3.56V9h3.554v11.452zM22.225 0H1.771C.792 0 0 .771 0 1.723v20.549C0 23.229.792 24 1.771 24h20.451C23.2 24 24 23.229 24 22.272V1.723C24 .771 23.2 0 22.225 0z"/></svg>
-                        </a>
-                        <a href="<?= $shareTable['whatsapp'] ?>" target="_blank" title="Partager sur WhatsApp" class="share-btn whatsapp">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.028-.967-.271-.099-.468-.149-.666.15-.197.297-.767.967-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.373-.025-.522-.075-.149-.666-1.611-.916-2.207-.242-.579-.487-.5-.666-.51-.173-.009-.373-.009-.572-.009-.198 0-.522.075-.797.373-.271.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.099 3.2 5.077 4.358.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.075-.124-.271-.198-.568-.347zM12.004 2.003c-5.522 0-9.997 4.475-9.997 9.997 0 1.762.462 3.479 1.338 4.991l-1.414 5.163 5.287-1.391c1.469.805 3.127 1.247 4.786 1.247h.006c5.522 0 9.997-4.475 9.997-9.997 0-2.669-1.037-5.178-2.921-7.062-1.884-1.884-4.393-2.948-7.082-2.948zm0 18.13c-1.545 0-3.063-.399-4.377-1.153l-.313-.179-3.137.826.837-3.053-.203-.314c-.845-1.308-1.292-2.823-1.292-4.389 0-4.411 3.588-7.999 7.999-7.999 2.137 0 4.146.832 5.656 2.344 1.511 1.511 2.344 3.52 2.344 5.656 0 4.411-3.588 7.999-7.999 7.999z"/></svg>
-                        </a>
-                        <a href="<?= $shareTable['email'] ?>" title="Partager par email" class="share-btn email">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6h16zm0 12H4V8l8 5 8-5v10z"/></svg>
-                        </a>
-                    </div>
-                </div>
+                <!-- Social sharing include -->
+             <?php include __DIR__ . '/../includes/social_share_btns.php'; ?>
             </div>
         </div>
     </section>
@@ -236,36 +200,6 @@ $metaUrl = DOMAIN . $_SERVER['REQUEST_URI'];
     <div id="lightbox-caption" class="lightbox-caption"></div>
 </div>
 
-<script>
-// Lightbox functionality
-function openLightbox(src, alt) {
-    document.getElementById('lightbox').style.display = 'flex';
-    document.getElementById('lightbox-img').src = src;
-    document.getElementById('lightbox-caption').innerHTML = alt;
-    document.body.style.overflow = 'hidden';
-}
-
-document.querySelector('.close-lightbox').addEventListener('click', function() {
-    document.getElementById('lightbox').style.display = 'none';
-    document.body.style.overflow = 'auto';
-});
-
-document.getElementById('lightbox').addEventListener('click', function(e) {
-    if (e.target === this) {
-        this.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-});
-
-// Registration button functionality (example - replace with your actual registration logic)
-document.querySelectorAll('.btn-register, .btn-register-full').forEach(button => {
-    button.addEventListener('click', function() {
-        // Replace with actual registration logic or redirect
-        alert('La fonctionnalité d\'inscription sera disponible prochainement!');
-    });
-});
-</script>
-
 <style>
 /* Additional styles for event detail page */
 .event-detail-main {
@@ -361,34 +295,6 @@ document.querySelectorAll('.btn-register, .btn-register-full').forEach(button =>
     border-radius: 4px;
     font-weight: 600;
     display: inline-block;
-}
-
-.social-share {
-    margin-top: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.share-buttons {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.share-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(255,255,255,0.2);
-    color: white;
-    transition: all 0.3s;
-}
-
-.share-btn:hover {
-    background-color: rgba(255,255,255,0.4);
 }
 
 .event-content {

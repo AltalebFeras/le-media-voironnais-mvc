@@ -669,7 +669,8 @@ class EvenementController extends AbstractController
             $images = $this->repo->getEventImages($evenement['idEvenement']);
             
             // Generate share URLs for social media
-            $shareUrl = DOMAIN . HOME_URL . "evenements/{$ville_slug}/{$slug}";
+            // $shareUrl = DOMAIN . HOME_URL . "evenements/{$ville_slug}/{$slug}";
+            $shareUrl ='https://www.sharelinkgenerator.com/';
             $shareTitle = urlencode($evenement['title']);
             $shareDesc = urlencode(substr($evenement['shortDescription'] ?? $evenement['description'], 0, 100) . '...');
             $shareDate = urlencode(date('d/m/Y', strtotime($evenement['startDate'])));
@@ -677,9 +678,13 @@ class EvenementController extends AbstractController
             
             $shareTable = [
                 'whatsapp' => "https://api.whatsapp.com/send?text=%F0%9F%8E%89%20{$shareTitle}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%E2%9C%A8%20{$shareDesc}%0A👉%20{$shareUrl}",
-                'facebook' => "https://www.facebook.com/sharer/sharer.php?u={$shareUrl}",
-                'linkedin' => "https://www.linkedin.com/shareArticle?mini=true&url={$shareUrl}&title={$shareTitle}&summary={$shareDesc}",
+                'facebook' => "https://www.facebook.com/sharer.php?u=" . urlencode($shareUrl),
+                'linkedin' => "https://www.linkedin.com/shareArticle?mini=true&url={$shareUrl}&title={$shareTitle}",
                 'twitter' => "https://twitter.com/intent/tweet?url={$shareUrl}&text=%F0%9F%8E%89%20{$shareTitle}%20-%20{$shareDesc}",
+                'pinterest' => "https://www.pinterest.com/pin/create/button/?url={$shareUrl}&media={$images[0]}&description={$shareDesc}",
+                'instagram' => "https://www.instagram.com/sharer.php?u={$shareUrl}",
+                'telegram' => "https://t.me/share/url?url={$shareUrl}&text=%F0%9F%8E%89%20{$shareTitle}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%E2%9C%A8%20{$shareDesc}",
+                'reddit' => "https://www.reddit.com/submit?url={$shareUrl}&title={$shareTitle}",
                 'email' => "mailto:?subject={$shareTitle}&body=%F0%9F%8E%89%20Bonjour%2C%0A%0A{$shareDesc}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%0A👉%20{$shareUrl}"
             ];
 
