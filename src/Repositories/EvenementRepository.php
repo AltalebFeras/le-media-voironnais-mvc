@@ -437,7 +437,7 @@ class EvenementRepository
 
     public function getUpcomingEvents($limit = 3): array
     {
-        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, a.name as association_name 
+        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, ec.slug as category_slug, a.name as association_name 
                 FROM evenement e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
@@ -455,7 +455,7 @@ class EvenementRepository
 
     public function getRecentEvents($limit = 4): array
     {
-        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, a.name as association_name 
+        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, ec.slug as category_slug, a.name as association_name 
                 FROM evenement e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
@@ -474,7 +474,7 @@ class EvenementRepository
     public function getEvents($currentPage, $evenementsPerPage): array
     {
         $offset = max(0, ($currentPage - 1) * $evenementsPerPage);
-        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, a.name as association_name 
+        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, ec.slug as category_slug, a.name as association_name
                 FROM evenement e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
@@ -500,7 +500,7 @@ class EvenementRepository
     }
     public function getEventBySlug($slug): mixed
     {
-        $sql = "SELECT e.*, v.ville_nom_reel, ec.name as category_name, a.name as association_name, ent.name as entreprise_name
+        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, ec.slug as category_slug, a.name as association_name, ent.name as entreprise_name
                 FROM evenement e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory

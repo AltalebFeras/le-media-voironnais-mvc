@@ -160,7 +160,7 @@ class EvenementController extends AbstractController
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
             $nameCategory = $this->repo->isEventCategoryExists($idEventCategory);
-            if (!$nameCategory) {
+            if (!$idEventCategory || !$nameCategory) {
                 $errors['idEventCategory'] = "La catégorie sélectionnée est invalide";
             }
             // verify if the title is not empty and is unique for the user only
@@ -629,7 +629,6 @@ class EvenementController extends AbstractController
             $allEvents = $this->repo->getEvents($currentPage, $evenementsPerPage);
             $totalEvenements = $this->repo->countEvents();
             $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
-
             $this->render('evenement/publique_evenements_listes', [
                 'upcomingEvents' => $upcomingEvents,
                 'recentEvents' => $recentEvents,
@@ -647,7 +646,8 @@ class EvenementController extends AbstractController
     {
         try {
             $ville_slug = $composedRoute[1] ?? null;
-            $slug = $composedRoute[2] ?? null;
+            $category_slug = $composedRoute[2] ?? null;
+            $slug = $composedRoute[3] ?? null;
 
             if (!$slug || !$ville_slug) {
                 throw new Exception("Événement invalide");
@@ -686,7 +686,6 @@ class EvenementController extends AbstractController
                 'reddit' => "https://www.reddit.com/submit?url={$shareUrl}&title={$shareTitle}",
                 'email' => "mailto:?subject={$shareTitle}&body=%F0%9F%8E%89%20Bonjour%2C%0A%0A{$shareDesc}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%0A👉%20{$shareUrl}"
             ];
-
             $this->render('evenement/publique_evenement_detail', [
                 'evenement' => $evenement,
                 'ville' => $ville,
@@ -697,6 +696,62 @@ class EvenementController extends AbstractController
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('evenements');
+        }
+    }
+
+    public function inscriptionEvent($composedRoute)
+    {
+        try {
+            if (!isset($_SESSION['idUser'])) {
+                $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+                $_SESSION['info'] = "Vous devez être connecté pour vous inscrire à un événement";
+                $this->redirect('connexion?need_login=true');
+                return;
+            }
+            ====>
+            $idUser = $_SESSION['idUser'];
+            $slug = $composedRoute[2] ?? null;
+            
+            if (!$slug ) {
+                throw new Exception("Événement invalide");
+            }
+            
+            $evenement = $this->repo->getEventBySlug($slug);
+            if (!$evenement) {
+                throw new Exception("L'événement demandé n'existe pas");
+            }
+            
+            // Check if user is already registered
+            if ($this->repo->isUserRegistered($idUser, $slug)) {
+                throw new Exception("Vous êtes déjà inscrit à cet événement");
+            }
+            
+            // Check if event is full
+            if ($evenement['maxParticipants'] > 0 && $evenement['currentParticipants'] >= $evenement['maxParticipants']) {
+                throw new Exception("Cet événement est complet");
+            }
+            
+            // Check if registration deadline has passed
+            if ($evenement['registrationDeadline'] && strtotime($evenement['registrationDeadline']) < time()) {
+                throw new Exception("La date limite d'inscription est dépassée");
+            }
+            
+            // Register the user
+            // if
+            $status = $evenement['requiresApproval'] ? 'pending' : 'approved';
+            $this->repo->registerUserForEvent($idUser, $evenement['idEvenement'], $status);
+            
+            // Update current participants count
+            if ($status === 'approved') {
+                $this->repo->incrementEventParticipants($evenement['idEvenement']);
+            }
+            
+            $_SESSION['success'] = "Votre inscription a été " . ($status === 'pending' ? "enregistrée et est en attente d'approbation" : "confirmée") . " avec succès!";
+            $this->redirect('evenements/' . $ville_slug . '/' . $slug);
+            
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('evenements/' . ($ville_slug ?? '') . '/' . ($slug ?? ''));
         }
     }
 }

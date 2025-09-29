@@ -11,7 +11,7 @@ class ConfigRouter
         $routeComposee = rtrim($routeComposee, '/');
         $routeComposee = explode('/', $routeComposee);
 
-        for ($i = sizeof($routeComposee); $i < 5; $i++) {
+        for ($i = sizeof($routeComposee); $i < 6; $i++) {
             $routeComposee[$i] = null;
         }
         return $routeComposee;

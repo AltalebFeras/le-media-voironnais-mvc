@@ -21,7 +21,7 @@
                             <span class="event-date"><?= date('d M Y', strtotime($event['startDate'])) ?></span>
                             <h3 class="event-slide-title"><?= htmlspecialchars($event['title']) ?></h3>
                             <p class="event-slide-description"><?= htmlspecialchars($event['shortDescription'] ?? 'Rejoignez-nous pour cet événement exceptionnel dans le Voironnais') ?></p>
-                            <a href="<?= HOME_URL ?>mes_evenements?action=voir&uiid=<?= $event['uiid'] ?>" class="btn-buy-tickets">RÉSERVER</a>
+                            <a href="<?= HOME_URL . 'evenements/' . $event['ville_slug'] . '/' . $event['category_slug'] . '/' . $event['slug'] ?>" class="btn-buy-tickets">VOIR</a>
                         </div>
                         <?php if ($event['bannerPath']): ?>
                             <div class="event-slide-image">
@@ -106,7 +106,7 @@
         <?php if (!empty($allEvents)): ?>
             <div class="all-events-grid">
                 <?php foreach ($allEvents as $event): ?>
-                    <div class="event-card" onclick="window.location.href='<?= HOME_URL ?>evenements/<?= $event['ville_slug'] ?>/<?= $event['slug'] ?>'">
+                    <div class="event-card" onclick="window.location.href='<?= HOME_URL ?>evenements/<?= $event['ville_slug'] ?>/<?= $event['category_slug'] ?>/<?= $event['slug'] ?>'">
                         <?php if ($event['bannerPath']): ?>
                             <div class="event-card-image">
                                 <img src="<?= HOME_URL . ltrim($event['bannerPath'], '/') ?>" alt="<?= htmlspecialchars($event['title']) ?>">

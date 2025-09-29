@@ -21,7 +21,15 @@ if (isset($_SESSION['error'])): ?>
     </div>
     <?php unset($_SESSION['success']); ?>
 <?php endif; ?>
-
+<?php if (isset($_SESSION['info'])): ?>
+    <div class="custom-alert custom-alert-info -out">
+        <p>
+            <?= $_SESSION['info']; ?>
+        </p>
+        <button class="custom-btn-close" onclick="this.parentElement.remove()" aria-label="Close">❌</button>
+    </div>
+    <?php unset($_SESSION['info']); ?>
+<?php endif; ?>
 <?php
 // display all errors when making ctrl on submit button so all the cases of if withe the results errors should be stocked at the last verification of the form data and it display by throw and exception to allow the code to jump to catch case so we can get the errors .
 if (!empty($_SESSION['errors'])): ?>

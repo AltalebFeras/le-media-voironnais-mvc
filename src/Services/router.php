@@ -27,6 +27,14 @@ $connectionSecuredAdmin = isset($_SESSION['connectedAdmin']) && $_SESSION['role'
 $connectionSecuredSuperAdmin = isset($_SESSION['connectedSuperAdmin']) && $_SESSION['role'] === 'super_admin' && ConfigRouter::checkConnection();
 
 $composedRoute = ConfigRouter::getComposedRoute($route);
+// url = DOMAIN . HOME_URL part0/part1/part2/part3/part4/part5
+//['part0' => 'evenements', 'part1' => 'ville-slug', 'part2' => 'cate-slug', 'part3' => 'inscription']
+$part0 = isset($composedRoute[0]) ? $composedRoute[0] : null;
+$part1 = isset($composedRoute[1]) ? $composedRoute[1] : null;
+$part2 = isset($composedRoute[2]) ? $composedRoute[2] : null;
+$part3 = isset($composedRoute[3]) ? $composedRoute[3] : null;
+$part4 = isset($composedRoute[4]) ? $composedRoute[4] : null;
+$part5 = isset($composedRoute[5]) ? $composedRoute[5] : null;
 
 switch ($route) {
     // Public routes
@@ -101,17 +109,23 @@ switch ($route) {
         }
         break;
     // events public routes
-    case $composedRoute[0] == 'evenements':
-
+    case $part0 === 'evenements':
         // Example: /evenements/ville-slug or /evenements/ville-slug/event-slug
-        if (isset($composedRoute[1]) && !isset($composedRoute[2])) {
+        if ($part1 && !$part2) {
             // $evenementController->displayEventsForThisVille($composedRoute);
-        } elseif (isset($composedRoute[1]) && isset($composedRoute[2])) {
-            $evenementController->viewEventBySlug($composedRoute);
+        } elseif ($part1 && $part2 && !$part3) {
+            // $evenementController->viewEventByVilleSlugAndCategorySlug($composedRoute);
+        } elseif ($part1 && $part2 && $part3 && !$part4) {
+            if ($method === 'POST') {
+                $evenementController->inscriptionEvent($composedRoute);
+            } else {
+                $evenementController->viewEventBySlug($composedRoute);
+            }
         } else {
             $evenementController->listEvents();
         }
         break;
+
     case HOME_URL . 'dashboard':
         if ($connectionSecured) {
             $userController->displayDashboard();
