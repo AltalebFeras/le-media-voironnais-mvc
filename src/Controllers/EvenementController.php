@@ -622,7 +622,7 @@ class EvenementController extends AbstractController
 
             // Get recent events (last 4 events that already happened)
             $recentEvents = $this->repo->getRecentEvents(4);
-
+            
             // Get all events with pagination
             $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
             $evenementsPerPage = 12;
@@ -669,11 +669,10 @@ class EvenementController extends AbstractController
             $images = $this->repo->getEventImages($evenement['idEvenement']);
             
             // Generate share URLs for social media
-            // $shareUrl = DOMAIN . HOME_URL . "evenements/{$ville_slug}/{$slug}";
-            $shareUrl ='https://www.sharelinkgenerator.com/';
+            $shareUrl = DOMAIN . HOME_URL . "evenements/{$ville_slug}/{$slug}";
             $shareTitle = urlencode($evenement['title']);
             $shareDesc = urlencode(substr($evenement['shortDescription'] ?? $evenement['description'], 0, 100) . '...');
-            $shareDate = urlencode(date('d/m/Y', strtotime($evenement['startDate'])));
+            $shareDate = urlencode(date('d/m/Y H:i', strtotime($evenement['startDate'])));
             $shareLieu = urlencode($evenement['ville_nom_reel'] ?? 'Voiron');
             
             $shareTable = [
