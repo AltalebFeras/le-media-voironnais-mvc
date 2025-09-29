@@ -26,6 +26,8 @@ $connectionSecured = isset($_SESSION['connected']) && $_SESSION['role'] === 'use
 $connectionSecuredAdmin = isset($_SESSION['connectedAdmin']) && $_SESSION['role'] === 'admin' && ConfigRouter::checkConnection();
 $connectionSecuredSuperAdmin = isset($_SESSION['connectedSuperAdmin']) && $_SESSION['role'] === 'super_admin' && ConfigRouter::checkConnection();
 
+$composedRoute = ConfigRouter::getComposedRoute($route);
+
 switch ($route) {
     // Public routes
 
@@ -99,11 +101,17 @@ switch ($route) {
         }
         break;
     // events public routes
-    case HOME_URL . 'evenements':
-        $evenementController->listEvents();
-        break;
-    // User routes
+    case $composedRoute[0] == 'evenements':
 
+        // Example: /evenements/ville-slug or /evenements/ville-slug/event-slug
+        if (isset($composedRoute[1]) && !isset($composedRoute[2])) {
+            // $evenementController->displayEventsForThisVille($composedRoute);
+        } elseif (isset($composedRoute[1]) && isset($composedRoute[2])) {
+            $evenementController->viewEventBySlug($composedRoute);
+        } else {
+            $evenementController->listEvents();
+        }
+        break;
     case HOME_URL . 'dashboard':
         if ($connectionSecured) {
             $userController->displayDashboard();

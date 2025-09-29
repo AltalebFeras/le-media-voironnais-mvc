@@ -7,6 +7,7 @@ use src\Models\Evenement;
 use src\Repositories\EvenementRepository;
 use Exception;
 use DateTime;
+use src\Services\ConfigRouter;
 use src\Services\Helper;
 
 class EvenementController extends AbstractController
@@ -17,7 +18,7 @@ class EvenementController extends AbstractController
     {
         $this->repo = new EvenementRepository();
     }
-        private function getId(): int|null
+    private function getId(): int|null
     {
         if (isset($_GET['uiid'])) {
             $uiid = htmlspecialchars(trim($_GET['uiid']));
@@ -640,6 +641,58 @@ class EvenementController extends AbstractController
             ]);
         } catch (Exception $e) {
             $this->redirect('?error=true');
+        }
+    }
+    public function viewEventBySlug($composedRoute)
+    {
+        try {
+            $ville_slug = $composedRoute[1] ?? null;
+            $slug = $composedRoute[2] ?? null;
+
+            if (!$slug || !$ville_slug) {
+                throw new Exception("Événement invalide");
+            }
+
+            $evenement = $this->repo->getEventBySlug($slug);
+            
+            if (!$evenement) {
+                throw new Exception("L'événement demandé n'existe pas");
+            }
+
+            $ville = $this->repo->getVilleById($evenement['idVille']);
+            
+            // Verify that the ville_slug matches
+            if ($ville['ville_slug'] !== $ville_slug) {
+                throw new Exception("L'événement demandé n'existe pas");
+            }
+            
+            $images = $this->repo->getEventImages($evenement['idEvenement']);
+            
+            // Generate share URLs for social media
+            $shareUrl = DOMAIN . HOME_URL . "evenements/{$ville_slug}/{$slug}";
+            $shareTitle = urlencode($evenement['title']);
+            $shareDesc = urlencode(substr($evenement['shortDescription'] ?? $evenement['description'], 0, 100) . '...');
+            $shareDate = urlencode(date('d/m/Y', strtotime($evenement['startDate'])));
+            $shareLieu = urlencode($evenement['ville_nom_reel'] ?? 'Voiron');
+            
+            $shareTable = [
+                'whatsapp' => "https://api.whatsapp.com/send?text=%F0%9F%8E%89%20{$shareTitle}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%E2%9C%A8%20{$shareDesc}%0A👉%20{$shareUrl}",
+                'facebook' => "https://www.facebook.com/sharer/sharer.php?u={$shareUrl}",
+                'linkedin' => "https://www.linkedin.com/shareArticle?mini=true&url={$shareUrl}&title={$shareTitle}&summary={$shareDesc}",
+                'twitter' => "https://twitter.com/intent/tweet?url={$shareUrl}&text=%F0%9F%8E%89%20{$shareTitle}%20-%20{$shareDesc}",
+                'email' => "mailto:?subject={$shareTitle}&body=%F0%9F%8E%89%20Bonjour%2C%0A%0A{$shareDesc}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%0A👉%20{$shareUrl}"
+            ];
+
+            $this->render('evenement/publique_evenement_detail', [
+                'evenement' => $evenement,
+                'ville' => $ville,
+                'title' => $evenement['title'],
+                'eventImages' => $images,
+                'shareTable' => $shareTable
+            ]);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('evenements');
         }
     }
 }

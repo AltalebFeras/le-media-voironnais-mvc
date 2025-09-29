@@ -7,6 +7,7 @@
   <!-- to be removed in production final version -->
   <meta name="robots" content="noindex, nofollow">
   <!-- to be removed in production final version -->
+  
 
   <?php
   /** translation title */

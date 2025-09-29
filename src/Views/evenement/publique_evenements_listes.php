@@ -1,4 +1,5 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+
 <link rel="stylesheet" href="<?= HOME_URL ?>assets/css/events.css">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
@@ -105,7 +106,7 @@
         <?php if (!empty($allEvents)): ?>
             <div class="all-events-grid">
                 <?php foreach ($allEvents as $event): ?>
-                    <div class="event-card" onclick="window.location.href='<?= HOME_URL ?>mes_evenements?action=voir&uiid=<?= $event['uiid'] ?>'">
+                    <div class="event-card" onclick="window.location.href='<?= HOME_URL ?>evenements/<?= $event['ville_slug'] ?>/<?= $event['slug'] ?>'">
                         <?php if ($event['bannerPath']): ?>
                             <div class="event-card-image">
                                 <img src="<?= HOME_URL . ltrim($event['bannerPath'], '/') ?>" alt="<?= htmlspecialchars($event['title']) ?>">

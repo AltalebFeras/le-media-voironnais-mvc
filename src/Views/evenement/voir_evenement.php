@@ -222,6 +222,35 @@
                     </form>
                 </div>
             </div>
+            <!-- SHARE shareTable -->
+           <?php
+// Définir le tableau des liens de partage AVANT l'affichage
+$shareTable = [
+    'whatsapp' => 'https://api.whatsapp.com/send?text=' . urlencode("Découvrez cet événement : " . DOMAIN . HOME_URL . "evenement/" . $evenement['slug']),
+    'facebook' => 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode(DOMAIN . HOME_URL . "evenement/" . $evenement['slug']),
+    'linkedin' => 'https://www.linkedin.com/shareArticle?mini=true&url=' . urlencode(DOMAIN . HOME_URL . "evenement/" . $evenement['slug']),
+    'twitter' => 'https://twitter.com/intent/tweet?text=' . urlencode("Découvrez cet événement : " . DOMAIN . HOME_URL . "evenement/" . $evenement['slug']),
+    // Instagram et Snapchat n'ont pas de vrai partage direct par URL
+    // On met juste l'URL de l'événement (redirection manuelle)
+    'instagram' => 'https://www.instagram.com/?url=' . urlencode(DOMAIN . HOME_URL . "evenement/" . $evenement['slug']),
+    'snapchat'  => 'https://www.snapchat.com/scan?attachmentUrl=' . urlencode(DOMAIN . HOME_URL . "evenement/" . $evenement['slug']),
+];
+?>
+
+<?php if (!empty($shareTable)): ?>
+    <div class="fixed-bottom p-3" style="text-align: right; z-index: 1000;">
+        <div class="card p-2" style="display: inline-block; background: rgba(255, 255, 255, 0.9);">
+            <span>Partager :</span>
+            <?php foreach ($shareTable as $platform => $url): ?>
+                <a href="<?= htmlspecialchars($url, ENT_QUOTES) ?>" target="_blank" rel="noopener" 
+                   class="btn btn-sm" title="Partager sur <?= ucfirst($platform) ?>">
+                    <img src="<?= HOME_URL . 'assets/icons/' . $platform . '.svg' ?>" 
+                         alt="<?= ucfirst($platform) ?>" style="width:20px; height:20px;">
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>
 
             <!-- Delete Confirmation Modal -->
             <div id="popup" class="d-none popup">

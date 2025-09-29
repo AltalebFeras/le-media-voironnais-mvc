@@ -23,6 +23,7 @@
         <span></span>
       </div>
       <ul class="nav-links" id="nav-links">
+        <li><a class="link" href="<?= HOME_URL . 'evenements' ?>">Événements</a></li>
         <?php if (isset($_SESSION['connected'])) : ?>
           <?php  ?>
           <li><a class="link" href="<?= HOME_URL . 'dashboard' ?>">Dashboard</a></li>
@@ -34,7 +35,6 @@
           <?php if (isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])) : ?>
             <li><a class="link" href="<?= HOME_URL . 'admin/dashboard_admin' ?>">Retour au Dashboard</a></li>
           <?php else: ?>
-            <li><a class="link" href="<?= HOME_URL . 'evenements' ?>">Événements</a></li>
             <li><a class="btn linkNotDecorated " href="<?= HOME_URL . 'connexion' ?>">Connexion</a></li>
           <?php endif; ?>
         <?php endif; ?>

@@ -4,6 +4,19 @@ namespace src\Services;
 
 class ConfigRouter
 {
+
+    public static function getComposedRoute(string $route): array
+    {
+        $routeComposee = ltrim($route, HOME_URL);
+        $routeComposee = rtrim($routeComposee, '/');
+        $routeComposee = explode('/', $routeComposee);
+
+        for ($i = sizeof($routeComposee); $i < 5; $i++) {
+            $routeComposee[$i] = null;
+        }
+        return $routeComposee;
+    }
+
     /**
      *  function to verify the method of the request 
      * @return string

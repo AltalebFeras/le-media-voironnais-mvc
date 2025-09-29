@@ -283,7 +283,7 @@ class EvenementRepository
     /**
      * Check if ville exists
      */
-     public function isVilleExists($idVille): mixed
+    public function isVilleExists($idVille): mixed
     {
         try {
             $query = "SELECT ville_slug FROM ville WHERE idVille = :idVille";
@@ -474,7 +474,7 @@ class EvenementRepository
     public function getEvents($currentPage, $evenementsPerPage): array
     {
         $offset = max(0, ($currentPage - 1) * $evenementsPerPage);
-        $sql = "SELECT e.*, v.ville_nom_reel, ec.name as category_name, a.name as association_name 
+        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, a.name as association_name 
                 FROM evenement e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
@@ -497,5 +497,34 @@ class EvenementRepository
         $stmt->execute();
 
         return (int)$stmt->fetchColumn();
+    }
+    public function getEventBySlug($slug): mixed
+    {
+        $sql = "SELECT e.*, v.ville_nom_reel, ec.name as category_name, a.name as association_name, ent.name as entreprise_name
+                FROM evenement e 
+                LEFT JOIN ville v ON e.idVille = v.idVille 
+                LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
+                LEFT JOIN association a ON e.idAssociation = a.idAssociation
+                LEFT JOIN entreprise ent ON e.idEntreprise = ent.idEntreprise
+                WHERE e.slug = :slug AND e.isDeleted = 0 AND e.isPublic = 1";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $event = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$event) {
+            return null;
+        }
+
+        // Get event images
+        $sqlImages = "SELECT * FROM event_image WHERE idEvenement = :idEvenement ORDER BY sortOrder ASC, isMain DESC";
+        $stmtImages = $this->pdo->prepare($sqlImages);
+        $stmtImages->bindParam(':idEvenement', $event['idEvenement'], PDO::PARAM_INT);
+        $stmtImages->execute();
+        $event['images'] = $stmtImages->fetchAll(PDO::FETCH_ASSOC);
+
+        return $event;
     }
 }
