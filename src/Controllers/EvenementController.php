@@ -11,6 +11,9 @@ use src\Repositories\NotificationRepository;
 use src\Services\ConfigRouter;
 use src\Services\Helper;
 
+use src\Services\Mail;
+use function PHPSTORM_META\type;
+
 class EvenementController extends AbstractController
 {
     private $repo;
@@ -711,35 +714,35 @@ class EvenementController extends AbstractController
                 return;
             }
             $idUser = $_SESSION['idUser'];
-            
+
             $ville_slug = $composedRoute[1] ?? null;
             $category_slug = $composedRoute[2] ?? null;
             $slug = $composedRoute[3] ?? null;
-            
+
             if (!$slug) {
                 throw new Exception("Événement invalide");
             }
-            
+
             $evenement = $this->repo->getEventBySlug($slug);
             if (!$evenement) {
                 throw new Exception("L'événement demandé n'existe pas");
             }
-            
+
             // Check if user is already registered
             if ($this->repo->isUserRegistered($idUser, $slug)) {
                 throw new Exception("Vous êtes déjà inscrit à cet événement");
             }
-            
+
             // Check if event is full
             if ($evenement['maxParticipants'] > 0 && $evenement['currentParticipants'] >= $evenement['maxParticipants']) {
                 throw new Exception("Cet événement est complet");
             }
-            
+
             // Check if registration deadline has passed
             if ($evenement['registrationDeadline'] && strtotime($evenement['registrationDeadline']) < time()) {
                 throw new Exception("La date limite d'inscription est dépassée");
             }
-            
+
             // Register the user
             // if requiresApproval is true, set status to 'pending', else 'approved'
             if ($evenement['requiresApproval'] == 1) {
@@ -754,15 +757,51 @@ class EvenementController extends AbstractController
             }
             $subscription = $this->repo->registerUserForEventAndIncrementEventParticipants($idUser, $idEvenement, $status);
             if ($subscription) {
-            //    push Notification
-            $notification = new NotificationRepository();
-               $message = "Nouvelle inscription à votre événement : " . $evenement['title'];
-               $url = "dashboard/mes_evenements?action=voir&uiid=" . $evenement['uiid'];
-               $notification->pushNotification(['idUser' => $idCreator, 'message' => $message, 'url' => $url]);
-            } 
+                //    push Notification
+                // notify creator
 
-            $_SESSION['success'] = "Votre inscription a été " . ($status === 'pending' ? "enregistrée et est en attente d'approbation" : "confirmée") . " avec succès!";
-            $this->redirect('evenements/' . $ville_slug . '/' . $category_slug . '/' . $slug);
+                $notification = new NotificationRepository();
+                $type =  ($status === 'liste_attente') ? 'preinscription' : 'inscription';
+                $title = ($status === 'liste_attente') ? 'Nouvelle pré-inscription' : 'Nouvelle inscription';
+                $message = "Un utilisateur vient de s'inscrire à votre événement : " . $evenement['title'];
+                $url = "mes_evenements?action=voir&uiid=" . $evenement['uiid'];
+                $dataCreator = [
+                    'idUser' => $idCreator,
+                    'idEvenement' => $idEvenement,
+                    'type' => $type,
+                    'title' => $title,
+                    'message' => $message,
+                    'url' => $url,
+                    'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
+                ];
+                $notifyCreator = $notification->pushNotification($dataCreator);
+
+                // notify user
+                $dataUser = [
+                    'idUser' => $idUser,
+                    'idEvenement' => $idEvenement,
+                    'type' => $type,
+                    'title' => ($status === 'liste_attente') ? 'Pré-inscription enregistrée' : 'Inscription confirmée',
+                    'message' => "Vous êtes " . ($status === 'liste_attente' ? 'pré-inscrit' : 'inscrit') . " à l'événement : " . $evenement['title'],
+                    'url' => "evenements/{$ville_slug}/{$category_slug}/{$slug}",
+                    'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
+                ];
+                $notifyUser = $notification->pushNotification($dataUser);
+                // send email to user if max participants of the event less than 50 persons (to avoid spam)
+                if ($evenement['maxParticipants'] < 50) {
+                    $mail = new Mail();
+                    $subject = ($status === 'liste_attente') ? "Pré-inscription enregistrée" : "Inscription confirmée";
+                    $body = "Vous êtes " . ($status === 'liste_attente' ? 'pré-inscrit' : 'inscrit') . " à l'événement : <strong>" . $evenement['title'] . "</strong>.<br>";
+                    $body .= "Détails de l'événement :<br>";
+                    $body .= "Date et heure de début : " . date('d/m/Y H:i', strtotime($evenement['startDate'])) . "<br>";
+                    $body .= "Lieu : " . ($evenement['address'] ?? 'Non spécifié') . "<br>";
+                    $body .= "Ville : " . ($evenement['ville_nom_reel'] ?? 'Non spécifiée') . "<br>";
+                    $body .= "Description : " . ($evenement['shortDescription'] ?? substr($evenement['description'], 0, 100) . '...') . "<br><br>";
+                    $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $_SESSION['email'], $_SESSION['firstName'], $subject, $body);
+                }
+                $_SESSION['success'] = "Votre inscription a été " . ($status === 'liste_attente' ? "enregistrée et est en attente d'approbation" : "confirmée") . " avec succès!";
+                $this->redirect('evenements/' . $ville_slug . '/' . $category_slug . '/' . $slug);
+            }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('evenements/' . $ville_slug  . '/' . $category_slug . '/' . $slug, ['error' => true]);

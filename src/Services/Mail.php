@@ -144,12 +144,11 @@ HTML;
 
     /**
      * Sends an HTML email using the configured PHPMailer instance.
-     *
      * This method sets the character encoding to UTF-8 to support multilingual content,
      * generates a styled HTML email using a template, sets sender and recipient information,
      * and optionally applies custom headers before sending the email.
      *
-     * @param string $senderEmail       The sender's email address.
+     * @param string $senderEmail       The sender's email address .
      * @param string $senderName   The sender's display name.
      * @param string $recipientEmail         The recipient's email address.
      * @param string $recipientName     The recipient's display name.
