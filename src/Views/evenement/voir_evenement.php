@@ -19,7 +19,7 @@
                 <?php endif; ?>
                 <img id="bannerPreview" style="display:none;">
             </div>
-            
+
             <?php if ($isOwner): ?>
                 <div class="evenement-banner-actions">
                     <form method="post" action="<?= HOME_URL . 'evenement/modifier4' ?>" enctype="multipart/form-data">
@@ -42,7 +42,7 @@
                 </div>
             <?php endif; ?>
         </div>
-<?php include_once __DIR__ . '/../includes/messages.php'; ?>
+        <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
         <!-- Main Content -->
         <div class="evenement-main-content">
@@ -86,7 +86,7 @@
                                     </button>
                                 <?php endif; ?>
                             </div>
-                            
+
                             <?php if (!empty($eventImages)): ?>
                                 <div class="image-carousel">
                                     <div class="carousel-container">
@@ -133,39 +133,39 @@
                                     <dl>
                                         <dt>Date de début</dt>
                                         <dd><?= date('d/m/Y H:i', strtotime($evenement['startDate'])) ?></dd>
-                                        
+
                                         <dt>Date de fin</dt>
                                         <dd><?= $evenement['endDate'] ? date('d/m/Y H:i', strtotime($evenement['endDate'])) : 'Non spécifiée' ?></dd>
-                                        
+
                                         <dt>Lieu</dt>
                                         <dd><?= $evenement['address'] ?></dd>
-                                        
+
                                         <dt>Ville</dt>
                                         <dd><?= $ville ? $ville['ville_nom_reel'] . ' (' . $ville['ville_code_postal'] . ')' : 'Non spécifiée' ?></dd>
                                     </dl>
                                 </div>
-                                
+
                                 <div class="col-md-6">
                                     <h4>Participation</h4>
                                     <dl>
                                         <dt>Participants max</dt>
                                         <dd><?= $evenement['maxParticipants'] ?></dd>
-                                        
+
                                         <dt>Participants actuels</dt>
                                         <dd><?= $evenement['currentParticipants'] ?></dd>
-                                        
+
                                         <dt>Prix</dt>
                                         <dd><?= $evenement['price'] ? number_format($evenement['price'], 2) . ' ' . $evenement['currency'] : 'Gratuit' ?></dd>
-                                        
+
                                         <dt>Date limite d'inscription</dt>
                                         <dd><?= $evenement['registrationDeadline'] ? date('d/m/Y H:i', strtotime($evenement['registrationDeadline'])) : 'Non spécifiée' ?></dd>
                                     </dl>
                                 </div>
                             </div>
-                            
+
                             <?php if ($isOwner): ?>
                                 <div class="flex-row justify-content-between mt-4">
-                                    <a href="<?= HOME_URL.'evenement/modifier?uiid='.$evenement['uiid'] ?>" class="btn linkNotDecorated">
+                                    <a href="<?= HOME_URL . 'evenement/modifier?uiid=' . $evenement['uiid'] ?>" class="btn linkNotDecorated">
                                         Modifier l'événement
                                     </a>
                                     <button type="button" class="btn btn-danger"
@@ -177,7 +177,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Info Sidebar -->
                 <div class="max-width-33">
                     <div class="card">
@@ -186,64 +186,126 @@
                             <dl>
                                 <dt>Créé le</dt>
                                 <dd><?= date('d/m/Y', strtotime($evenement['createdAt'])) ?></dd>
-                                
+
                                 <dt>Dernière modification</dt>
                                 <dd><?= $evenement['updatedAt'] ? date('d/m/Y', strtotime($evenement['updatedAt'])) : 'Jamais' ?></dd>
                             </dl>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Add Image Modal -->
-        <?php if ($isOwner): ?>
-            <div id="addImageModal" class="d-none popup" >
-                <div class="card" style="max-width:500px;">
-                    <h3>Ajouter une image</h3>
-                    <button type="button" onclick="document.getElementById('addImageModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
-                    <form method="post" action="<?= HOME_URL . 'evenement/modifier' ?>" enctype="multipart/form-data">
-                        <input type="hidden" name="action" value="ajouter_image">
-                        <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
-                        <div class="mt mb">
-                            <label for="eventImage">Sélectionner une image :</label>
-                            <input type="file" id="eventImage" name="eventImage" accept="image/*" required>
-                            
-                            <label for="altText" class="mt">Texte alternatif (optionnel) :</label>
-                            <input type="text" id="altText" name="altText" placeholder="Description de l'image">
+                <!-- Waiting List    -->
+                <div class="max-width-33">
+                    <?php if ($evenement['requiresApproval'] == true): ?>
+                        <div class="card mt-4">
+                            <div class="p-3">
+                                <h4>Liste d'attente</h4>
+                                <?php if (!empty($waitingList)): ?>
+                                    <ul class="list-group">
+                                        <?php foreach ($waitingList as $participant): ?>
+                                            <hr>
+                                            <li class="list-group-item d-flex justify-content-between align-items-center m">
+                                                <div>
+                                                    <strong><?= htmlspecialchars($participant['firstName'] . ' ' . $participant['lastName']) ?></strong><br>
+                                                    <small class="text-muted">Inscrit le <?= date('d/m/Y', strtotime($participant['joinedAt'])) ?></small>
+                                                </div>
+                                                <?php if ($isOwner): ?>
+                                                    <div class="d-flex ml">
+                                                        <form method="post" action="<?= HOME_URL . 'evenement/participant' ?>" class="mr">
+                                                            <input type="hidden" name="action" value="accepter">
+                                                            <input type="hidden" name="idEventParticipant" value="<?= $participant['idEventParticipant'] ?>">
+                                                            <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
+                                                            <button type="submit" class="btn btn-sm btn-success">Accepter</button>
+                                                        </form>
+                                                        <form method="post" action="<?= HOME_URL . 'evenement/participant' ?>" class="mr">
+                                                            <input type="hidden" name="action" value="refuser">
+                                                            <input type="hidden" name="idEventParticipant" value="<?= $participant['idEventParticipant'] ?>">
+                                                            <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
+                                                            <button type="submit" class="btn btn-sm btn-danger">Refuser</button>
+                                                        </form>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </li>
+                                            <hr>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php else: ?>
+                                    <p>Aucun participant dans la liste d'attente.</p>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                        <div class="flex-row justify-content-between">
-                            <button type="button" class="btn" onclick="document.getElementById('addImageModal').style.display='none'">Annuler</button>
-                            <button type="submit" class="btn">Ajouter</button>
-                        </div>
-                    </form>
+                    <?php endif; ?>
                 </div>
-            </div>
-             <!-- Social sharing include -->
-             <div class=" bg-info social-sharing d-flex justify-content-center align-items-center text-center pb">
-                <?php include __DIR__ . '/../includes/social_share_btns.php'; ?>
-            </div>
+                <!-- Participants List -->
+                <div class="max-width-33">
+                    <div class="card mt-4">
+                        <div class="p-3">
+                            <h4>Participants</h4>
+                            <?php if (!empty($participants)): ?>
+                                <ul class="list-group">
+                                    <?php foreach ($participants as $participant): ?>
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <div>
+                                                <strong><?= htmlspecialchars($participant['firstName'] . ' ' . $participant['lastName']) ?></strong><br>
+                                                <small class="text-muted">Inscrit le <?= date('d/m/Y', strtotime($participant['joinedAt'])) ?></small>
+                                            </div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php else: ?>
+                                <p>Aucun participant dans la liste d'attente.</p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Delete Confirmation Modal -->
-            <div id="popup" class="d-none popup">
-                <div class="card">
-                    <h3>Confirmer la suppression</h3>
-                    <button type="button" onclick="document.getElementById('popup').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
-                    <div class="mt mb">
-                        <p>Êtes-vous sûr de vouloir supprimer l'événement "<?= $evenement['title'] ?>" ?</p>
-                        <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
+                <!-- Add Image Modal -->
+                <?php if ($isOwner): ?>
+                    <div id="addImageModal" class="d-none popup">
+                        <div class="card" style="max-width:500px;">
+                            <h3>Ajouter une image</h3>
+                            <button type="button" onclick="document.getElementById('addImageModal').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
+                            <form method="post" action="<?= HOME_URL . 'evenement/modifier' ?>" enctype="multipart/form-data">
+                                <input type="hidden" name="action" value="ajouter_image">
+                                <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
+                                <div class="mt mb">
+                                    <label for="eventImage">Sélectionner une image :</label>
+                                    <input type="file" id="eventImage" name="eventImage" accept="image/*" required>
+
+                                    <label for="altText" class="mt">Texte alternatif (optionnel) :</label>
+                                    <input type="text" id="altText" name="altText" placeholder="Description de l'image">
+                                </div>
+                                <div class="flex-row justify-content-between">
+                                    <button type="button" class="btn" onclick="document.getElementById('addImageModal').style.display='none'">Annuler</button>
+                                    <button type="submit" class="btn">Ajouter</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <div class="flex-row justify-content-between">
-                        <button type="button" class="btn" onclick="document.getElementById('popup').style.display='none'">Annuler</button>
-                        <form action="<?= HOME_URL . 'evenement/supprimer' ?>" method="post">
-                            <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
-                            <button type="submit" class="btn deconnexion">Supprimer</button>
-                        </form>
+                    <!-- Social sharing include -->
+                    <div class=" bg-info social-sharing d-flex justify-content-center align-items-center text-center pb">
+                        <?php include __DIR__ . '/../includes/social_share_btns.php'; ?>
                     </div>
-                </div>
-            </div>
-        <?php endif; ?>
-    <?php endif; ?>
+
+                    <!-- Delete Confirmation Modal -->
+                    <div id="popup" class="d-none popup">
+                        <div class="card">
+                            <h3>Confirmer la suppression</h3>
+                            <button type="button" onclick="document.getElementById('popup').style.display='none'" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:18px; cursor:pointer;">×</button>
+                            <div class="mt mb">
+                                <p>Êtes-vous sûr de vouloir supprimer l'événement "<?= $evenement['title'] ?>" ?</p>
+                                <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
+                            </div>
+                            <div class="flex-row justify-content-between">
+                                <button type="button" class="btn" onclick="document.getElementById('popup').style.display='none'">Annuler</button>
+                                <form action="<?= HOME_URL . 'evenement/supprimer' ?>" method="post">
+                                    <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
+                                    <button type="submit" class="btn deconnexion">Supprimer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
 </main>
 
 <script src="<?= HOME_URL . 'assets/javascript/banner-logo-management.js' ?>"></script>

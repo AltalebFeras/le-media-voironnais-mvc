@@ -561,11 +561,26 @@ class EvenementRepository
             // Commit transaction
             $this->pdo->commit();
             return true;
-
         } catch (Exception $e) {
             // Rollback transaction on error
             $this->pdo->rollBack();
             throw new Exception("Error registering user for event: " . $e->getMessage());
+        }
+    }
+
+    public function getEventParticipantsUponStatus($idEvenement, $idUser, $status): array
+    {
+        try {
+            $query = "SELECT ep.*, u.firstName, u.lastName, u.email, u.avatarPath 
+                      FROM event_participant ep 
+                      LEFT JOIN user u ON ep.idUser = u.idUser
+                      WHERE ep.idEvenement = :idEvenement AND ep.status = :status
+                      ORDER BY ep.joinedAt DESC";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['idEvenement' => $idEvenement, 'status' => $status]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            throw new Exception("Error fetching event participants: " . $e->getMessage());
         }
     }
 }

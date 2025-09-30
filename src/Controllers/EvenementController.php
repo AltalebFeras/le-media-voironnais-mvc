@@ -81,12 +81,19 @@ class EvenementController extends AbstractController
 
             $ville = $this->repo->getVilleById($evenement['idVille']);
             $images = $this->repo->getEventImages($idEvenement);
+            $participants = $this->repo->getEventParticipantsUponStatus($idEvenement, $idUser, $status = 'inscrit');
+            if ($evenement['requiresApproval'] == true) {
+                $waitingList = $this->repo->getEventParticipantsUponStatus($idEvenement, $idUser ,$status = 'liste_attente');
+            }
 
+// var_dump($waitingList , $participants); die;
             $this->render('evenement/voir_evenement', [
                 'evenement' => $evenement,
                 'ville' => $ville,
                 'title' => 'Détails de l\'événement',
                 'eventImages' => $images,
+                'participants' => $participants,
+                'waitingList' => $waitingList,
                 'isOwner' => true
             ]);
         } catch (Exception $e) {
