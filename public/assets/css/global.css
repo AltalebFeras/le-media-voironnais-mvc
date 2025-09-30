@@ -471,6 +471,15 @@ input[type="submit"] {
 .text-white {
     color: #fff;
 }
+.text-center {
+    text-align: center;
+}
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
 
 .bg-primary {
     background-color: #2A6174;

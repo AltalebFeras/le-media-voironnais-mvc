@@ -36,11 +36,6 @@
                         <?php if ($evenement['association_name']): ?>
                             <p><strong>Association:</strong> <?= $evenement['association_name'] ?? 'Inconnue' ?></p>
                         <?php endif; ?>
-                        <p><strong>Statut:</strong>
-                            <span class="status-badge status-<?= $evenement['status'] ?? 'Inconnu' ?>">
-                                <?= ucfirst($evenement['status']) ?>
-                            </span>
-                        </p>
                         <?php if ($evenement['maxParticipants']): ?>
                             <p><strong>Participants:</strong> <?= $evenement['currentParticipants'] ?? 0 ?>/<?= $evenement['maxParticipants'] ?? 0 ?></p>
                         <?php endif; ?>

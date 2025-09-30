@@ -191,7 +191,6 @@ class EvenementController extends AbstractController
                 ->setAddress($address)
                 ->setPrice($price)
                 ->setCurrency($currency)
-                ->setStatus('brouillon')
                 ->setIsPublic($isPublic)
                 ->setIsDeleted(false)
                 ->setIdUser($idUser)
@@ -220,13 +219,9 @@ class EvenementController extends AbstractController
                 }
                 $slug = $finalSlug;
             }
-
             $evenement->setSlug($slug);
-
             $this->returnAllErrors($errors, 'evenement/ajouter?error=true');
-
             $this->repo->createEvent($evenement);
-
             $_SESSION['success'] = "L'événement a été créé avec succès";
             $this->redirect('mes_evenements');
         } catch (Exception $e) {
@@ -377,7 +372,6 @@ class EvenementController extends AbstractController
                 ->setAddress($address)
                 ->setPrice($price)
                 ->setCurrency($currency)
-                ->setStatus('brouillon')
                 ->setIsPublic($isPublic)
                 ->setRequiresApproval($requiresApproval)
                 ->setIdVille($idVille)
@@ -662,7 +656,13 @@ class EvenementController extends AbstractController
             if (!$evenement) {
                 throw new Exception("L'événement demandé n'existe pas");
             }
-
+            // verify if connected user is the owner or is subscribed to the event
+            if (isset($_SESSION['idUser'])) {
+                $idUser = $_SESSION['idUser'];
+                $isOwner = $this->repo->isEventOwner($evenement['idEvenement'], $idUser);
+                $isSubscribed = $this->repo->isUserRegistered($idUser, $slug);
+                // $isSubscribeOnWaitingList = $this->repo->isUserOnWaitingList($idUser, $slug);
+            }
             $ville = $this->repo->getVilleById($evenement['idVille']);
 
             // Verify that the ville_slug matches
@@ -695,7 +695,9 @@ class EvenementController extends AbstractController
                 'ville' => $ville,
                 'title' => $evenement['title'],
                 'eventImages' => $images,
-                'shareTable' => $shareTable
+                'shareTable' => $shareTable,
+                'isOwner' => $isOwner ?? false,
+                'isSubscribed' => $isSubscribed ?? false,
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();

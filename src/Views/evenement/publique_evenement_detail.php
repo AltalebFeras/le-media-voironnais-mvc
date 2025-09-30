@@ -52,21 +52,31 @@ $endDate = new DateTime($evenement['endDate']);
                 <?php endif; ?>
 
                 <!-- Registration button if registration is available -->
-                <?php if (strtotime($evenement['registrationDeadline']) > time() && $evenement['currentParticipants'] < $evenement['maxParticipants']): ?>
-                    <form action="<?= HOME_URL . 'evenements/'.$evenement['ville_slug'].'/' .$evenement['category_slug'] . '/' . $evenement['slug']  ?>" method="post">
-                        <input type="hidden" name="slug" value="<?= $evenement['slug'] ?>">
-                      
-                        <button type="submit" class="btn btn-success"> 
-                             <?php if ($evenement['requiresApproval']): ?>
-                            Demande d'inscription <?php else : ?>  S'inscrire à l'événement
-                        <?php endif; ?>
-                    </button>
-                    </form>
-                <?php elseif ($evenement['currentParticipants'] >= $evenement['maxParticipants']): ?>
-                    <div class="event-full">Événement complet</div>
-                <?php elseif (strtotime($evenement['registrationDeadline']) < time()): ?>
-                    <div class="event-closed">Inscriptions fermées</div>
+                <?php if ($isOwner): ?>
+                    <p class="event-registered text-success text-center bounce-in-top">Vous êtes propriétaire de cet événement</p>
+                <?php elseif ($isSubscribed): ?>
+                    <p class="event-registered text-success text-center bounce-in-top">Vous êtes inscrit à cet événement</p>
+                <?php elseif ($isSubscribeOnWaitingList): ?>
+                    <p class="event-registered text-success text-center bounce-in-top">Vous êtes sur la liste d'attente de cet événement</p>
+                <?php else: ?>
+                    <?php if (strtotime($evenement['registrationDeadline']) > time() && $evenement['currentParticipants'] < $evenement['maxParticipants']): ?>
+                        <form action="<?= HOME_URL . 'evenements/' . $evenement['ville_slug'] . '/' . $evenement['category_slug'] . '/' . $evenement['slug']  ?>" method="post">
+                            <input type="hidden" name="slug" value="<?= $evenement['slug'] ?>">
+
+                            <button type="submit" class="btn btn-success m">
+                                <?php if ($evenement['requiresApproval']): ?>
+                                    Demande d'inscription <?php else : ?> S'inscrire à l'événement
+                                <?php endif; ?>
+                            </button>
+                        </form>
+                    <?php elseif ($evenement['currentParticipants'] >= $evenement['maxParticipants']): ?>
+                        <div class="event-full">Événement complet</div>
+                    <?php elseif (strtotime($evenement['registrationDeadline']) < time()): ?>
+                        <div class="event-closed">Inscriptions fermées</div>
+                    <?php endif; ?>
                 <?php endif; ?>
+
+                <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
                 <!-- Social sharing include -->
                 <?php include __DIR__ . '/../includes/social_share_btns.php'; ?>

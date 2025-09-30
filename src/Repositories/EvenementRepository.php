@@ -134,9 +134,9 @@ class EvenementRepository
     public function createEvent(Evenement $event): bool
     {
         $sql = "INSERT INTO evenement (uiid, title, slug, description, shortDescription, startDate, endDate, 
-                registrationDeadline, maxParticipants, currentParticipants, address, bannerPath, status, isPublic, isDeleted, price, currency, createdAt, idUser, idAssociation, idVille, idEventCategory) 
+                registrationDeadline, maxParticipants, currentParticipants, address, bannerPath, isPublic, isDeleted, price, currency, createdAt, idUser, idAssociation, idVille, idEventCategory) 
                 VALUES (:uiid, :title, :slug, :description, :shortDescription, :startDate, :endDate, 
-                :registrationDeadline, :maxParticipants, :currentParticipants, :address, :bannerPath, :status, :isPublic, :isDeleted, :price, :currency, :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory)";
+                :registrationDeadline, :maxParticipants, :currentParticipants, :address, :bannerPath, :isPublic, :isDeleted, :price, :currency, :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory)";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -153,7 +153,6 @@ class EvenementRepository
             ':currentParticipants' => $event->getCurrentParticipants() ?? 0,
             ':address' => $event->getAddress(),
             ':bannerPath' => $event->getBannerPath(),
-            ':status' => $event->getStatus(),
             ':isPublic' => $event->getIsPublic() ? 1 : 0,
             ':isDeleted' => 0,
             ':price' => $event->getPrice(),
@@ -174,8 +173,7 @@ class EvenementRepository
         $sql = "UPDATE evenement SET 
                 title = :title, slug = :slug, description = :description, shortDescription = :shortDescription,
                 startDate = :startDate, endDate = :endDate, registrationDeadline = :registrationDeadline,
-                maxParticipants = :maxParticipants, address = :address,
-                status = :status, isPublic = :isPublic, requiresApproval = :requiresApproval,
+                maxParticipants = :maxParticipants, address = :address, isPublic = :isPublic, requiresApproval = :requiresApproval,
                 price = :price, currency = :currency, updatedAt = :updatedAt, idVille = :idVille,
                 idEventCategory = :idEventCategory, idAssociation = :idAssociation
                 WHERE idEvenement = :idEvenement AND idUser = :idUser";
@@ -192,7 +190,6 @@ class EvenementRepository
             ':registrationDeadline' => $event->getRegistrationDeadline(),
             ':maxParticipants' => $event->getMaxParticipants(),
             ':address' => $event->getAddress(),
-            ':status' => $event->getStatus(),
             ':isPublic' => $event->getIsPublic() ? 1 : 0,
             ':requiresApproval' => $event->getRequiresApproval() ? 1 : 0,
             ':price' => $event->getPrice(),
