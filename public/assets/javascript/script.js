@@ -69,111 +69,135 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
 });
 
 //  handle the burger menu functionality for mobile navigation.
-  document.addEventListener('DOMContentLoaded', function() {
-    const burger = document.getElementById('burger-menu');
-    const nav = document.getElementById('nav-links');
+document.addEventListener("DOMContentLoaded", function () {
+  const burger = document.getElementById("burger-menu");
+  const nav = document.getElementById("nav-links");
 
-    burger.addEventListener('click', function(e) {
-      e.stopPropagation();
-      burger.classList.toggle('active');
-      nav.classList.toggle('open');
-    });
+  burger.addEventListener("click", function (e) {
+    e.stopPropagation();
+    burger.classList.toggle("active");
+    nav.classList.toggle("open");
+  });
 
-    nav.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        burger.classList.remove('active');
-        nav.classList.remove('open');
-      });
-    });
-
-    document.addEventListener('click', function(e) {
-      if (
-        nav.classList.contains('open') &&
-        !nav.contains(e.target) &&
-        !burger.contains(e.target)
-      ) {
-        burger.classList.remove('active');
-        nav.classList.remove('open');
-      }
+  nav.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      burger.classList.remove("active");
+      nav.classList.remove("open");
     });
   });
 
+  document.addEventListener("click", function (e) {
+    if (
+      nav.classList.contains("open") &&
+      !nav.contains(e.target) &&
+      !burger.contains(e.target)
+    ) {
+      burger.classList.remove("active");
+      nav.classList.remove("open");
+    }
+  });
+});
+
 // Notifications (polling + dropdown)
 (function () {
-  const bell = document.getElementById('notifBell');
-  const badge = document.getElementById('notifCount');
-  const dropdown = document.getElementById('notifDropdown');
-  const list = document.getElementById('notifList');
-  const markAllBtn = document.getElementById('notifMarkAll');
+  const bell = document.getElementById("notifBell");
+  const badge = document.getElementById("notifCount");
+  const dropdown = document.getElementById("notifDropdown");
+  const list = document.getElementById("notifList");
+  const markAllBtn = document.getElementById("notifMarkAll");
 
   if (!bell || !badge || !dropdown || !list) return;
 
   let polling = null;
   let lastOpenAt = 0;
 
-  const apiGet = (path) => fetch(`/${path}`, { headers: { 'Accept': 'application/json' } });
+  const apiGet = (path) =>
+    fetch(`/${path}`, { headers: { Accept: "application/json" } });
   const apiPost = (path, body) =>
     fetch(`/${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(body || {})
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body || {}),
     });
 
   async function refreshCount() {
     try {
-      const res = await apiGet('notifications/count');
+      const res = await apiGet("notifications/count");
       const data = await res.json();
       if (!data || data.success !== true) return;
       const count = Number(data.count || 0);
       if (count > 0) {
         badge.textContent = String(count);
-        badge.classList.remove('d-none');
+        badge.classList.remove("d-none");
       } else {
-        badge.classList.add('d-none');
+        badge.classList.add("d-none");
       }
-    } catch (_) { /* silent */ }
+    } catch (_) {
+      /* silent */
+    }
   }
 
   async function loadList(page = 1, limit = 10) {
     list.innerHTML = '<li class="notif-item muted">Chargement…</li>';
     try {
-      const res = await apiGet(`notifications/list?page=${page}&limit=${limit}`);
+      const res = await apiGet(
+        `notifications/list?page=${page}&limit=${limit}`
+      );
       const data = await res.json();
       if (!data || data.success !== true) {
-        list.innerHTML = '<li class="notif-item muted">Erreur lors du chargement</li>';
+        list.innerHTML =
+          '<li class="notif-item muted">Erreur lors du chargement</li>';
         return;
       }
       if (!data.items || data.items.length === 0) {
-        list.innerHTML = '<li class="notif-item muted">Aucune notification</li>';
+        list.innerHTML =
+          '<li class="notif-item muted">Aucune notification</li>';
         return;
       }
-      list.innerHTML = '';
-      data.items.forEach(item => {
-        const li = document.createElement('li');
-        li.className = `notif-item ${item.isRead ? 'read' : 'unread'}`;
+      list.innerHTML = "";
+      data.items.forEach((item) => {
+        const li = document.createElement("li");
+        li.className = `notif-item ${item.isRead ? "read" : "unread"}`;
         li.dataset.id = item.idNotification;
         li.innerHTML = `
-          <div class="notif-title">${escapeHtml(item.title || '(sans titre)')}</div>
-          ${item.message ? `<div class="notif-message">${escapeHtml(item.message)}</div>` : ''}
+          <div class="notif-title">${escapeHtml(
+            item.title || "(sans titre)"
+          )}</div>
+          ${
+            item.message
+              ? `<div class="notif-message">${escapeHtml(item.message)}</div>`
+              : ""
+          }
           <div class="notif-meta">
-            <span class="notif-type ${item.type || 'info'}">${item.type || 'info'}</span>
-            <time class="notif-date">${new Date(item.createdAt).toLocaleString()}</time>
+            <span class="notif-type ${item.type || "info"}">${
+          item.type || "info"
+        }</span>
+            <time class="notif-date">${new Date(
+              item.createdAt
+            ).toLocaleString()}</time>
           </div>
         `;
-        li.addEventListener('click', async () => {
+        li.addEventListener("click", async () => {
           if (!item.isRead) {
             try {
-              await apiPost('notifications/mark-read', { id: item.idNotification });
-              li.classList.remove('unread');
-              li.classList.add('read');
+              await apiPost("notifications/mark-read", {
+                id: item.idNotification,
+              });
+              li.classList.remove("unread");
+              li.classList.add("read");
               // decrement badge
-              const current = parseInt(badge.textContent || '0', 10);
+              const current = parseInt(badge.textContent || "0", 10);
               if (current > 1) {
                 badge.textContent = String(current - 1);
               } else {
-                badge.classList.add('d-none');
+                badge.classList.add("d-none");
               }
-            } catch (_) { /* ignore */ }
+            } catch (_) {
+              /* ignore */
+            }
           }
           if (item.url) {
             window.location.href = item.url;
@@ -182,23 +206,24 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
         list.appendChild(li);
       });
     } catch (_) {
-      list.innerHTML = '<li class="notif-item muted">Erreur lors du chargement</li>';
+      list.innerHTML =
+        '<li class="notif-item muted">Erreur lors du chargement</li>';
     }
   }
 
   // basic HTML escaping
   function escapeHtml(str) {
     return String(str)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
   }
 
   function openDropdown() {
-    dropdown.classList.remove('d-none');
-    bell.setAttribute('aria-expanded', 'true');
+    dropdown.classList.remove("d-none");
+    bell.setAttribute("aria-expanded", "true");
     const now = Date.now();
     if (now - lastOpenAt > 800) {
       loadList(1, 10);
@@ -208,36 +233,41 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
     const closeOnOutside = (e) => {
       if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
         closeDropdown();
-        document.removeEventListener('click', closeOnOutside, true);
+        document.removeEventListener("click", closeOnOutside, true);
       }
     };
-    setTimeout(() => document.addEventListener('click', closeOnOutside, true), 0);
+    setTimeout(
+      () => document.addEventListener("click", closeOnOutside, true),
+      0
+    );
   }
 
   function closeDropdown() {
-    dropdown.classList.add('d-none');
-    bell.setAttribute('aria-expanded', 'false');
+    dropdown.classList.add("d-none");
+    bell.setAttribute("aria-expanded", "false");
   }
 
-  bell.addEventListener('click', (e) => {
+  bell.addEventListener("click", (e) => {
     e.preventDefault();
-    if (dropdown.classList.contains('d-none')) openDropdown();
+    if (dropdown.classList.contains("d-none")) openDropdown();
     else closeDropdown();
   });
 
   if (markAllBtn) {
-    markAllBtn.addEventListener('click', async () => {
+    markAllBtn.addEventListener("click", async () => {
       try {
-        const res = await apiPost('notifications/mark-all-read', {});
+        const res = await apiPost("notifications/mark-all-read", {});
         const data = await res.json();
         if (data && data.success) {
-          badge.classList.add('d-none');
-          list.querySelectorAll('.notif-item.unread').forEach(li => {
-            li.classList.remove('unread');
-            li.classList.add('read');
+          badge.classList.add("d-none");
+          list.querySelectorAll(".notif-item.unread").forEach((li) => {
+            li.classList.remove("unread");
+            li.classList.add("read");
           });
         }
-      } catch (_) { /* ignore */ }
+      } catch (_) {
+        /* ignore */
+      }
     });
   }
 
@@ -251,7 +281,7 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
     if (polling) clearInterval(polling);
     polling = null;
   }
-  document.addEventListener('visibilitychange', () => {
+  document.addEventListener("visibilitychange", () => {
     if (document.hidden) stopPolling();
     else startPolling();
   });
@@ -260,10 +290,10 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
 
 // Notifications page (full list + load more + mark all)
 (function () {
-  const listEl = document.getElementById('pageNotifList');
-  const loadMoreBtn = document.getElementById('pageLoadMore');
-  const markAllBtn = document.getElementById('pageMarkAll');
-  const bellBadge = document.getElementById('notifCount');
+  const listEl = document.getElementById("pageNotifList");
+  const loadMoreBtn = document.getElementById("pageLoadMore");
+  const markAllBtn = document.getElementById("pageMarkAll");
+  const bellBadge = document.getElementById("notifCount");
   if (!listEl || !loadMoreBtn) return;
 
   let page = 1;
@@ -271,48 +301,64 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
   let loading = false;
   let hasMore = true;
 
-  const apiGet = (path) => fetch(`/${path}`, { headers: { 'Accept': 'application/json' } });
+  const apiGet = (path) =>
+    fetch(`/${path}`, { headers: { Accept: "application/json" } });
   const apiPost = (path, body) =>
     fetch(`/${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(body || {})
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body || {}),
     });
 
   function escapeHtml(str) {
     return String(str)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
   }
 
   function renderItem(item) {
-    const li = document.createElement('li');
-    li.className = `notif-item ${item.isRead ? 'read' : 'unread'}`;
+    const li = document.createElement("li");
+    li.className = `notif-item ${item.isRead ? "read" : "unread"}`;
     li.dataset.id = item.idNotification || item.id;
     li.innerHTML = `
-      <div class="notif-title">${escapeHtml(item.title || '(sans titre)')}</div>
-      ${item.message ? `<div class="notif-message">${escapeHtml(item.message)}</div>` : ''}
+      <div class="notif-title">${escapeHtml(item.title || "(sans titre)")}</div>
+      ${
+        item.message
+          ? `<div class="notif-message">${escapeHtml(item.message)}</div>`
+          : ""
+      }
       <div class="notif-meta">
-        <span class="notif-type ${item.type || 'info'}">${item.type || 'info'}</span>
-        <time class="notif-date">${new Date(item.createdAt).toLocaleString()}</time>
+        <span class="notif-type ${item.type || "info"}">${
+      item.type || "info"
+    }</span>
+        <time class="notif-date">${new Date(
+          item.createdAt
+        ).toLocaleString()}</time>
       </div>
     `;
-    li.addEventListener('click', async () => {
+    li.addEventListener("click", async () => {
       if (!item.isRead) {
         try {
-          await apiPost('notifications/mark-read', { id: item.idNotification || item.id });
-          li.classList.remove('unread');
-          li.classList.add('read');
+          await apiPost("notifications/mark-read", {
+            id: item.idNotification || item.id,
+          });
+          li.classList.remove("unread");
+          li.classList.add("read");
           item.isRead = 1;
-          if (bellBadge && !bellBadge.classList.contains('d-none')) {
-            const current = parseInt(bellBadge.textContent || '0', 10);
+          if (bellBadge && !bellBadge.classList.contains("d-none")) {
+            const current = parseInt(bellBadge.textContent || "0", 10);
             if (current > 1) bellBadge.textContent = String(current - 1);
-            else bellBadge.classList.add('d-none');
+            else bellBadge.classList.add("d-none");
           }
-        } catch (_) { /* ignore */ }
+        } catch (_) {
+          /* ignore */
+        }
       }
       if (item.url) {
         window.location.href = item.url;
@@ -324,48 +370,54 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
   async function loadPage() {
     if (loading || !hasMore) return;
     loading = true;
-    loadMoreBtn.textContent = 'Chargement…';
+    loadMoreBtn.textContent = "Chargement…";
     try {
-      const res = await apiGet(`notifications/list?page=${page}&limit=${limit}`);
+      const res = await apiGet(
+        `notifications/list?page=${page}&limit=${limit}`
+      );
       const data = await res.json();
-      if (!data || data.success !== true) throw new Error('bad response');
+      if (!data || data.success !== true) throw new Error("bad response");
 
       if (page === 1 && (!data.items || data.items.length === 0)) {
-        listEl.innerHTML = '<li class="notif-item muted">Aucune notification</li>';
+        listEl.innerHTML =
+          '<li class="notif-item muted">Aucune notification</li>';
         hasMore = false;
-        loadMoreBtn.classList.add('d-none');
+        loadMoreBtn.classList.add("d-none");
         return;
       }
 
       data.items.forEach((item) => listEl.appendChild(renderItem(item)));
       hasMore = !!data.hasMore;
-      if (!hasMore) loadMoreBtn.classList.add('d-none');
+      if (!hasMore) loadMoreBtn.classList.add("d-none");
       page += 1;
     } catch (_) {
       if (page === 1) {
-        listEl.innerHTML = '<li class="notif-item muted">Erreur lors du chargement</li>';
+        listEl.innerHTML =
+          '<li class="notif-item muted">Erreur lors du chargement</li>';
       }
     } finally {
       loading = false;
-      loadMoreBtn.textContent = 'Charger plus';
+      loadMoreBtn.textContent = "Charger plus";
     }
   }
 
-  loadMoreBtn.addEventListener('click', loadPage);
+  loadMoreBtn.addEventListener("click", loadPage);
 
   if (markAllBtn) {
-    markAllBtn.addEventListener('click', async () => {
+    markAllBtn.addEventListener("click", async () => {
       try {
-        const res = await apiPost('notifications/mark-all-read', {});
+        const res = await apiPost("notifications/mark-all-read", {});
         const data = await res.json();
         if (data && data.success) {
-          listEl.querySelectorAll('.notif-item.unread').forEach(li => {
-            li.classList.remove('unread');
-            li.classList.add('read');
+          listEl.querySelectorAll(".notif-item.unread").forEach((li) => {
+            li.classList.remove("unread");
+            li.classList.add("read");
           });
-          if (bellBadge) bellBadge.classList.add('d-none');
+          if (bellBadge) bellBadge.classList.add("d-none");
         }
-      } catch (_) { /* ignore */ }
+      } catch (_) {
+        /* ignore */
+      }
     });
   }
 
@@ -373,3 +425,65 @@ document.querySelectorAll('input[type="password"]').forEach(function (input) {
   loadPage();
 })();
 
+// Response messages handling (alerts, toasts, error lists)
+document.addEventListener("DOMContentLoaded", function () {
+  // Unified responseMessage handling
+
+  // Function to dismiss any responseMessage
+  function dismissResponseMessage(element, isToast = false) {
+    if (isToast) {
+      element.classList.remove("show");
+      element.classList.add("hide");
+    } else {
+      element.classList.add("fade-out");
+    }
+
+    // Wait for animation to complete before removing
+    setTimeout(
+      function () {
+        if (element.parentElement) {
+          element.remove();
+
+          // Special handling for error list items
+          if (element.classList.contains("error-item")) {
+            const ul = element.closest(".error-list");
+            if (ul && ul.children.length === 0) {
+              ul.remove();
+            }
+          }
+        }
+      },
+      isToast ? 400 : 0
+    );
+  }
+
+  // Handle all close buttons
+  document.querySelectorAll(".responseMessage-close").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const responseMessage = this.closest(".responseMessage");
+      const isToast = responseMessage.classList.contains("toast");
+      dismissResponseMessage(responseMessage, isToast);
+    });
+  });
+
+  // Auto-dismiss standard responseMessages
+  document
+    .querySelectorAll(".custom-alert, .error-list")
+    .forEach(function (alert) {
+      setTimeout(function () {
+        dismissResponseMessage(alert, false);
+      }, 10000);
+    });
+
+  // Handle toast responseMessages
+  const toast = document.getElementById("toast");
+  if (toast) {
+    setTimeout(function () {
+      toast.classList.add("show");
+    }, 100);
+
+    setTimeout(function () {
+      dismissResponseMessage(toast, true);
+    }, 7000);
+  }
+});
