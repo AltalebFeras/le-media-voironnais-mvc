@@ -82,16 +82,29 @@ class NotificationRepository
     {
         return $this->markAllNotificationsAsRead($idUser);
     }
+    /**
+     * Push a new notification to a user
+     * @param array $data Associative array with keys:
+     *   - idUser (int)
+     *   - type (string) One of: 'activation', 'inscription', 'preinscription', 'invitation', 'mise_a_jour', 'rappel', 'systeme', 'alert', 'message', 'autre'
+     *   - title (string)
+     *   - message (string text)
+     *   - url (string|null, optional)
+     *   - priority (boolean, optional) Default is false
+     *   - createdAt (string, datetime format)
+     * @return bool Returns true on success, false on failure
+     */
     public function pushNotification(array $data): bool
     {
-        $sql = "INSERT INTO notification (idUser, type, title, message, url, isRead, createdAt) 
-                VALUES (:idUser, :type, :title, :message, :url, 0, :createdAt)";
+        $sql = "INSERT INTO notification (idUser, type, title, message, url, priority, createdAt) 
+                VALUES (:idUser, :type, :title, :message, :url, :priority, :createdAt)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':idUser', $data['idUser'], PDO::PARAM_INT);
         $stmt->bindValue(':type', $data['type'], PDO::PARAM_STR);
         $stmt->bindValue(':title', $data['title'], PDO::PARAM_STR);
         $stmt->bindValue(':message', $data['message'], PDO::PARAM_STR);
-        $stmt->bindValue(':url', $data['link'] ?? null, PDO::PARAM_STR);
+        $stmt->bindValue(':url', $data['url'] ?? null, PDO::PARAM_STR);
+        $stmt->bindValue(':priority', $data['priority'] ?? false, PDO::PARAM_BOOL);
         $stmt->bindValue(':createdAt', $data['createdAt'], PDO::PARAM_STR);
         return $stmt->execute();
     }

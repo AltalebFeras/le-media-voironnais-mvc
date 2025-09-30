@@ -7,6 +7,7 @@ use src\Models\Evenement;
 use src\Repositories\EvenementRepository;
 use Exception;
 use DateTime;
+use src\Repositories\NotificationRepository;
 use src\Services\ConfigRouter;
 use src\Services\Helper;
 
@@ -622,7 +623,7 @@ class EvenementController extends AbstractController
 
             // Get recent events (last 4 events that already happened)
             $recentEvents = $this->repo->getRecentEvents(4);
-            
+
             // Get all events with pagination
             $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
             $evenementsPerPage = 12;
@@ -654,27 +655,27 @@ class EvenementController extends AbstractController
             }
 
             $evenement = $this->repo->getEventBySlug($slug);
-            
+
             if (!$evenement) {
                 throw new Exception("L'événement demandé n'existe pas");
             }
 
             $ville = $this->repo->getVilleById($evenement['idVille']);
-            
+
             // Verify that the ville_slug matches
             if ($ville['ville_slug'] !== $ville_slug) {
                 throw new Exception("L'événement demandé n'existe pas");
             }
-            
+
             $images = $this->repo->getEventImages($evenement['idEvenement']);
-            
+
             // Generate share URLs for social media
             $shareUrl = DOMAIN . HOME_URL . "evenements/{$ville_slug}/{$slug}";
             $shareTitle = urlencode($evenement['title']);
             $shareDesc = urlencode(substr($evenement['shortDescription'] ?? $evenement['description'], 0, 100) . '...');
             $shareDate = urlencode(date('d/m/Y H:i', strtotime($evenement['startDate'])));
             $shareLieu = urlencode($evenement['ville_nom_reel'] ?? 'Voiron');
-            
+
             $shareTable = [
                 'whatsapp' => "https://api.whatsapp.com/send?text=%F0%9F%8E%89%20{$shareTitle}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%E2%9C%A8%20{$shareDesc}%0A👉%20{$shareUrl}",
                 'facebook' => "https://www.facebook.com/sharer.php?u=" . urlencode($shareUrl),
@@ -704,15 +705,18 @@ class EvenementController extends AbstractController
         try {
             if (!isset($_SESSION['idUser'])) {
                 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-                $_SESSION['info'] = "Vous devez être connecté pour vous inscrire à un événement";
+                $_SESSION['warning'] = "Vous devez être connecté pour vous inscrire à un événement";
+                // var_dump($_SERVER, $_SESSION['redirect_after_login']);die;
                 $this->redirect('connexion?need_login=true');
                 return;
             }
-            ====>
             $idUser = $_SESSION['idUser'];
-            $slug = $composedRoute[2] ?? null;
             
-            if (!$slug ) {
+            $ville_slug = $composedRoute[1] ?? null;
+            $category_slug = $composedRoute[2] ?? null;
+            $slug = $composedRoute[3] ?? null;
+            
+            if (!$slug) {
                 throw new Exception("Événement invalide");
             }
             
@@ -737,21 +741,31 @@ class EvenementController extends AbstractController
             }
             
             // Register the user
-            // if
-            $status = $evenement['requiresApproval'] ? 'pending' : 'approved';
-            $this->repo->registerUserForEvent($idUser, $evenement['idEvenement'], $status);
-            
-            // Update current participants count
-            if ($status === 'approved') {
-                $this->repo->incrementEventParticipants($evenement['idEvenement']);
+            // if requiresApproval is true, set status to 'pending', else 'approved'
+            if ($evenement['requiresApproval'] == 1) {
+                $status = 'liste_attente';
+            } else {
+                $status = 'inscrit';
             }
-            
+            $idCreator = $evenement['idUser'];
+            $idEvenement = $evenement['idEvenement'];
+            if ($idCreator == $idUser) {
+                throw new Exception("Vous ne pouvez pas vous inscrire à votre propre événement");
+            }
+            $subscription = $this->repo->registerUserForEventAndIncrementEventParticipants($idUser, $idEvenement, $status);
+            if ($subscription) {
+            //    push Notification
+            $notification = new NotificationRepository();
+               $message = "Nouvelle inscription à votre événement : " . $evenement['title'];
+               $url = "dashboard/mes_evenements?action=voir&uiid=" . $evenement['uiid'];
+               $notification->pushNotification(['idUser' => $idCreator, 'message' => $message, 'url' => $url]);
+            } 
+
             $_SESSION['success'] = "Votre inscription a été " . ($status === 'pending' ? "enregistrée et est en attente d'approbation" : "confirmée") . " avec succès!";
-            $this->redirect('evenements/' . $ville_slug . '/' . $slug);
-            
+            $this->redirect('evenements/' . $ville_slug . '/' . $category_slug . '/' . $slug);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('evenements/' . ($ville_slug ?? '') . '/' . ($slug ?? ''));
+            $this->redirect('evenements/' . $ville_slug  . '/' . $category_slug . '/' . $slug, ['error' => true]);
         }
     }
 }

@@ -109,13 +109,13 @@ switch ($route) {
         }
         break;
     // events public routes
+    // Example: /evenements/ville-slug or /evenements/ville-slug/category_slug/event-slug /evenements/ville-slug/category_slug
     case $part0 === 'evenements':
-        // Example: /evenements/ville-slug or /evenements/ville-slug/event-slug
         if ($part1 && !$part2) {
             // $evenementController->displayEventsForThisVille($composedRoute);
-        } elseif ($part1 && $part2 && !$part3) {
+        } elseif ($part2 && !$part3) {
             // $evenementController->viewEventByVilleSlugAndCategorySlug($composedRoute);
-        } elseif ($part1 && $part2 && $part3 && !$part4) {
+        } elseif ($part3 && !$part4) {
             if ($method === 'POST') {
                 $evenementController->inscriptionEvent($composedRoute);
             } else {

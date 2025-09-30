@@ -527,4 +527,48 @@ class EvenementRepository
 
         return $event;
     }
+    public function isUserRegistered($idUser, $slug): bool
+    {
+        $sql = "SELECT COUNT(*) 
+                FROM event_participant ep
+                JOIN evenement e ON ep.idEvenement = e.idEvenement
+                WHERE ep.idUser = :idUser AND e.slug = :slug";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() > 0;
+    }
+    public function registerUserForEventAndIncrementEventParticipants($idUser, $idEvenement, $status): bool
+    {
+        try {
+            // Start transaction
+            $this->pdo->beginTransaction();
+
+            // Insert participant
+            $query = "INSERT INTO event_participant (idUser, idEvenement, status, joinedAt) 
+                      VALUES (:idUser, :idEvenement, :status, NOW())";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([
+                'idUser' => $idUser,
+                'idEvenement' => $idEvenement,
+                'status' => $status
+            ]);
+
+            // Increment participant count if status is 'inscrit'
+            $updateQuery = "UPDATE evenement SET currentParticipants = currentParticipants + 1 WHERE idEvenement = :idEvenement";
+            $updateStmt = $this->pdo->prepare($updateQuery);
+            $updateStmt->execute(['idEvenement' => $idEvenement]);
+
+            // Commit transaction
+            $this->pdo->commit();
+            return true;
+
+        } catch (Exception $e) {
+            // Rollback transaction on error
+            $this->pdo->rollBack();
+            throw new Exception("Error registering user for event: " . $e->getMessage());
+        }
+    }
 }

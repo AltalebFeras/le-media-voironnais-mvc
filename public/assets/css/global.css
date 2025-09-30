@@ -633,6 +633,11 @@ footer {
     transition: opacity 0.3s ease;
 }
 
+.custom-alert p {
+    padding: 0px;
+    margin: 0px;
+}
+
 .custom-alert-success {
     background: #e6f9f5;
     border-color: #6ed3cf;
@@ -652,10 +657,21 @@ footer {
     align-items: baseline;
     gap: 0.75rem;
 }
+
 .custom-alert-info {
     background: #e7f3fe;
     border-color: #2196f3;
     color: #0c5460;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+
+.custom-alert-warning {
+    background: #fff3cd;
+    border-color: #ffecb5;
+    color: #856404;
     display: flex;
     justify-content: space-between;
     align-items: baseline;

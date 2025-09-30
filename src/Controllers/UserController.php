@@ -259,6 +259,13 @@ class UserController extends AbstractController
                 $_SESSION['success'] = 'Vous êtes connecté en tant que super administrateur!';
                 $this->redirect('admin/dashboard_super_admin');
             } elseif ($_SESSION['role'] === 'user') {
+                if (isset($_SESSION['redirect_after_login'])) {
+                    $_SESSION['connected'] = true;
+                    $_SESSION['success'] = 'Vous êtes connecté avec succès!';
+                    header('Location: ' . $_SESSION['redirect_after_login']);
+                    unset($_SESSION['redirect_after_login']);
+                    exit();
+                }
                 $_SESSION['connected'] = true;
                 $_SESSION['success'] = 'Vous êtes connecté avec succès!';
                 $this->redirect('dashboard');
@@ -341,7 +348,6 @@ class UserController extends AbstractController
             $idUser = $user->getIdUser();
 
             $token = bin2hex(random_bytes(16));
-            $this->repo->saveTokenAndUpdatePasswordResetAt($idUser, $token, (new DateTime())->format('Y-m-d H:i:s'));
 
             // send password reset email (same as before)
             $resetLink = DOMAIN . HOME_URL . "reinit_mon_mot_de_passe?token=$token";
@@ -351,10 +357,16 @@ class UserController extends AbstractController
             $body .= "<br><br>";
             $body .= "<a href='$resetLink'>Réinitialiser le mot de passe</a><br><br>";
 
-            $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $user->getEmail(), $user->getFirstName(), $subject, $body);
+            $sendEmail = $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $user->getEmail(), $user->getFirstName(), $subject, $body);
 
             $_SESSION['success'] = 'Un e-mail de réinitialisation du mot de passe a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception et cliquer sur le lien pour réinitialiser votre mot de passe.';
-            $this->redirect('connexion');
+            if ($sendEmail) {
+                $this->repo->saveTokenAndUpdatePasswordResetAt($idUser, $token, (new DateTime())->format('Y-m-d H:i:s'));
+                $this->redirect('connexion');
+            } else {
+                $errors['sendEmail'] = 'Une erreur s\'est produite lors de l\'envoi de l\'e-mail de réinitialisation. Veuillez réessayer plus tard.';
+                $this->returnAllErrors($errors, 'mdp_oublie', ['error' => 'true']);
+            }
         } else {
             $errors['email'] = 'Aucun compte trouvé avec cette adresse e-mail.';
             $this->returnAllErrors($errors, 'mdp_oublie?error=true');
@@ -538,7 +550,7 @@ class UserController extends AbstractController
                 }
             }
         }
-        $this->returnAllErrors($errors, 'mon_compte', ['action' => 'edit_profile','field' => 'email', 'error' => 'true']);
+        $this->returnAllErrors($errors, 'mon_compte', ['action' => 'edit_profile', 'field' => 'email', 'error' => 'true']);
 
         // send conformation email with code of six numbers to new email address
         $authCode = rand(100000, 999999);
@@ -555,7 +567,7 @@ class UserController extends AbstractController
             $_SESSION['newEmail'] = $email;
         } else {
             $errors['saveCode'] = 'Une erreur s\'est produite lors de la génération du code de confirmation. Veuillez réessayer plus tard.';
-            $this->returnAllErrors($errors, 'mon_compte', ['action' => 'edit_profile','field' => 'email', 'error' => 'true']);
+            $this->returnAllErrors($errors, 'mon_compte', ['action' => 'edit_profile', 'field' => 'email', 'error' => 'true']);
         }
         $_SESSION['success'] = 'Un code de confirmation a été envoyé à votre nouvelle adresse e-mail. Veuillez vérifier votre boîte de réception et entrer le code pour confirmer votre nouvelle adresse e-mail.';
         $this->redirect('mon_compte', ['action' => 'confirm_new_email']);
@@ -575,7 +587,7 @@ class UserController extends AbstractController
             if ($authCode && !preg_match('/^[0-9]{6}$/', $authCode)) {
                 $errors['code'] = 'Le code de confirmation est invalide.';
             }
-            $this->returnAllErrors($errors, 'mon_compte' , ['action' => 'confirm_new_email', 'error' => 'true']);
+            $this->returnAllErrors($errors, 'mon_compte', ['action' => 'confirm_new_email', 'error' => 'true']);
 
             $user = $this->repo->getUserById($idUser);
             if (!$user) {
@@ -599,7 +611,7 @@ class UserController extends AbstractController
                     throw new Exception('Une erreur s\'est produite lors de la mise à jour de votre adresse e-mail. Veuillez réessayer plus tard.');
                 }
             } else {
-               throw new Exception('Le code de confirmation est incorrect.');
+                throw new Exception('Le code de confirmation est incorrect.');
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
@@ -613,7 +625,7 @@ class UserController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $this->repo->clearAuthCode($idUser);
             if (isset($_SESSION['newEmail'])) {
-            unset($_SESSION['newEmail']);
+                unset($_SESSION['newEmail']);
             }
             $_SESSION['success'] = 'Le changement d\'adresse e-mail a été annulé avec succès.';
             $this->redirect('mon_compte');
@@ -639,7 +651,7 @@ class UserController extends AbstractController
             }
         }
         // If there are any validation errors, throw one Error with all errors
-        $this->returnAllErrors($errors, 'mon_compte' , ['action' => 'edit_profile','field' => 'phone', 'error' => 'true']);
+        $this->returnAllErrors($errors, 'mon_compte', ['action' => 'edit_profile', 'field' => 'phone', 'error' => 'true']);
 
 
         $user = $this->repo->getUserById($idUser);
@@ -752,7 +764,7 @@ class UserController extends AbstractController
             $this->redirect('mon_compte');
         } else {
             $_SESSION['error'] = 'Une erreur s\'est produite lors du changement de mot de passe. Veuillez réessayer plus tard.';
-            $this->redirect('mon_compte' , ['action' => 'change_password', 'error' => 'true']);
+            $this->redirect('mon_compte', ['action' => 'change_password', 'error' => 'true']);
         }
     }
     public function deleteAccount(): void

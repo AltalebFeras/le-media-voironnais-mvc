@@ -51,7 +51,7 @@ abstract class AbstractController
      * @param mixed $route
      * @return void
      */
-    public function returnAllErrors($errors, $route , array $query = []): void
+    public function returnAllErrors($errors, $route, array $query = []): void
     {
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
@@ -108,12 +108,31 @@ abstract class AbstractController
         }
 
         $isValid = hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
-        
+
         // Regenerate token after validation (one-time use)
         if ($isValid) {
             unset($_SESSION['csrf_token']);
         }
-        
+        // add counter for invalid attempts and block after 10 attempts
+        if (!isset($_SESSION['invalid_attempts'])) {
+            $_SESSION['invalid_attempts'] = 0;
+        }
+
+        if (!$isValid) {
+            $_SESSION['invalid_attempts']++;
+            if ($_SESSION['invalid_attempts'] >= 10) {
+
+                header("HTTP/1.1 403 Forbidden");
+                exit('Trop de tentatives invalides. Veuillez réessayer plus tard.');
+            }
+            $errors['csrf'] = 'Token de sécurité invalide. Veuillez réessayer.';
+            $this->returnAllErrors($errors, $route, ['error' => 'true']);
+            // return false;
+        } else {
+            // Reset counter on successful validation
+            unset($_SESSION['invalid_attempts']);
+        }
+
         return $isValid;
     }
 }
