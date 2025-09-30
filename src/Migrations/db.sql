@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Sep 30, 2025 at 11:51 AM
+-- Generation Time: Sep 30, 2025 at 02:15 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -67,9 +67,7 @@ INSERT INTO `association` (`idAssociation`, `uiid`, `name`, `slug`, `description
 (33, 'd4e5f6g7h8i9j0k1', 'Les Amis de la Nature', 'amis-nature', 'Association environnementale dédiée à la protection de la biodiversité locale.', 'assets/images/uploads/logos/default_logo.png', 'assets/images/uploads/banners/default_banner.png', '45 Chemin des Bois, Grenoble', '0476050104', 'contact@amis-nature.fr', 'https://www.amis-nature.fr', 1, 1, 0, 3, 14527, '2025-09-22 15:49:23', '2025-09-26 19:02:26'),
 (34, 'e5f6g7h8i9j0k1l2', 'Association Jeunesse Voironnaise', 'jeunesse-voironnaise', 'Accompagnement des jeunes dans leurs projets éducatifs et professionnels.', 'assets/images/uploads/logos/jeunesse_logo.jpg', 'assets/images/uploads/banners/jeunesse_banner.jpg', '12 Boulevard de la Jeunesse, Voiron', '0476050105', 'animation@jeunesse-voironnaise.fr', 'https://www.jeunesse-voironnaise.fr', 1, 1, 0, 4, 14329, '2025-09-22 15:49:23', NULL),
 (35, 'f6g7h8i9j0k1l2m3', 'Solidarité Seniors Isère', 'solidarite-seniors', 'Aide et accompagnement des personnes âgées de la région iséroise.', 'assets/images/uploads/logos/seniors_logo.jpg', 'assets/images/uploads/banners/seniors_banner.jpg', '30 Avenue des Tilleuls, Voiron', '0476050106', 'aide@solidarite-seniors.org', 'https://www.solidarite-seniors.org', 1, 1, 0, 4, 14329, '2025-09-22 15:49:23', NULL),
-(36, 'ed0260cbaa8cc841', 'Sport Club Iséroiss', 'grenoble-38100-sport-club-iseroiss', 'Sport Club IséroisSport Club Isérois', 'assets/images/uploads/logos/68d24b776a41d_1758612343.webp', 'assets/images/uploads/banners/68d24b7eb05d5_1758612350.webp', 'Sport Club IséroisSport Club Isérois', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 0, 3, 38100, '2025-09-23 09:25:24', '2025-09-23 09:25:54'),
-(37, '423aa7a943934dfd', 'Feras ALTALEB', 'grenoble-38100-feras-altaleb', '', 'assets/images/uploads/logos/default_logo.png', 'assets/images/uploads/banners/default_banner.png', '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 1, 3, 38100, '2025-09-25 21:59:14', NULL),
-(38, 'fd6a304572d8d6a2', 'Feras ALTALEBssssssss', 'grenoble-38100-feras-altaleb-1', '', 'assets/images/uploads/logos/default_logo.png', 'assets/images/uploads/banners/default_banner.png', '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 1, 3, 38100, '2025-09-26 18:56:33', '2025-09-26 18:56:42');
+(36, 'ed0260cbaa8cc841', 'Sport Club Iséroiss', 'grenoble-38100-sport-club-iseroiss', 'Sport Club IséroisSport Club Isérois', 'assets/images/uploads/logos/68d24b776a41d_1758612343.webp', 'assets/images/uploads/banners/68d24b7eb05d5_1758612350.webp', 'Sport Club IséroisSport Club Isérois', '0780773302', 'feras.altalib@gmail.com', '', 1, 0, 0, 3, 38100, '2025-09-23 09:25:24', '2025-09-23 09:25:54');
 
 -- --------------------------------------------------------
 
@@ -212,9 +210,7 @@ INSERT INTO `entreprise` (`idEntreprise`, `uiid`, `name`, `slug`, `description`,
 (32, 'ent3d4e5f6g7h8i9', 'Consulting Alpes Isère', 'consulting-alpes-isere', 'Cabinet de conseil en management et stratégie d entreprise.', 'assets/images/uploads/logos/68d24aa3a9936_1758612131.webp', 'assets/images/uploads/banners/68d24aae16403_1758612142.webp', '18 Avenue Jean Jaurès, Grenoble', '0476060203', 'direction@consulting-alpes.com', 'https://www.consulting-alpes.com', '34567890123456', 0, 0, 0, 0, 1, 3, 38100, '2025-09-22 15:49:23', '2025-09-23 09:27:51', NULL, NULL, NULL, NULL),
 (33, 'ent4e5f6g7h8i9j0', 'EcoVert Jardinage', 'ecoverts-jardinage', 'Entreprise de jardinage écologique et aménagement paysager durable.', 'assets/images/uploads/logos/68d24a836ea40_1758612099.webp', 'assets/images/uploads/banners/68d24a900a4d4_1758612112.webp', '33 Route de Lyon, Grenoble', '0476060204', 'devis@ecoverts.fr', 'https://www.ecoverts.fr', '45678901234567', 1, 0, 0, 0, 0, 3, 38100, '2025-09-22 15:49:23', '2025-09-25 12:03:52', NULL, NULL, NULL, NULL),
 (34, 'ent5f6g7h8i9j0k1', 'Artisan Menuiserie Dauphiné', 'menuiserie-dauphine', 'Menuiserie traditionnelle spécialisée dans la restauration de bâtiments anciens.', 'assets/images/uploads/logos/menuiserie_logo.jpg', 'assets/images/uploads/banners/menuiserie_banner.jpg', '7 Impasse des Artisans, Voiron', '0476060205', 'atelier@menuiserie-dauphine.fr', 'https://www.menuiserie-dauphine.fr', '56789012345678', 1, 0, 1, 0, 0, 4, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL, NULL, NULL),
-(35, 'ent6g7h8i9j0k1l2', 'Café-Restaurant Le Montagnard', 'cafe-montagnard', 'Restaurant traditionnel proposant spécialités savoyardes et cuisine de montagne.', 'assets/images/uploads/logos/restaurant_logo.jpg', 'assets/images/uploads/banners/restaurant_banner.jpg', '14 Place du Marché, Voiron', '0476060206', 'reservation@montagnard.fr', 'https://www.montagnard.fr', '67890123456789', 1, 0, 1, 1, 0, 4, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL, NULL, NULL),
-(36, 'e2f65fb38daa8443', 'Feras ALTALEB', 'grenoble-38100-feras-altaleb', '', 'assets/images/uploads/logos/default_logo.png', 'assets/images/uploads/banners/default_banner.png', '42 Rue Henri Duhamel', '0780773302', 'feras.altalib@gmail.com', '', '', 1, 0, 0, 0, 0, 3, 38100, '2025-09-25 12:17:19', '2025-09-29 13:37:26', NULL, NULL, NULL, '2025-09-29 13:37:26'),
-(40, 'd597ee9ebc934ec0', 'Feras ALTALEBsddddddddddd', 'saint-martin-d-heres-feras-altalebsddddddddddd', '', 'assets/images/uploads/logos/default_logo.png', 'assets/images/uploads/banners/default_banner.png', '', '0780773302', 'feras.altalib@gmail.com', '', '', 0, 1, 0, 0, 1, 3, 14353, '2025-09-26 19:11:38', '2025-09-26 19:14:47', NULL, NULL, '2025-09-26 19:14:47', NULL);
+(35, 'ent6g7h8i9j0k1l2', 'Café-Restaurant Le Montagnard', 'cafe-montagnard', 'Restaurant traditionnel proposant spécialités savoyardes et cuisine de montagne.', 'assets/images/uploads/logos/restaurant_logo.jpg', 'assets/images/uploads/banners/restaurant_banner.jpg', '14 Place du Marché, Voiron', '0476060206', 'reservation@montagnard.fr', 'https://www.montagnard.fr', '67890123456789', 1, 0, 1, 1, 0, 4, 14329, '2025-09-22 15:49:23', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -268,22 +264,20 @@ CREATE TABLE IF NOT EXISTS `evenement` (
 
 INSERT INTO `evenement` (`idEvenement`, `uiid`, `title`, `slug`, `description`, `shortDescription`, `startDate`, `endDate`, `registrationDeadline`, `maxParticipants`, `currentParticipants`, `address`, `bannerPath`, `isPublic`, `isDeleted`, `requiresApproval`, `price`, `currency`, `createdAt`, `updatedAt`, `idUser`, `idAssociation`, `idEntreprise`, `idVille`, `idEventCategory`) VALUES
 (73, 'evt1234567890ab', 'Randonnée Mont Aiguille', 'randonnee-mont-aiguille', 'Découverte du Mont Aiguille avec guide expérimenté. Niveau intermédiaire requis.', 'Randonnée guidée au Mont Aiguille', '2025-09-02 08:00:00', '2025-09-03 18:00:00', '2025-08-27 23:59:59', 15, 0, 'Parking Col de la Bataille, Chichilianne', 'assets/images/uploads/banners/randonnee_banner.jpg', 1, 0, 0, 25.00, 'EUR', '2025-07-08 15:53:06', NULL, 2, NULL, NULL, 14695, 2),
-(74, 'evt2345678901bc', 'Concert de Jazz', 'concert-jazz-voiron', 'Soirée jazz avec le trio vocal Les Voix du Voironnais dans un cadre intimiste.', 'Concert jazz intimiste', '2025-11-08 20:30:00', '2025-11-08 22:30:00', '2025-11-05 18:00:00', 80, 0, 'Salle des Fêtes, Place Charles de Gaulle, Voiron', 'assets/images/uploads/banners/concert_banner.jpg', 1, 0, 0, 15.00, 'EUR', '2025-09-22 15:53:06', NULL, 2, NULL, NULL, 14329, 3),
+(74, 'evt2345678901bc', 'Concert de Jazz', 'concert-jazz-voiron', 'Soirée jazz avec le trio vocal Les Voix du Voironnais dans un cadre intimiste.', 'Concert jazz intimiste', '2025-11-08 20:30:00', '2025-11-08 22:30:00', '2025-11-05 18:00:00', 80, 2, 'Salle des Fêtes, Place Charles de Gaulle, Voiron', 'assets/images/uploads/banners/concert_banner.jpg', 1, 0, 0, 15.00, 'EUR', '2025-09-22 15:53:06', NULL, 2, NULL, NULL, 14329, 3),
 (75, 'evt3456789012cd', 'Formation Développement Web', 'formation-dev-web', 'Formation intensive sur les technologies web modernes (HTML5, CSS3, JavaScript).', 'Formation développement web', '2025-10-25 09:00:00', '2025-10-27 17:00:00', '2025-10-20 23:59:59', 12, 0, '25 Zone Industrielle, Voiron', 'assets/images/uploads/banners/formation_banner.jpg', 1, 1, 0, 450.00, 'EUR', '2025-09-22 15:53:06', NULL, 2, NULL, NULL, 14329, 4),
 (76, 'evt4567890123de', 'Dégustation Pains Artisanaux', 'degustation-pains', 'Découvrez nos créations artisanales lors d une dégustation commentée.', 'Dégustation pains artisanaux', '2025-11-12 15:00:00', '2025-11-12 17:00:00', '2025-11-10 12:00:00', 20, 1, '5 Rue de la Boulangerie, Voiron', 'assets/images/uploads/banners/degustation_banner.jpg', 1, 0, 0, 0.00, 'EUR', '2025-09-22 15:53:06', NULL, 2, NULL, NULL, 14329, 5),
 (77, 'evt5678901234ef', 'Trail des Chartreuses', 'trail-chartreuses', 'Course nature de 15km à travers les sentiers du massif de la Chartreuse.', 'Trail 15km Chartreuse', '2025-11-20 09:00:00', '2025-11-20 14:00:00', '2025-11-15 23:59:59', 100, 1, 'Départ Mairie de Voiron', 'assets/images/uploads/banners/trail_banner.jpg', 1, 0, 1, 20.00, 'EUR', '2025-09-22 15:53:06', NULL, 2, NULL, NULL, 14329, 6),
-(78, 'evt6789012345fg', 'Tournoi de Tennis', 'tournoi-tennis-isere', 'Championnat départemental de tennis ouvert à toutes catégories d âge.', 'Tournoi tennis départemental', '2025-10-28 08:00:00', '2025-10-29 19:00:00', '2025-10-23 23:59:00', 64, 0, 'Courts de Tennis, 22 Rue du Stade, Grenoble', 'assets/images/uploads/banners/68d155117684f_1758549265.webp', 1, 0, 0, 30.00, 'EUR', '2025-09-22 15:53:06', '2025-09-22 16:03:47', 3, 33, NULL, 38100, 1),
-(79, 'evt7890123456gh', 'Nettoyage Rivière Isère', 'nettoyage-riviere-isere', 'Action citoyenne de nettoyage des berges de l Isère avec sensibilisation environnementale.', 'Nettoyage citoyen rivière', '2025-11-05 09:00:00', '2025-11-05 16:00:00', '2025-11-02 18:00:00', 50, 0, 'Berges de l Isère, Pont de la Citadelle, Grenoble', 'assets/images/uploads/banners/68d15fb9d1bb3_1758551993.webp', 1, 0, 0, 0.00, 'EUR', '2025-09-22 15:53:06', '2025-09-22 16:39:56', 3, NULL, NULL, 38100, 3),
-(80, 'evt8901234567hi', 'Conférence Management', 'conference-management', 'Stratégies de management agile pour les entreprises modernes.', 'Conférence management agile', '2025-11-18 14:00:00', '2025-11-18 17:30:00', '2025-11-15 12:00:00', 40, 0, '18 Avenue Jean Jaurès, Grenoble', 'assets/images/uploads/banners/68d15fc898b81_1758552008.webp', 1, 0, 0, 75.00, 'EUR', '2025-09-22 15:53:06', '2025-09-22 16:40:10', 3, NULL, NULL, 38100, 7),
-(81, 'evt9012345678ij', 'Atelier Jardinage Bio', 'atelier-jardinage-bio', 'Apprenez les techniques de jardinage biologique et permaculture.', 'Atelier jardinage biologique', '2025-10-30 14:00:00', '2025-10-30 17:00:00', '2025-10-27 20:00:00', 15, 0, '33 Route de Lyon, Grenoble', 'assets/images/uploads/banners/jardinage_banner.jpg', 1, 0, 0, 35.00, 'EUR', '2025-09-22 15:53:06', NULL, 3, NULL, NULL, 38100, 8),
+(78, 'evt6789012345fg', 'Tournoi de Tennis', 'tournoi-tennis-isere', 'Championnat départemental de tennis ouvert à toutes catégories d âge.', 'Tournoi tennis départemental', '2025-10-28 08:00:00', '2025-10-29 19:00:00', '2025-10-23 23:59:00', 64, 0, 'Courts de Tennis, 22 Rue du Stade, Grenoble', 'assets/images/uploads/banners/68d155117684f_1758549265.webp', 1, 0, 1, 30.00, 'EUR', '2025-09-22 15:53:06', '2025-09-22 16:03:47', 3, 33, NULL, 38100, 1),
+(79, 'evt7890123456gh', 'Nettoyage Rivière Isère', 'nettoyage-riviere-isere', 'Action citoyenne de nettoyage des berges de l Isère avec sensibilisation environnementale.', 'Nettoyage citoyen rivière', '2025-11-05 09:00:00', '2025-11-05 16:00:00', '2025-11-02 18:00:00', 50, 0, 'Berges de l Isère, Pont de la Citadelle, Grenoble', 'assets/images/uploads/banners/68d15fb9d1bb3_1758551993.webp', 1, 0, 1, 0.00, 'EUR', '2025-09-22 15:53:06', '2025-09-22 16:39:56', 3, NULL, NULL, 38100, 3),
+(80, 'evt8901234567hi', 'Conférence Management', 'conference-management', 'Stratégies de management agile pour les entreprises modernes.', 'Conférence management agile', '2025-11-18 14:00:00', '2025-11-18 17:30:00', '2025-11-15 12:00:00', 40, 0, '18 Avenue Jean Jaurès, Grenoble', 'assets/images/uploads/banners/68d15fc898b81_1758552008.webp', 1, 0, 1, 75.00, 'EUR', '2025-09-22 15:53:06', '2025-09-22 16:40:10', 3, NULL, NULL, 38100, 7),
+(81, 'evt9012345678ij', 'Atelier Jardinage Bio', 'atelier-jardinage-bio', 'Apprenez les techniques de jardinage biologique et permaculture.', 'Atelier jardinage biologique', '2025-10-30 14:00:00', '2025-10-30 17:00:00', '2025-10-27 20:00:00', 15, 0, '33 Route de Lyon, Grenoble', 'assets/images/uploads/banners/jardinage_banner.jpg', 1, 0, 1, 35.00, 'EUR', '2025-09-22 15:53:06', NULL, 3, NULL, NULL, 38100, 8),
 (82, 'evt0123456789jk', 'Match de Football Amateur', 'match-football-amateur', 'Rencontre amicale entre équipes locales avec buvette et restauration.', 'Match football amateur', '2025-11-25 15:00:00', '2025-11-25 17:00:00', '2025-11-24 12:00:00', 200, 0, 'Stade Municipal, 22 Rue du Stade, Grenoble', 'assets/images/uploads/banners/68d15fd629167_1758552022.webp', 1, 0, 1, 5.00, 'EUR', '2025-09-22 15:53:06', '2025-09-22 16:40:23', 3, NULL, NULL, 38100, 1),
-(83, 'evt1357924680kl', 'Atelier Insertion Jeunes', 'atelier-insertion-jeunes', 'Accompagnement personnalisé pour la recherche d emploi et l orientation professionnelle.', 'Atelier insertion professionnelle', '2025-10-22 09:00:00', '2025-10-22 17:00:00', '2025-10-18 18:00:00', 25, 1, '12 Boulevard de la Jeunesse, Voiron', 'assets/images/uploads/banners/insertion_banner.jpg', 1, 0, 0, 0.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 5),
+(83, 'evt1357924680kl', 'Atelier Insertion Jeunes', 'atelier-insertion-jeunes', 'Accompagnement personnalisé pour la recherche d emploi et l orientation professionnelle.', 'Atelier insertion professionnelle', '2025-10-22 09:00:00', '2025-10-22 17:00:00', '2025-10-18 18:00:00', 25, 2, '12 Boulevard de la Jeunesse, Voiron', 'assets/images/uploads/banners/insertion_banner.jpg', 1, 0, 0, 0.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 5),
 (84, 'evt2468013579lm', 'Goûter Intergénérationnel', 'gouter-intergenerationnel', 'Moment de partage et d échange entre seniors et jeunes autour d un goûter convivial.', 'Goûter seniors-jeunes', '2025-11-14 15:00:00', '2025-11-14 17:30:00', '2025-11-12 12:00:00', 40, 0, '30 Avenue des Tilleuls, Voiron', 'assets/images/uploads/banners/intergenerationnel_banner.jpg', 1, 0, 0, 0.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 9),
-(85, 'evt3691470258mn', 'Exposition Menuiserie', 'exposition-menuiserie', 'Présentation de réalisations artisanales et démonstrations de techniques traditionnelles.', 'Expo savoir-faire menuiserie', '2025-11-01 10:00:00', '2025-11-03 18:00:00', '2025-10-28 23:59:59', 100, 0, '7 Impasse des Artisans, Voiron', 'assets/images/uploads/banners/menuiserie_banner.jpg', 1, 0, 0, 0.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 10),
-(86, 'evt4815926037no', 'Soirée Savoyarde', 'soiree-savoyarde', 'Repas traditionnel avec spécialités montagnardes et animation folklorique.', 'Soirée gastronomie savoyarde', '2025-11-22 19:00:00', '2025-11-22 23:00:00', '2025-11-19 18:00:00', 60, 1, '72 Av. Léon et Joanny Tardy', 'assets/images/uploads/banners/savoyard_banner.jpg', 1, 0, 0, 42.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 11),
-(87, 'evt5927384061op', 'Cours de Soutien Scolaire', 'cours-soutien-scolaire', 'Aide aux devoirs et soutien scolaire pour collégiens et lycéens.', 'Soutien scolaire personnalisé', '2025-11-04 16:00:00', '2025-11-04 18:00:00', '2025-11-02 20:00:00', 10, 0, '12 Boulevard de la Jeunesse, Voiron', 'assets/images/uploads/banners/soutien_banner.jpg', 1, 0, 0, 15.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 5),
-(88, '524b9a3027fba03e', 'qsdqqqqqsdqdqsd', 'corenc-qsdqqqqqsdqdqsd-art', 'qsqsdqsdqsdqs', 'dqsdqsdqsdqsdq', '2025-10-03 16:38:00', '2025-10-11 16:38:00', '2025-09-25 16:38:00', 33, 0, '42 Rue Henri Duhamel', 'assets/images/uploads/banners/68d24a4448918_1758612036.webp', 0, 1, 0, 3.00, 'EUR', '2025-09-22 16:39:09', '2025-09-23 09:20:39', 3, NULL, NULL, 14588, 11),
-(89, 'cea7f232825c57fb', 'ssdfsdfdddddss', 'grenoble-38100-ssdfsdfdddddss-affaires', 'sdddddddddddddddd', 'dddddddddddddddddddddddddd', '2025-10-11 19:37:00', '2025-10-12 19:37:00', '2025-10-03 19:37:00', 55, 0, '42 Rue Henri Duhamel', 'assets/images/uploads/banners/default_banner.png', 0, 1, 0, 0.00, 'EUR', '2025-09-26 19:39:50', '2025-09-26 19:40:53', 3, NULL, NULL, 38100, 4);
+(85, 'evt3691470258mn', 'Exposition Menuiserie', 'exposition-menuiserie', 'Présentation de réalisations artisanales et démonstrations de techniques traditionnelles.', 'Expo savoir-faire menuiserie', '2025-11-01 10:00:00', '2025-11-03 18:00:00', '2025-10-28 23:59:59', 100, 1, '7 Impasse des Artisans, Voiron', 'assets/images/uploads/banners/menuiserie_banner.jpg', 1, 0, 0, 0.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 10),
+(86, 'evt4815926037no', 'Soirée Savoyarde', 'soiree-savoyarde', 'Repas traditionnel avec spécialités montagnardes et animation folklorique.', 'Soirée gastronomie savoyarde', '2025-11-22 19:00:00', '2025-11-22 23:00:00', '2025-11-19 18:00:00', 60, 2, '72 Av. Léon et Joanny Tardy', 'assets/images/uploads/banners/savoyard_banner.jpg', 1, 0, 0, 42.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 11),
+(87, 'evt5927384061op', 'Cours de Soutien Scolaire', 'cours-soutien-scolaire', 'Aide aux devoirs et soutien scolaire pour collégiens et lycéens.', 'Soutien scolaire personnalisé', '2025-11-04 16:00:00', '2025-11-04 18:00:00', '2025-11-02 20:00:00', 10, 0, '12 Boulevard de la Jeunesse, Voiron', 'assets/images/uploads/banners/soutien_banner.jpg', 1, 0, 0, 15.00, 'EUR', '2025-09-22 15:53:06', NULL, 4, NULL, NULL, 14329, 5);
 
 -- --------------------------------------------------------
 
@@ -295,7 +289,7 @@ DROP TABLE IF EXISTS `event_category`;
 CREATE TABLE IF NOT EXISTS `event_category` (
   `idEventCategory` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `slug` varchar(180) COLLATE utf8mb4_general_ci NOT NULL,
+  `slug` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `color` varchar(7) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `icon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -352,8 +346,6 @@ CREATE TABLE IF NOT EXISTS `event_image` (
 --
 
 INSERT INTO `event_image` (`idEventImage`, `idEvenement`, `imagePath`, `altText`, `isMain`, `sortOrder`, `createdAt`) VALUES
-(20, 88, 'assets/images/uploads/events/68d24a177033d_1758611991.webp', '', 0, 1, '2025-09-23 09:19:54'),
-(21, 88, 'assets/images/uploads/events/68d24a29de250_1758612009.webp', '', 0, 2, '2025-09-23 09:20:14'),
 (22, 80, 'assets/images/uploads/events/68d24a61a465d_1758612065.webp', '', 0, 1, '2025-09-23 09:21:07');
 
 -- --------------------------------------------------------
@@ -399,17 +391,7 @@ CREATE TABLE IF NOT EXISTS `event_participant` (
   KEY `idx_event_participant_evenement` (`idEvenement`),
   KEY `idx_event_participant_user` (`idUser`),
   KEY `idx_event_participant_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `event_participant`
---
-
-INSERT INTO `event_participant` (`idEventParticipant`, `idEvenement`, `idUser`, `status`, `joinedAt`, `approvedAt`, `cancelledAt`, `notes`) VALUES
-(14, 83, 3, 'inscrit', '2025-09-30 10:54:57', NULL, NULL, NULL),
-(15, 86, 3, 'inscrit', '2025-09-30 11:05:49', NULL, NULL, NULL),
-(16, 76, 3, 'inscrit', '2025-09-30 11:06:17', NULL, NULL, NULL),
-(17, 77, 3, 'liste_attente', '2025-09-30 11:58:43', NULL, NULL, NULL);
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -438,21 +420,6 @@ CREATE TABLE IF NOT EXISTS `message` (
   KEY `idx_message_sender` (`idSender`),
   KEY `idx_message_sent_at` (`sentAt`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `message`
---
-
-INSERT INTO `message` (`idMessage`, `idChat`, `idSender`, `content`, `messageType`, `filePath`, `isEdited`, `editedAt`, `isDeleted`, `deletedAt`, `replyToMessageId`, `sentAt`) VALUES
-(1, 1, 3, 'qsdqsd', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-27 15:44:08'),
-(2, 1, 3, 'hi', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-27 15:46:24'),
-(3, 1, 3, 'ggggggggg', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-27 15:47:55'),
-(4, 2, 3, 'n', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-29 09:18:53'),
-(5, 2, 3, 'jkl', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-29 09:18:58'),
-(6, 1, 3, 'qsdsqsd', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-29 13:44:33'),
-(7, 1, 4, 'ffffff', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-29 13:45:59'),
-(8, 1, 3, 'qsdqsdqsd', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-29 13:46:11'),
-(9, 1, 3, 'ferasasdqsdqdqsd', 'texte', NULL, 0, NULL, 0, NULL, NULL, '2025-09-29 13:46:22');
 
 -- --------------------------------------------------------
 
@@ -483,7 +450,6 @@ CREATE TABLE IF NOT EXISTS `notification` (
   `idNotification` int NOT NULL AUTO_INCREMENT,
   `idUser` int NOT NULL,
   `idEvenement` int DEFAULT NULL,
-  `actorId` int DEFAULT NULL,
   `type` enum('activation','inscription','preinscription','invitation','mise_a_jour','rappel','systeme','alert','message','autre') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'systeme',
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -502,33 +468,8 @@ CREATE TABLE IF NOT EXISTS `notification` (
   KEY `idx_notification_user_read_created` (`idUser`,`isRead`,`createdAt`),
   KEY `idx_notification_type_created` (`type`,`createdAt`),
   KEY `idx_notification_priority_created` (`priority`,`createdAt`),
-  KEY `FK_evenement_TO_notification` (`idEvenement`),
-  KEY `FK_actor_TO_notification` (`actorId`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `notification`
---
-
-INSERT INTO `notification` (`idNotification`, `idUser`, `idEvenement`, `actorId`, `type`, `title`, `message`, `url`, `metadata`, `priority`, `isRead`, `readAt`, `deliveredAt`, `expiresAt`, `createdAt`) VALUES
-(1, 3, 82, 3, 'alert', 'title', 'messagessssssssssss', 'ddd', NULL, 0, 1, '2025-09-25 12:15:21', NULL, NULL, '2025-09-24 19:23:19'),
-(2, 3, NULL, NULL, 'activation', 'Activation de votre compte entreprise', 'Votre compte entreprise \"Feras ALTALEB\" a été activé avec succès.', '/mes_entreprises?action=voir&uiid=e2f65fb38daa8443', NULL, 0, 1, '2025-09-25 15:18:46', NULL, NULL, '2025-09-25 15:18:27'),
-(3, 3, NULL, NULL, 'activation', 'Refus de l\'activation de votre compte entreprise', 'Votre demande d\'activation de compte entreprise \"Feras ALTALEBddddd\" a été refusée.', '/mes_entreprises', NULL, 0, 1, '2025-09-25 16:12:34', NULL, NULL, '2025-09-25 16:10:45'),
-(4, 3, NULL, NULL, 'activation', 'Activation de votre compte entreprise', 'Votre compte entreprise \"Feras ALTALEBddddd\" a été activé avec succès.', '/mes_entreprises?action=voir&uiid=fc1d3e04a5e4e3b0', NULL, 0, 1, '2025-09-25 16:12:25', NULL, NULL, '2025-09-25 16:11:56'),
-(5, 3, NULL, NULL, 'activation', 'Refus de l\'activation de votre compte entreprise', 'Votre demande d\'activation de compte entreprise \"dfgdfffggggggggggggggggALEB\" a été refusée.', '/mes_entreprises', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 16:27:14'),
-(6, 3, NULL, NULL, 'activation', 'Activation de votre compte entreprise', 'Votre compte entreprise \"dfgdfffggggggggggggggggALEB\" a été activé avec succès.', '/mes_entreprises?action=voir&uiid=52a053193fbdc5f7', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 17:34:32'),
-(7, 3, NULL, NULL, 'activation', 'Refus de l\'activation de votre compte entreprise', 'Votre demande d\'activation de compte entreprise \"Ferddsdfsdfsdf\" a été refusée.', '/mes_entreprises', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 17:41:09'),
-(8, 3, NULL, NULL, 'activation', 'Refus de l\'activation de votre compte entreprise', 'Votre demande d\'activation de compte entreprise \"Feras ALTALEB\" a été refusée.', '/mes_entreprises', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 21:27:39'),
-(9, 3, NULL, NULL, 'activation', 'Activation de votre compte entreprise', 'Votre compte entreprise \"Feras ALTALEB\" a été activé avec succès.', '/mes_entreprises?action=voir&uiid=e2f65fb38daa8443', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 21:28:28'),
-(10, 3, NULL, NULL, 'activation', 'Refus de l\'activation de votre compte entreprise', 'Votre demande d\'activation de compte entreprise \"Feras ALTALEB\" a été refusée.', '/mes_entreprises', NULL, 0, 1, '2025-09-26 14:47:08', NULL, NULL, '2025-09-25 21:37:50'),
-(11, 4, 83, NULL, 'inscription', 'Nouvelle inscription', 'Un utilisateur vient de s\'inscrire à votre événement : Atelier Insertion Jeunes', 'mes_evenements?action=voir&uiid=evt1357924680kl', NULL, 0, 0, NULL, NULL, NULL, '2025-09-30 10:54:57'),
-(12, 3, 83, NULL, 'inscription', 'Inscription confirmée', 'Vous êtes inscrit à l\'événement : Atelier Insertion Jeunes', 'evenements/voiron/affaires/atelier-insertion-jeunes', NULL, 0, 1, '2025-09-30 10:55:06', NULL, NULL, '2025-09-30 10:54:57'),
-(13, 4, 86, NULL, 'inscription', 'Nouvelle inscription', 'Un utilisateur vient de s\'inscrire à votre événement : Soirée Savoyarde', 'mes_evenements?action=voir&uiid=evt4815926037no', NULL, 0, 0, NULL, NULL, NULL, '2025-09-30 11:05:49'),
-(14, 3, 86, NULL, 'inscription', 'Inscription confirmée', 'Vous êtes inscrit à l\'événement : Soirée Savoyarde', 'evenements/voiron/sante/soiree-savoyarde', NULL, 0, 1, '2025-09-30 11:54:18', NULL, NULL, '2025-09-30 11:05:49'),
-(15, 2, 76, NULL, 'inscription', 'Nouvelle inscription', 'Un utilisateur vient de s\'inscrire à votre événement : Dégustation Pains Artisanaux', 'mes_evenements?action=voir&uiid=evt4567890123de', NULL, 0, 0, NULL, NULL, NULL, '2025-09-30 11:06:17'),
-(16, 3, 76, NULL, 'inscription', 'Inscription confirmée', 'Vous êtes inscrit à l\'événement : Dégustation Pains Artisanaux', 'evenements/voiron/affaires/degustation-pains', NULL, 0, 1, '2025-09-30 11:41:34', NULL, NULL, '2025-09-30 11:06:17'),
-(17, 2, 77, NULL, 'preinscription', 'Nouvelle pré-inscription', 'Un utilisateur vient de s\'inscrire à votre événement : Trail des Chartreuses', 'mes_evenements?action=voir&uiid=evt5678901234ef', NULL, 0, 1, '2025-09-30 12:03:56', NULL, NULL, '2025-09-30 11:58:43'),
-(18, 3, 77, NULL, 'preinscription', 'Pré-inscription enregistrée', 'Vous êtes pré-inscrit à l\'événement : Trail des Chartreuses', 'evenements/voiron/musique/trail-chartreuses', NULL, 0, 1, '2025-09-30 12:02:09', NULL, NULL, '2025-09-30 11:58:43');
+  KEY `FK_evenement_TO_notification` (`idEvenement`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -558,16 +499,6 @@ CREATE TABLE IF NOT EXISTS `realisation` (
   KEY `idx_realisation_public` (`isPublic`),
   KEY `idx_realisation_featured` (`isFeatured`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `realisation`
---
-
-INSERT INTO `realisation` (`idRealisation`, `uiid`, `title`, `slug`, `description`, `dateRealized`, `isPublic`, `isFeatured`, `isDeleted`, `idEntreprise`, `createdAt`, `updatedAt`) VALUES
-(1, 'dffdg12d6fg6', 'dfffffffffffffffffffffff', 'fffffffffffffffffffffffffff', 'ffffffdgggggggggggggggggggggggggggg', '2025-09-23', 1, 0, 1, 32, '2025-09-23 15:35:40', '2025-09-24 14:39:10'),
-(2, '7e2a452f26f09435', 'dddddddssdsdfsdfsdf', 'ecovert-jardinage-dddddddssdsdfsdfsdf', 'sdsdfsdfsd', '2025-10-03', 1, 0, 1, 33, '2025-09-24 13:53:48', '2025-09-26 19:24:54'),
-(3, '6b7b53e237c350d8', 'sdfsdfsdf', 'ecovert-jardinage-sdfsdfsdf', '', '0000-00-00', 1, 0, 1, 33, '2025-09-26 19:25:01', '2025-09-26 19:25:05'),
-(4, '312d4db88b646498', 'dssdfdsf', 'ecovert-jardinage-dssdfdsf', '', '0000-00-00', 1, 0, 0, 33, '2025-09-26 19:41:45', NULL);
 
 -- --------------------------------------------------------
 
@@ -656,7 +587,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_user_email` (`email`(250)),
   KEY `idx_user_online` (`isOnline`),
   KEY `idx_user_last_seen` (`lastSeen`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `user`
@@ -665,9 +596,12 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
 (1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-29 13:37:13', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
 (2, 3, 'Thomas', 'Barbier', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, '1992-02-02', 1, 0, 0, 0, '2025-09-30 12:03:49', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 1, '2025-09-30 12:08:20', '2025-09-15 09:47:56', NULL, '493a02d704865106879c4c8d8b770f3e', '2025-09-15 09:47:56', '2025-09-26 15:46:28', '2025-09-26 14:53:08', '2025-09-30 09:49:01', NULL),
+(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 0, '2025-09-30 15:48:10', '2025-09-15 09:47:56', NULL, '493a02d704865106879c4c8d8b770f3e', '2025-09-15 09:47:56', '2025-09-26 15:46:28', '2025-09-26 14:53:08', '2025-09-30 09:49:01', NULL),
 (4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.comm', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-29 13:45:43', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL),
-(29, 3, 'Feras', 'Altaleb', 'b@gmail.com', NULL, '$2y$10$5GwyRSR5UlskHy8jEsjmUOifcmMJFrfPFc06XH61J57WuwKmi6E9e', NULL, NULL, NULL, NULL, 1, 0, 0, 0, '2025-09-26 14:14:22', '2025-09-26 14:13:14', NULL, NULL, '2025-09-26 14:13:14', NULL, NULL, NULL, NULL);
+(29, 3, 'Feras', 'Altaleb', 'b@gmail.com', NULL, '$2y$10$5GwyRSR5UlskHy8jEsjmUOifcmMJFrfPFc06XH61J57WuwKmi6E9e', NULL, NULL, NULL, NULL, 1, 0, 0, 0, '2025-09-26 14:14:22', '2025-09-26 14:13:14', NULL, NULL, '2025-09-26 14:13:14', NULL, NULL, NULL, NULL),
+(30, 3, 'Feras', 'Altaleb', 'feras.altalib1@gmail.com', NULL, '$2y$10$NR902ghNTUPldDV4aaa2sOz8V/9ijTjFVEoImG7CWbpWOwR6INMla', NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, '2025-09-30 14:25:55', NULL, '46979fa1176b6dde316bd8be138e84a5', '2025-09-30 14:25:55', NULL, NULL, NULL, NULL),
+(31, 3, 'Feras', 'Altaleb', 'feras.altssalib@gmail.com', NULL, '$2y$10$/riw23Ic9Gh0VA36sIfBeOlCiAvNtAiZKsmhqqvBKmAsf7KP.P1kq', NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, '2025-09-30 14:30:40', NULL, 'c86b1395f895bf7ac3c5a7126ede0659', '2025-09-30 14:30:40', NULL, NULL, NULL, NULL),
+(32, 3, 'Feras', 'Altaleb', 'feras.xzaltalib@gmail.com', NULL, '$2y$10$caftr5EAtKLBELVMZYN6cuMCPJcSljv.a.j2/x8oczpaomw0y.XLS', NULL, NULL, NULL, NULL, 0, 0, 0, 0, NULL, '2025-09-30 14:31:21', NULL, '0d0f21494d01a2b48f7740fef77a571a', '2025-09-30 14:31:21', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -693,9 +627,7 @@ CREATE TABLE IF NOT EXISTS `user_association` (
 --
 
 INSERT INTO `user_association` (`idUserAssociation`, `idUser`, `idAssociation`, `role`, `joinedAt`, `isActive`) VALUES
-(27, 3, 36, 'admin', '2025-09-23 09:25:24', 1),
-(28, 3, 37, 'admin', '2025-09-25 21:59:14', 1),
-(29, 3, 38, 'admin', '2025-09-26 18:56:33', 1);
+(27, 3, 36, 'admin', '2025-09-23 09:25:24', 1);
 
 -- --------------------------------------------------------
 
@@ -1357,7 +1289,6 @@ ALTER TABLE `message_status`
 -- Constraints for table `notification`
 --
 ALTER TABLE `notification`
-  ADD CONSTRAINT `FK_actor_TO_notification` FOREIGN KEY (`actorId`) REFERENCES `user` (`idUser`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_evenement_TO_notification` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_user_TO_notification` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
 
