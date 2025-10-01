@@ -68,7 +68,7 @@ class EvenementRepository
     public function getEventCompleteById(int $idEvenement): mixed
     {
         // Get basic event data with category and ville
-        $sql = "SELECT e.*, v.ville_nom_reel, ec.name as category_name, a.name as association_name, ent.name as entreprise_name
+        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, ec.slug as category_slug, a.name as association_name, a.slug as association_slug, ent.name as entreprise_name, ent.slug as entreprise_slug
                 FROM evenement e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
@@ -599,7 +599,10 @@ class EvenementRepository
     public function getSubscriptionById($idEventParticipant): ?array
     {
         try {
-            $query = "SELECT * FROM event_participant WHERE idEventParticipant = :idEventParticipant";
+            $query = "SELECT ep.*, u.firstName, u.lastName, u.email, u.avatarPath 
+                      FROM event_participant ep
+                      LEFT JOIN user u ON ep.idUser = u.idUser
+                      WHERE ep.idEventParticipant = :idEventParticipant";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute(['idEventParticipant' => $idEventParticipant]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);

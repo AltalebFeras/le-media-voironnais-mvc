@@ -819,18 +819,19 @@ class EvenementController extends AbstractController
                 $type =  ($status === 'liste_attente') ? 'preinscription' : 'inscription';
                 $title = ($status === 'liste_attente') ? 'Nouvelle pré-inscription' : 'Nouvelle inscription';
                 $message = "Un utilisateur vient de s'inscrire à votre événement : " . $evenement['title'];
-                $url = "mes_evenements?action=voir&uiid=" . $evenement['uiid'];
+                $urlCreator = "mes_evenements?action=voir&uiid=" . $evenement['uiid'];
                 $dataCreator = [
                     'idUser' => $idCreator,
                     'idEvenement' => $idEvenement,
                     'type' => $type,
                     'title' => $title,
                     'message' => $message,
-                    'url' => $url,
+                    'url' => $urlCreator,
                     'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
                 ];
-                $notifyCreator = $notification->pushNotification($dataCreator);
 
+                $notifyCreator = $notification->pushNotification($dataCreator);
+                $urlUser = "evenements/{$ville_slug}/{$category_slug}/{$slug}"  ;
                 // notify user
                 $dataUser = [
                     'idUser' => $idUser,
@@ -838,7 +839,7 @@ class EvenementController extends AbstractController
                     'type' => $type,
                     'title' => ($status === 'liste_attente') ? 'Pré-inscription enregistrée' : 'Inscription confirmée',
                     'message' => "Vous êtes " . ($status === 'liste_attente' ? 'pré-inscrit' : 'inscrit') . " à l'événement : " . $evenement['title'],
-                    'url' => "evenements/{$ville_slug}/{$category_slug}/{$slug}",
+                    'url' => $urlUser,
                     'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
                 ];
                 $notifyUser = $notification->pushNotification($dataUser);
