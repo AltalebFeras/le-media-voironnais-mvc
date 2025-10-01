@@ -8,7 +8,7 @@
     height: 270px;
     margin: 0 auto;
     background: #e3eafc;
-    border-radius: 0 0 18px 18px;
+    /* border-radius: 0 0 18px 18px; */
     overflow: hidden;
     display: flex;
     align-items: flex-end;
@@ -38,7 +38,7 @@
     object-fit: cover;
     background: #e3eafc;
     display: block;
-    border-radius: 0 0 18px 18px;
+    /* border-radius: 0 0 18px 18px; */
 }
 
 .banner-placeholder, .account-banner-placeholder, .association-banner-placeholder, .entreprise-banner-placeholder, .evenement-banner-placeholder {
@@ -155,7 +155,7 @@
 /* Profile Picture / Logo Base Styles */
 .profile-picture, .account-profile-picture, .association-logo-picture, .entreprise-logo-picture {
     position: absolute;
-    left: 25%;
+    left: 10%;
     bottom: 0px;
     transform: translateX(-50%);
     z-index: 20;

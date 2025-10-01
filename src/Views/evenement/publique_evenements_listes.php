@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="<?= HOME_URL ?>assets/css/events.css">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
-<main class="events-main">
+<main class="p-0">
     <!-- Hero Section -->
     <section class="events-hero">
         <div class="events-hero-content">

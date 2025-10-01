@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/banners_logos.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
-<main style="padding:0;">
+<main class="p-0"">
     <?php if (!$entreprise): ?>
         <div class="custom-alert custom-alert-danger" style="margin: 20px;">
             <p>L'entreprise demandée n'existe pas ou vous n'avez pas les permissions nécessaires pour y accéder.</p>
@@ -80,7 +80,7 @@
         <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
         <!-- Main Content Below Banner -->
-        <div class="entreprise-main-content">
+        <div class="entreprise-main-content pr pl">
             <!-- Header with back button and title -->
             <div class="flex-row justify-content-between align-items-center mb-4">
                 <div>
