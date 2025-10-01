@@ -58,7 +58,10 @@ $endDate = new DateTime($evenement['endDate']);
                     <p class="event-registered text-success text-center bounce-in-top">Vous êtes inscrit à cet événement</p>
                 <?php elseif ($isSubscribeOnWaitingList): ?>
                     <p class="event-registered text-success text-center bounce-in-top">Vous êtes sur la liste d'attente de cet événement</p>
-                    
+                <?php elseif ($isRefused): ?>
+                    <p class="event-registered text-danger text-center bounce-in-top">Votre inscription à cet événement a été refusée</p>
+                <?php elseif ($isCancelled): ?>
+                    <p class="event-registered text-warning text-center bounce-in-top">Votre inscription à cet événement a été annulée</p>
                 <?php else: ?>
                     <?php if (strtotime($evenement['registrationDeadline']) > time() && $evenement['currentParticipants'] < $evenement['maxParticipants']): ?>
                         <form action="<?= HOME_URL . 'evenements/' . $evenement['ville_slug'] . '/' . $evenement['category_slug'] . '/' . $evenement['slug']  ?>" method="post">
