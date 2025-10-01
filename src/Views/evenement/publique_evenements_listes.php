@@ -156,47 +156,9 @@
             </div>
 
             <!-- Pagination -->
-            <?php if ($totalPages > 1): ?>
-                <div class="pagination-container">
-                    <div class="pagination">
-                        <?php if ($currentPage > 1): ?>
-                            <a href="?page=<?= $currentPage - 1 ?>" class="pagination-link">
-                                <span class="material-icons">chevron_left</span>
-                                Précédent
-                            </a>
-                        <?php endif; ?>
-                        
-                        <?php 
-                        $startPage = max(1, $currentPage - 2);
-                        $endPage = min($totalPages, $currentPage + 2);
-                        
-                        if ($startPage > 1): ?>
-                            <a href="?page=1" class="pagination-link">1</a>
-                            <?php if ($startPage > 2): ?>
-                                <span class="pagination-dots">...</span>
-                            <?php endif; ?>
-                        <?php endif; ?>
-                        
-                        <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
-                            <a href="?page=<?= $i ?>" class="pagination-link <?= $i === $currentPage ? 'active' : '' ?>"><?= $i ?></a>
-                        <?php endfor; ?>
-                        
-                        <?php if ($endPage < $totalPages): ?>
-                            <?php if ($endPage < $totalPages - 1): ?>
-                                <span class="pagination-dots">...</span>
-                            <?php endif; ?>
-                            <a href="?page=<?= $totalPages ?>" class="pagination-link"><?= $totalPages ?></a>
-                        <?php endif; ?>
-                        
-                        <?php if ($currentPage < $totalPages): ?>
-                            <a href="?page=<?= $currentPage + 1 ?>" class="pagination-link">
-                                Suivant
-                                <span class="material-icons">chevron_right</span>
-                            </a>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
+            <?php include_once __DIR__ . '/../includes/pagination.php'; ?>
+
+
         <?php else: ?>
             <div class="no-events">
                 <span class="material-icons" style="font-size: 4rem; opacity: 0.3; margin-bottom: 1rem;">event_busy</span>
@@ -209,54 +171,54 @@
 </main>
 
 <script>
-let currentSlide = 0;
-const slides = document.querySelectorAll('.event-slide');
-const dots = document.querySelectorAll('.dot');
-const slideCounter = document.querySelector('.slide-counter');
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.event-slide');
+    const dots = document.querySelectorAll('.dot');
+    const slideCounter = document.querySelector('.slide-counter');
 
-function changeSlide(slideIndex) {
-    if (slides.length === 0) return;
-    
-    // Hide current slide
-    slides[currentSlide].classList.remove('active');
-    dots[currentSlide].classList.remove('active');
-    
-    // Show new slide
-    currentSlide = slideIndex;
-    slides[currentSlide].classList.add('active');
-    dots[currentSlide].classList.add('active');
-    
-    // Update counter
-    if (slideCounter) {
-        slideCounter.textContent = currentSlide + 1;
-    }
-}
+    function changeSlide(slideIndex) {
+        if (slides.length === 0) return;
 
-// Auto slide functionality
-if (slides.length > 1) {
-    setInterval(() => {
-        const nextSlide = (currentSlide + 1) % slides.length;
-        changeSlide(nextSlide);
-    }, 5000);
-}
+        // Hide current slide
+        slides[currentSlide].classList.remove('active');
+        dots[currentSlide].classList.remove('active');
 
-// Search functionality
-document.querySelector('.search-input').addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const eventCards = document.querySelectorAll('.event-card');
-    
-    eventCards.forEach(card => {
-        const title = card.querySelector('.event-card-title').textContent.toLowerCase();
-        const category = card.querySelector('.event-category') ? card.querySelector('.event-category').textContent.toLowerCase() : '';
-        const location = card.querySelector('.event-location') ? card.querySelector('.event-location').textContent.toLowerCase() : '';
-        
-        if (title.includes(searchTerm) || category.includes(searchTerm) || location.includes(searchTerm)) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
+        // Show new slide
+        currentSlide = slideIndex;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+
+        // Update counter
+        if (slideCounter) {
+            slideCounter.textContent = currentSlide + 1;
         }
+    }
+
+    // Auto slide functionality
+    if (slides.length > 1) {
+        setInterval(() => {
+            const nextSlide = (currentSlide + 1) % slides.length;
+            changeSlide(nextSlide);
+        }, 5000);
+    }
+
+    // Search functionality
+    document.querySelector('.search-input').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const eventCards = document.querySelectorAll('.event-card');
+
+        eventCards.forEach(card => {
+            const title = card.querySelector('.event-card-title').textContent.toLowerCase();
+            const category = card.querySelector('.event-category') ? card.querySelector('.event-category').textContent.toLowerCase() : '';
+            const location = card.querySelector('.event-location') ? card.querySelector('.event-location').textContent.toLowerCase() : '';
+
+            if (title.includes(searchTerm) || category.includes(searchTerm) || location.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
     });
-});
 </script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

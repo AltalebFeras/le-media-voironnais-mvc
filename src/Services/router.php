@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Psr7\Message;
 use src\Controllers\AdminController;
 use src\Controllers\EvenementController;
 use src\Controllers\HomeController;
@@ -121,6 +122,8 @@ switch ($route) {
             } else {
                 $evenementController->viewEventBySlug($composedRoute);
             }
+        } elseif ($part4) {
+            $homeController->page404();
         } else {
             $evenementController->listEvents();
         }
@@ -384,6 +387,20 @@ switch ($route) {
     case HOME_URL . 'evenement/supprimer':
         if ($method === 'POST') {
             $evenementController->deleteEvent();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    case HOME_URL . 'mes_evenement/participants':
+        if ($method === 'POST' && $connectionSecured) {
+            if (isset($_POST['action']) && $_POST['action'] === 'accepter') {
+                $evenementController->acceptParticipant();
+            } elseif (isset($_POST['action']) && $_POST['action'] === 'refuser') {
+                $evenementController->refuseParticipant();
+            } else {
+                $homeController->page404();
+            }
         } else {
             $homeController->page404();
         }

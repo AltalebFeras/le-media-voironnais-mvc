@@ -524,18 +524,19 @@ class EvenementRepository
 
         return $event;
     }
-    public function isUserRegistered($idUser, $slug): bool
+    public function getUserSubscription($idUser, $idEvenement)
     {
-        $sql = "SELECT COUNT(*) 
+        $sql = "SELECT ep.*, e.title, e.slug, e.startDate, e.endDate 
                 FROM event_participant ep
                 JOIN evenement e ON ep.idEvenement = e.idEvenement
-                WHERE ep.idUser = :idUser AND e.slug = :slug";
+                WHERE ep.idUser = :idUser AND e.idEvenement = :idEvenement";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
-        $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
+        $stmt->bindParam(':idEvenement', $idEvenement, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchColumn() > 0;
+        $subscription = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $subscription ?: null;  
     }
     public function registerUserForEventAndIncrementEventParticipants($idUser, $idEvenement, $status): bool
     {
@@ -567,7 +568,19 @@ class EvenementRepository
             throw new Exception("Error registering user for event: " . $e->getMessage());
         }
     }
+    public function isUserOnWaitingList($idUser, $slug): bool
+    {
+        $sql = "SELECT COUNT(*) 
+                FROM event_participant ep
+                JOIN evenement e ON ep.idEvenement = e.idEvenement
+                WHERE ep.idUser = :idUser AND e.slug = :slug AND ep.status = 'liste_attente'";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindParam(':slug', $slug, PDO::PARAM_STR);
+        $stmt->execute();
 
+        return $stmt->fetchColumn() > 0;
+    }
     public function getEventParticipantsUponStatus($idEvenement, $idUser, $status): array
     {
         try {
@@ -581,6 +594,52 @@ class EvenementRepository
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             throw new Exception("Error fetching event participants: " . $e->getMessage());
+        }
+    }
+    public function getSubscriptionById($idEventParticipant): ?array
+    {
+        try {
+            $query = "SELECT * FROM event_participant WHERE idEventParticipant = :idEventParticipant";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['idEventParticipant' => $idEventParticipant]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching subscription: " . $e->getMessage());
+        }
+    }
+    public function updateSubscriptionStatus($idEventParticipant, $idEvenement, $newStatus): bool
+    {
+        try {
+            // Start transaction
+            $this->pdo->beginTransaction();
+
+            // Get current status
+            $currentSubscription = $this->getSubscriptionById($idEventParticipant);
+            if (!$currentSubscription) {
+                throw new Exception("Subscription not found");
+            }
+            $currentStatus = $currentSubscription['status'];
+
+            // Update subscription status
+            $query = "UPDATE event_participant SET status = :newStatus WHERE idEventParticipant = :idEventParticipant";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([
+                'newStatus' => $newStatus,
+                'idEventParticipant' => $idEventParticipant
+            ]);
+            if ($newStatus === 'annule') {
+                // Decrement participant count
+                $updateQuery = "UPDATE evenement SET currentParticipants = GREATEST(currentParticipants - 1, 0) WHERE idEvenement = :idEvenement";
+                $updateStmt = $this->pdo->prepare($updateQuery);
+                $updateStmt->execute(['idEvenement' => $idEvenement]);
+            }
+
+            // Commit transaction
+            $this->pdo->commit();
+            return true;
+        } catch (Exception $e) {
+            throw new Exception("Error updating subscription status: " . $e->getMessage());
         }
     }
 }

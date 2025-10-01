@@ -22,7 +22,7 @@
 
             <?php if ($isOwner): ?>
                 <div class="evenement-banner-actions">
-                    <form method="post" action="<?= HOME_URL . 'evenement/modifier4' ?>" enctype="multipart/form-data">
+                    <form method="post" action="<?= HOME_URL . 'evenement/modifier' ?>" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="modifier_banner">
                         <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
                         <label for="bannerInput" class="btn">
@@ -210,13 +210,13 @@
                                                 </div>
                                                 <?php if ($isOwner): ?>
                                                     <div class="d-flex ml">
-                                                        <form method="post" action="<?= HOME_URL . 'evenement/participant' ?>" class="mr">
+                                                        <form method="post" action="<?= HOME_URL . 'mes_evenement/participants' ?>" class="mr">
                                                             <input type="hidden" name="action" value="accepter">
                                                             <input type="hidden" name="idEventParticipant" value="<?= $participant['idEventParticipant'] ?>">
                                                             <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
                                                             <button type="submit" class="btn btn-sm btn-success">Accepter</button>
                                                         </form>
-                                                        <form method="post" action="<?= HOME_URL . 'evenement/participant' ?>" class="mr">
+                                                        <form method="post" action="<?= HOME_URL . 'mes_evenement/participants' ?>" class="mr">
                                                             <input type="hidden" name="action" value="refuser">
                                                             <input type="hidden" name="idEventParticipant" value="<?= $participant['idEventParticipant'] ?>">
                                                             <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">

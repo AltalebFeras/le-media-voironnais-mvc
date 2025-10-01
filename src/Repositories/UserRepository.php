@@ -64,7 +64,18 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
-
+    public function getDeletedUserByEmail($email): ?User
+    {
+        try {
+            $query = 'SELECT * FROM user WHERE email = :email AND isDeleted = 1';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['email' => $email]);
+            $user = $req->fetchObject(User::class);
+            return $user !== false ? $user : null;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
     public function signUp(User $user): User
     {
         try {

@@ -39,23 +39,19 @@ class EvenementController extends AbstractController
      */
     public function mesEvenements()
     {
-        try {
-            $idUser = $_SESSION['idUser'];
-            $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-            $evenementsPerPage = 9;
-            $evenements = $this->repo->getUserEvents($idUser, $currentPage, $evenementsPerPage);
-            $totalEvenements = $this->repo->countUserEvents($idUser);
-            $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
-            $this->render('evenement/mes_evenements', [
-                'evenements' => $evenements,
-                'title' => 'Mes événements',
-                'total' => $totalEvenements,
-                'currentPage' => $currentPage,
-                'totalPages' => $totalPages
-            ]);
-        } catch (Exception $e) {
-            $this->redirect('mes_evenements?error=true');
-        }
+        $idUser = $_SESSION['idUser'];
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $evenementsPerPage = 9;
+        $evenements = $this->repo->getUserEvents($idUser, $currentPage, $evenementsPerPage);
+        $totalEvenements = $this->repo->countUserEvents($idUser);
+        $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
+        $this->render('evenement/mes_evenements', [
+            'evenements' => $evenements,
+            'title' => 'Mes événements',
+            'total' => $totalEvenements,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages
+        ]);
     }
 
 
@@ -83,10 +79,10 @@ class EvenementController extends AbstractController
             $images = $this->repo->getEventImages($idEvenement);
             $participants = $this->repo->getEventParticipantsUponStatus($idEvenement, $idUser, $status = 'inscrit');
             if ($evenement['requiresApproval'] == true) {
-                $waitingList = $this->repo->getEventParticipantsUponStatus($idEvenement, $idUser ,$status = 'liste_attente');
+                $waitingList = $this->repo->getEventParticipantsUponStatus($idEvenement, $idUser, $status = 'liste_attente');
             }
 
-// var_dump($waitingList , $participants); die;
+            // var_dump($waitingList , $participants); die;
             $this->render('evenement/voir_evenement', [
                 'evenement' => $evenement,
                 'ville' => $ville,
@@ -180,8 +176,12 @@ class EvenementController extends AbstractController
             } elseif ($this->repo->isTitleExistsForUser($title, $idUser)) {
                 $errors['title'] = "Vous avez déjà un événement avec ce titre";
             }
+            // verify maxParticipants is positive integer and less than or equal to 10000
+            if ($maxParticipants !== null && (!is_int($maxParticipants) || $maxParticipants <= 0 || $maxParticipants > 10000)) {
+                $errors['maxParticipants'] = "Le nombre maximum de participants doit être un entier positif et inférieur ou égal à 10 000";
+            }
 
-            $this->returnAllErrors($errors, 'evenement/ajouter?error=true');
+            $this->returnAllErrors($errors, 'evenement/ajouter', ['error' => 'true']);
 
             // default path for banner
             $bannerPath =  'assets/images/uploads/banners/default_banner.png';
@@ -227,17 +227,14 @@ class EvenementController extends AbstractController
                 $slug = $finalSlug;
             }
             $evenement->setSlug($slug);
-            $this->returnAllErrors($errors, 'evenement/ajouter?error=true');
+            $this->returnAllErrors($errors, 'evenement/ajouter', ['error' => 'true']);
             $this->repo->createEvent($evenement);
             $_SESSION['success'] = "L'événement a été créé avec succès";
             $this->redirect('mes_evenements');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->render('evenement/ajouter_evenement', [
-                'title' => 'Ajouter un événement',
-                'form_data' => $_POST,
-                'associations' => $this->repo->getUserAssociations($idUser),
-                'categories' => $this->repo->getEventCategories()
+            $this->redirect('evenement/ajouter', [
+                'error' => 'true'
             ]);
         }
     }
@@ -250,6 +247,7 @@ class EvenementController extends AbstractController
         try {
             $idUser = $_SESSION['idUser'];
             $idEvenement = $this->getId();
+            $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
             $evenement = $this->repo->getEventCompleteById($idEvenement);
 
             if (!$evenement || !$idEvenement) {
@@ -275,7 +273,7 @@ class EvenementController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_evenements?error=true');
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
 
@@ -363,7 +361,11 @@ class EvenementController extends AbstractController
             } elseif ($this->repo->isTitleExistsForUser($title, $idUser, $idEvenement)) {
                 $errors['title'] = "Vous avez déjà un événement avec ce titre";
             }
-            $this->returnAllErrors($errors, 'evenement/modifier?uiid=' . $uiid . '&error=true');
+            // verify maxParticipants is positive integer and less than or equal to 10000
+            if ($maxParticipants !== null && (!is_int($maxParticipants) || $maxParticipants <= 0 || $maxParticipants > 10000)) {
+                $errors['maxParticipants'] = "Le nombre maximum de participants doit être un entier positif et inférieur ou égal à 10 000";
+            }
+            $this->returnAllErrors($errors, 'evenement/modifier', ['uiid' => $uiid, 'error' => 'true']);
 
             // Update event data
             $evenementModel = new Evenement();
@@ -412,17 +414,17 @@ class EvenementController extends AbstractController
                 $evenementModel->setSlug($originalSlug);
             }
 
-            $this->returnAllErrors($errors, 'evenement/modifier?uiid=' . $uiid . '&error=true');
+            $this->returnAllErrors($errors, 'evenement/modifier', ['uiid' => $uiid, 'error' => 'true']);
 
             $this->repo->updateEvent($evenementModel);
 
             $_SESSION['success'] = "L'événement a été mis à jour avec succès";
-            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid]);
         } catch (Exception $e) {
             // Preserve form data on exception
             $_SESSION['form_data'] = $_POST;
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('evenement/modifier?uiid=' . ($uiid ?? '') . '&error=true');
+            $this->redirect('evenement/modifier', ['uiid' => $uiid, 'error' => 'true']);
         }
     }
 
@@ -448,7 +450,7 @@ class EvenementController extends AbstractController
             $this->redirect('mes_evenements');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
 
@@ -498,10 +500,10 @@ class EvenementController extends AbstractController
             $this->repo->updateEventBanner($idEvenement, $bannerPath);
 
             $_SESSION['success'] = "La bannière a été mise à jour avec succès";
-            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid . '&error=true');
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
 
@@ -534,10 +536,10 @@ class EvenementController extends AbstractController
             $this->repo->updateEventBanner($idEvenement, $defaultBannerPath);
 
             $_SESSION['success'] = "La bannière a été réinitialisée avec succès";
-            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid . '&error=true');
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
 
@@ -572,10 +574,10 @@ class EvenementController extends AbstractController
             $this->repo->addEventImage($idEvenement, $imagePath, $altText, $sortOrder);
 
             $_SESSION['success'] = "L'image a été ajoutée avec succès";
-            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid . '&error=true');
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
 
@@ -612,10 +614,10 @@ class EvenementController extends AbstractController
             $this->repo->deleteEventImage($idEventImage);
 
             $_SESSION['success'] = "L'image a été supprimée avec succès";
-            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid);
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_evenements?action=voir&uiid=' . $uiid . '&error=true');
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
 
@@ -644,7 +646,7 @@ class EvenementController extends AbstractController
                 'totalPages' => $totalPages
             ]);
         } catch (Exception $e) {
-            $this->redirect('?error=true');
+            $this->redirect('/', ['error' => 'true']);
         }
     }
     public function viewEventBySlug($composedRoute)
@@ -663,12 +665,19 @@ class EvenementController extends AbstractController
             if (!$evenement) {
                 throw new Exception("L'événement demandé n'existe pas");
             }
+            $idEvenement = $evenement['idEvenement'];
             // verify if connected user is the owner or is subscribed to the event
             if (isset($_SESSION['idUser'])) {
                 $idUser = $_SESSION['idUser'];
-                $isOwner = $this->repo->isEventOwner($evenement['idEvenement'], $idUser);
-                $isSubscribed = $this->repo->isUserRegistered($idUser, $slug);
-                // $isSubscribeOnWaitingList = $this->repo->isUserOnWaitingList($idUser, $slug);
+                $isOwner = $this->repo->isEventOwner($idEvenement, $idUser);
+                $subscription = $this->repo->getUserSubscription($idUser, $idEvenement);
+                if ($subscription) {
+                    $status = $subscription['status'];
+                    $isSubscribed = $status === 'inscrit' ? true : false;
+                    $isSubscribeOnWaitingList = $status === 'liste_attente' ? true : false;
+                    $isRefused = $status === 'refuse' ? true : false;
+                    $isCancelled = $status === 'annule' ? true : false;
+                }
             }
             $ville = $this->repo->getVilleById($evenement['idVille']);
 
@@ -705,10 +714,13 @@ class EvenementController extends AbstractController
                 'shareTable' => $shareTable,
                 'isOwner' => $isOwner ?? false,
                 'isSubscribed' => $isSubscribed ?? false,
+                'isSubscribeOnWaitingList' => $isSubscribeOnWaitingList ?? false,
+                'isRefused' => $isRefused ?? false,
+                'isCancelled' => $isCancelled ?? false
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('evenements');
+            $this->redirect('evenements', ['error' => 'true']);
         }
     }
 
@@ -719,7 +731,7 @@ class EvenementController extends AbstractController
                 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
                 $_SESSION['warning'] = "Vous devez être connecté pour vous inscrire à un événement";
                 // var_dump($_SERVER, $_SESSION['redirect_after_login']);die;
-                $this->redirect('connexion?need_login=true');
+                $this->redirect('connexion', ['need_login' => 'true']);
                 return;
             }
             $idUser = $_SESSION['idUser'];
@@ -736,10 +748,44 @@ class EvenementController extends AbstractController
             if (!$evenement) {
                 throw new Exception("L'événement demandé n'existe pas");
             }
+            $idEvenement = $evenement['idEvenement'];
+            // Verify that the ville_slug matches
+            $ville = $this->repo->getVilleById($evenement['idVille']);
+            if ($ville['ville_slug'] !== $ville_slug) {
+                throw new Exception("L'événement demandé n'existe pas");
+            }
+            // verify if connected user is the owner or is subscribed to the event
+            $isOwner = $this->repo->isEventOwner($idEvenement, $idUser);
+            if ($isOwner) {
+                throw new Exception("Vous ne pouvez pas vous inscrire à votre propre événement");
+            }
+            $subscription = $this->repo->getUserSubscription($idUser, $idEvenement);
+            if ($subscription) {
+                $status = $subscription['status'] ?? null;
+            }
 
-            // Check if user is already registered
-            if ($this->repo->isUserRegistered($idUser, $slug)) {
+
+            // Check if status is already 'inscrit' or 'refuse' or 'annule' or 'liste_attente'
+            if ($status === 'inscrit') {
                 throw new Exception("Vous êtes déjà inscrit à cet événement");
+            }
+            if ($status === 'refuse') {
+                throw new Exception("Votre inscription à cet événement a été refusée");
+            }
+            if ($status === 'liste_attente') {
+                throw new Exception("Vous êtes déjà sur la liste d'attente pour cet événement");
+            }
+            if ($status === 'annule') {
+                throw new Exception("Votre inscription à cet événement a été annulée, veuillez contacter l'organisateur.");
+            }
+
+            // Check if event is public
+            if ($evenement['isPublic'] == 0) {
+                throw new Exception("Vous ne pouvez pas vous inscrire à un événement privé");
+            }
+            // Check if event is deleted
+            if ($evenement['isDeleted']) {
+                throw new Exception("Vous ne pouvez pas vous inscrire à un événement supprimé");
             }
 
             // Check if event is full
@@ -813,7 +859,134 @@ class EvenementController extends AbstractController
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('evenements/' . $ville_slug  . '/' . $category_slug . '/' . $slug, ['error' => true]);
+            $this->redirect('evenements/' . $ville_slug  . '/' . $category_slug . '/' . $slug, ['error' => 'true']);
+        }
+    }
+    public function acceptParticipant()
+    {
+
+        try {
+            $idUser = $_SESSION['idUser'];
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
+            $idEvenement = $this->getId();
+            $idEventParticipant = isset($_POST['idEventParticipant']) ? (int)$_POST['idEventParticipant'] : null;
+
+            if (!$idEvenement || !$idEventParticipant) {
+                throw new Exception("Paramètres invalides");
+            }
+
+            $evenement = $this->repo->getEventCompleteById($idEvenement);
+            if (!$evenement || $evenement['idUser'] != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cet événement");
+            }
+
+            // Check if event is full
+            if ($evenement['maxParticipants'] > 0 && $evenement['currentParticipants'] >= $evenement['maxParticipants']) {
+                throw new Exception("Cet événement est complet, vous ne pouvez pas accepter plus de participants");
+            }
+
+            $subscription = $this->repo->getSubscriptionById($idEventParticipant);
+            if (!$subscription || $subscription['idEvenement'] != $idEvenement || $subscription['status'] !== 'liste_attente') {
+                throw new Exception("Inscription introuvable ou déjà traitée");
+            }
+
+            // Accept the participant
+            $acceptRequest = $this->repo->updateSubscriptionStatus($idEventParticipant, $idEvenement, $newStatus = 'inscrit');
+
+            // Notify participant
+            $notification = new NotificationRepository();
+            $title = 'Inscription confirmée';
+            $message = "Votre inscription à l'événement : " . $evenement['title'] . " a été confirmée.";
+            $url = "evenements/" . $evenement['ville_slug'] . "/" . $evenement['category_slug'] . "/" . $evenement['slug'];
+            $dataParticipant = [
+                'idUser' => $subscription['idUser'],
+                'idEvenement' => $idEvenement,
+                'type' => 'inscription',
+                'title' => $title,
+                'message' => $message,
+                'url' => $url,
+                'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
+            ];
+            $notifyParticipant = $notification->pushNotification($dataParticipant);
+
+            // send email to participant if max participants of the event less than 50 persons (to avoid spam)
+            if ($evenement['maxParticipants'] < 50) {
+                $mail = new Mail();
+                $subject = "Inscription confirmée";
+                $body = "Votre inscription à l'événement : <strong>" . $evenement['title'] . "</strong> a été confirmée.<br>";
+                $body .= "Détails de l'événement :<br>";
+                $body .= "Date et heure de début : " . date('d/m/Y H:i', strtotime($evenement['startDate'])) . "<br>";
+                $body .= "Lieu : " . ($evenement['address'] ?? 'Non spécifié') . "<br>";
+                $body .= "Ville : " . ($evenement['ville_nom_reel'] ?? 'Non spécifiée') . "<br>";
+                $body .= "Description : " . ($evenement['shortDescription'] ?? substr($evenement['description'], 0, 100) . '...') . "<br><br>";
+                $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $subscription['email'], $subscription['firstName'], $subject, $body);
+            }
+            $_SESSION['success'] = "Le participant a été accepté avec succès";
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid]);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
+        }
+    }
+    public function refuseParticipant()
+    {
+
+        try {
+            $idUser = $_SESSION['idUser'];
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
+            $idEvenement = $this->getId();
+            $idEventParticipant = isset($_POST['idEventParticipant']) ? (int)$_POST['idEventParticipant'] : null;
+
+            if (!$idEvenement || !$idEventParticipant) {
+                throw new Exception("Paramètres invalides");
+            }
+
+            $evenement = $this->repo->getEventCompleteById($idEvenement);
+            if (!$evenement || $evenement['idUser'] != $idUser) {
+                throw new Exception("Vous n'avez pas l'autorisation de modifier cet événement");
+            }
+
+            $subscription = $this->repo->getSubscriptionById($idEventParticipant);
+            if (!$subscription || $subscription['idEvenement'] != $idEvenement || !in_array($subscription['status'], ['liste_attente', 'inscrit'])) {
+                throw new Exception("Inscription introuvable ou déjà traitée");
+            }
+
+            // Refuse the participant
+            $refuseRequest = $this->repo->updateSubscriptionStatus($idEventParticipant, $idEvenement, $newStatus = 'refuse');
+
+            // Notify participant
+            $notification = new NotificationRepository();
+            $title = 'Inscription refusée';
+            $message = "Votre inscription à l'événement : " . $evenement['title'] . " a été refusée.";
+            $url = "evenements/" . $evenement['ville_slug'] . "/" . $evenement['category_slug'] . "/" . $evenement['slug'];
+            $dataParticipant = [
+                'idUser' => $subscription['idUser'],
+                'idEvenement' => $idEvenement,
+                'type' => 'inscription',
+                'title' => $title,
+                'message' => $message,
+                'url' => $url,
+                'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
+            ];
+            $notifyParticipant = $notification->pushNotification($dataParticipant);
+
+            // send email to participant if max participants of the event less than 50 persons (to avoid spam)
+            if ($evenement['maxParticipants'] < 50) {
+                $mail = new Mail();
+                $subject = "Inscription refusée";
+                $body = "Votre inscription à l'événement : <strong>" . $evenement['title'] . "</strong> a été refusée.<br>";
+                $body .= "Détails de l'événement :<br>";
+                $body .= "Date et heure de début : " . date('d/m/Y H:i', strtotime($evenement['startDate'])) . "<br>";
+                $body .= "Lieu : " . ($evenement['address'] ?? 'Non spécifié') . "<br>";
+                $body .= "Ville : " . ($evenement['ville_nom_reel'] ?? 'Non spécifiée') . "<br>";
+                $body .= "Description : " . ($evenement['shortDescription'] ?? substr($evenement['description'], 0, 100) . '...') . "<br><br>";
+                $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $subscription['email'], $subscription['firstName'], $subject, $body);
+            }
+            $_SESSION['success'] = "Le participant a été refusé avec succès";
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid]);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
 }

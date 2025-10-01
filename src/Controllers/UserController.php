@@ -105,6 +105,10 @@ class UserController extends AbstractController
         if ($emailExists) {
             $errors['email_exists'] = 'Cette adresse e-mail est déjà utilisée';
         }
+        $accountExistsAndDeleted = $this->repo->getDeletedUserByEmail($email);
+        if ($accountExistsAndDeleted) {
+            $errors['email_exists'] = 'Un compte avec cette adresse e-mail a été supprimé. Veuillez contacter le support pour plus d\'informations.';
+        }
         // If there are any validation errors, throw one Error with all errors
         $this->returnAllErrors($errors, 'inscription', ['error' => 'true']);
         // Use SEL as a pepper: append the secret to the plaintext before hashing
