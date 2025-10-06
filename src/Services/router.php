@@ -77,7 +77,7 @@ switch ($route) {
         break;
 
     case HOME_URL . 'activer_mon_compte':
-        if ($method === 'POST' && $_POST['token']) {
+        if ($method === 'GET' && $_GET['token']) {
             $userController->activateAccount();
         } else {
             $homeController->page404();
