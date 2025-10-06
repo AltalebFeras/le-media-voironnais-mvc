@@ -731,8 +731,27 @@ class EvenementRepository
         ");
         $stmt->execute([$idEvenement]);
         $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // Optionally, fetch replies for each comment
-        return $comments;
+
+        // Fetch replies for all comments
+        $replies = $this->getEventCommentReplies($idEvenement);
+
+        return ['comments' => $comments, 'replies' => $replies];
+    }
+
+    // Fetch replies for all comments of an event
+    public function getEventCommentReplies($idEvenement)
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT c.*, u.firstName, u.lastName,
+                (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
+                (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount
+            FROM event_comment c
+            JOIN user u ON u.idUser = c.idUser
+            WHERE c.idEvenement = ? AND c.parentId IS NOT NULL AND c.isDeleted = 0
+            ORDER BY c.createdAt ASC
+        ");
+        $stmt->execute([$idEvenement]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Get a single comment by id

@@ -174,7 +174,6 @@ $endDate = new DateTime($evenement['endDate']);
                                             <?php if (isset($_SESSION['idUser'])): ?>
                                                 <button class="like-comment-btn" data-id="<?= $reply['idEventComment'] ?>">J'aime</button>
                                                 <button class="report-comment-btn" data-id="<?= $reply['idEventComment'] ?>">Signaler</button>
-                                                <button class="reply-comment-btn" data-id="<?= $reply['idEventComment'] ?>">Répondre</button>
                                                 <?php if ($reply['idUser'] == $_SESSION['idUser']): ?>
                                                     <button class="delete-comment-btn" data-id="<?= $reply['idEventComment'] ?>">Supprimer</button>
                                                 <?php endif; ?>

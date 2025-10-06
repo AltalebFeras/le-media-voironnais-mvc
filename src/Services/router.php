@@ -146,17 +146,26 @@ switch ($route) {
                     $evenementController->favouriteEvent();
                     break;
                 case 'comment':
-                    $evenementController->addEventComment();
+                    // make switch case for  like, report, reply, delete
+                    switch ($part2) {
+                        case 'like':
+                            $evenementController->likeEventComment();
+                            break;
+                        case 'report':
+                            $evenementController->reportEventComment();
+                            break;
+                        case 'reply':
+                            $evenementController->replyEventComment();
+                            break;
+                        case 'delete':
+                            $evenementController->deleteEventComment();
+                            break;
+                        default:
+                        $evenementController->addEventComment();
+                    }
+
                     break;
-                case 'report':
-                    $evenementController->reportEventComment();
-                    break;
-                case 'reply':
-                    $evenementController->replyEventComment();
-                    break;
-                case 'delete':
-                    $evenementController->deleteEventComment();
-                    break;
+              
                 default:
                     $homeController->page404();
                     break;

@@ -687,7 +687,10 @@ class EvenementController extends AbstractController
             }
 
             $images = $this->repo->getEventImages($evenement['idEvenement']);
-            $comments = $this->repo->getEventComments($evenement['idEvenement']);
+            // Fetch both comments and replies
+            $commentsData = $this->repo->getEventComments($evenement['idEvenement']);
+            $comments = $commentsData['comments'];
+            $replies = $commentsData['replies'];
 
             // Count likes and comments
             $likesCount = $this->repo->countEventLikes($evenement['idEvenement']);
@@ -730,7 +733,7 @@ class EvenementController extends AbstractController
                 'isRefused' => $isRefused ?? false,
                 'isCancelled' => $isCancelled ?? false,
                 'comments' => $comments ?? [],
-                'replies'=> $comments ?? [],
+                'replies'=> $replies ?? [],
                 'likesCount' => $likesCount,
                 'commentsCount' => $commentsCount,
                 'userHasLiked' => $userHasLiked,
@@ -1068,7 +1071,7 @@ class EvenementController extends AbstractController
     {
         $idUser = $_SESSION['idUser'];
         $idEvenement = (int)($_POST['idEvenement'] ?? 0);
-        $parentId = (int)($_POST['parentId'] ?? 0);
+        $parentId = (int)$_POST['parentId'] ?? 0;
         $content = trim($_POST['content'] ?? '');
         if (!$content) {
             echo json_encode(['success' => false, 'error' => 'Le commentaire ne peut pas être vide.']);
