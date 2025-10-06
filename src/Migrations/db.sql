@@ -652,6 +652,127 @@ ALTER TABLE `user`
 ALTER TABLE `user_association`
   ADD CONSTRAINT `FK_association_TO_user_association` FOREIGN KEY (`idAssociation`) REFERENCES `association` (`idAssociation`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_user_TO_user_association` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- --------------------------------------------------------
+-- Table structure for table `contact`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `contact` (
+  `idContact` int NOT NULL AUTO_INCREMENT,
+  `idUser` int DEFAULT NULL,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `type` enum('info','alerte','autre') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'info',
+  `status` enum('nouveau','lu','traite') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'nouveau',
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idContact`),
+  KEY `idx_contact_user` (`idUser`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+-- Table structure for table `event_favourite`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `event_favourite` (
+  `idEventFavourite` int NOT NULL AUTO_INCREMENT,
+  `idUser` int NOT NULL,
+  `idEvenement` int NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idEventFavourite`),
+  UNIQUE KEY `unique_event_favourite` (`idUser`,`idEvenement`),
+  KEY `idx_event_favourite_user` (`idUser`),
+  KEY `idx_event_favourite_event` (`idEvenement`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+-- Table structure for table `event_like`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `event_like` (
+  `idEventLike` int NOT NULL AUTO_INCREMENT,
+  `idUser` int NOT NULL,
+  `idEvenement` int NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idEventLike`),
+  UNIQUE KEY `unique_event_like` (`idUser`,`idEvenement`),
+  KEY `idx_event_like_user` (`idUser`),
+  KEY `idx_event_like_event` (`idEvenement`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+-- Table structure for table `event_comment`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `event_comment` (
+  `idEventComment` int NOT NULL AUTO_INCREMENT,
+  `idEvenement` int NOT NULL,
+  `idUser` int NOT NULL,
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `parentId` int DEFAULT NULL,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT '0',
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`idEventComment`),
+  KEY `idx_event_comment_event` (`idEvenement`),
+  KEY `idx_event_comment_user` (`idUser`),
+  KEY `idx_event_comment_parent` (`parentId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+-- Table structure for table `event_comment_like`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `event_comment_like` (
+  `idEventCommentLike` int NOT NULL AUTO_INCREMENT,
+  `idUser` int NOT NULL,
+  `idEventComment` int NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idEventCommentLike`),
+  UNIQUE KEY `unique_event_comment_like` (`idUser`,`idEventComment`),
+  KEY `idx_event_comment_like_user` (`idUser`),
+  KEY `idx_event_comment_like_comment` (`idEventComment`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+-- Table structure for table `event_comment_report`
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `event_comment_report` (
+  `idEventCommentReport` int NOT NULL AUTO_INCREMENT,
+  `idUser` int NOT NULL,
+  `idEventComment` int NOT NULL,
+  `reason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idEventCommentReport`),
+  UNIQUE KEY `unique_event_comment_report` (`idUser`,`idEventComment`),
+  KEY `idx_event_comment_report_user` (`idUser`),
+  KEY `idx_event_comment_report_comment` (`idEventComment`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Constraints for new tables
+--
+
+ALTER TABLE `contact`
+  ADD CONSTRAINT `FK_user_TO_contact` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE `event_favourite`
+  ADD CONSTRAINT `FK_user_TO_event_favourite` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_evenement_TO_event_favourite` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `event_like`
+  ADD CONSTRAINT `FK_user_TO_event_like` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_evenement_TO_event_like` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `event_comment`
+  ADD CONSTRAINT `FK_evenement_TO_event_comment` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_user_TO_event_comment` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_event_comment_parent` FOREIGN KEY (`parentId`) REFERENCES `event_comment` (`idEventComment`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `event_comment_like`
+  ADD CONSTRAINT `FK_user_TO_event_comment_like` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_event_comment_TO_event_comment_like` FOREIGN KEY (`idEventComment`) REFERENCES `event_comment` (`idEventComment`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `event_comment_report`
+  ADD CONSTRAINT `FK_user_TO_event_comment_report` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_event_comment_TO_event_comment_report` FOREIGN KEY (`idEventComment`) REFERENCES `event_comment` (`idEventComment`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
