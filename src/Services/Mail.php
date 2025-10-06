@@ -83,32 +83,42 @@ final class Mail
     <title>$subject</title>
 </head>
 <body style="margin:0; padding:0; background-color:#f4f4f4;">
-    <div class="container" style="max-width:600px; margin:0 auto; background-color:#ffffff;">
-        <!-- Header Section -->
-        <div class="header" style="background:linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding:40px 20px; text-align:center;">
-            <a href="/" style="text-decoration:none;">
-                <div class="logo-container" style="display:inline-flex; align-items:center;">
-                    <p class="logo-text" style="font-size:24px; font-weight:bold; color:#ffffff; margin:0;">
-                        <span style="color:#EF4444;">Le </span><span style="color:#10B981;">Média</span><span style="color:#3B82F6;">Voironnais</span>
-                    </p>
-                </div>
-            </a>
-        </div>
-        <!-- Main Content Section -->
-        <div class="content" style="padding:40px 30px; border-left:5px solid #3B82F6; border-right:5px solid #3B82F6;">
-            <p class="greeting" style="color:#333333; font-size:18px; font-weight:600; margin:0 0 25px 0;">$salutation $recipientName,</p>
-            <div class="content-body" style="color:#555555; font-size:16px; line-height:1.6; margin:0 0 25px 0;">
-                $body
-            </div>
-            <p class="closing" style="color:#333333; font-size:16px; font-weight:500; margin:25px 0 0 0;">$souhait !</p>
-        </div>
-        <!-- Footer Section -->
-        <div class="footer" style="background:linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding:30px 20px; text-align:center;">
-            <p class="team-name" style="color:#ffffff; font-size:20px; font-weight:700; margin:0;">L'équipe du Média Voironnais</p>
-            <p class="team-tagline" style="color:#ffffff; font-size:14px; margin:8px 0 0 0; opacity:0.9;">Bougez, partagez, progressez !</p>
-            <p class="copyright" style="color:#ffffff; font-size:12px; margin:20px 0 0 0; opacity:0.8;">&copy; $currentYear Le Média Voironnais. Tous droits réservés.</p>
-        </div>
-    </div>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f4; margin:0; padding:0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background-color:#ffffff;">
+                    <!-- Header Section -->
+                    <tr>
+                        <td style="background:linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding:40px 20px; text-align:center;">
+                            <a href="/" style="text-decoration:none;">
+                                <span style="font-size:24px; font-weight:bold; color:#ffffff; margin:0;">
+                                    <span style="color:#EF4444;">Le </span><span style="color:#10B981;">Média</span><span style="color:#3B82F6;">Voironnais</span>
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                    <!-- Main Content Section -->
+                    <tr>
+                        <td style="padding:40px 30px; border-left:5px solid #3B82F6; border-right:5px solid #3B82F6;">
+                            <p style="color:#333333; font-size:18px; font-weight:600; margin:0 0 25px 0;">$salutation $recipientName,</p>
+                            <div style="color:#555555; font-size:16px; line-height:1.6; margin:0 0 25px 0;">
+                                $body
+                            </div>
+                            <p style="color:#333333; font-size:16px; font-weight:500; margin:25px 0 0 0;">$souhait !</p>
+                        </td>
+                    </tr>
+                    <!-- Footer Section -->
+                    <tr>
+                        <td style="background:linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding:30px 20px; text-align:center;">
+                            <p style="color:#ffffff; font-size:20px; font-weight:700; margin:0;">L'équipe du Média Voironnais</p>
+                            <p style="color:#ffffff; font-size:14px; margin:8px 0 0 0; opacity:0.9;">Bougez, partagez, progressez !</p>
+                            <p style="color:#ffffff; font-size:12px; margin:20px 0 0 0; opacity:0.8;">&copy; $currentYear Le Média Voironnais. Tous droits réservés.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
 HTML;
@@ -174,6 +184,11 @@ HTML;
             $this->mail->send();
             return true;
         } catch (Exception $e) {
+            error_log("Mailer Error: {$this->mail->ErrorInfo}");
+            throw new \Exception("Failed to send email: " . $e->getMessage());
+        }
+    }
+}
             error_log("Mailer Error: {$this->mail->ErrorInfo}");
             throw new \Exception("Failed to send email: " . $e->getMessage());
         }
