@@ -592,7 +592,7 @@ switch ($route) {
 
     case HOME_URL . 'cgu':
         $homeController->terms_of_service();
-        break;
+        break;  
     case HOME_URL . 'mentions_legales':
         $homeController->mentions_legales();
         break;

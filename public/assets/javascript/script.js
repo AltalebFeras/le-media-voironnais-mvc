@@ -4,43 +4,69 @@
  */
 // if form id is not "formGroupCalculator", do not apply the loader
 
+// Loader logic: only apply loader on custom "form:valid" event
 document.querySelectorAll("form").forEach(function (form) {
-  form.addEventListener("submit", function (e) {
-    if (document.querySelector("#formGroupCalculator")) {
-      return;
-    }
-    if (!document.getElementById("loaderOverlay")) {
-      const overlay = document.createElement("div");
-      overlay.id = "loaderOverlay";
-      Object.assign(overlay.style, {
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        backgroundColor: "rgba(255, 255, 255, 0.5)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 9999,
-      });
+  // Remove submit loader logic from here
+});
 
-      const loaderImage = document.createElement("img");
-      loaderImage.src = "/assets/images/loader/loader.svg";
-      loaderImage.alt = "Chargement...";
-      loaderImage.style.width = "150px";
-      loaderImage.style.zIndex = 9999;
+// Remove loader overlay if present when navigating back/forward
+window.addEventListener("pageshow", function (event) {
+  if (
+    event.persisted ||
+    performance.getEntriesByType("navigation")[0]?.type === "back_forward"
+  ) {
+    const overlay = document.getElementById("loaderOverlay");
+    if (overlay) overlay.remove();
+    // Optionally re-enable submit buttons if needed
+    document.querySelectorAll("form [type='submit']").forEach((btn) => {
+      btn.disabled = false;
+      if (btn.dataset.originalText) {
+        btn.textContent = btn.dataset.originalText;
+      }
+    });
+  }
+});
 
-      overlay.appendChild(loaderImage);
-      document.body.appendChild(overlay);
-    }
+// Listen for custom "form:valid" event to show loader and submit
+document.addEventListener("form:valid", function (e) {
+  const form = e.target;
+  if (!document.getElementById("loaderOverlay")) {
+    const overlay = document.createElement("div");
+    overlay.id = "loaderOverlay";
+    Object.assign(overlay.style, {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      backgroundColor: "rgba(255, 255, 255, 0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 9999,
+    });
 
-    const submitBtn = form.querySelector('[type="submit"]');
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Chargement...";
+    const loaderImage = document.createElement("img");
+    loaderImage.src = "/assets/images/loader/loader.svg";
+    loaderImage.alt = "Chargement...";
+    loaderImage.style.width = "150px";
+    loaderImage.style.zIndex = 9999;
+
+    overlay.appendChild(loaderImage);
+    document.body.appendChild(overlay);
+  }
+
+  const submitBtn = form.querySelector('[type="submit"]');
+  if (submitBtn) {
+    // Save original text to restore if needed
+    if (!submitBtn.dataset.originalText) {
+      submitBtn.dataset.originalText = submitBtn.textContent;
     }
-  });
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Chargement...";
+  }
+  // Actually submit the form after showing loader
+  form.submit();
 });
 
 // This  is a toggle functionality to password inputs, allowing users to show or hide their passwords with an eye icon.

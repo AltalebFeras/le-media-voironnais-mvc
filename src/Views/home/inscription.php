@@ -44,6 +44,5 @@
     <a class="linkNotDecorated link" href="<?= HOME_URL  ?>">Retour à l'accueil</a>
   </div>
 </main>
-
-
+<script type="module" src="<?= HOME_URL . 'assets/javascript/page/inscription.js' ?>"></script>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
