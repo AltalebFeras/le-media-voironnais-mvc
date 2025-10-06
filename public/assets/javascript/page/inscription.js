@@ -99,5 +99,8 @@ form.addEventListener("submit", async (event) => {
         }
       });
     }
+    // Dispatch custom event for invalid form to remove loader
+    form.dispatchEvent(new CustomEvent("form:invalid", { bubbles: true }));
+    return; // <--- Add this line to stop further execution
   }
 });
