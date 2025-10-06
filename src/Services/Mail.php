@@ -189,8 +189,3 @@ HTML;
         }
     }
 }
-            error_log("Mailer Error: {$this->mail->ErrorInfo}");
-            throw new \Exception("Failed to send email: " . $e->getMessage());
-        }
-    }
-}
