@@ -165,7 +165,7 @@ $endDate = new DateTime($evenement['endDate']);
                             <?php endif; ?>
                             <!-- Replies -->
                             <?php if (!empty($repliesByParent[$comment['idEventComment']])): ?>
-                                <div class="replies" style="margin-left:2em;">
+                                <div class="replies" id="replies-<?= $comment['idEventComment'] ?>" style="margin-left:2em;display:none;">
                                     <?php foreach ($repliesByParent[$comment['idEventComment']] as $reply): ?>
                                         <div class="comment reply" data-id="<?= $reply['idEventComment'] ?>">
                                             <b><?= htmlspecialchars($reply['firstName'] . ' ' . $reply['lastName']) ?></b>
@@ -181,6 +181,10 @@ $endDate = new DateTime($evenement['endDate']);
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
+                                <!-- Show/Hide replies button -->
+                                <button class="show-replies-btn" data-id="<?= $comment['idEventComment'] ?>">
+                                    Voir toutes les <?= count($repliesByParent[$comment['idEventComment']]) ?> réponse<?= count($repliesByParent[$comment['idEventComment']]) > 1 ? 's' : '' ?>
+                                </button>
                             <?php endif; ?>
                             <!-- Reply form (hidden by default) -->
                             <form class="reply-form" style="display:none;margin-left:2em;">
@@ -262,6 +266,24 @@ $endDate = new DateTime($evenement['endDate']);
                                     if (d.success) location.reload();
                                     else alert(d.error || "Erreur");
                                 });
+                        }
+                    });
+                });
+
+                // Show/hide replies on click
+                document.querySelectorAll('.show-replies-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const repliesDiv = document.getElementById('replies-' + this.dataset.id);
+                        if (repliesDiv) {
+                            if (repliesDiv.style.display === 'none' || repliesDiv.style.display === '') {
+                                repliesDiv.style.display = 'block';
+                                this.textContent = "Masquer les réponses";
+                            } else {
+                                repliesDiv.style.display = 'none';
+                                // Get reply count for label
+                                const count = repliesDiv.children.length;
+                                this.textContent = "Voir toutes les " + count + " réponse" + (count > 1 ? "s" : "");
+                            }
                         }
                     });
                 });
