@@ -687,6 +687,19 @@ class EvenementController extends AbstractController
             }
 
             $images = $this->repo->getEventImages($evenement['idEvenement']);
+            $comments = $this->repo->getEventComments($evenement['idEvenement']);
+
+            // Count likes and comments
+            $likesCount = $this->repo->countEventLikes($evenement['idEvenement']);
+            $commentsCount = $this->repo->countEventComments($evenement['idEvenement']);
+
+            // Check if connected user has liked or favourited
+            $userHasLiked = false;
+            $userHasFavourited = false;
+            if (isset($_SESSION['idUser'])) {
+                $userHasLiked = $this->repo->hasUserLikedEvent($_SESSION['idUser'], $evenement['idEvenement']);
+                $userHasFavourited = $this->repo->hasUserFavouritedEvent($_SESSION['idUser'], $evenement['idEvenement']);
+            }
 
             // Generate share URLs for social media
             $shareUrl = DOMAIN . HOME_URL . "evenements/{$ville_slug}/{$slug}";
@@ -715,7 +728,13 @@ class EvenementController extends AbstractController
                 'isSubscribed' => $isSubscribed ?? false,
                 'isSubscribeOnWaitingList' => $isSubscribeOnWaitingList ?? false,
                 'isRefused' => $isRefused ?? false,
-                'isCancelled' => $isCancelled ?? false
+                'isCancelled' => $isCancelled ?? false,
+                'comments' => $comments ?? [],
+                'replies'=> $comments ?? [],
+                'likesCount' => $likesCount,
+                'commentsCount' => $commentsCount,
+                'userHasLiked' => $userHasLiked,
+                'userHasFavourited' => $userHasFavourited
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
@@ -989,4 +1008,93 @@ class EvenementController extends AbstractController
             $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
+
+    // Like/unlike an event (AJAX)
+    public function likeEvent()
+    {
+        $idUser = $_SESSION['idUser'];
+        $idEvenement = (int)($_POST['idEvenement'] ?? 0);
+        $repo = $this->repo;
+        $liked = $repo->toggleEventLike($idUser, $idEvenement);
+        echo json_encode(['success' => true, 'liked' => $liked]);
+    }
+
+    // Favourite/unfavourite an event (AJAX)
+    public function favouriteEvent()
+    {
+        $idUser = $_SESSION['idUser'];
+        $idEvenement = (int)($_POST['idEvenement'] ?? 0);
+        $repo = $this->repo;
+        $favourited = $repo->toggleEventFavourite($idUser, $idEvenement);
+        echo json_encode(['success' => true, 'favourited' => $favourited]);
+    }
+
+    // Add a comment to an event
+    public function addEventComment()
+    {
+        $idUser = $_SESSION['idUser'];
+        $idEvenement = (int)($_POST['idEvenement'] ?? 0);
+        $content = trim($_POST['content'] ?? '');
+        $parentId = isset($_POST['parentId']) ? (int)$_POST['parentId'] : null;
+        if (!$content) {
+            echo json_encode(['success' => false, 'error' => 'Le commentaire ne peut pas être vide.']);
+            return;
+        }
+        $commentId = $this->repo->addEventComment($idUser, $idEvenement, $content, $parentId);
+        echo json_encode(['success' => true, 'commentId' => $commentId]);
+    }
+
+    // Like/unlike a comment
+    public function likeEventComment()
+    {
+        $idUser = $_SESSION['idUser'];
+        $idEventComment = (int)($_POST['idEventComment'] ?? 0);
+        $liked = $this->repo->toggleEventCommentLike($idUser, $idEventComment);
+        echo json_encode(['success' => true, 'liked' => $liked]);
+    }
+
+    // Report a comment
+    public function reportEventComment()
+    {
+        $idUser = $_SESSION['idUser'];
+        $idEventComment = (int)($_POST['idEventComment'] ?? 0);
+        $reason = trim($_POST['reason'] ?? '');
+        $this->repo->reportEventComment($idUser, $idEventComment, $reason);
+        echo json_encode(['success' => true]);
+    }
+
+    // Add a reply to a comment (comment on comment)
+    public function replyEventComment()
+    {
+        $idUser = $_SESSION['idUser'];
+        $idEvenement = (int)($_POST['idEvenement'] ?? 0);
+        $parentId = (int)($_POST['parentId'] ?? 0);
+        $content = trim($_POST['content'] ?? '');
+        if (!$content) {
+            echo json_encode(['success' => false, 'error' => 'Le commentaire ne peut pas être vide.']);
+            return;
+        }
+        $commentId = $this->repo->addEventComment($idUser, $idEvenement, $content, $parentId);
+        echo json_encode(['success' => true, 'commentId' => $commentId]);
+    }
+
+    // Delete a comment (and its replies if parent)
+    public function deleteEventComment()
+    {
+        $idUser = $_SESSION['idUser'];
+        $idEventComment = (int)($_POST['idEventComment'] ?? 0);
+        $comment = $this->repo->getEventCommentById($idEventComment);
+        if (!$comment) {
+            echo json_encode(['success' => false, 'error' => 'Commentaire introuvable.']);
+            return;
+        }
+        // Only the owner can delete their comment
+        if ($comment['idUser'] != $idUser) {
+            echo json_encode(['success' => false, 'error' => 'Vous ne pouvez supprimer que vos propres commentaires.']);
+            return;
+        }
+        $this->repo->deleteEventCommentWithReplies($idEventComment);
+        echo json_encode(['success' => true]);
+    }
+
 }

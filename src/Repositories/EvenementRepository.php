@@ -645,4 +645,142 @@ class EvenementRepository
             throw new Exception("Error updating subscription status: " . $e->getMessage());
         }
     }
+
+    // Save contact message
+    public function saveContactMessage(array $data): bool
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO contact (idUser, name, email, title, message, type, createdAt) VALUES (:idUser, :name, :email, :title, :message, :type, NOW())");
+        return $stmt->execute([
+            'idUser' => $data['idUser'],
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'title' => $data['title'],
+            'message' => $data['message'],
+            'type' => $data['type']
+        ]);
+    }
+
+    // Toggle event like
+    public function toggleEventLike($idUser, $idEvenement): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT idEventLike FROM event_like WHERE idUser = ? AND idEvenement = ?");
+        $stmt->execute([$idUser, $idEvenement]);
+        if ($stmt->fetch()) {
+            $this->pdo->prepare("DELETE FROM event_like WHERE idUser = ? AND idEvenement = ?")->execute([$idUser, $idEvenement]);
+            return false;
+        } else {
+            $this->pdo->prepare("INSERT INTO event_like (idUser, idEvenement, createdAt) VALUES (?, ?, NOW())")->execute([$idUser, $idEvenement]);
+            return true;
+        }
+    }
+
+    // Toggle event favourite
+    public function toggleEventFavourite($idUser, $idEvenement): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT idEventFavourite FROM event_favourite WHERE idUser = ? AND idEvenement = ?");
+        $stmt->execute([$idUser, $idEvenement]);
+        if ($stmt->fetch()) {
+            $this->pdo->prepare("DELETE FROM event_favourite WHERE idUser = ? AND idEvenement = ?")->execute([$idUser, $idEvenement]);
+            return false;
+        } else {
+            $this->pdo->prepare("INSERT INTO event_favourite (idUser, idEvenement, createdAt) VALUES (?, ?, NOW())")->execute([$idUser, $idEvenement]);
+            return true;
+        }
+    }
+
+    // Add event comment
+    public function addEventComment($idUser, $idEvenement, $content, $parentId = null)
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO event_comment (idEvenement, idUser, content, parentId, createdAt) VALUES (?, ?, ?, ?, NOW())");
+        $stmt->execute([$idEvenement, $idUser, $content, $parentId]);
+        return $this->pdo->lastInsertId();
+    }
+
+    // Toggle like on comment
+    public function toggleEventCommentLike($idUser, $idEventComment): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT idEventCommentLike FROM event_comment_like WHERE idUser = ? AND idEventComment = ?");
+        $stmt->execute([$idUser, $idEventComment]);
+        if ($stmt->fetch()) {
+            $this->pdo->prepare("DELETE FROM event_comment_like WHERE idUser = ? AND idEventComment = ?")->execute([$idUser, $idEventComment]);
+            return false;
+        } else {
+            $this->pdo->prepare("INSERT INTO event_comment_like (idUser, idEventComment, createdAt) VALUES (?, ?, NOW())")->execute([$idUser, $idEventComment]);
+            return true;
+        }
+    }
+
+    // Report a comment
+    public function reportEventComment($idUser, $idEventComment, $reason = null): bool
+    {
+        $stmt = $this->pdo->prepare("INSERT IGNORE INTO event_comment_report (idUser, idEventComment, reason, createdAt) VALUES (?, ?, ?, NOW())");
+        return $stmt->execute([$idUser, $idEventComment, $reason]);
+    }
+
+    // Fetch comments for an event (with likes count, replies, etc.)
+    public function getEventComments($idEvenement)
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT c.*, u.firstName, u.lastName,
+                (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
+                (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount
+            FROM event_comment c
+            JOIN user u ON u.idUser = c.idUser
+            WHERE c.idEvenement = ? AND c.parentId IS NULL AND c.isDeleted = 0
+            ORDER BY c.createdAt DESC
+        ");
+        $stmt->execute([$idEvenement]);
+        $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Optionally, fetch replies for each comment
+        return $comments;
+    }
+
+    // Get a single comment by id
+    public function getEventCommentById($idEventComment)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM event_comment WHERE idEventComment = ?");
+        $stmt->execute([$idEventComment]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    // Delete a comment and its replies (soft delete)
+    public function deleteEventCommentWithReplies($idEventComment)
+    {
+        // Soft delete the comment
+        $this->pdo->prepare("UPDATE event_comment SET isDeleted = 1 WHERE idEventComment = ?")->execute([$idEventComment]);
+        // Soft delete all replies
+        $this->pdo->prepare("UPDATE event_comment SET isDeleted = 1 WHERE parentId = ?")->execute([$idEventComment]);
+    }
+
+    // Count likes for an event
+    public function countEventLikes($idEvenement): int
+    {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM event_like WHERE idEvenement = ?");
+        $stmt->execute([$idEvenement]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    // Count comments (not deleted) for an event (top-level only or all)
+    public function countEventComments($idEvenement): int
+    {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM event_comment WHERE idEvenement = ? AND isDeleted = 0");
+        $stmt->execute([$idEvenement]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    // Check if user has liked the event
+    public function hasUserLikedEvent($idUser, $idEvenement): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT 1 FROM event_like WHERE idUser = ? AND idEvenement = ?");
+        $stmt->execute([$idUser, $idEvenement]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    // Check if user has favourited the event
+    public function hasUserFavouritedEvent($idUser, $idEvenement): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT 1 FROM event_favourite WHERE idUser = ? AND idEvenement = ?");
+        $stmt->execute([$idUser, $idEvenement]);
+        return (bool)$stmt->fetchColumn();
+    }
 }

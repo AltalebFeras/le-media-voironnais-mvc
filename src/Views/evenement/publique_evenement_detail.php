@@ -119,6 +119,154 @@ $endDate = new DateTime($evenement['endDate']);
                         </div>
                     </div>
                 <?php endif; ?>
+
+                <!-- Like/Favourite buttons and event likes/comments counter -->
+                <?php if (isset($_SESSION['idUser'])): ?>
+                    <button id="like-btn" data-id="<?= $evenement['idEvenement'] ?>" <?= !empty($userHasLiked) ? 'style="color:#007bff;font-weight:bold;"' : '' ?>>
+                        👍 J'aime<?= !empty($userHasLiked) ? ' (Vous aimez)' : '' ?>
+                    </button>
+                    <button id="favourite-btn" data-id="<?= $evenement['idEvenement'] ?>" <?= !empty($userHasFavourited) ? 'style="color:#ffc107;font-weight:bold;"' : '' ?>>
+                        ⭐ Favori<?= !empty($userHasFavourited) ? ' (Favori)' : '' ?>
+                    </button>
+                <?php endif; ?>
+                <div>
+                    <span id="event-likes-count"><?= $likesCount ?> personne<?= $likesCount > 1 ? 's' : '' ?> aiment cet événement</span>
+                    <span id="event-comments-count" style="margin-left:1em;"><?= $commentsCount ?> commentaire<?= $commentsCount > 1 ? 's' : '' ?></span>
+                </div>
+
+                <!-- Comments Section -->
+                <h3>Commentaires</h3>
+                <div id="comments-list">
+                    <?php
+                    // $comments and $replies are passed from the controller
+                    $comments = $comments ?? [];
+                    $replies = $replies ?? [];
+                    // Helper to group replies by parentId
+                    $repliesByParent = [];
+                    foreach ($replies as $reply) {
+                        if ($reply['parentId']) {
+                            $repliesByParent[$reply['parentId']][] = $reply;
+                        }
+                    }
+                    foreach ($comments as $comment):
+                        if ($comment['parentId']) continue; // Only top-level comments here
+                    ?>
+                        <div class="comment" data-id="<?= $comment['idEventComment'] ?>">
+                            <b><?= htmlspecialchars($comment['firstName'] . ' ' . $comment['lastName']) ?></b>
+                            <p><?= nl2br(htmlspecialchars($comment['content'])) ?></p>
+                            <span><?= $comment['likesCount'] ?> 👍</span>
+                            <?php if (isset($_SESSION['idUser'])): ?>
+                                <button class="like-comment-btn" data-id="<?= $comment['idEventComment'] ?>">J'aime</button>
+                                <button class="report-comment-btn" data-id="<?= $comment['idEventComment'] ?>">Signaler</button>
+                                <button class="reply-comment-btn" data-id="<?= $comment['idEventComment'] ?>">Répondre</button>
+                                <?php if ($comment['idUser'] == $_SESSION['idUser']): ?>
+                                    <button class="delete-comment-btn" data-id="<?= $comment['idEventComment'] ?>">Supprimer</button>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                            <!-- Replies -->
+                            <?php if (!empty($repliesByParent[$comment['idEventComment']])): ?>
+                                <div class="replies" style="margin-left:2em;">
+                                    <?php foreach ($repliesByParent[$comment['idEventComment']] as $reply): ?>
+                                        <div class="comment reply" data-id="<?= $reply['idEventComment'] ?>">
+                                            <b><?= htmlspecialchars($reply['firstName'] . ' ' . $reply['lastName']) ?></b>
+                                            <p><?= nl2br(htmlspecialchars($reply['content'])) ?></p>
+                                            <span><?= $reply['likesCount'] ?> 👍</span>
+                                            <?php if (isset($_SESSION['idUser'])): ?>
+                                                <button class="like-comment-btn" data-id="<?= $reply['idEventComment'] ?>">J'aime</button>
+                                                <button class="report-comment-btn" data-id="<?= $reply['idEventComment'] ?>">Signaler</button>
+                                                <button class="reply-comment-btn" data-id="<?= $reply['idEventComment'] ?>">Répondre</button>
+                                                <?php if ($reply['idUser'] == $_SESSION['idUser']): ?>
+                                                    <button class="delete-comment-btn" data-id="<?= $reply['idEventComment'] ?>">Supprimer</button>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+                            <!-- Reply form (hidden by default) -->
+                            <form class="reply-form" style="display:none;margin-left:2em;">
+                                <textarea name="content" required></textarea>
+                                <input type="hidden" name="idEvenement" value="<?= $evenement['idEvenement'] ?>">
+                                <input type="hidden" name="parentId" value="<?= $comment['idEventComment'] ?>">
+                                <button type="submit">Envoyer la réponse</button>
+                            </form>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php if (isset($_SESSION['idUser'])): ?>
+                    <form id="add-comment-form">
+                        <textarea name="content" required></textarea>
+                        <input type="hidden" name="idEvenement" value="<?= $evenement['idEvenement'] ?>">
+                        <button type="submit">Commenter</button>
+                    </form>
+                <?php else: ?>
+                    <p>Connectez-vous pour commenter.</p>
+                <?php endif; ?>
+
+                <script>
+                document.getElementById('like-btn')?.addEventListener('click', function() {
+                    fetch('/evenement/like', {method:'POST', body: new URLSearchParams({idEvenement: this.dataset.id})})
+                        .then(r=>r.json()).then(d=>alert(d.liked ? "Vous aimez cet événement" : "Like retiré"));
+                });
+                document.getElementById('favourite-btn')?.addEventListener('click', function() {
+                    fetch('/evenement/favourite', {method:'POST', body: new URLSearchParams({idEvenement: this.dataset.id})})
+                        .then(r=>r.json()).then(d=>alert(d.favourited ? "Ajouté aux favoris" : "Retiré des favoris"));
+                });
+                document.querySelectorAll('.like-comment-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        fetch('/evenement/comment/like', {method:'POST', body: new URLSearchParams({idEventComment: this.dataset.id})})
+                            .then(r=>r.json()).then(d=>alert(d.liked ? "Commentaire liké" : "Like retiré"));
+                    });
+                });
+                document.querySelectorAll('.report-comment-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        let reason = prompt("Pourquoi signalez-vous ce commentaire ?");
+                        if (reason) {
+                            fetch('/evenement/comment/report', {method:'POST', body: new URLSearchParams({idEventComment: this.dataset.id, reason})})
+                                .then(r=>r.json()).then(d=>alert("Commentaire signalé"));
+                        }
+                    });
+                });
+                document.getElementById('add-comment-form')?.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    fetch('/evenement/comment', {method:'POST', body: new FormData(this)})
+                        .then(r=>r.json()).then(d=>{
+                            if (d.success) location.reload();
+                            else alert(d.error || "Erreur");
+                        });
+                });
+                // Reply to comment
+                document.querySelectorAll('.reply-comment-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        let parentDiv = this.closest('.comment');
+                        let form = parentDiv.querySelector('.reply-form');
+                        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                    });
+                });
+                document.querySelectorAll('.reply-form').forEach(form => {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        let data = new FormData(this);
+                        fetch('/evenement/comment/reply', {method:'POST', body: data})
+                            .then(r=>r.json()).then(d=>{
+                                if (d.success) location.reload();
+                                else alert(d.error || "Erreur");
+                            });
+                    });
+                });
+                // Delete comment
+                document.querySelectorAll('.delete-comment-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (confirm("Supprimer ce commentaire ?")) {
+                            fetch('/evenement/comment/delete', {method:'POST', body: new URLSearchParams({idEventComment: this.dataset.id})})
+                                .then(r=>r.json()).then(d=>{
+                                    if (d.success) location.reload();
+                                    else alert(d.error || "Erreur");
+                                });
+                        }
+                    });
+                });
+                </script>
             </div>
 
             <div class="event-sidebar">

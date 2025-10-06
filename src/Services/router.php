@@ -129,6 +129,44 @@ switch ($route) {
         }
         break;
 
+    // Event like/favourite/comment endpoints (AJAX)
+    case HOME_URL . 'evenement/like':
+    case HOME_URL . 'evenement/favourite':
+    case HOME_URL . 'evenement/comment':
+    case HOME_URL . 'evenement/comment/like':
+    case HOME_URL . 'evenement/comment/report':
+    case HOME_URL . 'evenement/comment/reply':
+    case HOME_URL . 'evenement/comment/delete':
+        if ($method === 'POST' && $connectionSecured) {
+            switch ($part1) {
+                case 'like':
+                    $evenementController->likeEvent();
+                    break;
+                case 'favourite':
+                    $evenementController->favouriteEvent();
+                    break;
+                case 'comment':
+                    $evenementController->addEventComment();
+                    break;
+                case 'report':
+                    $evenementController->reportEventComment();
+                    break;
+                case 'reply':
+                    $evenementController->replyEventComment();
+                    break;
+                case 'delete':
+                    $evenementController->deleteEventComment();
+                    break;
+                default:
+                    $homeController->page404();
+                    break;
+            }
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+
     case HOME_URL . 'dashboard':
         if ($connectionSecured) {
             $userController->displayDashboard();
@@ -589,10 +627,17 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
-
+    // Contact form (public)
+    case HOME_URL . 'contact':
+        if ($method === 'POST') {
+            $homeController->submitContactForm();
+        } else {
+            $homeController->displayContactForm();
+        }
+        break;
     case HOME_URL . 'cgu':
         $homeController->terms_of_service();
-        break;  
+        break;
     case HOME_URL . 'mentions_legales':
         $homeController->mentions_legales();
         break;
