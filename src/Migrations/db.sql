@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 06, 2025 at 08:43 AM
+-- Generation Time: Oct 06, 2025 at 08:53 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.24
 
@@ -56,11 +56,6 @@ CREATE TABLE IF NOT EXISTS `association` (
   KEY `idx_association_ville` (`idVille`)
 ) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `association`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -111,11 +106,6 @@ CREATE TABLE IF NOT EXISTS `chat` (
   KEY `idx_chat_last_message` (`lastMessageAt`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `chat`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -135,11 +125,6 @@ CREATE TABLE IF NOT EXISTS `chat_participant` (
   UNIQUE KEY `unique_chat_user_participant` (`idChat`,`idUser`),
   KEY `FK_user_TO_chat_participant` (`idUser`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `chat_participant`
---
-
 
 -- --------------------------------------------------------
 
@@ -183,11 +168,6 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   KEY `idx_entreprise_active` (`isActive`),
   KEY `idx_entreprise_ville` (`idVille`)
 ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `entreprise`
---
-
 
 -- --------------------------------------------------------
 
@@ -235,10 +215,6 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   KEY `idx_evenement_category` (`idEventCategory`)
 ) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `evenement`
---
-
 -- --------------------------------------------------------
 
 --
@@ -259,11 +235,6 @@ CREATE TABLE IF NOT EXISTS `event_category` (
   UNIQUE KEY `UQ_idEventCategory` (`idEventCategory`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `event_category`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -283,11 +254,6 @@ CREATE TABLE IF NOT EXISTS `event_image` (
   UNIQUE KEY `UQ_idEventImage` (`idEventImage`),
   KEY `FK_evenement_TO_event_image` (`idEvenement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `event_image`
---
-
 
 -- --------------------------------------------------------
 
@@ -333,10 +299,6 @@ CREATE TABLE IF NOT EXISTS `event_participant` (
   KEY `idx_event_participant_user` (`idUser`),
   KEY `idx_event_participant_status` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `event_participant`
---
 
 -- --------------------------------------------------------
 
@@ -416,10 +378,6 @@ CREATE TABLE IF NOT EXISTS `notification` (
   KEY `FK_evenement_TO_notification` (`idEvenement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `notification`
---
-
 -- --------------------------------------------------------
 
 --
@@ -486,11 +444,6 @@ CREATE TABLE IF NOT EXISTS `role` (
   UNIQUE KEY `UQ_idRole` (`idRole`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `role`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -534,11 +487,6 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_user_last_seen` (`lastSeen`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `user`
---
-
-
 -- --------------------------------------------------------
 
 --
@@ -557,10 +505,6 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `user_association`
---
 
 -- --------------------------------------------------------
 
@@ -599,11 +543,6 @@ CREATE TABLE IF NOT EXISTS `ville` (
   KEY `ville_longitude_latitude_deg` (`ville_longitude_deg`,`ville_latitude_deg`),
   KEY `ville_nom_simple` (`ville_nom_simple`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38101 DEFAULT CHARSET=utf8mb3;
-
---
--- Dumping data for table `ville`
---
-
 
 --
 -- Constraints for dumped tables

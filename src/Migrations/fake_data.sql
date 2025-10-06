@@ -1,3 +1,14 @@
+INSERT INTO `role` (`idRole`, `name`, `description`, `permissions`, `createdAt`) VALUES
+(1, 'super_admin', NULL, NULL, '2025-09-11 12:00:01'),
+(2, 'admin', NULL, NULL, '2025-09-11 12:00:01'),
+(3, 'user', NULL, NULL, '2025-09-11 12:00:01');
+
+INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
+(1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-29 13:37:13', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
+(2, 3, 'Thomas', 'Barbier', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-10-01 09:08:21', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
+(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 0, '2025-10-06 09:30:04', '2025-09-15 09:47:56', NULL, '493a02d704865106879c4c8d8b770f3e', '2025-09-15 09:47:56', '2025-09-26 15:46:28', '2025-09-26 14:53:08', '2025-09-30 09:49:01', NULL),
+(4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.comm', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-29 13:45:43', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL);
+
 INSERT INTO `ville` (`idVille`, `ville_departement`, `ville_slug`, `ville_nom`, `ville_nom_simple`, `ville_nom_reel`, `ville_code_postal`, `ville_commune`, `ville_code_commune`, `ville_population_2012`, `ville_longitude_deg`, `ville_latitude_deg`, `ville_longitude_grd`, `ville_latitude_grd`, `ville_longitude_dms`, `ville_latitude_dms`, `ville_zmin`, `ville_zmax`) VALUES
 (14329, '38', 'voiron', 'VOIRON', 'voiron', 'Voiron', '38500', '563', '38563', 20400, 5.58333, 45.3667, '3615', '50404', '+53524', '452148', 222, 846),
 (14330, '38', 'reaumont', 'REAUMONT', 'reaumont', 'Réaumont', '38140', '331', '38331', 900, 5.51667, 45.3667, '3544', '50411', '+53133', '452211', 309, 436),
@@ -592,13 +603,3 @@ INSERT INTO `evenement` (`idEvenement`, `uiid`, `title`, `slug`, `description`, 
 (91, '88ddb2d6704c5321', 'qdsddd', 'grenoble-38100-qdsddd-art', 'dddddddddddd', 'ddddddddddddddd', '2025-10-16 10:36:00', '2025-11-08 10:36:00', '2025-10-07 10:36:00', 0, 0, '42 Rue Henri Duhamel', 'assets/images/uploads/banners/default_banner.png', 0, 1, 0, 0.00, 'EUR', '2025-10-01 10:36:36', NULL, 3, NULL, NULL, 38100, 8);
 
 
-INSERT INTO `role` (`idRole`, `name`, `description`, `permissions`, `createdAt`) VALUES
-(1, 'super_admin', NULL, NULL, '2025-09-11 12:00:01'),
-(2, 'admin', NULL, NULL, '2025-09-11 12:00:01'),
-(3, 'user', NULL, NULL, '2025-09-11 12:00:01');
-
-INSERT INTO `user` (`idUser`, `idRole`, `firstName`, `lastName`, `email`, `phone`, `password`, `avatarPath`, `bannerPath`, `bio`, `dateOfBirth`, `isActivated`, `isBanned`, `isDeleted`, `isOnline`, `lastSeen`, `rgpdAcceptedDate`, `authCode`, `token`, `createdAt`, `updatedAt`, `emailChangedAt`, `passwordResetAt`, `deletedAt`) VALUES
-(1, 2, 'Admin', 'Admin', 'admin@le-media-voironnais.fr', NULL, '$2y$10$rzWzNnz7Q22b3WiB4JWeyuDvjTmpzGu4hf/15935BZctTYMWnv3F.', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', NULL, NULL, 1, 0, 0, 0, '2025-09-29 13:37:13', '2025-09-15 10:24:49', NULL, NULL, '2025-09-15 10:24:49', NULL, '2025-09-15 14:17:52', NULL, NULL),
-(2, 3, 'Thomas', 'Barbier', 'feras.altalib2011@gmail.com', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', NULL, NULL, '1992-02-02', 1, 0, 0, 1, '2025-10-01 09:08:21', '2025-09-11 12:00:01', NULL, NULL, '2025-09-11 12:00:01', '2025-09-15 17:04:06', NULL, NULL, NULL),
-(3, 3, 'Feras', 'Altaleb', 'feras.altalib@gmail.com', '0780773302', '$2y$10$Kbxc93eYvvVe58NdCmf6ruBQvfHCY8/aAOo0q6iPNIfVQaJSE.40W', 'http://le-media-voironnais/assets/images/uploads/avatars/default_avatar.png', 'http://le-media-voironnais/assets/images/uploads/banners/default_banner.jpg', 'qdqsdqsdqsd', '2000-10-01', 1, 0, 0, 0, '2025-10-06 09:30:04', '2025-09-15 09:47:56', NULL, '493a02d704865106879c4c8d8b770f3e', '2025-09-15 09:47:56', '2025-09-26 15:46:28', '2025-09-26 14:53:08', '2025-09-30 09:49:01', NULL),
-(4, 3, 'Feras2011', 'Altaleb2011', 'feras.altalib2011@gmail.comm', NULL, '$2y$10$92eJhlvgg7QhaJBGfgzFq.kGjQToKu9sBXr4C9lK3PzNSU27QtbY.', NULL, NULL, NULL, NULL, 1, 0, 0, 1, '2025-09-29 13:45:43', '2025-09-17 19:00:01', NULL, NULL, '2025-09-17 19:00:01', NULL, NULL, NULL, NULL),
