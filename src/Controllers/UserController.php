@@ -132,10 +132,9 @@ class UserController extends AbstractController
         $activationLink = DOMAIN . HOME_URL . 'activer_mon_compte';
         $subject = 'Activation de votre compte';
         $body = "Veuillez cliquer sur le bouton ci-dessous pour activer votre compte :<br>";
-        $body .= "<form method='POST' action='$activationLink'>";
-        $body .= "<input type='hidden' name='token' value='$activationToken'>";
-        $body .= "<button type='submit' style='padding:10px 20px;background:#007bff;color:#fff;border:none;border-radius:4px;cursor:pointer;'>Activer mon compte</button>";
-        $body .= "</form><br>";
+        $body .= "<a href='$activationLink?token=$activationToken' style='display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #007BFF; text-decoration: none; border-radius: 5px;'>Activer mon compte</a><br><br>";
+        $body .= "Si le bouton ne fonctionne pas, copiez et collez le lien ci-dessous dans votre navigateur :<br>";
+        $body .= "$activationLink?token=$activationToken<br><br>";
         $body .= "Si vous n'avez pas créé de compte, veuillez ignorer cet e-mail.<br>";
 
         $sendEmail = $mail->sendEmail(ADMIN_EMAIL, ADMIN_SENDER_NAME, $email, $firstName, $subject, $body);
@@ -158,7 +157,7 @@ class UserController extends AbstractController
     public function activateAccount(): void
     {
         try {
-            $token = isset($_POST['token']) ? htmlspecialchars(trim($_POST['token'])) : null;
+            $token = isset($_GET['token']) ? htmlspecialchars(trim($_GET['token'])) : null;
 
             if (!$token || !preg_match('/^[a-f0-9]{32}$/', $token)) {
                 throw new Exception('Le lien d\'activation est invalide ou votre compte a déjà été activé.');
