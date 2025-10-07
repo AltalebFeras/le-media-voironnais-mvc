@@ -101,7 +101,7 @@ final class Mail
     <div class="container">
         <!-- Header Section -->
         <div class="header">
-            <a href="/" style="text-decoration: none;">
+            <a href="https://le-media-voironnais.feras.fr" style="text-decoration: none;">
                 <div class="logo-container">
                     <p class="logo-text">
                         <span style="color: #EF4444;">Le </span><span style="color: #10B981;">Média</span><span style="color: #3B82F6;">Voironnais</span>
