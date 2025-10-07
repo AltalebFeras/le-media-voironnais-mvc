@@ -9,72 +9,72 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 final class Mail
 {
-    private $mail;
+	private $mail;
 
-    public function __construct()
-    {
-        $this->mail = new PHPMailer(true);
-        $this->configureSMTP();
-    }
-    private function configureSMTP()
-    {
-        // SMTP configuration
-        $this->mail->isSMTP();
-        $this->mail->Host = HOST;
-        $this->mail->Port = PORT;
-        
-        // Configure authentication based on environment
-        if (defined('SMTP_AUTH') && SMTP_AUTH === true) {
-            $this->mail->SMTPAuth = true;
-            $this->mail->Username = USERNAME;
-            $this->mail->Password = PASSWORD;
-        } else {
-            // For MailDev - no authentication required
-            $this->mail->SMTPAuth = false;
-        }
+	public function __construct()
+	{
+		$this->mail = new PHPMailer(true);
+		$this->configureSMTP();
+	}
+	private function configureSMTP()
+	{
+		// SMTP configuration
+		$this->mail->isSMTP();
+		$this->mail->Host = HOST;
+		$this->mail->Port = PORT;
 
-        // For email on server side only, it uses the SSL protocol
-        if (IS_PROD === true) {
-            $this->mail->SMTPSecure = 'ssl';
-        }
-    }
+		// Configure authentication based on environment
+		if (defined('SMTP_AUTH') && SMTP_AUTH === true) {
+			$this->mail->SMTPAuth = true;
+			$this->mail->Username = USERNAME;
+			$this->mail->Password = PASSWORD;
+		} else {
+			// For MailDev - no authentication required
+			$this->mail->SMTPAuth = false;
+		}
 
-    private function getSalutation(): string
-    {
-        $time = (int) date('H');
-        if ($time < 12) {
-            return 'Bonjour';
-        } elseif ($time < 16) {
-            return 'Bon après-midi';
-        }
-        return 'Bonsoir';
-    }
+		// For email on server side only, it uses the SSL protocol
+		if (IS_PROD === true) {
+			$this->mail->SMTPSecure = 'ssl';
+		}
+	}
 
-    private function getSouhait(): string
-    {
-        $time = (int) date('H');
-        if ($time < 4 || $time >= 22) {
-            return 'Bonne nuit';
-        } elseif ($time < 12) {
-            return 'Bonne journée';
-        } elseif ($time < 16) {
-            return 'Bon après-midi';
-        }
-        return 'Bonne soirée';
-    }
+	private function getSalutation(): string
+	{
+		$time = (int) date('H');
+		if ($time < 12) {
+			return 'Bonjour';
+		} elseif ($time < 16) {
+			return 'Bon après-midi';
+		}
+		return 'Bonsoir';
+	}
 
-    /**
-     * Alternative template generator with salutation and souhait.
-     * Usage: $this->generateTemplate($subject, $body)
-     */
-    private function generateTemplate(string $recipientName, string $subject, string $body): string
-    {
-        $salutation = $this->getSalutation();
-        $souhait = $this->getSouhait();
-        $currentYear = date('Y');
-        $logoPath = DOMAIN . HOME_URL . 'assets/images/logo/logo.png';
+	private function getSouhait(): string
+	{
+		$time = (int) date('H');
+		if ($time < 4 || $time >= 22) {
+			return 'Bonne nuit';
+		} elseif ($time < 12) {
+			return 'Bonne journée';
+		} elseif ($time < 16) {
+			return 'Bon après-midi';
+		}
+		return 'Bonne soirée';
+	}
 
-        return <<<HTML
+	/**
+	 * Alternative template generator with salutation and souhait.
+	 * Usage: $this->generateTemplate($subject, $body)
+	 */
+	private function generateTemplate(string $recipientName, string $subject, string $body): string
+	{
+		$salutation = $this->getSalutation();
+		$souhait = $this->getSouhait();
+		$currentYear = date('Y');
+		$logoPath = DOMAIN . HOME_URL . 'assets/images/logo/logo.png';
+
+		return <<<HTML
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -84,9 +84,11 @@ final class Mail
     <style>
         body { margin: 0; padding: 0; background-color: #f4f4f4; }
         .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
-        .header { background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding: 40px 20px; text-align: center; }
+        /* .header { background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding: 40px 20px; text-align: center; } */
+        .header { background: #4b6cb7; }
         .content { padding: 40px 30px;border-left: 5px solid #3B82F6; border-right: 5px solid #3B82F6; }
-        .footer { background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding: 30px 20px; text-align: center; }
+        /* .footer { background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding: 30px 20px; text-align: center; } */
+        .footer { background: #4b6cb7; }
         .logo-container { display: inline-flex; align-items: center; }
         .logo-text { font-size: 24px; font-weight: bold; color: #ffffff; margin: 0; }
         .greeting { color: #333333; font-size: 18px; font-weight: 600; margin: 0 0 25px 0; }
@@ -781,70 +783,70 @@ final class Mail
 </html>
 
 HTML;
-    }
+	}
 
-    public function addAttachment($filePath, $name = '')
-    {
-        try {
-            if (!empty($name)) {
-                $this->mail->addAttachment($filePath, $name);
-            } else {
-                $this->mail->addAttachment($filePath);
-            }
-        } catch (Exception $e) {
-            throw new \Exception("Failed to add attachment: " . $e->getMessage());
-        }
-    }
+	public function addAttachment($filePath, $name = '')
+	{
+		try {
+			if (!empty($name)) {
+				$this->mail->addAttachment($filePath, $name);
+			} else {
+				$this->mail->addAttachment($filePath);
+			}
+		} catch (Exception $e) {
+			throw new \Exception("Failed to add attachment: " . $e->getMessage());
+		}
+	}
 
-    /**
-     * Sends an HTML email using the configured PHPMailer instance.
-     * This method sets the character encoding to UTF-8 to support multilingual content,
-     * generates a styled HTML email using a template, sets sender and recipient information,
-     * and optionally applies custom headers before sending the email.
-     *
-     * @param string $senderEmail       The sender's email address .
-     * @param string $senderName   The sender's display name.
-     * @param string $recipientEmail         The recipient's email address.
-     * @param string $recipientName     The recipient's display name.
-     * @param string $subject    The subject of the email.
-     * @param string $body       The main body content of the email (before templating).
-     * @param array  $headers    Optional associative array of additional headers (e.g., ['X-Priority' => '1']).
-     *
-     * @throws \Exception        If email sending fails or PHPMailer throws an error.
-     *
-     * @return void
-     */
+	/**
+	 * Sends an HTML email using the configured PHPMailer instance.
+	 * This method sets the character encoding to UTF-8 to support multilingual content,
+	 * generates a styled HTML email using a template, sets sender and recipient information,
+	 * and optionally applies custom headers before sending the email.
+	 *
+	 * @param string $senderEmail       The sender's email address .
+	 * @param string $senderName   The sender's display name.
+	 * @param string $recipientEmail         The recipient's email address.
+	 * @param string $recipientName     The recipient's display name.
+	 * @param string $subject    The subject of the email.
+	 * @param string $body       The main body content of the email (before templating).
+	 * @param array  $headers    Optional associative array of additional headers (e.g., ['X-Priority' => '1']).
+	 *
+	 * @throws \Exception        If email sending fails or PHPMailer throws an error.
+	 *
+	 * @return void
+	 */
 
-    public function sendEmail($senderEmail, $senderName, $recipientEmail, $recipientName, $subject, $body, $headers = []): bool
-    {
-        try {
-            // Set the charset to UTF-8 for French and English compatibility
-            $this->mail->CharSet = 'UTF-8';
+	public function sendEmail($senderEmail, $senderName, $recipientEmail, $recipientName, $subject, $body, $headers = []): bool
+	{
+		try {
+			// Set the charset to UTF-8 for French and English compatibility
+			$this->mail->CharSet = 'UTF-8';
 
-            // Generate the template with the subject and body
+			// Generate the template with the subject and body
 
-            $emailContent = $this->generateTemplate($recipientName, $subject, $body);
+			$emailContent = $this->generateTemplate($recipientName, $subject, $body);
 
-            // Recipients
-            $this->mail->setFrom($senderEmail, $senderName);
-            $this->mail->addAddress($recipientEmail, $recipientName);
+			// Recipients
+			$this->mail->setFrom($senderEmail, $senderName);
+			$this->mail->addAddress($recipientEmail, $recipientName);
 
-            // Content
-            $this->mail->isHTML(true);
-            $this->mail->Subject = mb_encode_mimeheader($subject, 'UTF-8');
-            $this->mail->Body = $emailContent;
+			// Content
+			$this->mail->isHTML(true);
+			$this->mail->Subject = mb_encode_mimeheader($subject, 'UTF-8');
+			$this->mail->Body = $emailContent;
 
-            // Apply custom headers
-            foreach ($headers as $key => $value) {
-                $this->mail->addCustomHeader($key, $value);
-            }
+			// Apply custom headers
+			foreach ($headers as $key => $value) {
+				$this->mail->addCustomHeader($key, $value);
+			}
 
-            // Send the email
-            $this->mail->send();
-            return true;
-        } catch (Exception $e) {
-            error_log("Mailer Error: {$this->mail->ErrorInfo}");
-            throw new \Exception("Failed to send email: " . $e->getMessage());
-        }
-    }
+			// Send the email
+			$this->mail->send();
+			return true;
+		} catch (Exception $e) {
+			error_log("Mailer Error: {$this->mail->ErrorInfo}");
+			throw new \Exception("Failed to send email: " . $e->getMessage());
+		}
+	}
 }
