@@ -122,11 +122,33 @@ $endDate = new DateTime($evenement['endDate']);
 
                 <!-- Like/Favourite buttons and event likes/comments counter -->
                 <?php if (isset($_SESSION['idUser'])): ?>
-                    <button id="like-btn" data-id="<?= $evenement['idEvenement'] ?>" <?= !empty($userHasLiked) ? 'style="color:#007bff;font-weight:bold;"' : '' ?>>
-                        👍 J'aime<?= !empty($userHasLiked) ? ' (Vous aimez)' : '' ?>
+                    <button id="like-btn" data-id="<?= $evenement['idEvenement'] ?>" style="background:none;border:none;vertical-align:middle;">
+                        <?php if (!empty($userHasLiked)): ?>
+                            <!-- Blue thumb SVG -->
+                            <svg stroke="currentColor" fill="#0053f9ff" stroke-width="1" viewBox="0 0 1024 1024" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7 0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4 47.6-20.3 78.3-66.8 78.3-118.4 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z"></path>
+                            </svg>
+                        <?php else: ?>
+                            <!-- Grey thumb SVG -->
+                            <svg stroke="currentColor" fill="#a99a9aff" stroke-width="1" viewBox="0 0 1024 1024" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7 0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4 47.6-20.3 78.3-66.8 78.3-118.4 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z"></path>
+                            </svg>
+                        <?php endif; ?>
                     </button>
-                    <button id="favourite-btn" data-id="<?= $evenement['idEvenement'] ?>" <?= !empty($userHasFavourited) ? 'style="color:#ffc107;font-weight:bold;"' : '' ?>>
-                        ⭐ Favori<?= !empty($userHasFavourited) ? ' (Favori)' : '' ?>
+                    <button id="favourite-btn" data-id="<?= $evenement['idEvenement'] ?>" style="background:none;border:none;vertical-align:middle;">
+                        <?php if (!empty($userHasFavourited)): ?>
+                            <!-- Gold star SVG -->
+                            <svg width="32px" height="32px" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="48" fill="#fff" stroke="black" stroke-width="2" />
+                                <polygon points="50,20 61,39 82,42 67,57 71,78 50,67 29,78 33,57 18,42 39,39" fill="#FFD700" />
+                            </svg>
+                        <?php else: ?>
+                            <!-- Grey star SVG -->
+                            <svg width="32px" height="32px" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="48" fill="#a99a9aff" stroke="black" stroke-width="2" />
+                                <polygon points="50,20 61,39 82,42 67,57 71,78 50,67 29,78 33,57 18,42 39,39" fill="#fff" />
+                            </svg>
+                        <?php endif; ?>
                     </button>
                 <?php endif; ?>
                 <div>
@@ -154,13 +176,37 @@ $endDate = new DateTime($evenement['endDate']);
                         <div class="comment" data-id="<?= $comment['idEventComment'] ?>">
                             <b><?= htmlspecialchars($comment['firstName'] . ' ' . $comment['lastName']) ?></b>
                             <p><?= nl2br(htmlspecialchars($comment['content'])) ?></p>
-                            <span><?= $comment['likesCount'] ?> 👍</span>
+                            <span>
+                                <?php if( $comment['likesCount'] > 0):echo $comment['likesCount']; endif; ?>
+                             
+                            </span>
                             <?php if (isset($_SESSION['idUser'])): ?>
-                                <button class="like-comment-btn" data-id="<?= $comment['idEventComment'] ?>">J'aime</button>
-                                <button class="report-comment-btn" data-id="<?= $comment['idEventComment'] ?>">Signaler</button>
-                                <button class="reply-comment-btn" data-id="<?= $comment['idEventComment'] ?>">Répondre</button>
+                                <button class="like-comment-btn" data-id="<?= $comment['idEventComment'] ?>" style="background:none;border:none;vertical-align:middle;">
+                                    <!-- Blue thumb SVG for like -->
+                                    <svg stroke="currentColor" fill="#0053f9ff" stroke-width="1" viewBox="0 0 1024 1024" height="20px" width="20px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7 0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4 47.6-20.3 78.3-66.8 78.3-118.4 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z"></path>
+                                    </svg>
+                                </button>
+                                <button class="report-comment-btn" data-id="<?= $comment['idEventComment'] ?>" style="background:none;border:none;vertical-align:middle;">
+                                    <!-- Red warning triangle SVG -->
+                                    <svg stroke="" fill="#fff" viewBox="0 0 24 24" height="20px" width="20px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke="black" stroke-width="0.4" d="M9.836 3.244c.963-1.665 3.365-1.665 4.328 0l8.967 15.504c.963 1.667-.24 3.752-2.165 3.752H3.034c-1.926 0-3.128-2.085-2.165-3.752Z" />
+                                        <path d="M12 8.5a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 12 8.5Zm1 9a1 1 0 1 0-2 0 1 1 0 0 0 2 0Z" fill="#ff0000" />
+                                    </svg>
+                                </button>
+                                <button class="reply-comment-btn" data-id="<?= $comment['idEventComment'] ?>" style="background:none;border:none;vertical-align:middle;">
+                                    <!-- Blue plus SVG for reply -->
+                                    <svg stroke="currentColor" fill="#0053f9ff" stroke-width="0" viewBox="0 0 512 512" height="20px" width="20px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M256 32C114.62 32 0 125.12 0 240c0 49.56 21.41 95 57 130.74C44.46 421.05 2.7 466 2.2 466.5A8 8 0 0 0 8 480c66.26 0 116-31.75 140.6-51.38A304.66 304.66 0 0 0 256 448c141.39 0 256-93.12 256-208S397.39 32 256 32zm96 232a8 8 0 0 1-8 8h-56v56a8 8 0 0 1-8 8h-48a8 8 0 0 1-8-8v-56h-56a8 8 0 0 1-8-8v-48a8 8 0 0 1 8-8h56v-56a8 8 0 0 1 8-8h48a8 8 0 0 1 8 8v56h56a8 8 0 0 1 8 8z"></path>
+                                    </svg>
+                                </button>
                                 <?php if ($comment['idUser'] == $_SESSION['idUser']): ?>
-                                    <button class="delete-comment-btn" data-id="<?= $comment['idEventComment'] ?>">Supprimer</button>
+                                    <button class="delete-comment-btn" data-id="<?= $comment['idEventComment'] ?>" style="background:none;border:none;vertical-align:middle;">
+                                        <!-- Red trash SVG for delete -->
+                                        <svg stroke="currentColor" fill="#ff0000" stroke-width="0" viewBox="0 0 1024 1024" height="20px" width="20px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M864 256H736v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zm-200 0H360v-72h304v72z"></path>
+                                        </svg>
+                                    </button>
                                 <?php endif; ?>
                             <?php endif; ?>
                             <!-- Replies -->
@@ -170,12 +216,35 @@ $endDate = new DateTime($evenement['endDate']);
                                         <div class="comment reply" data-id="<?= $reply['idEventComment'] ?>">
                                             <b><?= htmlspecialchars($reply['firstName'] . ' ' . $reply['lastName']) ?></b>
                                             <p><?= nl2br(htmlspecialchars($reply['content'])) ?></p>
-                                            <span><?= $reply['likesCount'] ?> 👍</span>
+                                            <span>
+                                                <?= $reply['likesCount'] ?>
+                                                <svg stroke="currentColor" fill="#a99a9aff" stroke-width="1" viewBox="0 0 1024 1024" height="20px" width="20px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7 0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4 47.6-20.3 78.3-66.8 78.3-118.4 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z"></path>
+                                                </svg>
+                                            </span>
                                             <?php if (isset($_SESSION['idUser'])): ?>
-                                                <button class="like-comment-btn" data-id="<?= $reply['idEventComment'] ?>">J'aime</button>
-                                                <button class="report-comment-btn" data-id="<?= $reply['idEventComment'] ?>">Signaler</button>
+                                                <button class="like-comment-btn" data-id="<?= $reply['idEventComment'] ?>" style="background:none;border:none;vertical-align:middle;">
+                                                    <svg stroke="currentColor" fill="#0053f9ff" stroke-width="1" viewBox="0 0 1024 1024" height="20px" width="20px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7 0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4 47.6-20.3 78.3-66.8 78.3-118.4 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z"></path>
+                                                    </svg>
+                                                </button>
+                                                <button class="report-comment-btn" data-id="<?= $reply['idEventComment'] ?>" style="background:none;border:none;vertical-align:middle;">
+                                                    <svg stroke="" fill="#fff" viewBox="0 0 24 24" height="20px" width="20px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                                                        <path stroke="black" stroke-width="0.4" d="M9.836 3.244c.963-1.665 3.365-1.665 4.328 0l8.967 15.504c.963 1.667-.24 3.752-2.165 3.752H3.034c-1.926 0-3.128-2.085-2.165-3.752Z" />
+                                                        <path d="M12 8.5a.75.75 0 0 0-.75.75v4.5a.75.75 0 0 0 1.5 0v-4.5A.75.75 0 0 0 12 8.5Zm1 9a1 1 0 1 0-2 0 1 1 0 0 0 2 0Z" fill="#ff0000" />
+                                                    </svg>
+                                                </button>
+                                                <button class="reply-comment-btn" data-id="<?= $reply['idEventComment'] ?>" style="background:none;border:none;vertical-align:middle;">
+                                                    <svg stroke="currentColor" fill="#0053f9ff" stroke-width="0" viewBox="0 0 512 512" height="20px" width="20px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M256 32C114.62 32 0 125.12 0 240c0 49.56 21.41 95 57 130.74C44.46 421.05 2.7 466 2.2 466.5A8 8 0 0 0 8 480c66.26 0 116-31.75 140.6-51.38A304.66 304.66 0 0 0 256 448c141.39 0 256-93.12 256-208S397.39 32 256 32zm96 232a8 8 0 0 1-8 8h-56v56a8 8 0 0 1-8 8h-48a8 8 0 0 1-8-8v-56h-56a8 8 0 0 1-8-8v-48a8 8 0 0 1 8-8h56v-56a8 8 0 0 1 8-8h48a8 8 0 0 1 8 8v56h56a8 8 0 0 1 8 8z"></path>
+                                                    </svg>
+                                                </button>
                                                 <?php if ($reply['idUser'] == $_SESSION['idUser']): ?>
-                                                    <button class="delete-comment-btn" data-id="<?= $reply['idEventComment'] ?>">Supprimer</button>
+                                                    <button class="delete-comment-btn link" data-id="<?= $reply['idEventComment'] ?>" style="background:none;border:none;vertical-align:middle;">
+                                                        <svg stroke="currentColor" fill="#ff0000" stroke-width="0" viewBox="0 0 1024 1024" height="20px" width="20px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M864 256H736v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zm-200 0H360v-72h304v72z"></path>
+                                                        </svg>
+                                                    </button>
                                                 <?php endif; ?>
                                             <?php endif; ?>
                                         </div>
