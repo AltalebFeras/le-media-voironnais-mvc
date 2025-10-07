@@ -30,12 +30,12 @@ $connectionSecuredSuperAdmin = isset($_SESSION['connectedSuperAdmin']) && $_SESS
 $composedRoute = ConfigRouter::getComposedRoute($route);
 // url = DOMAIN . HOME_URL part0/part1/part2/part3/part4/part5
 //['part0' => 'evenements', 'part1' => 'ville-slug', 'part2' => 'cate-slug', 'part3' => 'inscription']
-$part0 = isset($composedRoute[0]) ? $composedRoute[0] : null;
-$part1 = isset($composedRoute[1]) ? $composedRoute[1] : null;
-$part2 = isset($composedRoute[2]) ? $composedRoute[2] : null;
-$part3 = isset($composedRoute[3]) ? $composedRoute[3] : null;
-$part4 = isset($composedRoute[4]) ? $composedRoute[4] : null;
-$part5 = isset($composedRoute[5]) ? $composedRoute[5] : null;
+$part0 = $composedRoute[0] ?? null;
+$part1 = $composedRoute[1] ?? null;
+$part2 = $composedRoute[2] ?? null;
+$part3 = $composedRoute[3] ?? null;
+$part4 = $composedRoute[4] ?? null;
+$part5 = $composedRoute[5] ?? null;
 
 switch ($route) {
     // Public routes
@@ -161,11 +161,9 @@ switch ($route) {
                             $evenementController->deleteEventComment();
                             break;
                         default:
-                        $evenementController->addEventComment();
+                            $evenementController->addEventComment();
                     }
-
                     break;
-              
                 default:
                     $homeController->page404();
                     break;
