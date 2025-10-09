@@ -430,9 +430,9 @@ const EventInteractions = (function() {
             modal = document.createElement('div');
             modal.id = 'report-comment-modal';
             modal.className = 'popup';
-            modal.style.display = 'none';
+            modal.style.cssText = 'display:none;position:fixed;z-index:10001;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);align-items:center;justify-content:center;';
             modal.innerHTML = `
-                <div class="card" style="max-width:500px;">
+                <div class="card" style="max-width:500px;position:relative;background:white;border-radius:12px;padding:24px;">
                     <h3>Signaler un commentaire</h3>
                     <button type="button" class="close-modal" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:24px; cursor:pointer;">×</button>
                     <div class="mt mb">
