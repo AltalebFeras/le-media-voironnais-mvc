@@ -775,10 +775,11 @@ class EvenementController extends AbstractController
             // Check if connected user has liked or favourited
             $userHasLiked = false;
             $userHasFavourited = false;
-            $currentUserId = null;
+            $currentUserUiid = null; // Changed from currentUserId
             
             if (isset($_SESSION['idUser'])) {
                 $currentUserId = $_SESSION['idUser'];
+                $currentUserUiid = $_SESSION['userUiid']; // Use userUiid
                 $userHasLiked = $this->repo->hasUserLikedEvent($currentUserId, $idEvenement);
                 $userHasFavourited = $this->repo->hasUserFavouritedEvent($currentUserId, $idEvenement);
             }
@@ -791,7 +792,7 @@ class EvenementController extends AbstractController
                 'commentsCount' => $commentsCount,
                 'userHasLiked' => $userHasLiked,
                 'userHasFavourited' => $userHasFavourited,
-                'currentUserId' => $currentUserId
+                'currentUserUiid' => $currentUserUiid // Changed from currentUserId
             ]);
         } catch (Exception $e) {
             http_response_code(400);

@@ -19,7 +19,7 @@ class UserRepository
     public function getUser($email): ?User
     {
         try {
-            $query = 'SELECT u.*, r.name AS roleName FROM user u JOIN role r ON u.idRole = r.idRole WHERE u.email = :email';
+            $query = 'SELECT u.*, r.name AS roleName FROM user u JOIN role r ON u.idRole = r.idRole WHERE u.email = :email AND u.isDeleted = 0';
             $req = $this->DBuser->prepare($query);
             $req->execute(['email' => $email]);
             $user = $req->fetchObject(User::class);
@@ -76,14 +76,15 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
-    public function signUp(User $user): User
+    public function signUp(User $user): bool
     {
         try {
-            $query = 'INSERT INTO user (firstName, lastName, email, password, isActivated, isBanned, isDeleted, token, rgpdAcceptedDate, createdAt, idRole) 
-            VALUES (:firstName, :lastName, :email, :password, :isActivated, :isBanned, :isDeleted, :token, :rgpdAcceptedDate, :createdAt, :idRole)';
+            $query = 'INSERT INTO user (uiid, firstName, lastName, email, password, isActivated, isBanned, isDeleted, token, createdAt, idRole, rgpdAcceptedDate) 
+            VALUES (:uiid, :firstName, :lastName, :email, :password, :isActivated, :isBanned, :isDeleted, :token, :createdAt, :idRole, :rgpdAcceptedDate)';
 
             $req = $this->DBuser->prepare($query);
             $req->execute([
+                'uiid' => $user->getUiid(),
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
                 'email' => $user->getEmail(),
@@ -97,7 +98,7 @@ class UserRepository
                 'idRole' => $user->getIdRole()
             ]);
             $user->setIdUser($this->DBuser->lastInsertId());
-            return $user;
+            return true;
         } catch (Exception $e) {
             throw new Exception('An unexpected error occurred: ' . $e->getMessage());
         }

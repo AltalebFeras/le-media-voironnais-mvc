@@ -1,8 +1,8 @@
 const EventInteractions = (function() {
-    let eventUiid = null; // Changed from eventId
+    let eventUiid = null;
     let isLoggedIn = false;
     let interactionData = null;
-    let currentUserId = null;
+    let currentUserUiid = null; // Changed from currentUserId to currentUserUiid
     let openRepliesSections = new Set(); // Track which reply sections are open
 
     const SVG_ICONS = {
@@ -137,7 +137,7 @@ const EventInteractions = (function() {
     function renderComment(comment, replies = []) {
         const hasReplies = replies.length > 0;
         const formattedDate = formatCommentDate(comment.createdAt);
-        const canDelete = isLoggedIn && currentUserId && comment.idUser == currentUserId;
+        const canDelete = isLoggedIn && currentUserUiid && comment.userUiid == currentUserUiid;
         const isOpen = openRepliesSections.has(comment.uiid);
         
         let html = `
@@ -148,18 +148,18 @@ const EventInteractions = (function() {
                 <div>
                     <span>${comment.likesCount > 0 ? comment.likesCount : ''}</span>
                     ${isLoggedIn ? `
-                        <button class="like-comment-btn" data-uiid="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
+                        <button class="like-comment-btn" data-uiid="${comment.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
                             ${SVG_ICONS.commentLike}
                         </button>
-                        <button class="reply-comment-btn" data-uiid="${comment.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
+                        <button class="reply-comment-btn" data-uiid="${comment.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
                             ${SVG_ICONS.commentReply}
                         </button>
                         ${canDelete ? `
-                            <button class="delete-comment-btn" data-uiid="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
+                            <button class="delete-comment-btn" data-uiid="${comment.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
                                 ${SVG_ICONS.commentDelete}
                             </button>
                         ` : ''}
-                        <button class="report-comment-btn" data-uiid="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
+                        <button class="report-comment-btn" data-uiid="${comment.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
                             ${SVG_ICONS.commentReport}
                         </button>
                     ` : ''}
@@ -169,7 +169,7 @@ const EventInteractions = (function() {
             html += `<div class="replies" id="replies-${comment.uiid}" style="margin-left:2em;display:${isOpen ? 'block' : 'none'};">`;
             replies.forEach(reply => {
                 const replyFormattedDate = formatCommentDate(reply.createdAt);
-                const canDeleteReply = isLoggedIn && currentUserId && reply.idUser == currentUserId;
+                const canDeleteReply = isLoggedIn && currentUserUiid && reply.userUiid == currentUserUiid; // Changed from reply.idUser
                 
                 html += `
                     <div class="comment reply" data-uiid="${reply.uiid}">
@@ -179,18 +179,18 @@ const EventInteractions = (function() {
                         <div>
                             <span>${reply.likesCount > 0 ? reply.likesCount : ''}</span>
                             ${isLoggedIn ? `
-                                <button class="like-comment-btn" data-uiid="${reply.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
+                                <button class="like-comment-btn" data-uiid="${reply.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
                                     ${SVG_ICONS.commentLike}
                                 </button>
-                                <button class="reply-comment-btn" data-uiid="${comment.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
+                                <button class="reply-comment-btn" data-uiid="${comment.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
                                     ${SVG_ICONS.commentReply}
                                 </button>
                                 ${canDeleteReply ? `
-                                    <button class="delete-comment-btn" data-uiid="${reply.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
+                                    <button class="delete-comment-btn" data-uiid="${reply.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
                                         ${SVG_ICONS.commentDelete}
                                     </button>
                                 ` : ''}
-                                <button class="report-comment-btn" data-uiid="${reply.uiid}" style="background:none;border:none;vertical-align:middle;">
+                                <button class="report-comment-btn" data-uiid="${reply.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
                                     ${SVG_ICONS.commentReport}
                                 </button>
                             ` : ''}
@@ -198,7 +198,7 @@ const EventInteractions = (function() {
                     </div>`;
             });
             html += `</div>
-                <button class="show-replies-btn" data-uiid="${comment.uiid}">
+                <button class="show-replies-btn" data-uiid="${comment.uiid}" style="cursor:pointer;">
                     ${isOpen ? 'Masquer les réponses' : `Voir toutes les ${replies.length} réponse${replies.length > 1 ? 's' : ''}`}
                 </button>`;
         }
@@ -498,10 +498,10 @@ const EventInteractions = (function() {
     }
 
     return {
-        init: function(evUiid, loggedIn, userId = null) {
+        init: function(evUiid, loggedIn, userUiid = null) { // Changed parameter name
             eventUiid = evUiid;
             isLoggedIn = loggedIn;
-            currentUserId = userId;
+            currentUserUiid = userUiid; // Store userUiid instead of userId
             loadInteractions();
         }
     };

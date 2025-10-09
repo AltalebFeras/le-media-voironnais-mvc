@@ -179,7 +179,7 @@ class EvenementRepository
     public function getEventComments($idEvenement)
     {
         $stmt = $this->pdo->prepare("
-            SELECT c.*, c.uiid, u.firstName, u.lastName,
+            SELECT c.*, c.uiid, u.firstName, u.lastName, u.uiid as userUiid,
                 (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
                 (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount
             FROM event_comment c
@@ -199,7 +199,7 @@ class EvenementRepository
     public function getEventCommentReplies($idEvenement)
     {
         $stmt = $this->pdo->prepare("
-            SELECT c.*, c.uiid, u.firstName, u.lastName,
+            SELECT c.*, c.uiid, u.firstName, u.lastName, u.uiid as userUiid,
                 (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
                 (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount,
                 (SELECT p.uiid FROM event_comment p WHERE p.idEventComment = c.parentId) as parentUiid

@@ -164,9 +164,9 @@ $endDate = new DateTime($evenement['endDate']);
                 <script>
                     // Initialize the interactions
                     const eventUiid = "<?= $evenement['uiid'] ?>";
-                    const isLoggedIn = <?= isset($_SESSION['idUser']) ? 'true' : 'false' ?>;
-                    const currentUserId = <?= isset($_SESSION['idUser']) ? $_SESSION['idUser'] : 'null' ?>;
-                    EventInteractions.init(eventUiid, isLoggedIn, currentUserId);
+                    const isLoggedIn = <?= isset($_SESSION['userUiid']) ? 'true' : 'false' ?>;
+                    const currentUserUiid = <?= isset($_SESSION['userUiid']) ? '"' . $_SESSION['userUiid'] . '"' : 'null' ?>;
+                    EventInteractions.init(eventUiid, isLoggedIn, currentUserUiid);
                 </script>
             </div>
 

@@ -115,6 +115,11 @@ class UserController extends AbstractController
         $passwordHash = password_hash($password . SEL, PASSWORD_DEFAULT);
 
         $user = new User();
+        // Generate UIID for new user
+        $helper = new Helper();
+        $uiid = $helper->generateUiid();
+        
+        $user->setUiid($uiid);
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
         $user->setEmail($email);
@@ -233,6 +238,7 @@ class UserController extends AbstractController
         if ($user) {
             //   datetime string
             $_SESSION['idUser'] = $idUser;
+            $_SESSION['userUiid'] = $user->getUiid(); // Store UIID instead of exposing ID
             $_SESSION['firstName'] = $user->getFirstName();
             $_SESSION['lastName'] = $user->getLastName();
             $_SESSION['email'] = $user->getEmail();

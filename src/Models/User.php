@@ -31,6 +31,7 @@ class User
     private DateTime|string|null $emailChangedAt;
     private DateTime|string|null $passwordResetAt;
     private string $roleName;
+    private string $uiid;
 
     use Hydration;
 
@@ -698,6 +699,25 @@ class User
     {
         $this->isBanned = $isBanned;
 
+        return $this;
+    }
+
+    /**
+     * Get the value of uiid
+     */
+    public function getUiid(): ?string
+    {
+        return $this->uiid;
+    }
+
+    /**
+     * Set the value of uiid
+     *
+     * @return  self
+     */
+    public function setUiid(string $uiid): self
+    {
+        $this->uiid = $uiid;
         return $this;
     }
 }
