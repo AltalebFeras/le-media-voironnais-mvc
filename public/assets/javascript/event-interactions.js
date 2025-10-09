@@ -2,7 +2,8 @@ const EventInteractions = (function() {
     let eventId = null;
     let isLoggedIn = false;
     let interactionData = null;
-    let currentUserId = null; // Add this to store current user ID
+    let currentUserId = null;
+    let openRepliesSections = new Set(); // Track which reply sections are open
 
     const SVG_ICONS = {
         likeActive: `<svg stroke="currentColor" fill="#0053f9ff" stroke-width="1" viewBox="0 0 1024 1024" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg"><path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7 0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4 47.6-20.3 78.3-66.8 78.3-118.4 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z"></path></svg>`,
@@ -137,6 +138,7 @@ const EventInteractions = (function() {
         const hasReplies = replies.length > 0;
         const formattedDate = formatCommentDate(comment.createdAt);
         const canDelete = isLoggedIn && currentUserId && comment.idUser == currentUserId;
+        const isOpen = openRepliesSections.has(comment.idEventComment);
         
         let html = `
             <div class="comment" data-id="${comment.idEventComment}">
@@ -149,7 +151,7 @@ const EventInteractions = (function() {
                         <button class="like-comment-btn" data-id="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
                             ${SVG_ICONS.commentLike}
                         </button>
-                        <button class="reply-comment-btn" data-id="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                        <button class="reply-comment-btn" data-id="${comment.idEventComment}" data-parent="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
                             ${SVG_ICONS.commentReply}
                         </button>
                         ${canDelete ? `
@@ -164,7 +166,7 @@ const EventInteractions = (function() {
                 </div>`;
 
         if (hasReplies) {
-            html += `<div class="replies" id="replies-${comment.idEventComment}" style="margin-left:2em;display:none;">`;
+            html += `<div class="replies" id="replies-${comment.idEventComment}" style="margin-left:2em;display:${isOpen ? 'block' : 'none'};">`;
             replies.forEach(reply => {
                 const replyFormattedDate = formatCommentDate(reply.createdAt);
                 const canDeleteReply = isLoggedIn && currentUserId && reply.idUser == currentUserId;
@@ -177,14 +179,14 @@ const EventInteractions = (function() {
                         <div>
                             <span>${reply.likesCount > 0 ? reply.likesCount : ''}</span>
                             ${isLoggedIn ? `
-                                <button class="like-comment-btn" data-id="${reply.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                                <button class="like-comment-btn" data-id="${reply.idEventComment}" data-parent="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
                                     ${SVG_ICONS.commentLike}
                                 </button>
-                                <button class="reply-comment-btn" data-id="${reply.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                                <button class="reply-comment-btn" data-id="${comment.idEventComment}" data-parent="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
                                     ${SVG_ICONS.commentReply}
                                 </button>
                                 ${canDeleteReply ? `
-                                    <button class="delete-comment-btn" data-id="${reply.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                                    <button class="delete-comment-btn" data-id="${reply.idEventComment}" data-parent="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
                                         ${SVG_ICONS.commentDelete}
                                     </button>
                                 ` : ''}
@@ -197,12 +199,12 @@ const EventInteractions = (function() {
             });
             html += `</div>
                 <button class="show-replies-btn" data-id="${comment.idEventComment}">
-                    Voir toutes les ${replies.length} réponse${replies.length > 1 ? 's' : ''}
+                    ${isOpen ? 'Masquer les réponses' : `Voir toutes les ${replies.length} réponse${replies.length > 1 ? 's' : ''}`}
                 </button>`;
         }
 
         html += `
-            <form class="reply-form" style="display:none;margin-left:2em;">
+            <form class="reply-form" data-parent="${comment.idEventComment}" style="display:none;margin-left:2em;">
                 <textarea name="content" required></textarea>
                 <input type="hidden" name="idEvenement" value="${eventId}">
                 <input type="hidden" name="parentId" value="${comment.idEventComment}">
@@ -276,6 +278,16 @@ const EventInteractions = (function() {
 
     async function handleCommentLike(e) {
         const commentId = this.dataset.id;
+        const parentId = this.dataset.parent;
+        
+        // Track if parent replies section is open
+        if (parentId) {
+            const repliesDiv = document.getElementById(`replies-${parentId}`);
+            if (repliesDiv && repliesDiv.style.display === 'block') {
+                openRepliesSections.add(parseInt(parentId));
+            }
+        }
+        
         await fetch('/evenement/comment/like', {
             method: 'POST',
             body: new URLSearchParams({ idEventComment: commentId })
@@ -284,15 +296,41 @@ const EventInteractions = (function() {
     }
 
     function handleReplyToggle(e) {
-        const parentDiv = this.closest('.comment');
-        const form = parentDiv.querySelector('.reply-form');
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        const parentId = this.dataset.parent;
+        const commentDiv = document.querySelector(`.comment[data-id="${parentId}"]`);
+        const form = commentDiv.querySelector(`.reply-form[data-parent="${parentId}"]`);
+        const repliesDiv = document.getElementById(`replies-${parentId}`);
+        
+        // Show replies if hidden
+        if (repliesDiv && repliesDiv.style.display === 'none') {
+            repliesDiv.style.display = 'block';
+            openRepliesSections.add(parseInt(parentId));
+            const showBtn = commentDiv.querySelector(`.show-replies-btn[data-id="${parentId}"]`);
+            if (showBtn) {
+                showBtn.textContent = 'Masquer les réponses';
+            }
+        }
+        
+        // Toggle form
+        if (form) {
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
     }
 
     async function handleCommentDelete(e) {
         if (!confirm("Supprimer ce commentaire ?")) return;
         
         const commentId = this.dataset.id;
+        const parentId = this.dataset.parent;
+        
+        // Track if parent replies section is open
+        if (parentId) {
+            const repliesDiv = document.getElementById(`replies-${parentId}`);
+            if (repliesDiv && repliesDiv.style.display === 'block') {
+                openRepliesSections.add(parseInt(parentId));
+            }
+        }
+        
         await fetch('/evenement/comment/delete', {
             method: 'POST',
             body: new URLSearchParams({ idEventComment: commentId })
@@ -319,9 +357,11 @@ const EventInteractions = (function() {
         
         if (repliesDiv.style.display === 'none') {
             repliesDiv.style.display = 'block';
+            openRepliesSections.add(parseInt(commentId));
             this.textContent = "Masquer les réponses";
         } else {
             repliesDiv.style.display = 'none';
+            openRepliesSections.delete(parseInt(commentId));
             this.textContent = `Voir toutes les ${count} réponse${count > 1 ? 's' : ''}`;
         }
     }
@@ -347,6 +387,12 @@ const EventInteractions = (function() {
     async function handleReplySubmit(e) {
         e.preventDefault();
         const formData = new FormData(this);
+        const parentId = this.dataset.parent;
+
+        // Track that this section should stay open
+        if (parentId) {
+            openRepliesSections.add(parseInt(parentId));
+        }
 
         const response = await fetch('/evenement/comment/reply', {
             method: 'POST',
