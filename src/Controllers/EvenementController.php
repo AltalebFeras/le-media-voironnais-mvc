@@ -1132,7 +1132,62 @@ public function likeEvent()
         }
         
         try {
-            $commentUiid = $this->repo->addEventCommentByUiid($idUser, $eventUiid, $content, $parentUiid);
+            // Get parent comment to find the user to mention
+            $parentComment = $this->repo->getEventCommentByUiid($parentUiid);
+            
+            if (!$parentComment) {
+                echo json_encode(['success' => false, 'error' => 'Commentaire parent introuvable.']);
+                return;
+            }
+            
+            // Get parent user details - we mention the DIRECT parent, not the root
+            $parentUserRepo = new \src\Repositories\UserRepository();
+            $parentUser = $parentUserRepo->getUserById($parentComment['idUser']);
+            
+            // Only add @mention if replying to someone else
+            if ($parentComment['idUser'] != $idUser && $parentUser) {
+                $mentionName = "@" . $parentUser->getFirstName() . " " . $parentUser->getLastName();
+                // Add mention at the beginning of the content if not already present
+                if (strpos($content, $mentionName) !== 0) {
+                    $content = $mentionName . " " . $content;
+                }
+            }
+            
+            // For nested replies, we need to store them under the ROOT parent comment
+            // Find the root parent comment UIID
+            $rootParentUiid = $parentUiid;
+            if ($parentComment['parentId']) {
+                // This is a reply to a reply, so we need to find the root parent
+                $tempParent = $this->repo->getEventCommentById($parentComment['parentId']);
+                if ($tempParent) {
+                    $rootParentUiid = $tempParent['uiid'];
+                }
+            }
+            
+            // Add comment using the ROOT parent UIID so all replies stay grouped
+            $commentUiid = $this->repo->addEventCommentByUiid($idUser, $eventUiid, $content, $rootParentUiid);
+            
+            // Send notification to the mentioned user (the DIRECT parent author)
+            if ($parentComment['idUser'] != $idUser && $parentUser) {
+                $idEvenement = $this->repo->getIdByUiid($eventUiid);
+                $event = $this->repo->getEventCompleteById($idEvenement);
+                
+                $notificationRepo = new NotificationRepository();
+                $currentUser = $parentUserRepo->getUserById($idUser);
+                
+                $notificationData = [
+                    'idUser' => $parentComment['idUser'],
+                    'idEvenement' => $idEvenement,
+                    'type' => 'mention',
+                    'title' => 'Vous avez été mentionné',
+                    'message' => $currentUser->getFirstName() . " " . $currentUser->getLastName() . " vous a mentionné dans un commentaire sur l'événement : " . $event['title'],
+                    'url' => "evenements/" . $event['ville_slug'] . "/" . $event['category_slug'] . "/" . $event['slug'],
+                    'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
+                ];
+                
+                $notificationRepo->pushNotification($notificationData);
+            }
+            
             echo json_encode(['success' => true, 'commentUiid' => $commentUiid]);
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'error' => $e->getMessage()]);

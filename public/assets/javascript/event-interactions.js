@@ -141,7 +141,7 @@ const EventInteractions = (function() {
         const isOpen = openRepliesSections.has(comment.uiid);
         
         let html = `
-            <div class="comment" data-uiid="${comment.uiid}">
+            <div class="comment" data-uiid="${comment.uiid}" data-author="${escapeHtml(comment.firstName)} ${escapeHtml(comment.lastName)}">
                 <b>${escapeHtml(comment.firstName)} ${escapeHtml(comment.lastName)}</b>
                 <small style="color:#999;margin-left:8px;">${formattedDate}</small>
                 <p>${escapeHtml(comment.content).replace(/\n/g, '<br>')}</p>
@@ -169,10 +169,10 @@ const EventInteractions = (function() {
             html += `<div class="replies" id="replies-${comment.uiid}" style="margin-left:2em;display:${isOpen ? 'block' : 'none'};">`;
             replies.forEach(reply => {
                 const replyFormattedDate = formatCommentDate(reply.createdAt);
-                const canDeleteReply = isLoggedIn && currentUserUiid && reply.userUiid == currentUserUiid; // Changed from reply.idUser
+                const canDeleteReply = isLoggedIn && currentUserUiid && reply.userUiid == currentUserUiid;
                 
                 html += `
-                    <div class="comment reply" data-uiid="${reply.uiid}">
+                    <div class="comment reply" data-uiid="${reply.uiid}" data-author="${escapeHtml(reply.firstName)} ${escapeHtml(reply.lastName)}">
                         <b>${escapeHtml(reply.firstName)} ${escapeHtml(reply.lastName)}</b>
                         <small style="color:#999;margin-left:8px;">${replyFormattedDate}</small>
                         <p>${escapeHtml(reply.content).replace(/\n/g, '<br>')}</p>
@@ -182,7 +182,7 @@ const EventInteractions = (function() {
                                 <button class="like-comment-btn" data-uiid="${reply.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
                                     ${SVG_ICONS.commentLike}
                                 </button>
-                                <button class="reply-comment-btn" data-uiid="${comment.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
+                                <button class="reply-comment-btn" data-uiid="${reply.uiid}" data-parent="${reply.uiid}" data-root="${comment.uiid}" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
                                     ${SVG_ICONS.commentReply}
                                 </button>
                                 ${canDeleteReply ? `
@@ -205,7 +205,10 @@ const EventInteractions = (function() {
 
         html += `
             <form class="reply-form" data-parent="${comment.uiid}" style="display:none;margin-left:2em;">
-                <textarea name="content" required></textarea>
+                <div style="margin-bottom:0.5em;">
+                    <small style="color:#666;">Répondre à <strong>${escapeHtml(comment.firstName)} ${escapeHtml(comment.lastName)}</strong></small>
+                </div>
+                <textarea name="content" required style="flex:1;"></textarea>
                 <input type="hidden" name="eventUiid" value="${eventUiid}">
                 <input type="hidden" name="parentUiid" value="${comment.uiid}">
                 <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;">
@@ -296,24 +299,74 @@ const EventInteractions = (function() {
     }
 
     function handleReplyToggle(e) {
-        const parentUiid = this.dataset.parent;
-        const commentDiv = document.querySelector(`.comment[data-uiid="${parentUiid}"]`);
-        const form = commentDiv.querySelector(`.reply-form[data-parent="${parentUiid}"]`);
-        const repliesDiv = document.getElementById(`replies-${parentUiid}`);
+        const commentUiid = this.dataset.uiid; // The comment/reply being replied to
+        const parentUiid = this.dataset.parent; // For replies, this is the UIID of the comment/reply itself
+        const rootUiid = this.dataset.root || parentUiid; // For nested replies, the root comment
+        
+        // Find the root comment div to append the form
+        const rootCommentDiv = document.querySelector(`.comment[data-uiid="${rootUiid}"]`);
+        if (!rootCommentDiv) return;
+        
+        // Get the author name of the person being replied to
+        const targetComment = document.querySelector(`[data-uiid="${commentUiid}"]`);
+        const authorName = targetComment ? targetComment.dataset.author : '';
+        
+        // Check if form already exists for this specific reply
+        let form = rootCommentDiv.querySelector(`.reply-form[data-reply-to="${commentUiid}"]`);
+        
+        if (!form) {
+            // Create a new reply form
+            form = document.createElement('form');
+            form.className = 'reply-form';
+            form.dataset.parent = rootUiid;
+            form.dataset.replyTo = commentUiid;
+            form.style.marginLeft = '2em';
+            form.innerHTML = `
+                <div style="margin-bottom:0.5em;">
+                    <small style="color:#666;">Répondre à <strong>${escapeHtml(authorName)}</strong></small>
+                </div>
+                <textarea name="content" required style="flex:1;"></textarea>
+                <input type="hidden" name="eventUiid" value="${eventUiid}">
+                <input type="hidden" name="parentUiid" value="${commentUiid}">
+                <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;">
+                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg"><path d="m476.59 227.05-.16-.07L49.35 49.84A23.56 23.56 0 0 0 27.14 52 24.65 24.65 0 0 0 16 72.59v113.29a24 24 0 0 0 19.52 23.57l232.93 43.07a4 4 0 0 1 0 7.86L35.53 303.45A24 24 0 0 0 16 327v113.31A23.57 23.57 0 0 0 26.59 460a23.94 23.94 0 0 0 13.22 4 24.55 24.55 0 0 0 9.52-1.93L476.4 285.94l.19-.09a32 32 0 0 0 0-58.8z"></path></svg>
+                </button>
+            `;
+            
+            // Add submit handler
+            form.addEventListener('submit', handleReplySubmit);
+            
+            // Insert the form after the root comment's existing reply form
+            const existingForm = rootCommentDiv.querySelector('.reply-form');
+            if (existingForm && existingForm.nextSibling) {
+                rootCommentDiv.insertBefore(form, existingForm.nextSibling);
+            } else {
+                rootCommentDiv.appendChild(form);
+            }
+        }
+        
+        // Hide all other reply forms in this comment thread
+        rootCommentDiv.querySelectorAll('.reply-form').forEach(f => {
+            if (f !== form) f.style.display = 'none';
+        });
         
         // Show replies if hidden
+        const repliesDiv = document.getElementById(`replies-${rootUiid}`);
         if (repliesDiv && repliesDiv.style.display === 'none') {
             repliesDiv.style.display = 'block';
-            openRepliesSections.add(parentUiid);
-            const showBtn = commentDiv.querySelector(`.show-replies-btn[data-uiid="${parentUiid}"]`);
+            openRepliesSections.add(rootUiid);
+            const showBtn = rootCommentDiv.querySelector(`.show-replies-btn[data-uiid="${rootUiid}"]`);
             if (showBtn) {
                 showBtn.textContent = 'Masquer les réponses';
             }
         }
         
-        // Toggle form
-        if (form) {
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        // Toggle form visibility
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        
+        // Focus the textarea if showing
+        if (form.style.display === 'block') {
+            form.querySelector('textarea').focus();
         }
     }
 

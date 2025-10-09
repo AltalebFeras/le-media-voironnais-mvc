@@ -907,7 +907,7 @@ class EvenementRepository
     // Get a single comment by id
     public function getEventCommentById($idEventComment)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM event_comment WHERE idEventComment = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM event_comment WHERE idEventComment = ? AND isDeleted = 0");
         $stmt->execute([$idEventComment]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
