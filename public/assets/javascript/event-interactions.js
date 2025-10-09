@@ -318,8 +318,6 @@ const EventInteractions = (function() {
     }
 
     async function handleCommentDelete(e) {
-        if (!confirm("Supprimer ce commentaire ?")) return;
-        
         const commentId = this.dataset.id;
         const parentId = this.dataset.parent;
         
@@ -339,31 +337,83 @@ const EventInteractions = (function() {
     }
 
     async function handleCommentReport(e) {
-        const reason = prompt("Pourquoi signalez-vous ce commentaire ?");
-        if (!reason) return;
-
         const commentId = this.dataset.id;
-        await fetch('/evenement/comment/report', {
-            method: 'POST',
-            body: new URLSearchParams({ idEventComment: commentId, reason })
-        });
-        alert("Commentaire signalé");
+        showReportModal(commentId);
     }
 
-    function handleToggleReplies(e) {
-        const commentId = this.dataset.id;
-        const repliesDiv = document.getElementById(`replies-${commentId}`);
-        const count = repliesDiv.children.length;
-        
-        if (repliesDiv.style.display === 'none') {
-            repliesDiv.style.display = 'block';
-            openRepliesSections.add(parseInt(commentId));
-            this.textContent = "Masquer les réponses";
-        } else {
-            repliesDiv.style.display = 'none';
-            openRepliesSections.delete(parseInt(commentId));
-            this.textContent = `Voir toutes les ${count} réponse${count > 1 ? 's' : ''}`;
+    function showReportModal(commentId) {
+        // Create modal if it doesn't exist
+        let modal = document.getElementById('report-comment-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'report-comment-modal';
+            modal.className = 'popup';
+            modal.style.display = 'none';
+            modal.innerHTML = `
+                <div class="card" style="max-width:500px;">
+                    <h3>Signaler un commentaire</h3>
+                    <button type="button" class="close-modal" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:24px; cursor:pointer;">×</button>
+                    <div class="mt mb">
+                        <p>Pourquoi signalez-vous ce commentaire ?</p>
+                        <textarea id="report-reason" class="form-control" rows="4" placeholder="Expliquez la raison du signalement..." required></textarea>
+                    </div>
+                    <div class="flex-row justify-content-between" style="display:flex;gap:1em;margin-top:1em;">
+                        <button type="button" class="btn cancel-report">Annuler</button>
+                        <button type="button" class="btn btn-danger confirm-report">Signaler</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Close modal handlers
+            modal.querySelector('.close-modal').addEventListener('click', () => {
+                modal.style.display = 'none';
+                modal.querySelector('#report-reason').value = '';
+            });
+
+            modal.querySelector('.cancel-report').addEventListener('click', () => {
+                modal.style.display = 'none';
+                modal.querySelector('#report-reason').value = '';
+            });
+
+            // Confirm report handler
+            modal.querySelector('.confirm-report').addEventListener('click', async () => {
+                const reason = modal.querySelector('#report-reason').value.trim();
+                const storedCommentId = modal.dataset.commentId;
+
+                if (!reason) {
+                    alert('Veuillez expliquer la raison du signalement.');
+                    return;
+                }
+
+                await fetch('/evenement/comment/report', {
+                    method: 'POST',
+                    body: new URLSearchParams({ idEventComment: storedCommentId, reason })
+                });
+
+                modal.style.display = 'none';
+                modal.querySelector('#report-reason').value = '';
+                
+                // Show success message
+                showSuccessMessage('Commentaire signalé avec succès');
+            });
         }
+
+        // Store comment ID and show modal
+        modal.dataset.commentId = commentId;
+        modal.style.display = 'flex';
+    }
+
+    function showSuccessMessage(message) {
+        const successDiv = document.createElement('div');
+        successDiv.className = 'alert alert-success';
+        successDiv.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;padding:1em;background:#28a745;color:white;border-radius:4px;';
+        successDiv.textContent = message;
+        document.body.appendChild(successDiv);
+        
+        setTimeout(() => {
+            successDiv.remove();
+        }, 3000);
     }
 
     async function handleCommentSubmit(e) {
@@ -406,6 +456,22 @@ const EventInteractions = (function() {
             await loadInteractions();
         } else {
             alert(data.error || "Erreur");
+        }
+    }
+
+    function handleToggleReplies(e) {
+        const commentId = this.dataset.id;
+        const repliesDiv = document.getElementById(`replies-${commentId}`);
+        const count = repliesDiv.children.length;
+        
+        if (repliesDiv.style.display === 'none') {
+            repliesDiv.style.display = 'block';
+            openRepliesSections.add(parseInt(commentId));
+            this.textContent = "Masquer les réponses";
+        } else {
+            repliesDiv.style.display = 'none';
+            openRepliesSections.delete(parseInt(commentId));
+            this.textContent = `Voir toutes les ${count} réponse${count > 1 ? 's' : ''}`;
         }
     }
 
