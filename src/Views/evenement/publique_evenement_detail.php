@@ -133,32 +133,54 @@ $endDate = new DateTime($evenement['endDate']);
                             <!-- Icon will be updated by JavaScript -->
                         </span>
                     </button>
+                    <button id="comments-btn" data-uiid="<?= $evenement['uiid'] ?>" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
+                        <svg stroke="currentColor" fill="#0053f9ff" stroke-width="0" viewBox="0 0 24 24" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path>
+                        </svg>
+                    </button>
+                <?php else: ?>
+                    <button id="comments-btn" data-uiid="<?= $evenement['uiid'] ?>" style="background:none;border:none;vertical-align:middle;cursor:pointer;">
+                        <svg stroke="currentColor" fill="#0053f9ff" stroke-width="0" viewBox="0 0 24 24" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path>
+                        </svg>
+                    </button>
                 <?php endif; ?>
                 <div>
                     <span id="event-likes-count">0 personne aime cet événement</span>
-                    <span id="event-comments-count" style="margin-left:1em;">0 commentaire</span>
+                    <span id="event-comments-count" style="margin-left:1em;cursor:pointer;" onclick="document.getElementById('comments-btn').click()">0 commentaire</span>
                 </div>
 
-                <!-- Comments Section -->
-                <h3>Commentaires</h3>
-                <div id="comments-list">
-                    <p>Chargement des commentaires...</p>
+                <!-- Comments Modal -->
+                <div id="comments-modal" class="comments-modal" style="display:none;">
+                    <div class="comments-modal-content">
+                        <div class="comments-modal-header">
+                            <h2>Commentaires</h2>
+                            <button class="close-comments-modal" style="background:none;border:none;font-size:32px;cursor:pointer;">&times;</button>
+                        </div>
+                        <div class="comments-modal-body">
+                            <div id="comments-list">
+                                <p>Chargement des commentaires...</p>
+                            </div>
+                        </div>
+                        <?php if (isset($_SESSION['idUser'])): ?>
+                            <div class="comments-modal-footer">
+                                <form id="add-comment-form" style="display:flex;align-items:center;gap:0.5em;width:100%;">
+                                    <textarea name="content" required placeholder="Ajouter un commentaire..." style="flex:1;min-height:50px;"></textarea>
+                                    <input type="hidden" name="eventUiid" value="<?= $evenement['uiid'] ?>">
+                                    <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;">
+                                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="32px" width="32px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="m476.59 227.05-.16-.07L49.35 49.84A23.56 23.56 0 0 0 27.14 52 24.65 24.65 0 0 0 16 72.59v113.29a24 24 0 0 0 19.52 23.57l232.93 43.07a4 4 0 0 1 0 7.86L35.53 303.45A24 24 0 0 0 16 327v113.31A23.57 23.57 0 0 0 26.59 460a23.94 23.94 0 0 0 13.22 4 24.55 24.55 0 0 0 9.52-1.93L476.4 285.94l.19-.09a32 32 0 0 0 0-58.8z"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        <?php else: ?>
+                            <div class="comments-modal-footer">
+                                <a href="<?= HOME_URL ?>connexion" class="btn">Connectez-vous pour commenter</a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
-                
-                <?php if (isset($_SESSION['idUser'])): ?>
-                    <form id="add-comment-form" style="display:flex;align-items:center;gap:0.5em;">
-                        <textarea name="content" required style="flex:1;"></textarea>
-                        <input type="hidden" name="eventUiid" value="<?= $evenement['uiid'] ?>">
-                        <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;">
-                            <!-- Send SVG icon -->
-                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="32px" width="32px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
-                                <path d="m476.59 227.05-.16-.07L49.35 49.84A23.56 23.56 0 0 0 27.14 52 24.65 24.65 0 0 0 16 72.59v113.29a24 24 0 0 0 19.52 23.57l232.93 43.07a4 4 0 0 1 0 7.86L35.53 303.45A24 24 0 0 0 16 327v113.31A23.57 23.57 0 0 0 26.59 460a23.94 23.94 0 0 0 13.22 4 24.55 24.55 0 0 0 9.52-1.93L476.4 285.94l.19-.09a32 32 0 0 0 0-58.8z"></path>
-                            </svg>
-                        </button>
-                    </form>
-                <?php else: ?>
-                    <a href="<?= HOME_URL ?>connexion">Connectez-vous pour commenter. </a>
-                <?php endif; ?>
 
                 <script src="<?= HOME_URL ?>assets/javascript/event-interactions.js"></script>
                 <script>

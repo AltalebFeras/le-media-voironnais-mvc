@@ -227,6 +227,19 @@ const EventInteractions = (function() {
         // Favourite button
         document.getElementById('favourite-btn')?.addEventListener('click', handleEventFavourite);
 
+        // Comments button - open modal
+        document.getElementById('comments-btn')?.addEventListener('click', openCommentsModal);
+        
+        // Close comments modal
+        document.querySelector('.close-comments-modal')?.addEventListener('click', closeCommentsModal);
+        
+        // Close modal when clicking outside
+        document.getElementById('comments-modal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCommentsModal();
+            }
+        });
+
         // Comment like buttons
         document.querySelectorAll('.like-comment-btn').forEach(btn => {
             btn.addEventListener('click', handleCommentLike);
@@ -259,6 +272,22 @@ const EventInteractions = (function() {
 
         // Main comment form
         document.getElementById('add-comment-form')?.addEventListener('submit', handleCommentSubmit);
+    }
+
+    function openCommentsModal() {
+        const modal = document.getElementById('comments-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+    }
+
+    function closeCommentsModal() {
+        const modal = document.getElementById('comments-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        }
     }
 
     async function handleEventLike() {
@@ -556,6 +585,8 @@ const EventInteractions = (function() {
             isLoggedIn = loggedIn;
             currentUserUiid = userUiid; // Store userUiid instead of userId
             loadInteractions();
-        }
+        },
+        openCommentsModal: openCommentsModal,
+        closeCommentsModal: closeCommentsModal
     };
 })();
