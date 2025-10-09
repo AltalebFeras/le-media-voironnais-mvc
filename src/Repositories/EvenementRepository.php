@@ -58,8 +58,150 @@ class EvenementRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':uiid', $uiid, PDO::PARAM_STR);
         $stmt->execute();
-
         return $stmt->fetchColumn();
+    }
+
+    // Get comment ID by UIID
+    public function getCommentIdByUiid($uiid)
+    {
+        $sql = "SELECT idEventComment FROM event_comment WHERE uiid = :uiid";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':uiid', $uiid, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    // Toggle event like by UIID
+    public function toggleEventLikeByUiid($idUser, $eventUiid): bool
+    {
+        $idEvenement = $this->getIdByUiid($eventUiid);
+        if (!$idEvenement) return false;
+        
+        $stmt = $this->pdo->prepare("SELECT idEventLike FROM event_like WHERE idUser = ? AND idEvenement = ?");
+        $stmt->execute([$idUser, $idEvenement]);
+        if ($stmt->fetch()) {
+            $this->pdo->prepare("DELETE FROM event_like WHERE idUser = ? AND idEvenement = ?")->execute([$idUser, $idEvenement]);
+            return false;
+        } else {
+            $this->pdo->prepare("INSERT INTO event_like (idUser, idEvenement, createdAt) VALUES (?, ?, NOW())")->execute([$idUser, $idEvenement]);
+            return true;
+        }
+    }
+
+    // Toggle event favourite by UIID
+    public function toggleEventFavouriteByUiid($idUser, $eventUiid): bool
+    {
+        $idEvenement = $this->getIdByUiid($eventUiid);
+        if (!$idEvenement) return false;
+        
+        $stmt = $this->pdo->prepare("SELECT idEventFavourite FROM event_favourite WHERE idUser = ? AND idEvenement = ?");
+        $stmt->execute([$idUser, $idEvenement]);
+        if ($stmt->fetch()) {
+            $this->pdo->prepare("DELETE FROM event_favourite WHERE idUser = ? AND idEvenement = ?")->execute([$idUser, $idEvenement]);
+            return false;
+        } else {
+            $this->pdo->prepare("INSERT INTO event_favourite (idUser, idEvenement, createdAt) VALUES (?, ?, NOW())")->execute([$idUser, $idEvenement]);
+            return true;
+        }
+    }
+
+    // Add event comment with UIID
+    public function addEventCommentByUiid($idUser, $eventUiid, $content, $parentUiid = null)
+    {
+        $idEvenement = $this->getIdByUiid($eventUiid);
+        if (!$idEvenement) return false;
+        
+        $parentId = $parentUiid ? $this->getCommentIdByUiid($parentUiid) : null;
+        
+        $helper = new \src\Services\Helper();
+        $commentUiid = $helper->generateUiid();
+        
+        $stmt = $this->pdo->prepare("INSERT INTO event_comment (uiid, idEvenement, idUser, content, parentId, createdAt) VALUES (?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$commentUiid, $idEvenement, $idUser, $content, $parentId]);
+        return $commentUiid;
+    }
+
+    // Toggle like on comment by UIID
+    public function toggleEventCommentLikeByUiid($idUser, $commentUiid): bool
+    {
+        $idEventComment = $this->getCommentIdByUiid($commentUiid);
+        if (!$idEventComment) return false;
+        
+        $stmt = $this->pdo->prepare("SELECT idEventCommentLike FROM event_comment_like WHERE idUser = ? AND idEventComment = ?");
+        $stmt->execute([$idUser, $idEventComment]);
+        if ($stmt->fetch()) {
+            $this->pdo->prepare("DELETE FROM event_comment_like WHERE idUser = ? AND idEventComment = ?")->execute([$idUser, $idEventComment]);
+            return false;
+        } else {
+            $this->pdo->prepare("INSERT INTO event_comment_like (idUser, idEventComment, createdAt) VALUES (?, ?, NOW())")->execute([$idUser, $idEventComment]);
+            return true;
+        }
+    }
+
+    // Report a comment by UIID
+    public function reportEventCommentByUiid($idUser, $commentUiid, $reason = null): bool
+    {
+        $idEventComment = $this->getCommentIdByUiid($commentUiid);
+        if (!$idEventComment) return false;
+        
+        $stmt = $this->pdo->prepare("INSERT IGNORE INTO event_comment_report (idUser, idEventComment, reason, createdAt) VALUES (?, ?, ?, NOW())");
+        return $stmt->execute([$idUser, $idEventComment, $reason]);
+    }
+
+    // Get a single comment by UIID
+    public function getEventCommentByUiid($commentUiid)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM event_comment WHERE uiid = ?");
+        $stmt->execute([$commentUiid]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    // Delete a comment and its replies by UIID
+    public function deleteEventCommentWithRepliesByUiid($commentUiid)
+    {
+        $idEventComment = $this->getCommentIdByUiid($commentUiid);
+        if (!$idEventComment) return false;
+        
+        $this->pdo->prepare("UPDATE event_comment SET isDeleted = 1 WHERE idEventComment = ?")->execute([$idEventComment]);
+        $this->pdo->prepare("UPDATE event_comment SET isDeleted = 1 WHERE parentId = ?")->execute([$idEventComment]);
+        return true;
+    }
+
+    // Fetch comments with UIIDs
+    public function getEventComments($idEvenement)
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT c.*, c.uiid, u.firstName, u.lastName,
+                (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
+                (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount
+            FROM event_comment c
+            JOIN user u ON u.idUser = c.idUser
+            WHERE c.idEvenement = ? AND c.parentId IS NULL AND c.isDeleted = 0
+            ORDER BY c.createdAt DESC
+        ");
+        $stmt->execute([$idEvenement]);
+        $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $replies = $this->getEventCommentReplies($idEvenement);
+
+        return ['comments' => $comments, 'replies' => $replies];
+    }
+
+    // Fetch replies with UIIDs
+    public function getEventCommentReplies($idEvenement)
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT c.*, c.uiid, u.firstName, u.lastName,
+                (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
+                (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount,
+                (SELECT p.uiid FROM event_comment p WHERE p.idEventComment = c.parentId) as parentUiid
+            FROM event_comment c
+            JOIN user u ON u.idUser = c.idUser
+            WHERE c.idEvenement = ? AND c.parentId IS NOT NULL AND c.isDeleted = 0
+            ORDER BY c.createdAt ASC
+        ");
+        $stmt->execute([$idEvenement]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -717,42 +859,42 @@ class EvenementRepository
         return $stmt->execute([$idUser, $idEventComment, $reason]);
     }
 
-    // Fetch comments for an event (with likes count, replies, etc.)
-    public function getEventComments($idEvenement)
-    {
-        $stmt = $this->pdo->prepare("
-            SELECT c.*, u.firstName, u.lastName,
-                (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
-                (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount
-            FROM event_comment c
-            JOIN user u ON u.idUser = c.idUser
-            WHERE c.idEvenement = ? AND c.parentId IS NULL AND c.isDeleted = 0
-            ORDER BY c.createdAt DESC
-        ");
-        $stmt->execute([$idEvenement]);
-        $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // // Fetch comments for an event (with likes count, replies, etc.)
+    // public function getEventComments($idEvenement)
+    // {
+    //     $stmt = $this->pdo->prepare("
+    //         SELECT c.*, u.firstName, u.lastName,
+    //             (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
+    //             (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount
+    //         FROM event_comment c
+    //         JOIN user u ON u.idUser = c.idUser
+    //         WHERE c.idEvenement = ? AND c.parentId IS NULL AND c.isDeleted = 0
+    //         ORDER BY c.createdAt DESC
+    //     ");
+    //     $stmt->execute([$idEvenement]);
+    //     $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Fetch replies for all comments
-        $replies = $this->getEventCommentReplies($idEvenement);
+    //     // Fetch replies for all comments
+    //     $replies = $this->getEventCommentReplies($idEvenement);
 
-        return ['comments' => $comments, 'replies' => $replies];
-    }
+    //     return ['comments' => $comments, 'replies' => $replies];
+    // }
 
     // Fetch replies for all comments of an event
-    public function getEventCommentReplies($idEvenement)
-    {
-        $stmt = $this->pdo->prepare("
-            SELECT c.*, u.firstName, u.lastName,
-                (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
-                (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount
-            FROM event_comment c
-            JOIN user u ON u.idUser = c.idUser
-            WHERE c.idEvenement = ? AND c.parentId IS NOT NULL AND c.isDeleted = 0
-            ORDER BY c.createdAt ASC
-        ");
-        $stmt->execute([$idEvenement]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    // public function getEventCommentReplies($idEvenement)
+    // {
+    //     $stmt = $this->pdo->prepare("
+    //         SELECT c.*, u.firstName, u.lastName,
+    //             (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
+    //             (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount
+    //         FROM event_comment c
+    //         JOIN user u ON u.idUser = c.idUser
+    //         WHERE c.idEvenement = ? AND c.parentId IS NOT NULL AND c.isDeleted = 0
+    //         ORDER BY c.createdAt ASC
+    //     ");
+    //     $stmt->execute([$idEvenement]);
+    //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // }
 
     // Get a single comment by id
     public function getEventCommentById($idEventComment)

@@ -752,10 +752,15 @@ class EvenementController extends AbstractController
         try {
             header('Content-Type: application/json');
             
-            $idEvenement = isset($_GET['idEvenement']) ? (int)$_GET['idEvenement'] : 0;
+            $eventUiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
             
+            if (!$eventUiid) {
+                throw new Exception("UIID d'événement invalide");
+            }
+
+            $idEvenement = $this->repo->getIdByUiid($eventUiid);
             if (!$idEvenement) {
-                throw new Exception("ID d'événement invalide");
+                throw new Exception("Événement introuvable");
             }
 
             // Fetch comments and replies
@@ -1060,92 +1065,88 @@ class EvenementController extends AbstractController
             $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
-
-    // Like/unlike an event (AJAX)
-    public function likeEvent()
+public function likeEvent()
     {
         $idUser = $_SESSION['idUser'];
-        $idEvenement = (int)($_POST['idEvenement'] ?? 0);
-        $repo = $this->repo;
-        $liked = $repo->toggleEventLike($idUser, $idEvenement);
+        $eventUiid = htmlspecialchars(trim($_POST['eventUiid'] ?? ''));
+        $liked = $this->repo->toggleEventLikeByUiid($idUser, $eventUiid);
         echo json_encode(['success' => true, 'liked' => $liked]);
     }
 
-    // Favourite/unfavourite an event (AJAX)
     public function favouriteEvent()
     {
         $idUser = $_SESSION['idUser'];
-        $idEvenement = (int)($_POST['idEvenement'] ?? 0);
-        $repo = $this->repo;
-        $favourited = $repo->toggleEventFavourite($idUser, $idEvenement);
+        $eventUiid = htmlspecialchars(trim($_POST['eventUiid'] ?? ''));
+        $favourited = $this->repo->toggleEventFavouriteByUiid($idUser, $eventUiid);
         echo json_encode(['success' => true, 'favourited' => $favourited]);
     }
 
-    // Add a comment to an event
     public function addEventComment()
     {
         $idUser = $_SESSION['idUser'];
-        $idEvenement = (int)($_POST['idEvenement'] ?? 0);
+        $eventUiid = htmlspecialchars(trim($_POST['eventUiid'] ?? ''));
         $content = trim($_POST['content'] ?? '');
-        $parentId = isset($_POST['parentId']) ? (int)$_POST['parentId'] : null;
+        $parentUiid = isset($_POST['parentUiid']) ? htmlspecialchars(trim($_POST['parentUiid'])) : null;
+        
         if (!$content) {
             echo json_encode(['success' => false, 'error' => 'Le commentaire ne peut pas être vide.']);
             return;
         }
-        $commentId = $this->repo->addEventComment($idUser, $idEvenement, $content, $parentId);
-        echo json_encode(['success' => true, 'commentId' => $commentId]);
+        
+        $commentUiid = $this->repo->addEventCommentByUiid($idUser, $eventUiid, $content, $parentUiid);
+        echo json_encode(['success' => true, 'commentUiid' => $commentUiid]);
     }
 
-    // Like/unlike a comment
     public function likeEventComment()
     {
         $idUser = $_SESSION['idUser'];
-        $idEventComment = (int)($_POST['idEventComment'] ?? 0);
-        $liked = $this->repo->toggleEventCommentLike($idUser, $idEventComment);
+        $commentUiid = htmlspecialchars(trim($_POST['commentUiid'] ?? ''));
+        $liked = $this->repo->toggleEventCommentLikeByUiid($idUser, $commentUiid);
         echo json_encode(['success' => true, 'liked' => $liked]);
     }
 
-    // Report a comment
     public function reportEventComment()
     {
         $idUser = $_SESSION['idUser'];
-        $idEventComment = (int)($_POST['idEventComment'] ?? 0);
+        $commentUiid = htmlspecialchars(trim($_POST['commentUiid'] ?? ''));
         $reason = trim($_POST['reason'] ?? '');
-        $this->repo->reportEventComment($idUser, $idEventComment, $reason);
+        $this->repo->reportEventCommentByUiid($idUser, $commentUiid, $reason);
         echo json_encode(['success' => true]);
     }
 
-    // Add a reply to a comment (comment on comment)
     public function replyEventComment()
     {
         $idUser = $_SESSION['idUser'];
-        $idEvenement = (int)($_POST['idEvenement'] ?? 0);
-        $parentId = (int)$_POST['parentId'] ?? 0;
+        $eventUiid = htmlspecialchars(trim($_POST['eventUiid'] ?? ''));
+        $parentUiid = htmlspecialchars(trim($_POST['parentUiid'] ?? ''));
         $content = trim($_POST['content'] ?? '');
+        
         if (!$content) {
             echo json_encode(['success' => false, 'error' => 'Le commentaire ne peut pas être vide.']);
             return;
         }
-        $commentId = $this->repo->addEventComment($idUser, $idEvenement, $content, $parentId);
-        echo json_encode(['success' => true, 'commentId' => $commentId]);
+        
+        $commentUiid = $this->repo->addEventCommentByUiid($idUser, $eventUiid, $content, $parentUiid);
+        echo json_encode(['success' => true, 'commentUiid' => $commentUiid]);
     }
 
-    // Delete a comment (and its replies if parent)
     public function deleteEventComment()
     {
         $idUser = $_SESSION['idUser'];
-        $idEventComment = (int)($_POST['idEventComment'] ?? 0);
-        $comment = $this->repo->getEventCommentById($idEventComment);
+        $commentUiid = htmlspecialchars(trim($_POST['commentUiid'] ?? ''));
+        $comment = $this->repo->getEventCommentByUiid($commentUiid);
+        
         if (!$comment) {
             echo json_encode(['success' => false, 'error' => 'Commentaire introuvable.']);
             return;
         }
-        // Only the owner can delete their comment
+        
         if ($comment['idUser'] != $idUser) {
             echo json_encode(['success' => false, 'error' => 'Vous ne pouvez supprimer que vos propres commentaires.']);
             return;
         }
-        $this->repo->deleteEventCommentWithReplies($idEventComment);
+        
+        $this->repo->deleteEventCommentWithRepliesByUiid($commentUiid);
         echo json_encode(['success' => true]);
     }
 

@@ -123,12 +123,12 @@ $endDate = new DateTime($evenement['endDate']);
 
                 <!-- Like/Favourite buttons and event likes/comments counter -->
                 <?php if (isset($_SESSION['idUser'])): ?>
-                    <button id="like-btn" data-id="<?= $evenement['idEvenement'] ?>" style="background:none;border:none;vertical-align:middle;">
+                    <button id="like-btn" data-uiid="<?= $evenement['uiid'] ?>" style="background:none;border:none;vertical-align:middle;">
                         <span id="like-icon">
                             <!-- Icon will be updated by JavaScript -->
                         </span>
                     </button>
-                    <button id="favourite-btn" data-id="<?= $evenement['idEvenement'] ?>" style="background:none;border:none;vertical-align:middle;">
+                    <button id="favourite-btn" data-uiid="<?= $evenement['uiid'] ?>" style="background:none;border:none;vertical-align:middle;">
                         <span id="favourite-icon">
                             <!-- Icon will be updated by JavaScript -->
                         </span>
@@ -148,7 +148,7 @@ $endDate = new DateTime($evenement['endDate']);
                 <?php if (isset($_SESSION['idUser'])): ?>
                     <form id="add-comment-form" style="display:flex;align-items:center;gap:0.5em;">
                         <textarea name="content" required style="flex:1;"></textarea>
-                        <input type="hidden" name="idEvenement" value="<?= $evenement['idEvenement'] ?>">
+                        <input type="hidden" name="eventUiid" value="<?= $evenement['uiid'] ?>">
                         <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;">
                             <!-- Send SVG icon -->
                             <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="32px" width="32px" style="vertical-align:middle;" xmlns="http://www.w3.org/2000/svg">
@@ -163,10 +163,10 @@ $endDate = new DateTime($evenement['endDate']);
                 <script src="<?= HOME_URL ?>assets/javascript/event-interactions.js"></script>
                 <script>
                     // Initialize the interactions
-                    const eventId = <?= $evenement['idEvenement'] ?>;
+                    const eventUiid = "<?= $evenement['uiid'] ?>";
                     const isLoggedIn = <?= isset($_SESSION['idUser']) ? 'true' : 'false' ?>;
                     const currentUserId = <?= isset($_SESSION['idUser']) ? $_SESSION['idUser'] : 'null' ?>;
-                    EventInteractions.init(eventId, isLoggedIn, currentUserId);
+                    EventInteractions.init(eventUiid, isLoggedIn, currentUserId);
                 </script>
             </div>
 

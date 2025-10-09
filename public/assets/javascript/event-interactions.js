@@ -1,5 +1,5 @@
 const EventInteractions = (function() {
-    let eventId = null;
+    let eventUiid = null; // Changed from eventId
     let isLoggedIn = false;
     let interactionData = null;
     let currentUserId = null;
@@ -18,7 +18,7 @@ const EventInteractions = (function() {
 
     async function loadInteractions() {
         try {
-            const response = await fetch(`/evenement/interactions?idEvenement=${eventId}`);
+            const response = await fetch(`/evenement/interactions?uiid=${eventUiid}`);
             const data = await response.json();
             
             if (data.success) {
@@ -138,59 +138,59 @@ const EventInteractions = (function() {
         const hasReplies = replies.length > 0;
         const formattedDate = formatCommentDate(comment.createdAt);
         const canDelete = isLoggedIn && currentUserId && comment.idUser == currentUserId;
-        const isOpen = openRepliesSections.has(comment.idEventComment);
+        const isOpen = openRepliesSections.has(comment.uiid);
         
         let html = `
-            <div class="comment" data-id="${comment.idEventComment}">
+            <div class="comment" data-uiid="${comment.uiid}">
                 <b>${escapeHtml(comment.firstName)} ${escapeHtml(comment.lastName)}</b>
                 <small style="color:#999;margin-left:8px;">${formattedDate}</small>
                 <p>${escapeHtml(comment.content).replace(/\n/g, '<br>')}</p>
                 <div>
                     <span>${comment.likesCount > 0 ? comment.likesCount : ''}</span>
                     ${isLoggedIn ? `
-                        <button class="like-comment-btn" data-id="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                        <button class="like-comment-btn" data-uiid="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
                             ${SVG_ICONS.commentLike}
                         </button>
-                        <button class="reply-comment-btn" data-id="${comment.idEventComment}" data-parent="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                        <button class="reply-comment-btn" data-uiid="${comment.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
                             ${SVG_ICONS.commentReply}
                         </button>
                         ${canDelete ? `
-                            <button class="delete-comment-btn" data-id="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                            <button class="delete-comment-btn" data-uiid="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
                                 ${SVG_ICONS.commentDelete}
                             </button>
                         ` : ''}
-                        <button class="report-comment-btn" data-id="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                        <button class="report-comment-btn" data-uiid="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
                             ${SVG_ICONS.commentReport}
                         </button>
                     ` : ''}
                 </div>`;
 
         if (hasReplies) {
-            html += `<div class="replies" id="replies-${comment.idEventComment}" style="margin-left:2em;display:${isOpen ? 'block' : 'none'};">`;
+            html += `<div class="replies" id="replies-${comment.uiid}" style="margin-left:2em;display:${isOpen ? 'block' : 'none'};">`;
             replies.forEach(reply => {
                 const replyFormattedDate = formatCommentDate(reply.createdAt);
                 const canDeleteReply = isLoggedIn && currentUserId && reply.idUser == currentUserId;
                 
                 html += `
-                    <div class="comment reply" data-id="${reply.idEventComment}">
+                    <div class="comment reply" data-uiid="${reply.uiid}">
                         <b>${escapeHtml(reply.firstName)} ${escapeHtml(reply.lastName)}</b>
                         <small style="color:#999;margin-left:8px;">${replyFormattedDate}</small>
                         <p>${escapeHtml(reply.content).replace(/\n/g, '<br>')}</p>
                         <div>
                             <span>${reply.likesCount > 0 ? reply.likesCount : ''}</span>
                             ${isLoggedIn ? `
-                                <button class="like-comment-btn" data-id="${reply.idEventComment}" data-parent="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                                <button class="like-comment-btn" data-uiid="${reply.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
                                     ${SVG_ICONS.commentLike}
                                 </button>
-                                <button class="reply-comment-btn" data-id="${comment.idEventComment}" data-parent="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                                <button class="reply-comment-btn" data-uiid="${comment.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
                                     ${SVG_ICONS.commentReply}
                                 </button>
                                 ${canDeleteReply ? `
-                                    <button class="delete-comment-btn" data-id="${reply.idEventComment}" data-parent="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                                    <button class="delete-comment-btn" data-uiid="${reply.uiid}" data-parent="${comment.uiid}" style="background:none;border:none;vertical-align:middle;">
                                         ${SVG_ICONS.commentDelete}
                                     </button>
                                 ` : ''}
-                                <button class="report-comment-btn" data-id="${reply.idEventComment}" style="background:none;border:none;vertical-align:middle;">
+                                <button class="report-comment-btn" data-uiid="${reply.uiid}" style="background:none;border:none;vertical-align:middle;">
                                     ${SVG_ICONS.commentReport}
                                 </button>
                             ` : ''}
@@ -198,16 +198,16 @@ const EventInteractions = (function() {
                     </div>`;
             });
             html += `</div>
-                <button class="show-replies-btn" data-id="${comment.idEventComment}">
+                <button class="show-replies-btn" data-uiid="${comment.uiid}">
                     ${isOpen ? 'Masquer les réponses' : `Voir toutes les ${replies.length} réponse${replies.length > 1 ? 's' : ''}`}
                 </button>`;
         }
 
         html += `
-            <form class="reply-form" data-parent="${comment.idEventComment}" style="display:none;margin-left:2em;">
+            <form class="reply-form" data-parent="${comment.uiid}" style="display:none;margin-left:2em;">
                 <textarea name="content" required></textarea>
-                <input type="hidden" name="idEvenement" value="${eventId}">
-                <input type="hidden" name="parentId" value="${comment.idEventComment}">
+                <input type="hidden" name="eventUiid" value="${eventUiid}">
+                <input type="hidden" name="parentUiid" value="${comment.uiid}">
                 <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;">
                     <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg"><path d="m476.59 227.05-.16-.07L49.35 49.84A23.56 23.56 0 0 0 27.14 52 24.65 24.65 0 0 0 16 72.59v113.29a24 24 0 0 0 19.52 23.57l232.93 43.07a4 4 0 0 1 0 7.86L35.53 303.45A24 24 0 0 0 16 327v113.31A23.57 23.57 0 0 0 26.59 460a23.94 23.94 0 0 0 13.22 4 24.55 24.55 0 0 0 9.52-1.93L476.4 285.94l.19-.09a32 32 0 0 0 0-58.8z"></path></svg>
                 </button>
@@ -261,7 +261,7 @@ const EventInteractions = (function() {
     async function handleEventLike() {
         const response = await fetch('/evenement/like', {
             method: 'POST',
-            body: new URLSearchParams({ idEvenement: eventId })
+            body: new URLSearchParams({ eventUiid: eventUiid })
         });
         const data = await response.json();
         await loadInteractions();
@@ -270,42 +270,42 @@ const EventInteractions = (function() {
     async function handleEventFavourite() {
         const response = await fetch('/evenement/favourite', {
             method: 'POST',
-            body: new URLSearchParams({ idEvenement: eventId })
+            body: new URLSearchParams({ eventUiid: eventUiid })
         });
         const data = await response.json();
         await loadInteractions();
     }
 
     async function handleCommentLike(e) {
-        const commentId = this.dataset.id;
-        const parentId = this.dataset.parent;
+        const commentUiid = this.dataset.uiid;
+        const parentUiid = this.dataset.parent;
         
         // Track if parent replies section is open
-        if (parentId) {
-            const repliesDiv = document.getElementById(`replies-${parentId}`);
+        if (parentUiid) {
+            const repliesDiv = document.getElementById(`replies-${parentUiid}`);
             if (repliesDiv && repliesDiv.style.display === 'block') {
-                openRepliesSections.add(parseInt(parentId));
+                openRepliesSections.add(parentUiid);
             }
         }
         
         await fetch('/evenement/comment/like', {
             method: 'POST',
-            body: new URLSearchParams({ idEventComment: commentId })
+            body: new URLSearchParams({ commentUiid: commentUiid })
         });
         await loadInteractions();
     }
 
     function handleReplyToggle(e) {
-        const parentId = this.dataset.parent;
-        const commentDiv = document.querySelector(`.comment[data-id="${parentId}"]`);
-        const form = commentDiv.querySelector(`.reply-form[data-parent="${parentId}"]`);
-        const repliesDiv = document.getElementById(`replies-${parentId}`);
+        const parentUiid = this.dataset.parent;
+        const commentDiv = document.querySelector(`.comment[data-uiid="${parentUiid}"]`);
+        const form = commentDiv.querySelector(`.reply-form[data-parent="${parentUiid}"]`);
+        const repliesDiv = document.getElementById(`replies-${parentUiid}`);
         
         // Show replies if hidden
         if (repliesDiv && repliesDiv.style.display === 'none') {
             repliesDiv.style.display = 'block';
-            openRepliesSections.add(parseInt(parentId));
-            const showBtn = commentDiv.querySelector(`.show-replies-btn[data-id="${parentId}"]`);
+            openRepliesSections.add(parentUiid);
+            const showBtn = commentDiv.querySelector(`.show-replies-btn[data-uiid="${parentUiid}"]`);
             if (showBtn) {
                 showBtn.textContent = 'Masquer les réponses';
             }
@@ -318,30 +318,30 @@ const EventInteractions = (function() {
     }
 
     async function handleCommentDelete(e) {
-        const commentId = this.dataset.id;
-        const parentId = this.dataset.parent;
+        const commentUiid = this.dataset.uiid;
+        const parentUiid = this.dataset.parent;
         
         // Track if parent replies section is open
-        if (parentId) {
-            const repliesDiv = document.getElementById(`replies-${parentId}`);
+        if (parentUiid) {
+            const repliesDiv = document.getElementById(`replies-${parentUiid}`);
             if (repliesDiv && repliesDiv.style.display === 'block') {
-                openRepliesSections.add(parseInt(parentId));
+                openRepliesSections.add(parentUiid);
             }
         }
         
         await fetch('/evenement/comment/delete', {
             method: 'POST',
-            body: new URLSearchParams({ idEventComment: commentId })
+            body: new URLSearchParams({ commentUiid: commentUiid })
         });
         await loadInteractions();
     }
 
     async function handleCommentReport(e) {
-        const commentId = this.dataset.id;
-        showReportModal(commentId);
+        const commentUiid = this.dataset.uiid;
+        showReportModal(commentUiid);
     }
 
-    function showReportModal(commentId) {
+    function showReportModal(commentUiid) {
         // Create modal if it doesn't exist
         let modal = document.getElementById('report-comment-modal');
         if (!modal) {
@@ -379,7 +379,7 @@ const EventInteractions = (function() {
             // Confirm report handler
             modal.querySelector('.confirm-report').addEventListener('click', async () => {
                 const reason = modal.querySelector('#report-reason').value.trim();
-                const storedCommentId = modal.dataset.commentId;
+                const storedCommentUiid = modal.dataset.commentUiid;
 
                 if (!reason) {
                     alert('Veuillez expliquer la raison du signalement.');
@@ -388,7 +388,7 @@ const EventInteractions = (function() {
 
                 await fetch('/evenement/comment/report', {
                     method: 'POST',
-                    body: new URLSearchParams({ idEventComment: storedCommentId, reason })
+                    body: new URLSearchParams({ commentUiid: storedCommentUiid, reason })
                 });
 
                 modal.style.display = 'none';
@@ -400,7 +400,7 @@ const EventInteractions = (function() {
         }
 
         // Store comment ID and show modal
-        modal.dataset.commentId = commentId;
+        modal.dataset.commentUiid = commentUiid;
         modal.style.display = 'flex';
     }
 
@@ -437,11 +437,11 @@ const EventInteractions = (function() {
     async function handleReplySubmit(e) {
         e.preventDefault();
         const formData = new FormData(this);
-        const parentId = this.dataset.parent;
+        const parentUiid = this.dataset.parent;
 
         // Track that this section should stay open
-        if (parentId) {
-            openRepliesSections.add(parseInt(parentId));
+        if (parentUiid) {
+            openRepliesSections.add(parentUiid);
         }
 
         const response = await fetch('/evenement/comment/reply', {
@@ -460,17 +460,17 @@ const EventInteractions = (function() {
     }
 
     function handleToggleReplies(e) {
-        const commentId = this.dataset.id;
-        const repliesDiv = document.getElementById(`replies-${commentId}`);
+        const commentUiid = this.dataset.uiid;
+        const repliesDiv = document.getElementById(`replies-${commentUiid}`);
         const count = repliesDiv.children.length;
         
         if (repliesDiv.style.display === 'none') {
             repliesDiv.style.display = 'block';
-            openRepliesSections.add(parseInt(commentId));
+            openRepliesSections.add(commentUiid);
             this.textContent = "Masquer les réponses";
         } else {
             repliesDiv.style.display = 'none';
-            openRepliesSections.delete(parseInt(commentId));
+            openRepliesSections.delete(commentUiid);
             this.textContent = `Voir toutes les ${count} réponse${count > 1 ? 's' : ''}`;
         }
     }
@@ -487,8 +487,8 @@ const EventInteractions = (function() {
     }
 
     return {
-        init: function(evId, loggedIn, userId = null) {
-            eventId = evId;
+        init: function(evUiid, loggedIn, userId = null) {
+            eventUiid = evUiid;
             isLoggedIn = loggedIn;
             currentUserId = userId;
             loadInteractions();
