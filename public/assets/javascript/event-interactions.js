@@ -2,6 +2,7 @@ const EventInteractions = (function() {
     let eventId = null;
     let isLoggedIn = false;
     let interactionData = null;
+    let currentUserId = null; // Add this to store current user ID
 
     const SVG_ICONS = {
         likeActive: `<svg stroke="currentColor" fill="#0053f9ff" stroke-width="1" viewBox="0 0 1024 1024" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg"><path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7 0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4 47.6-20.3 78.3-66.8 78.3-118.4 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z"></path></svg>`,
@@ -88,12 +89,59 @@ const EventInteractions = (function() {
         attachCommentEventListeners();
     }
 
+    function formatCommentDate(dateString) {
+        const commentDate = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - commentDate;
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const diffWeeks = Math.floor(diffDays / 7);
+
+        // Format hour
+        const hours = commentDate.getHours().toString().padStart(2, '0');
+        const minutes = commentDate.getMinutes().toString().padStart(2, '0');
+        const timeString = `${hours}:${minutes}`;
+
+        // Today - show only time
+        if (diffDays === 0) {
+            return `Aujourd'hui à ${timeString}`;
+        }
+        
+        // Yesterday
+        if (diffDays === 1) {
+            return `Hier à ${timeString}`;
+        }
+        
+        // 2-6 days ago
+        if (diffDays >= 2 && diffDays <= 6) {
+            return `Il y a ${diffDays} jours`;
+        }
+        
+        // 1 week ago
+        if (diffWeeks === 1) {
+            return `Il y a 1 semaine`;
+        }
+        
+        // Multiple weeks ago
+        if (diffWeeks > 1 && diffWeeks < 4) {
+            return `Il y a ${diffWeeks} semaines`;
+        }
+        
+        // More than 4 weeks - show full date
+        const day = commentDate.getDate().toString().padStart(2, '0');
+        const month = (commentDate.getMonth() + 1).toString().padStart(2, '0');
+        const year = commentDate.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
     function renderComment(comment, replies = []) {
         const hasReplies = replies.length > 0;
+        const formattedDate = formatCommentDate(comment.createdAt);
+        const canDelete = isLoggedIn && currentUserId && comment.idUser == currentUserId;
         
         let html = `
             <div class="comment" data-id="${comment.idEventComment}">
                 <b>${escapeHtml(comment.firstName)} ${escapeHtml(comment.lastName)}</b>
+                <small style="color:#999;margin-left:8px;">${formattedDate}</small>
                 <p>${escapeHtml(comment.content).replace(/\n/g, '<br>')}</p>
                 <div>
                     <span>${comment.likesCount > 0 ? comment.likesCount : ''}</span>
@@ -104,7 +152,7 @@ const EventInteractions = (function() {
                         <button class="reply-comment-btn" data-id="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
                             ${SVG_ICONS.commentReply}
                         </button>
-                        ${comment.idUser == '<?= $_SESSION["idUser"] ?? 0 ?>' ? `
+                        ${canDelete ? `
                             <button class="delete-comment-btn" data-id="${comment.idEventComment}" style="background:none;border:none;vertical-align:middle;">
                                 ${SVG_ICONS.commentDelete}
                             </button>
@@ -118,9 +166,13 @@ const EventInteractions = (function() {
         if (hasReplies) {
             html += `<div class="replies" id="replies-${comment.idEventComment}" style="margin-left:2em;display:none;">`;
             replies.forEach(reply => {
+                const replyFormattedDate = formatCommentDate(reply.createdAt);
+                const canDeleteReply = isLoggedIn && currentUserId && reply.idUser == currentUserId;
+                
                 html += `
                     <div class="comment reply" data-id="${reply.idEventComment}">
                         <b>${escapeHtml(reply.firstName)} ${escapeHtml(reply.lastName)}</b>
+                        <small style="color:#999;margin-left:8px;">${replyFormattedDate}</small>
                         <p>${escapeHtml(reply.content).replace(/\n/g, '<br>')}</p>
                         <div>
                             <span>${reply.likesCount > 0 ? reply.likesCount : ''}</span>
@@ -131,7 +183,7 @@ const EventInteractions = (function() {
                                 <button class="reply-comment-btn" data-id="${reply.idEventComment}" style="background:none;border:none;vertical-align:middle;">
                                     ${SVG_ICONS.commentReply}
                                 </button>
-                                ${reply.idUser == '<?= $_SESSION["idUser"] ?? 0 ?>' ? `
+                                ${canDeleteReply ? `
                                     <button class="delete-comment-btn" data-id="${reply.idEventComment}" style="background:none;border:none;vertical-align:middle;">
                                         ${SVG_ICONS.commentDelete}
                                     </button>
@@ -323,9 +375,10 @@ const EventInteractions = (function() {
     }
 
     return {
-        init: function(evId, loggedIn) {
+        init: function(evId, loggedIn, userId = null) {
             eventId = evId;
             isLoggedIn = loggedIn;
+            currentUserId = userId;
             loadInteractions();
         }
     };

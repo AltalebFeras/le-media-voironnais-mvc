@@ -770,9 +770,12 @@ class EvenementController extends AbstractController
             // Check if connected user has liked or favourited
             $userHasLiked = false;
             $userHasFavourited = false;
+            $currentUserId = null;
+            
             if (isset($_SESSION['idUser'])) {
-                $userHasLiked = $this->repo->hasUserLikedEvent($_SESSION['idUser'], $idEvenement);
-                $userHasFavourited = $this->repo->hasUserFavouritedEvent($_SESSION['idUser'], $idEvenement);
+                $currentUserId = $_SESSION['idUser'];
+                $userHasLiked = $this->repo->hasUserLikedEvent($currentUserId, $idEvenement);
+                $userHasFavourited = $this->repo->hasUserFavouritedEvent($currentUserId, $idEvenement);
             }
 
             echo json_encode([
@@ -782,7 +785,8 @@ class EvenementController extends AbstractController
                 'likesCount' => $likesCount,
                 'commentsCount' => $commentsCount,
                 'userHasLiked' => $userHasLiked,
-                'userHasFavourited' => $userHasFavourited
+                'userHasFavourited' => $userHasFavourited,
+                'currentUserId' => $currentUserId
             ]);
         } catch (Exception $e) {
             http_response_code(400);

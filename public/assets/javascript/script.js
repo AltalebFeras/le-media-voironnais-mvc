@@ -8,7 +8,8 @@
 document.querySelectorAll("form").forEach(function (form) {
   form.addEventListener("submit", function (e) {
     // Exclude specific forms if needed, e.g.:
-    // if (form.id === "formGroupCalculator") return;
+    let formIdExclusions = ["add-comment-form", "reply-comment-form"];
+    if (formIdExclusions.includes(form.id)) return;
     if (!document.getElementById("loaderOverlay")) {
       const overlay = document.createElement("div");
       overlay.id = "loaderOverlay";
