@@ -26,13 +26,50 @@ document.querySelectorAll("form").forEach(function (form) {
         zIndex: 9999,
       });
 
-      const loaderImage = document.createElement("img");
-      loaderImage.src = "/assets/images/loader/loader.svg";
-      loaderImage.alt = "Chargement...";
-      loaderImage.style.width = "150px";
-      loaderImage.style.zIndex = 9999;
+      // Detect Firefox browser
+      const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
-      overlay.appendChild(loaderImage);
+      if (isFirefox) {
+        // Use inline SVG for Firefox (matches external loader design)
+        const loaderContainer = document.createElement("div");
+        loaderContainer.innerHTML = `
+          <svg width="150" height="150" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <style>
+                @keyframes spiral-spin {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+                }
+                .spiral-loader {
+                  transform-origin: 50% 50%;
+                  animation: spiral-spin 1.2s linear infinite;
+                }
+              </style>
+            </defs>
+            <g class="spiral-loader">
+              <path d="M50,10 A40,40 0 0,1 90,50" fill="none" stroke="#000000" stroke-width="8" stroke-linecap="round"/>
+              <path d="M90,50 A40,40 0 0,1 50,90" fill="none" stroke="#000000" stroke-width="8" stroke-linecap="round" opacity="0.7"/>
+              <path d="M50,90 A40,40 0 0,1 10,50" fill="none" stroke="#000000" stroke-width="8" stroke-linecap="round" opacity="0.4"/>
+              <path d="M10,50 A40,40 0 0,1 50,10" fill="none" stroke="#000000" stroke-width="8" stroke-linecap="round" opacity="0.1"/>
+            </g>
+          </svg>
+        `;
+        loaderContainer.setAttribute("role", "status");
+        loaderContainer.setAttribute("aria-label", "Chargement...");
+        loaderContainer.style.display = "flex";
+        loaderContainer.style.justifyContent = "center";
+        loaderContainer.style.alignItems = "center";
+        overlay.appendChild(loaderContainer);
+      } else {
+        // Use external SVG for other browsers
+        const loaderImage = document.createElement("img");
+        loaderImage.src = "/assets/images/loader/loader.svg";
+        loaderImage.alt = "Chargement...";
+        loaderImage.style.width = "150px";
+        loaderImage.style.zIndex = 9999;
+        overlay.appendChild(loaderImage);
+      }
+
       document.body.appendChild(overlay);
     }
 
