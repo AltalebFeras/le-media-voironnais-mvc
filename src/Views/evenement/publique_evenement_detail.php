@@ -7,57 +7,7 @@ $endDate = new DateTime($evenement['endDate']);
 ?>
 
 <link rel="stylesheet" href="<?= HOME_URL ?>assets/css/public_event_detail.css">
-<style>
-    .popup {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    }
 
-    .popup .card {
-        background: white;
-        padding: 2em;
-        border-radius: 8px;
-        position: relative;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .popup textarea {
-        width: 100%;
-        padding: 0.5em;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        resize: vertical;
-    }
-
-    .alert-success {
-        animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-</style>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <main class="event-detail-main">

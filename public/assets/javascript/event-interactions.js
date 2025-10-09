@@ -104,7 +104,7 @@ const EventInteractions = (function() {
 
         // Today - show only time
         if (diffDays === 0) {
-            return `Aujourd'hui à ${timeString}`;
+            return `${timeString}`;
         }
         
         // Yesterday
