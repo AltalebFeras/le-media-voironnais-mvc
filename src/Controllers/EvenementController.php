@@ -744,6 +744,51 @@ class EvenementController extends AbstractController
             $this->redirect('evenements', ['error' => 'true']);
         }
     }
+      /**
+     * Get event interaction data (comments, likes, favorites) as JSON
+     */
+    public function getEventInteractions()
+    {
+        try {
+            header('Content-Type: application/json');
+            
+            $idEvenement = isset($_GET['idEvenement']) ? (int)$_GET['idEvenement'] : 0;
+            
+            if (!$idEvenement) {
+                throw new Exception("ID d'événement invalide");
+            }
+
+            // Fetch comments and replies
+            $commentsData = $this->repo->getEventComments($idEvenement);
+            $comments = $commentsData['comments'];
+            $replies = $commentsData['replies'];
+
+            // Count likes and comments
+            $likesCount = $this->repo->countEventLikes($idEvenement);
+            $commentsCount = $this->repo->countEventComments($idEvenement);
+
+            // Check if connected user has liked or favourited
+            $userHasLiked = false;
+            $userHasFavourited = false;
+            if (isset($_SESSION['idUser'])) {
+                $userHasLiked = $this->repo->hasUserLikedEvent($_SESSION['idUser'], $idEvenement);
+                $userHasFavourited = $this->repo->hasUserFavouritedEvent($_SESSION['idUser'], $idEvenement);
+            }
+
+            echo json_encode([
+                'success' => true,
+                'comments' => $comments,
+                'replies' => $replies,
+                'likesCount' => $likesCount,
+                'commentsCount' => $commentsCount,
+                'userHasLiked' => $userHasLiked,
+                'userHasFavourited' => $userHasFavourited
+            ]);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
 
     public function inscriptionEvent($composedRoute)
     {

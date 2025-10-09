@@ -130,6 +130,14 @@ switch ($route) {
         break;
 
     // Event like/favourite/comment endpoints (AJAX)
+    case HOME_URL . 'evenement/interactions':
+        if ($method === 'GET') {
+            $evenementController->getEventInteractions();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
     case HOME_URL . 'evenement/like':
     case HOME_URL . 'evenement/favourite':
     case HOME_URL . 'evenement/comment':
