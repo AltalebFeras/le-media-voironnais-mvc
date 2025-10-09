@@ -6,7 +6,9 @@ use Exception;
 use PDO;
 use src\Models\Evenement;
 use src\Repositories\DatabaseConnection;
+use src\Services\BadWordsFilter;
 use src\Services\Database;
+use src\Services\Helper;
 
 class EvenementRepository
 {
@@ -111,9 +113,15 @@ class EvenementRepository
         $idEvenement = $this->getIdByUiid($eventUiid);
         if (!$idEvenement) return false;
         
+        // Check for bad words
+        $badWordsFilter = new BadWordsFilter();
+        if ($badWordsFilter::containsBadWords($content)) {
+            throw new Exception("Votre commentaire contient des mots inappropriés.");
+        }
+        
         $parentId = $parentUiid ? $this->getCommentIdByUiid($parentUiid) : null;
         
-        $helper = new \src\Services\Helper();
+        $helper = new Helper();
         $commentUiid = $helper->generateUiid();
         
         $stmt = $this->pdo->prepare("INSERT INTO event_comment (uiid, idEvenement, idUser, content, parentId, createdAt) VALUES (?, ?, ?, ?, ?, NOW())");

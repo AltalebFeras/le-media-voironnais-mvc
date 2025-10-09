@@ -382,7 +382,7 @@ const EventInteractions = (function() {
                 const storedCommentUiid = modal.dataset.commentUiid;
 
                 if (!reason) {
-                    alert('Veuillez expliquer la raison du signalement.');
+                    showErrorMessage('Veuillez expliquer la raison du signalement.');
                     return;
                 }
 
@@ -413,7 +413,18 @@ const EventInteractions = (function() {
         
         setTimeout(() => {
             successDiv.remove();
-        }, 3000);
+        }, 5000);
+    }
+    function showErrorMessage(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'alert alert-danger';
+        errorDiv.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;padding:1em;background:#dc3545;color:white;border-radius:4px;';
+        errorDiv.textContent = message;
+        document.body.appendChild(errorDiv);
+
+        setTimeout(() => {
+            errorDiv.remove();
+        }, 5000);
     }
 
     async function handleCommentSubmit(e) {
@@ -430,7 +441,7 @@ const EventInteractions = (function() {
             this.reset();
             await loadInteractions();
         } else {
-            alert(data.error || "Erreur");
+            showErrorMessage(data.error || "Erreur");
         }
     }
 
@@ -455,7 +466,7 @@ const EventInteractions = (function() {
             this.style.display = 'none';
             await loadInteractions();
         } else {
-            alert(data.error || "Erreur");
+            showErrorMessage(data.error || "Erreur");
         }
     }
 

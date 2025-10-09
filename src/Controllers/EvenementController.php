@@ -1093,8 +1093,12 @@ public function likeEvent()
             return;
         }
         
-        $commentUiid = $this->repo->addEventCommentByUiid($idUser, $eventUiid, $content, $parentUiid);
-        echo json_encode(['success' => true, 'commentUiid' => $commentUiid]);
+        try {
+            $commentUiid = $this->repo->addEventCommentByUiid($idUser, $eventUiid, $content, $parentUiid);
+            echo json_encode(['success' => true, 'commentUiid' => $commentUiid]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
     }
 
     public function likeEventComment()
@@ -1126,8 +1130,12 @@ public function likeEvent()
             return;
         }
         
-        $commentUiid = $this->repo->addEventCommentByUiid($idUser, $eventUiid, $content, $parentUiid);
-        echo json_encode(['success' => true, 'commentUiid' => $commentUiid]);
+        try {
+            $commentUiid = $this->repo->addEventCommentByUiid($idUser, $eventUiid, $content, $parentUiid);
+            echo json_encode(['success' => true, 'commentUiid' => $commentUiid]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+        }
     }
 
     public function deleteEventComment()
