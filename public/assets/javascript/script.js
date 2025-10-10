@@ -154,12 +154,20 @@ $(document).ready(function() {
     e.stopPropagation();
     $burger.toggleClass("active");
     $nav.toggleClass("open");
+    
+    // Prevent body scroll when menu is open
+    if ($nav.hasClass("open")) {
+      $('body').addClass("menu-open");
+    } else {
+      $('body').removeClass("menu-open");
+    }
   });
 
   $nav.find("a").each(function() {
     $(this).on("click", function() {
       $burger.removeClass("active");
       $nav.removeClass("open");
+      $('body').removeClass("menu-open");
     });
   });
 
@@ -171,6 +179,7 @@ $(document).ready(function() {
     ) {
       $burger.removeClass("active");
       $nav.removeClass("open");
+      $('body').removeClass("menu-open");
     }
   });
 
@@ -205,15 +214,16 @@ $(document).ready(function() {
   }
 });
 
-// Notifications (polling + dropdown)
+// Notifications (polling + popup)
 (function() {
   const $bell = $("#notifBell");
   const $badge = $("#notifCount");
-  const $dropdown = $("#notifDropdown");
+  const $popup = $("#notifDropdown");
   const $list = $("#notifList");
   const $markAllBtn = $("#notifMarkAll");
+  const $closeBtn = $("#notifClosePopup");
 
-  if (!$bell.length || !$badge.length || !$dropdown.length || !$list.length) return;
+  if (!$bell.length || !$badge.length || !$popup.length || !$list.length) return;
 
   let polling = null;
   let lastOpenAt = 0;
@@ -291,7 +301,6 @@ $(document).ready(function() {
               });
               $li.removeClass("unread");
               $li.addClass("read");
-              // decrement badge
               const current = parseInt($badge.text() || "0", 10);
               if (current > 1) {
                 $badge.text(String(current - 1));
@@ -313,7 +322,6 @@ $(document).ready(function() {
     }
   }
 
-  // basic HTML escaping
   function escapeHtml(str) {
     return String(str)
       .replaceAll("&", "&amp;")
@@ -323,37 +331,49 @@ $(document).ready(function() {
       .replaceAll("'", "&#039;");
   }
 
-  function openDropdown() {
-    $dropdown.removeClass("d-none");
+  function openPopup() {
+    $popup.removeClass("d-none");
     $bell.attr("aria-expanded", "true");
+    $('body').css('overflow', 'hidden');
     const now = Date.now();
     if (now - lastOpenAt > 800) {
       loadList(1, 10);
       lastOpenAt = now;
     }
-    // click-outside to close
-    const closeOnOutside = (e) => {
-      if (!$dropdown.is(e.target) && !$dropdown.has(e.target).length && 
-          !$bell.is(e.target) && !$bell.has(e.target).length) {
-        closeDropdown();
-        $(document).off("click", closeOnOutside);
-      }
-    };
-    setTimeout(
-      () => $(document).on("click", closeOnOutside),
-      0
-    );
   }
 
-  function closeDropdown() {
-    $dropdown.addClass("d-none");
+  function closePopup() {
+    $popup.addClass("d-none");
     $bell.attr("aria-expanded", "false");
+    $('body').css('overflow', 'auto');
   }
 
   $bell.on("click", (e) => {
     e.preventDefault();
-    if ($dropdown.hasClass("d-none")) openDropdown();
-    else closeDropdown();
+    e.stopPropagation();
+    if ($popup.hasClass("d-none")) openPopup();
+    else closePopup();
+  });
+
+  // Close button
+  if ($closeBtn.length) {
+    $closeBtn.on("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closePopup();
+    });
+  }
+
+  // Click outside to close (on overlay)
+  $popup.on("click", function(e) {
+    if ($(e.target).is($popup)) {
+      closePopup();
+    }
+  });
+
+  // Prevent clicks inside popup content from closing
+  $popup.find('.notif-popup-content').on('click', function(e) {
+    e.stopPropagation();
   });
 
   if ($markAllBtn.length) {
@@ -374,7 +394,6 @@ $(document).ready(function() {
     });
   }
 
-  // Start polling when tab visible, stop when hidden
   function startPolling() {
     if (polling) return;
     polling = setInterval(refreshCount, 20000);
@@ -585,3 +604,4 @@ $(document).ready(function() {
     }, 7000);
   }
 });
+
