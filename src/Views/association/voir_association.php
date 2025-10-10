@@ -86,9 +86,6 @@
                         <span class="badge <?= $association->getIsActive() ? 'badge-success' : 'badge-secondary' ?> mr-2">
                             <?= $association->getIsActive() ? 'Active' : 'Inactive' ?>
                         </span>
-                        <span class="badge <?= $association->getIsPublic() ? 'badge-info' : 'badge-warning' ?>">
-                            <?= $association->getIsPublic() ? 'Publique' : 'Privée' ?>
-                        </span>
                     </div>
                 </div>
                 <div>

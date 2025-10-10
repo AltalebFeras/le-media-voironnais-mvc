@@ -225,7 +225,6 @@ class AssociationRepository
                      phone = :phone, 
                      email = :email, 
                      website = :website, 
-                     isActive = :isActive,
                      idVille = :idVille,
                      updatedAt = :updatedAt
                      WHERE idAssociation = :idAssociation";
@@ -239,7 +238,6 @@ class AssociationRepository
                 'phone' => $association->getPhone(),
                 'email' => $association->getEmail(),
                 'website' => $association->getWebsite(),
-                'isActive' => $association->getIsActive(),
                 'idVille' => $association->getIdVille(),
                 'updatedAt' => $association->getUpdatedAt(),
                 'idAssociation' => $association->getIdAssociation()

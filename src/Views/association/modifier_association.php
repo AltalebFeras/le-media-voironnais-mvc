@@ -84,19 +84,6 @@
                                 placeholder="https://example.com"
                                 value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['website'])) ? htmlspecialchars($_SESSION['form_data']['website']) : htmlspecialchars($association->getWebsite() ?? '') ?>">
                         </div>
-
-                        <div>
-                            <div class="flex-row align-items-center">
-                                <input type="checkbox" id="isActive" name="isActive"
-                                    <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['isActive'])) ? $_SESSION['form_data']['isActive'] : $association->getIsActive()) ? 'checked' : '' ?>>
-                                <label for="isActive">
-                                    Association active
-                                </label>
-                            </div>
-                            <small class="text-muted">Une association inactive ne sera pas visible publiquement</small>
-                        </div>
-
-                        <hr>
                     </div>
 
                     <div class="flex-row justify-content-between mt">

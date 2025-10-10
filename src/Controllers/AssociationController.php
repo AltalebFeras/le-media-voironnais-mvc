@@ -89,7 +89,7 @@ class AssociationController extends AbstractController
                     }
                 }
 
-                if (!$isOwner && !$isMember && !$association->getIsPublic()) {
+                if (!$isOwner && !$isMember) {
                     $errors['access'] = "Vous n'avez pas accès à cette association";
                 }
             }
@@ -283,7 +283,6 @@ class AssociationController extends AbstractController
             $email = isset($_POST['email']) ? htmlspecialchars(trim($_POST['email'])) : null;
             $website = isset($_POST['website']) ? htmlspecialchars(trim($_POST['website'])) : null;
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
-            $isActive = isset($_POST['isActive']) ? 1 : 0;
             $_SESSION['form_data'] = $_POST;
 
             $errors = [];
@@ -306,7 +305,6 @@ class AssociationController extends AbstractController
                 ->setPhone($phone)
                 ->setEmail($email)
                 ->setWebsite($website)
-                ->setIsActive($isActive)
                 ->setIdVille($idVille)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
             // Regenerate slug if name changed

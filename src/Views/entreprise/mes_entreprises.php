@@ -48,7 +48,16 @@
                                 <p><small class="text-muted">SIRET: <?= ($entreprise->getSiret()) ?></small></p>
                             <?php endif; ?>
                         </div>
-
+                        <div>
+                            <p>
+                                <strong>Statut:</strong>
+                                <?php if ($entreprise->getIsActive()): ?>
+                                    <span class="text-success">Active</span>
+                                <?php else: ?>
+                                    <span class="text-muted">Inactive</span>
+                                <?php endif; ?>
+                            </p>
+                        </div>
                         <div class="flex-row justify-content-between mt">
                             <a href="<?= HOME_URL . 'mes_entreprises?action=voir&uiid=' . $entreprise->getUiid() ?>" class="btn linkNotDecorated">
                                 Voir

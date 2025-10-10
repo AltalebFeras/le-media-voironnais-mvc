@@ -19,7 +19,6 @@ class Association
     private ?string $email;
     private ?string $website;
     private bool $isActive;
-    private bool $isPublic;
     private bool $isDeleted;
     private int $idUser;
     private int $idVille;
@@ -278,26 +277,6 @@ class Association
     }
 
     /**
-     * Get the value of isPublic
-     */
-    public function getIsPublic(): bool
-    {
-        return $this->isPublic;
-    }
-
-    /**
-     * Set the value of isPublic
-     *
-     * @return  self
-     */
-    public function setIsPublic($isPublic): static
-    {
-        $this->isPublic = $isPublic;
-
-        return $this;
-    }
-
-    /**
      * Get the value of isDeleted
      */
     public function getIsDeleted()
@@ -390,7 +369,6 @@ class Association
             'email' => $this->email,
             'website' => $this->website,
             'isActive' => $this->isActive,
-            'isPublic' => $this->isPublic,
             'isDeleted' => $this->isDeleted,
             'idUser' => $this->idUser,
             'idVille' => $this->idVille,

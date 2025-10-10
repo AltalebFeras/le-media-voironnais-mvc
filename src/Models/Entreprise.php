@@ -21,7 +21,6 @@ class Entreprise
     private ?string $siret;
     private bool $isActive;
     private bool $hasRequestForActivation;
-    private bool $isPublic;
     private bool $isPartner;
     private bool $isDeleted;
     private int $idUser;
@@ -439,25 +438,6 @@ class Entreprise
     }
 
     /**
-     * Get the value of isPublic
-     */
-    public function getIsPublic(): bool
-    {
-        return $this->isPublic;
-    }
-
-    /**
-     * Set the value of isPublic
-     *
-     * @return  self
-     */
-    public function setIsPublic(bool $isPublic): static
-    {
-        $this->isPublic = $isPublic;
-        return $this;
-    }
-
-    /**
      * Get the value of isDeleted
      */
     public function getIsDeleted()
@@ -554,7 +534,6 @@ class Entreprise
             'website' => $this->website,
             'siret' => $this->siret,
             'isActive' => $this->isActive,
-            'isPublic' => $this->isPublic,
             'isDeleted' => $this->isDeleted,
             'idUser' => $this->idUser,
             'idVille' => $this->idVille,

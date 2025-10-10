@@ -47,13 +47,6 @@
                                     <?php else: ?>
                                         <span class="text-muted">Inactive</span>
                                     <?php endif; ?>
-                                    |
-                                    <strong>Visibilité:</strong>
-                                    <?php if ($association->getIsPublic()): ?>
-                                        <span class="text-success">Publique</span>
-                                    <?php else: ?>
-                                        <span class="text-muted">Privée</span>
-                                    <?php endif; ?>
                                 </p>
                             </div>
                         </div>

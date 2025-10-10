@@ -193,7 +193,6 @@ class EntrepriseRepository
                      email = :email, 
                      website = :website,
                      siret = :siret,
-                     isActive = :isActive,
                      updatedAt = :updatedAt
                      WHERE idEntreprise = :idEntreprise";
 
@@ -207,7 +206,6 @@ class EntrepriseRepository
                 'email' => $entreprise->getEmail(),
                 'website' => $entreprise->getWebsite(),
                 'siret' => $entreprise->getSiret(),
-                'isActive' => $entreprise->getIsActive(),
                 'updatedAt' => $entreprise->getUpdatedAt(),
                 'idEntreprise' => $entreprise->getIdEntreprise()
             ]);
@@ -371,8 +369,8 @@ class EntrepriseRepository
 
     public function create(Entreprise $entreprise)
     {
-        $sql = "INSERT INTO entreprise (name, description, logoPath, bannerPath, address, phone, email, website, siret, isActive, isPublic, idUser, idVille, createdAt) 
-                VALUES (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :isActive, :isPublic, :idUser, :idVille, NOW())";
+        $sql = "INSERT INTO entreprise (name, description, logoPath, bannerPath, address, phone, email, website, siret, isActive, idUser, idVille, createdAt) 
+                VALUES (:name, :description, :logoPath, :bannerPath, :address, :phone, :email, :website, :siret, :isActive, :idUser, :idVille, NOW())";
 
         $stmt = $this->DB->prepare($sql);
 
@@ -386,7 +384,6 @@ class EntrepriseRepository
         $stmt->bindParam(':website', $entreprise->getWebsite());
         $stmt->bindParam(':siret', $entreprise->getSiret());
         $stmt->bindParam(':isActive', $entreprise->getIsActive(), PDO::PARAM_BOOL);
-        $stmt->bindParam(':isPublic', $entreprise->getIsPublic(), PDO::PARAM_BOOL);
         $stmt->bindParam(':idUser', $entreprise->getIdUser(), PDO::PARAM_INT);
         $stmt->bindParam(':idVille', $entreprise->getIdVille(), PDO::PARAM_INT);
 
@@ -410,8 +407,6 @@ class EntrepriseRepository
                 email = :email, 
                 website = :website, 
                 siret = :siret, 
-                isActive = :isActive, 
-                isPublic = :isPublic, 
                 idVille = :idVille, 
                 updatedAt = NOW() 
                 WHERE idEntreprise = :id";
@@ -427,8 +422,6 @@ class EntrepriseRepository
         $stmt->bindParam(':email', $entreprise->getEmail());
         $stmt->bindParam(':website', $entreprise->getWebsite());
         $stmt->bindParam(':siret', $entreprise->getSiret());
-        $stmt->bindParam(':isActive', $entreprise->getIsActive(), PDO::PARAM_BOOL);
-        $stmt->bindParam(':isPublic', $entreprise->getIsPublic(), PDO::PARAM_BOOL);
         $stmt->bindParam(':idVille', $entreprise->getIdVille(), PDO::PARAM_INT);
         $stmt->bindParam(':id', $entreprise->getIdEntreprise(), PDO::PARAM_INT);
 

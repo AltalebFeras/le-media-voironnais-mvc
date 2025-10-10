@@ -90,19 +90,6 @@
                                 placeholder="https://example.com"
                                 value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['website'])) ? htmlspecialchars($_SESSION['form_data']['website']) : htmlspecialchars($entreprise->getWebsite() ?? '') ?>">
                         </div>
-
-                        <div>
-                            <div class="flex-row align-items-center">
-                                <input type="checkbox" id="isActive" name="isActive"
-                                    <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['isActive'])) ? $_SESSION['form_data']['isActive'] : $entreprise->getIsActive()) ? 'checked' : '' ?>>
-                                <label for="isActive">
-                                    Entreprise publiée
-                                </label>
-                            </div>
-                            <small class="text-muted">Une entreprise non publiée ne sera pas visible publiquement</small>
-                        </div>
-
-                        <hr>
                     </div>
 
                     <div class="flex-row justify-content-between mt">
