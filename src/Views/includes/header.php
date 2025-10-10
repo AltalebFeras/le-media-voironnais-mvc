@@ -41,4 +41,8 @@
   <link rel="icon" type="image/png" sizes="32x32" href="<?= HOME_URL . 'assets/favicon/favicon-32x32.png' ?>">
   <link rel="icon" type="image/png" sizes="16x16" href="<?= HOME_URL . 'assets/favicon/favicon-16x16.png' ?>">
   <link rel="manifest" href="<?= HOME_URL . 'assets/favicon/site.webmanifest' ?>">
+  
+  <!-- jQuery -->
+  <script src="<?= HOME_URL . 'assets/javascript/jquery/dist/jquery.min.js' ?>"></script>
+  
   <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/global.css' ?>">
