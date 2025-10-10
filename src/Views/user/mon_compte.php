@@ -1,11 +1,11 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/mon_compte.css' ?>">
 
-<?php 
-if(isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])) {
-    include_once __DIR__ . '/../includes/navbar_admin.php'; 
+<?php
+if (isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])) {
+    include_once __DIR__ . '/../includes/navbar_admin.php';
 } else {
-    include_once __DIR__ . '/../includes/navbar.php'; 
+    include_once __DIR__ . '/../includes/navbar.php';
 }
 ?>
 <main style="padding:0;">
@@ -17,40 +17,76 @@ if(isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])
                 <div id="currentBanner" class="account-banner-placeholder">Aucune bannière</div>
             <?php endif; ?>
             <img id="bannerPreview" style="display:none;">
+            <button id="toggleBannerActions" class="btn btn-transparent more_vert" >
+                <span class="material-icons">more_vert</span>
+            </button>
         </div>
-        <div class="account-banner-actions">
-            <form method="post" action="<?= HOME_URL . 'mon_compte' ?>" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="edit_banner">
-                <label for="bannerInput" class="btn">
-                    Changer bannière
-                    <input type="file" id="bannerInput" name="banner" accept="image/*" required>
-                </label>
-                <button type="submit" class="btn" id="bannerSubmitBtn" disabled>Valider</button>
-                <button type="button" id="cancelBannerBtn" class="btn" style="display:none;">Annuler</button>
-            </form>
-            <?php if (!empty($_SESSION['bannerPath'])): ?>
-                <form method="post" action="<?= HOME_URL . 'mon_compte' ?>">
-                    <input type="hidden" name="action" value="delete_banner">
-                    <button type="submit" class="btn bg-danger">Supprimer</button>
+        
+        <div class="action-banner d-none">
+
+            <div class="account-banner-actions">
+                <form method="post" action="<?= HOME_URL . 'mon_compte' ?>" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="edit_banner">
+                    <label for="bannerInput" class="btn">
+                        Changer bannière
+                        <input type="file" id="bannerInput" name="banner" accept="image/*" required>
+                    </label>
+                    <button type="submit" class="btn" id="bannerSubmitBtn" disabled>Valider</button>
+                    <button type="button" id="cancelBannerBtn" class="btn" style="display:none;">Annuler</button>
                 </form>
-            <?php endif; ?>
+                <?php if (!empty($_SESSION['bannerPath'])): ?>
+                    <form method="post" action="<?= HOME_URL . 'mon_compte' ?>">
+                        <input type="hidden" name="action" value="delete_banner">
+                        <button type="submit" class="btn bg-danger">Supprimer</button>
+                    </form>
+                <?php endif; ?>
+            </div>
         </div>
         <!-- Profile picture overlaps banner -->
-        <div class="account-profile-picture">
+        <div class="account-profile-picture ">
             <img id="currentProfilePicture" src="<?= $_SESSION['avatarPath'] ?>" alt="user profile image">
-            <form method="post" action="<?= HOME_URL . 'mon_compte' ?>" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="edit_profile_picture">
-                <label for="profilePicture" class="btn">
-                    Modifier photo
-                    <input type="file" id="profilePicture" name="profilePicture" accept="image/*" required>
-                </label>
-                <button type="submit" class="btn">Valider</button>
-                <button type="button" id="cancelProfilePicture" class="btn" style="display:none;">Annuler</button>
-            </form>
-            <form action="<?= HOME_URL . 'mon_compte' ?>" method="post">
-                <input type="hidden" name="action" value="delete_profile_picture">
-                <button type="submit" class="btn">Supprimer</button>
-            </form>
+                <span id="toggleLogoActions" class="material-icons more_vert more_vert_logo bg-linear-primary">photo_camera</span>
+        </div>
+    </div>
+
+    <!-- Profile Picture Popup Modal -->
+    <div class="popup" id="profilePicturePopup">
+        <div class="card max-width-50">
+            <div class="flex-row justify-content-between align-items-center mb">
+                <h3 class="m-0">Gérer ma photo de profil</h3>
+                <button id="closeProfilePopup" class="btn btn-primary" style="padding: 0.5rem;">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            
+            <div class="profile-preview-container" style="text-align: center; margin: 1rem 0;">
+                <img id="profilePicturePreviewModal" src="<?= $_SESSION['avatarPath'] ?>" alt="Profile preview" style="max-width: 180px; max-height: 180px; border-radius: 50%; margin: 0 auto;">
+            </div>
+
+            <div id="profileActionsDefault">
+                <form method="post" action="<?= HOME_URL . 'mon_compte' ?>" enctype="multipart/form-data" id="profilePictureForm">
+                    <input type="hidden" name="action" value="edit_profile_picture">
+                    <div class="flex-row justify-content-center gap-2" style="gap: 1rem;">
+                        <label for="profilePicture" class="btn">
+                            Modifier photo
+                            <input type="file" id="profilePicture" name="profilePicture" accept="image/*" style="display: none;" required>
+                        </label>
+                        <button type="submit" class="btn btn-success d-none mb" id="profileSubmitBtn">Valider</button>
+                    </div>
+                </form>
+                <form action="<?= HOME_URL . 'mon_compte' ?>" method="post" class="mt" id="deleteProfileForm">
+                    <input type="hidden" name="action" value="delete_profile_picture">
+                    <div class="flex-row justify-content-center">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="profileActionsPreview" class="d-none">
+                <div class="flex-row justify-content-center gap-2" style="gap: 1rem;">
+                    <button type="button" id="cancelProfilePicture" class="btn btn-dark">Annuler</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -224,7 +260,7 @@ if(isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])
                         <?= $_SESSION['lastName'] ?>
                     </p>
                     <p>Email :
-                        <?= $_SESSION['email'] ?> 
+                        <?= $_SESSION['email'] ?>
                         <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=email' ?>" class=" linkNotDecorated btn btn-warning text-bold">Modifier</a>
                     </p>
                     <?php if (isset($_SESSION['newEmail'])): ?>

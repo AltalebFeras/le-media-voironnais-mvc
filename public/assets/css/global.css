@@ -378,12 +378,15 @@ header {
     box-shadow: 0 2px 8px rgba(58, 124, 165, 0.08);
     transition: background 0.2s, box-shadow 0.2s;
 }
+
 .btn-primary {
     background: linear-gradient(90deg, #3a7ca5 0%, #6ed3cf 100%);
 }
+
 .btn-secondary {
     background: linear-gradient(90deg, #0E2A34 0%, #213944 100%);
 }
+
 .btn-info {
     background: linear-gradient(90deg, #6ed3cf 0%, #3a7ca5 100%);
 }
@@ -398,6 +401,22 @@ header {
 
 .btn-warning {
     background: linear-gradient(90deg, #ffc107 0%, #e0a800 100%);
+}
+
+.btn-light {
+    background: linear-gradient(90deg, #f8f9fa 0%, #e2e6ea 100%);
+    color: #1a2636;
+}
+
+.btn-dark {
+    background: linear-gradient(90deg, #212529 0%, #343a40 100%);
+    color: #fff;
+}
+
+.btn-transparent {
+    background: transparent;
+    border: 2px solid #3a7ca5;
+    color: #3a7ca5;
 }
 
 .deconnexion {
@@ -535,33 +554,43 @@ input[type="submit"] {
 .pr {
     padding-right: 1rem;
 }
+
 .p-0 {
     padding: 0px;
 }
+
 .m-0 {
     margin: 0px;
 }
+
 .pt-0 {
     padding-top: 0px;
 }
+
 .pb-0 {
     padding-bottom: 0px;
 }
+
 .pl-0 {
     padding-left: 0px;
 }
+
 .pr-0 {
     padding-right: 0px;
 }
+
 .mt-0 {
     margin-top: 0px;
 }
+
 .mb-0 {
     margin-bottom: 0px;
 }
+
 .ml-0 {
     margin-left: 0px;
 }
+
 .mr-0 {
     margin-right: 0px;
 }
@@ -666,6 +695,7 @@ input[type="submit"] {
     align-items: center;
     gap: 1rem;
 }
+
 .flex-basis-content {
     flex-basis: content;
 }
@@ -749,7 +779,9 @@ input[type="submit"] {
 .bg-info {
     background-color: #17a2b8;
 }
-
+.bg-linear-primary {
+    background: linear-gradient(90deg, #3a7ca5 0%, #6ed3cf 100%);
+}
 .bg-light {
     background-color: #f8f9fa;
 }
@@ -1479,4 +1511,29 @@ ul {
     display: none;
     justify-content: center;
     align-items: center;
+}
+
+.popup .card {
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.gap-2 {
+    gap: 1rem;
+}
+
+.more_vert {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: solid 1px linear-gradient(90deg, #6ed3cf 0%, #3a7ca5 100%);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.more_vert_logo {
+    top: 105px;
+    right: 15px;
 }
