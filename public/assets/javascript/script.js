@@ -154,12 +154,20 @@ $(document).ready(function() {
     e.stopPropagation();
     $burger.toggleClass("active");
     $nav.toggleClass("open");
+    
+    // Prevent body scroll when menu is open
+    if ($nav.hasClass("open")) {
+      $('body').addClass("menu-open");
+    } else {
+      $('body').removeClass("menu-open");
+    }
   });
 
   $nav.find("a").each(function() {
     $(this).on("click", function() {
       $burger.removeClass("active");
       $nav.removeClass("open");
+      $('body').removeClass("menu-open");
     });
   });
 
@@ -171,6 +179,7 @@ $(document).ready(function() {
     ) {
       $burger.removeClass("active");
       $nav.removeClass("open");
+      $('body').removeClass("menu-open");
     }
   });
 

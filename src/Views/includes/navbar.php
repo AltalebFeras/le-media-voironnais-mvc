@@ -82,7 +82,7 @@
                 <span class="nav-text">Dashboard Admin</span>
               </a></li>
           <?php else: ?>
-            <li><a class="btn btn-primary linkNotDecorated" href="<?= HOME_URL . 'connexion' ?>">Connexion</a></li>
+            <li><a class="btn btn-primary linkNotDecorated btnConnexion" href="<?= HOME_URL . 'connexion' ?>">Connexion</a></li>
           <?php endif; ?>
         <?php endif; ?>
       </ul>

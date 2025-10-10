@@ -1122,6 +1122,7 @@ ul {
         top: 70px;
         left: 0;
         width: 100%;
+        max-width: 100vw;
         background: #fff;
         flex-direction: column;
         align-items: flex-start;
@@ -1133,6 +1134,7 @@ ul {
         pointer-events: none;
         transition: all 0.3s cubic-bezier(.4, 2, .6, 1);
         z-index: 1000;
+        overflow-x: hidden;
     }
 
     .nav-links.open {
@@ -1394,6 +1396,14 @@ ul {
 
 /* Extra: burger menu for mobile */
 @media screen and (max-width: 800px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    body.menu-open {
+        overflow: hidden;
+    }
+
     .burger {
         display: flex;
     }
@@ -1407,6 +1417,7 @@ ul {
         top: 60px;
         left: 0;
         width: 100vw;
+        max-width: 100%;
         background: #fff;
         flex-direction: column;
         align-items: flex-start;
@@ -1418,6 +1429,7 @@ ul {
         pointer-events: none;
         transition: all 0.3s cubic-bezier(.4, 2, .6, 1);
         z-index: 1000;
+        overflow-x: hidden;
     }
 
     .nav-links.open {
@@ -1454,6 +1466,7 @@ ul {
         flex-direction: row;
         justify-content: flex-start;
         width: 100%;
+        max-width: 100%;
         padding: 12px 16px;
         border-radius: 0;
         margin: 0;
@@ -1462,6 +1475,9 @@ ul {
 
     .nav-item .nav-text {
         font-size: 1rem;
+    }
+    .btnConnexion{
+        margin-left: 16px !important;
     }
 }
 
