@@ -15,6 +15,39 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Toggle banner actions visibility - Open Popup
+  const bannerPopup = document.getElementById("bannerPopup");
+  const closeBannerPopup = document.getElementById("closeBannerPopup");
+
+  if (toggleBannerActions && bannerPopup) {
+    toggleBannerActions.addEventListener("click", function () {
+      bannerPopup.style.display = "flex";
+    });
+  }
+
+  if (closeBannerPopup && bannerPopup) {
+    closeBannerPopup.addEventListener("click", function () {
+      bannerPopup.style.display = "none";
+      const bannerInput = document.getElementById("bannerInput");
+      if (bannerInput) {
+        bannerInput.value = "";
+        resetBannerPreview();
+      }
+    });
+
+    // Close popup when clicking outside
+    bannerPopup.addEventListener("click", function (e) {
+      if (e.target === bannerPopup) {
+        bannerPopup.style.display = "none";
+        const bannerInput = document.getElementById("bannerInput");
+        if (bannerInput) {
+          bannerInput.value = "";
+          resetBannerPreview();
+        }
+      }
+    });
+  }
+
   // Toggle logo actions visibility - Open Popup
   const toggleLogoActions = document.getElementById("toggleLogoActions");
   const profilePicturePopup = document.getElementById("profilePicturePopup");
@@ -52,10 +85,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Banner preview functionality
   const bannerInput = document.getElementById("bannerInput");
-  const bannerPreview = document.getElementById("bannerPreview");
-  const currentBanner = document.getElementById("currentBanner");
+  const bannerForm = document.getElementById("bannerForm");
   const bannerSubmitBtn = document.getElementById("bannerSubmitBtn");
   const cancelBannerBtn = document.getElementById("cancelBannerBtn");
+  const bannerPreviewModal = document.getElementById("bannerPreviewModal");
+  const bannerActionsDefault = document.getElementById("bannerActionsDefault");
+  const bannerActionsPreview = document.getElementById("bannerActionsPreview");
+  const deleteBannerForm = document.getElementById("deleteBannerForm");
+  const modifyBannerLabel = document.querySelector('label[for="bannerInput"]');
+  const originalBannerSrc = bannerPreviewModal && bannerPreviewModal.tagName === 'IMG' 
+    ? bannerPreviewModal.src 
+    : null;
+
+  function resetBannerPreview() {
+    if (bannerPreviewModal) {
+      if (originalBannerSrc && bannerPreviewModal.tagName === 'IMG') {
+        bannerPreviewModal.src = originalBannerSrc;
+      }
+    }
+    if (bannerSubmitBtn) bannerSubmitBtn.classList.add("d-none");
+    if (bannerActionsDefault) bannerActionsDefault.classList.remove("d-none");
+    if (bannerActionsPreview) bannerActionsPreview.classList.add("d-none");
+    if (deleteBannerForm) deleteBannerForm.style.display = "block";
+    if (modifyBannerLabel) modifyBannerLabel.style.display = "inline-block";
+  }
 
   if (bannerInput) {
     bannerInput.addEventListener("change", function (e) {
@@ -63,23 +116,34 @@ document.addEventListener("DOMContentLoaded", function () {
       if (file) {
         const reader = new FileReader();
         reader.onload = function (e) {
-          bannerPreview.src = e.target.result;
-          bannerPreview.style.display = "block";
-          currentBanner.style.display = "none";
-          if (bannerSubmitBtn) bannerSubmitBtn.disabled = false;
-          if (cancelBannerBtn) cancelBannerBtn.style.display = "inline-block";
+          if (bannerPreviewModal) {
+            if (bannerPreviewModal.tagName === 'IMG') {
+              bannerPreviewModal.src = e.target.result;
+            } else {
+              // Replace div with img
+              const newImg = document.createElement('img');
+              newImg.id = 'bannerPreviewModal';
+              newImg.src = e.target.result;
+              newImg.alt = 'Banner preview';
+              newImg.style.cssText = 'max-width: 100%; max-height: 300px; border-radius: 12px; margin: 0 auto;';
+              bannerPreviewModal.parentNode.replaceChild(newImg, bannerPreviewModal);
+            }
+          }
+          if (bannerSubmitBtn) bannerSubmitBtn.classList.remove("d-none");
+          if (deleteBannerForm) deleteBannerForm.style.display = "none";
+          if (modifyBannerLabel) modifyBannerLabel.style.display = "none";
+          if (bannerActionsPreview) bannerActionsPreview.classList.remove("d-none");
         };
         reader.readAsDataURL(file);
+      } else {
+        resetBannerPreview();
       }
     });
 
     if (cancelBannerBtn) {
       cancelBannerBtn.addEventListener("click", function () {
-        bannerPreview.style.display = "none";
-        currentBanner.style.display = "block";
         bannerInput.value = "";
-        if (bannerSubmitBtn) bannerSubmitBtn.disabled = true;
-        cancelBannerBtn.style.display = "none";
+        resetBannerPreview();
       });
     }
   }

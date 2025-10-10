@@ -1530,7 +1530,8 @@ ul {
     border: solid 1px linear-gradient(90deg, #6ed3cf 0%, #3a7ca5 100%);
     cursor: pointer;
     padding: 5px;
-    border-radius: 4px;
+    border-radius: 50%;
+    color: white;
 }
 
 .more_vert_logo {
