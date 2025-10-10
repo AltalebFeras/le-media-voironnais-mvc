@@ -1,7 +1,13 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/mon_compte.css' ?>">
-<?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
+<?php 
+if(isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])) {
+    include_once __DIR__ . '/../includes/navbar_admin.php'; 
+} else {
+    include_once __DIR__ . '/../includes/navbar.php'; 
+}
+?>
 <main style="padding:0;">
     <div class="account-banner-section">
         <div class="account-banner-wrapper">
