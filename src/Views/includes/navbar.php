@@ -23,32 +23,32 @@
       <ul class="nav-links" id="nav-links">
         <!-- Public Links -->
         <li><a class="link nav-item" href="<?= HOME_URL . 'actus' ?>">
-          <span class="material-icons">article</span>
-          <span class="nav-text">Actus</span>
-        </a></li>
+            <span class="material-icons">article</span>
+            <span class="nav-text">Actus</span>
+          </a></li>
         <li><a class="link nav-item" href="<?= HOME_URL . 'evenements' ?>">
-          <span class="material-icons">event</span>
-          <span class="nav-text">Événements</span>
-        </a></li>
+            <span class="material-icons">event</span>
+            <span class="nav-text">Événements</span>
+          </a></li>
 
         <?php if (isset($_SESSION['connected'])) : ?>
           <!-- Connected User Links -->
           <li><a class="link nav-item" href="<?= HOME_URL . 'chat' ?>">
-            <span class="material-icons">chat</span>
-            <span class="nav-text">Chat</span>
-          </a></li>
-          
+              <span class="material-icons">chat</span>
+              <span class="nav-text">Chat</span>
+            </a></li>
+
           <li class="nav-item-notification">
             <!-- Notification Badge include -->
             <?php include __DIR__ . '/notification_badge.php'; ?>
           </li>
-          
-        
-          
+
+
+
           <li><a class="link nav-item" href="<?= HOME_URL . 'mes_entreprises' ?>">
-            <span class="material-icons">business</span>
-            <span class="nav-text">Entreprises</span>
-          </a></li>
+              <span class="material-icons">business</span>
+              <span class="nav-text">Entreprises</span>
+            </a></li>
 
           <!-- Moi Dropdown -->
           <li class="nav-item-dropdown">
@@ -62,9 +62,9 @@
                 <span class="material-icons">account_circle</span>
                 <span><?= $_SESSION['firstName'] ?> <?= $_SESSION['lastName'] ?></span>
               </a>
-              <a class="nav-dropdown-item" href="<?= HOME_URL . 'dashboard' ?>">
-                <span class="material-icons">dashboard</span>
-                <span>Dashboard</span>
+              <a class="nav-dropdown-item" href="<?= HOME_URL . 'mes_entreprises' ?>">
+                <span class="material-icons">business</span>
+                <span class="nav-text">Mes entreprises</span>
               </a>
               <a class="nav-dropdown-item" href="<?= HOME_URL . 'mes_evenements' ?>">
                 <span class="material-icons">calendar_today</span>
@@ -84,9 +84,9 @@
         <?php else : ?>
           <?php if (isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])) : ?>
             <li><a class="link nav-item" href="<?= HOME_URL . 'admin/dashboard_admin' ?>">
-              <span class="material-icons">admin_panel_settings</span>
-              <span class="nav-text">Dashboard Admin</span>
-            </a></li>
+                <span class="material-icons">admin_panel_settings</span>
+                <span class="nav-text">Dashboard Admin</span>
+              </a></li>
           <?php else: ?>
             <li><a class="btn btn-primary linkNotDecorated" href="<?= HOME_URL . 'connexion' ?>">Connexion</a></li>
           <?php endif; ?>

@@ -425,8 +425,8 @@ header {
 }
 
 .link:hover {
-    text-decoration: underline;
-    color: #f76e11;
+    /* text-decoration: underline; */
+    /* color: #f76e11; */
 }
 
 /* styles gerneral for labels and all inputs types */
