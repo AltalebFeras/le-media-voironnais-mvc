@@ -5,15 +5,13 @@
 // if form id is not "formGroupCalculator", do not apply the loader
 
 // Loader logic: apply loader on any form submit, remove on form:invalid
-document.querySelectorAll("form").forEach(function (form) {
-  form.addEventListener("submit", function (e) {
+$("form").each(function() {
+  $(this).on("submit", function(e) {
     // Exclude specific forms if needed, e.g.:
     let formIdExclusions = ["add-comment-form", "reply-comment-form"];
-    if (formIdExclusions.includes(form.id)) return;
-    if (!document.getElementById("loaderOverlay")) {
-      const overlay = document.createElement("div");
-      overlay.id = "loaderOverlay";
-      Object.assign(overlay.style, {
+    if (formIdExclusions.includes(this.id)) return;
+    if ($("#loaderOverlay").length === 0) {
+      const overlay = $('<div></div>').attr('id', 'loaderOverlay').css({
         position: "fixed",
         top: 0,
         left: 0,
@@ -31,8 +29,7 @@ document.querySelectorAll("form").forEach(function (form) {
 
       if (isFirefox) {
         // Use inline SVG for Firefox (matches external loader design)
-        const loaderContainer = document.createElement("div");
-        loaderContainer.innerHTML = `
+        const loaderContainer = $('<div></div>').html(`
           <svg width="150" height="150" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <style>
@@ -53,169 +50,170 @@ document.querySelectorAll("form").forEach(function (form) {
               <path d="M10,50 A40,40 0 0,1 50,10" fill="none" stroke="#000000" stroke-width="8" stroke-linecap="round" opacity="0.1"/>
             </g>
           </svg>
-        `;
-        loaderContainer.setAttribute("role", "status");
-        loaderContainer.setAttribute("aria-label", "Chargement...");
-        loaderContainer.style.display = "flex";
-        loaderContainer.style.justifyContent = "center";
-        loaderContainer.style.alignItems = "center";
-        overlay.appendChild(loaderContainer);
+        `).attr("role", "status").attr("aria-label", "Chargement...").css({
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        });
+        overlay.append(loaderContainer);
       } else {
         // Use external SVG for other browsers
-        const loaderImage = document.createElement("img");
-        loaderImage.src = "/assets/images/loader/loader.svg";
-        loaderImage.alt = "Chargement...";
-        loaderImage.style.width = "150px";
-        loaderImage.style.zIndex = 9999;
-        overlay.appendChild(loaderImage);
+        const loaderImage = $('<img>').attr({
+          src: "/assets/images/loader/loader.svg",
+          alt: "Chargement..."
+        }).css({
+          width: "150px",
+          zIndex: 9999
+        });
+        overlay.append(loaderImage);
       }
 
-      document.body.appendChild(overlay);
+      $("body").append(overlay);
     }
 
-    const submitBtn = form.querySelector('[type="submit"]');
-    if (submitBtn) {
-      if (!submitBtn.dataset.originalText) {
-        submitBtn.dataset.originalText = submitBtn.textContent;
+    const $submitBtn = $(this).find('[type="submit"]');
+    if ($submitBtn.length) {
+      if (!$submitBtn.data("originalText")) {
+        $submitBtn.data("originalText", $submitBtn.text());
       }
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Chargement...";
+      $submitBtn.prop("disabled", true);
+      $submitBtn.text("Chargement...");
     }
   });
 });
 
 // Remove loader overlay if present when navigating back/forward
-window.addEventListener("pageshow", function (event) {
+$(window).on("pageshow", function(event) {
   if (
-    event.persisted ||
+    event.originalEvent.persisted ||
     performance.getEntriesByType("navigation")[0]?.type === "back_forward"
   ) {
-    const overlay = document.getElementById("loaderOverlay");
-    if (overlay) overlay.remove();
+    const $overlay = $("#loaderOverlay");
+    if ($overlay.length) $overlay.remove();
     // Optionally re-enable submit buttons if needed
-    document.querySelectorAll("form [type='submit']").forEach((btn) => {
-      btn.disabled = false;
-      if (btn.dataset.originalText) {
-        btn.textContent = btn.dataset.originalText;
+    $("form [type='submit']").each(function() {
+      $(this).prop("disabled", false);
+      if ($(this).data("originalText")) {
+        $(this).text($(this).data("originalText"));
       }
     });
   }
 });
 
 // Listen for custom "form:valid" event to show loader and submit
-document.addEventListener("form:valid", function (e) {
+$(document).on("form:valid", function(e) {
   const form = e.target;
   // Loader already shown on submit, just submit the form
   form.submit();
 });
 
 // Listen for custom "form:invalid" event to remove loader and re-enable submit
-document.addEventListener("form:invalid", function (e) {
-  const form = e.target;
-  const overlay = document.getElementById("loaderOverlay");
-  if (overlay) overlay.remove();
-  const submitBtn = form.querySelector('[type="submit"]');
-  if (submitBtn) {
-    submitBtn.disabled = false;
-    if (submitBtn.dataset.originalText) {
-      submitBtn.textContent = submitBtn.dataset.originalText;
+$(document).on("form:invalid", function(e) {
+  const $form = $(e.target);
+  const $overlay = $("#loaderOverlay");
+  if ($overlay.length) $overlay.remove();
+  const $submitBtn = $form.find('[type="submit"]');
+  if ($submitBtn.length) {
+    $submitBtn.prop("disabled", false);
+    if ($submitBtn.data("originalText")) {
+      $submitBtn.text($submitBtn.data("originalText"));
     }
   }
 });
 
-// This  is a toggle functionality to password inputs, allowing users to show or hide their passwords with an eye icon.
-document.querySelectorAll('input[type="password"]').forEach(function (input) {
-  const wrapper = document.createElement("div");
-  wrapper.classList.add("password-wrapper");
-  input.parentNode.insertBefore(wrapper, input);
-  wrapper.appendChild(input);
+// This is a toggle functionality to password inputs, allowing users to show or hide their passwords with an eye icon.
+$('input[type="password"]').each(function() {
+  const $input = $(this);
+  const $wrapper = $('<div></div>').addClass("password-wrapper");
+  $input.before($wrapper);
+  $wrapper.append($input);
 
-  const eyeIcon = document.createElement("span");
-  eyeIcon.classList.add("toggle-password");
-  eyeIcon.textContent = "👁️‍🗨️";
-  wrapper.appendChild(eyeIcon);
+  const $eyeIcon = $('<span></span>').addClass("toggle-password").text("👁️‍🗨️");
+  $wrapper.append($eyeIcon);
 
-  eyeIcon.addEventListener("click", function () {
-    input.type = input.type === "password" ? "text" : "password";
-    eyeIcon.textContent = input.type === "password" ? "👁️‍🗨️" : "🙈";
+  $eyeIcon.on("click", function() {
+    const currentType = $input.attr("type");
+    $input.attr("type", currentType === "password" ? "text" : "password");
+    $eyeIcon.text(currentType === "password" ? "🙈" : "👁️‍🗨️");
   });
 
   const toggleIconVisibility = () => {
-    eyeIcon.style.display = input.value ? "inline" : "none";
+    $eyeIcon.css("display", $input.val() ? "inline" : "none");
   };
 
   toggleIconVisibility();
-  input.addEventListener("input", toggleIconVisibility);
+  $input.on("input", toggleIconVisibility);
 });
 
 //  handle the burger menu functionality for mobile navigation.
-document.addEventListener("DOMContentLoaded", function () {
-  const burger = document.getElementById("burger-menu");
-  const nav = document.getElementById("nav-links");
+$(document).ready(function() {
+  const $burger = $("#burger-menu");
+  const $nav = $("#nav-links");
 
-  burger.addEventListener("click", function (e) {
+  $burger.on("click", function(e) {
     e.stopPropagation();
-    burger.classList.toggle("active");
-    nav.classList.toggle("open");
+    $burger.toggleClass("active");
+    $nav.toggleClass("open");
   });
 
-  nav.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      burger.classList.remove("active");
-      nav.classList.remove("open");
+  $nav.find("a").each(function() {
+    $(this).on("click", function() {
+      $burger.removeClass("active");
+      $nav.removeClass("open");
     });
   });
 
-  document.addEventListener("click", function (e) {
+  $(document).on("click", function(e) {
     if (
-      nav.classList.contains("open") &&
-      !nav.contains(e.target) &&
-      !burger.contains(e.target)
+      $nav.hasClass("open") &&
+      !$nav.is(e.target) && !$nav.has(e.target).length &&
+      !$burger.is(e.target) && !$burger.has(e.target).length
     ) {
-      burger.classList.remove("active");
-      nav.classList.remove("open");
+      $burger.removeClass("active");
+      $nav.removeClass("open");
     }
   });
 
   // Profile dropdown toggle (Moi)
-  const moiToggle = document.getElementById("moiDropdownToggle");
-  const moiMenu = document.getElementById("moiDropdownMenu");
+  const $moiToggle = $("#moiDropdownToggle");
+  const $moiMenu = $("#moiDropdownMenu");
 
-  if (moiToggle && moiMenu) {
-    moiToggle.addEventListener("click", function (e) {
+  if ($moiToggle.length && $moiMenu.length) {
+    $moiToggle.on("click", function(e) {
       e.stopPropagation();
-      const isExpanded = moiToggle.getAttribute("aria-expanded") === "true";
-      moiToggle.setAttribute("aria-expanded", !isExpanded);
-      moiMenu.classList.toggle("show");
+      const isExpanded = $moiToggle.attr("aria-expanded") === "true";
+      $moiToggle.attr("aria-expanded", !isExpanded);
+      $moiMenu.toggleClass("show");
     });
 
     // Close dropdown when clicking outside
-    document.addEventListener("click", function (e) {
-      if (!moiToggle.contains(e.target) && !moiMenu.contains(e.target)) {
-        moiToggle.setAttribute("aria-expanded", "false");
-        moiMenu.classList.remove("show");
+    $(document).on("click", function(e) {
+      if (!$moiToggle.is(e.target) && !$moiToggle.has(e.target).length && 
+          !$moiMenu.is(e.target) && !$moiMenu.has(e.target).length) {
+        $moiToggle.attr("aria-expanded", "false");
+        $moiMenu.removeClass("show");
       }
     });
 
     // Close dropdown when clicking on menu items
-    moiMenu.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        moiToggle.setAttribute("aria-expanded", "false");
-        moiMenu.classList.remove("show");
+    $moiMenu.find("a").each(function() {
+      $(this).on("click", function() {
+        $moiToggle.attr("aria-expanded", "false");
+        $moiMenu.removeClass("show");
       });
     });
   }
 });
 
 // Notifications (polling + dropdown)
-(function () {
-  const bell = document.getElementById("notifBell");
-  const badge = document.getElementById("notifCount");
-  const dropdown = document.getElementById("notifDropdown");
-  const list = document.getElementById("notifList");
-  const markAllBtn = document.getElementById("notifMarkAll");
+(function() {
+  const $bell = $("#notifBell");
+  const $badge = $("#notifCount");
+  const $dropdown = $("#notifDropdown");
+  const $list = $("#notifList");
+  const $markAllBtn = $("#notifMarkAll");
 
-  if (!bell || !badge || !dropdown || !list) return;
+  if (!$bell.length || !$badge.length || !$dropdown.length || !$list.length) return;
 
   let polling = null;
   let lastOpenAt = 0;
@@ -239,10 +237,10 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!data || data.success !== true) return;
       const count = Number(data.count || 0);
       if (count > 0) {
-        badge.textContent = String(count);
-        badge.classList.remove("d-none");
+        $badge.text(String(count));
+        $badge.removeClass("d-none");
       } else {
-        badge.classList.add("d-none");
+        $badge.addClass("d-none");
       }
     } catch (_) {
       /* silent */
@@ -250,28 +248,24 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   async function loadList(page = 1, limit = 10) {
-    list.innerHTML = '<li class="notif-item muted">Chargement…</li>';
+    $list.html('<li class="notif-item muted">Chargement…</li>');
     try {
       const res = await apiGet(
         `notifications/list?page=${page}&limit=${limit}`
       );
       const data = await res.json();
       if (!data || data.success !== true) {
-        list.innerHTML =
-          '<li class="notif-item muted">Erreur lors du chargement</li>';
+        $list.html('<li class="notif-item muted">Erreur lors du chargement</li>');
         return;
       }
       if (!data.items || data.items.length === 0) {
-        list.innerHTML =
-          '<li class="notif-item muted">Aucune notification</li>';
+        $list.html('<li class="notif-item muted">Aucune notification</li>');
         return;
       }
-      list.innerHTML = "";
+      $list.html("");
       data.items.forEach((item) => {
-        const li = document.createElement("li");
-        li.className = `notif-item ${item.isRead ? "read" : "unread"}`;
-        li.dataset.id = item.idNotification;
-        li.innerHTML = `
+        const $li = $('<li></li>').addClass(`notif-item ${item.isRead ? "read" : "unread"}`).data('id', item.idNotification);
+        $li.html(`
           <div class="notif-title">${escapeHtml(
             item.title || "(sans titre)"
           )}</div>
@@ -288,21 +282,21 @@ document.addEventListener("DOMContentLoaded", function () {
               item.createdAt
             ).toLocaleString()}</time>
           </div>
-        `;
-        li.addEventListener("click", async () => {
+        `);
+        $li.on("click", async () => {
           if (!item.isRead) {
             try {
               await apiPost("notifications/mark-read", {
                 id: item.idNotification,
               });
-              li.classList.remove("unread");
-              li.classList.add("read");
+              $li.removeClass("unread");
+              $li.addClass("read");
               // decrement badge
-              const current = parseInt(badge.textContent || "0", 10);
+              const current = parseInt($badge.text() || "0", 10);
               if (current > 1) {
-                badge.textContent = String(current - 1);
+                $badge.text(String(current - 1));
               } else {
-                badge.classList.add("d-none");
+                $badge.addClass("d-none");
               }
             } catch (_) {
               /* ignore */
@@ -312,11 +306,10 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = item.url;
           }
         });
-        list.appendChild(li);
+        $list.append($li);
       });
     } catch (_) {
-      list.innerHTML =
-        '<li class="notif-item muted">Erreur lors du chargement</li>';
+      $list.html('<li class="notif-item muted">Erreur lors du chargement</li>');
     }
   }
 
@@ -331,8 +324,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function openDropdown() {
-    dropdown.classList.remove("d-none");
-    bell.setAttribute("aria-expanded", "true");
+    $dropdown.removeClass("d-none");
+    $bell.attr("aria-expanded", "true");
     const now = Date.now();
     if (now - lastOpenAt > 800) {
       loadList(1, 10);
@@ -340,38 +333,39 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     // click-outside to close
     const closeOnOutside = (e) => {
-      if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
+      if (!$dropdown.is(e.target) && !$dropdown.has(e.target).length && 
+          !$bell.is(e.target) && !$bell.has(e.target).length) {
         closeDropdown();
-        document.removeEventListener("click", closeOnOutside, true);
+        $(document).off("click", closeOnOutside);
       }
     };
     setTimeout(
-      () => document.addEventListener("click", closeOnOutside, true),
+      () => $(document).on("click", closeOnOutside),
       0
     );
   }
 
   function closeDropdown() {
-    dropdown.classList.add("d-none");
-    bell.setAttribute("aria-expanded", "false");
+    $dropdown.addClass("d-none");
+    $bell.attr("aria-expanded", "false");
   }
 
-  bell.addEventListener("click", (e) => {
+  $bell.on("click", (e) => {
     e.preventDefault();
-    if (dropdown.classList.contains("d-none")) openDropdown();
+    if ($dropdown.hasClass("d-none")) openDropdown();
     else closeDropdown();
   });
 
-  if (markAllBtn) {
-    markAllBtn.addEventListener("click", async () => {
+  if ($markAllBtn.length) {
+    $markAllBtn.on("click", async () => {
       try {
         const res = await apiPost("notifications/mark-all-read", {});
         const data = await res.json();
         if (data && data.success) {
-          badge.classList.add("d-none");
-          list.querySelectorAll(".notif-item.unread").forEach((li) => {
-            li.classList.remove("unread");
-            li.classList.add("read");
+          $badge.addClass("d-none");
+          $list.find(".notif-item.unread").each(function() {
+            $(this).removeClass("unread");
+            $(this).addClass("read");
           });
         }
       } catch (_) {
@@ -390,7 +384,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (polling) clearInterval(polling);
     polling = null;
   }
-  document.addEventListener("visibilitychange", () => {
+  $(document).on("visibilitychange", () => {
     if (document.hidden) stopPolling();
     else startPolling();
   });
@@ -398,12 +392,12 @@ document.addEventListener("DOMContentLoaded", function () {
 })();
 
 // Notifications page (full list + load more + mark all)
-(function () {
-  const listEl = document.getElementById("pageNotifList");
-  const loadMoreBtn = document.getElementById("pageLoadMore");
-  const markAllBtn = document.getElementById("pageMarkAll");
-  const bellBadge = document.getElementById("notifCount");
-  if (!listEl || !loadMoreBtn) return;
+(function() {
+  const $listEl = $("#pageNotifList");
+  const $loadMoreBtn = $("#pageLoadMore");
+  const $markAllBtn = $("#pageMarkAll");
+  const $bellBadge = $("#notifCount");
+  if (!$listEl.length || !$loadMoreBtn.length) return;
 
   let page = 1;
   const limit = 15;
@@ -432,10 +426,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderItem(item) {
-    const li = document.createElement("li");
-    li.className = `notif-item ${item.isRead ? "read" : "unread"}`;
-    li.dataset.id = item.idNotification || item.id;
-    li.innerHTML = `
+    const $li = $('<li></li>').addClass(`notif-item ${item.isRead ? "read" : "unread"}`).data('id', item.idNotification || item.id);
+    $li.html(`
       <div class="notif-title">${escapeHtml(item.title || "(sans titre)")}</div>
       ${
         item.message
@@ -450,20 +442,20 @@ document.addEventListener("DOMContentLoaded", function () {
           item.createdAt
         ).toLocaleString()}</time>
       </div>
-    `;
-    li.addEventListener("click", async () => {
+    `);
+    $li.on("click", async () => {
       if (!item.isRead) {
         try {
           await apiPost("notifications/mark-read", {
             id: item.idNotification || item.id,
           });
-          li.classList.remove("unread");
-          li.classList.add("read");
+          $li.removeClass("unread");
+          $li.addClass("read");
           item.isRead = 1;
-          if (bellBadge && !bellBadge.classList.contains("d-none")) {
-            const current = parseInt(bellBadge.textContent || "0", 10);
-            if (current > 1) bellBadge.textContent = String(current - 1);
-            else bellBadge.classList.add("d-none");
+          if ($bellBadge.length && !$bellBadge.hasClass("d-none")) {
+            const current = parseInt($bellBadge.text() || "0", 10);
+            if (current > 1) $bellBadge.text(String(current - 1));
+            else $bellBadge.addClass("d-none");
           }
         } catch (_) {
           /* ignore */
@@ -473,13 +465,13 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = item.url;
       }
     });
-    return li;
+    return $li;
   }
 
   async function loadPage() {
     if (loading || !hasMore) return;
     loading = true;
-    loadMoreBtn.textContent = "Chargement…";
+    $loadMoreBtn.text("Chargement…");
     try {
       const res = await apiGet(
         `notifications/list?page=${page}&limit=${limit}`
@@ -488,41 +480,39 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!data || data.success !== true) throw new Error("bad response");
 
       if (page === 1 && (!data.items || data.items.length === 0)) {
-        listEl.innerHTML =
-          '<li class="notif-item muted">Aucune notification</li>';
+        $listEl.html('<li class="notif-item muted">Aucune notification</li>');
         hasMore = false;
-        loadMoreBtn.classList.add("d-none");
+        $loadMoreBtn.addClass("d-none");
         return;
       }
 
-      data.items.forEach((item) => listEl.appendChild(renderItem(item)));
+      data.items.forEach((item) => $listEl.append(renderItem(item)));
       hasMore = !!data.hasMore;
-      if (!hasMore) loadMoreBtn.classList.add("d-none");
+      if (!hasMore) $loadMoreBtn.addClass("d-none");
       page += 1;
     } catch (_) {
       if (page === 1) {
-        listEl.innerHTML =
-          '<li class="notif-item muted">Erreur lors du chargement</li>';
+        $listEl.html('<li class="notif-item muted">Erreur lors du chargement</li>');
       }
     } finally {
       loading = false;
-      loadMoreBtn.textContent = "Charger plus";
+      $loadMoreBtn.text("Charger plus");
     }
   }
 
-  loadMoreBtn.addEventListener("click", loadPage);
+  $loadMoreBtn.on("click", loadPage);
 
-  if (markAllBtn) {
-    markAllBtn.addEventListener("click", async () => {
+  if ($markAllBtn.length) {
+    $markAllBtn.on("click", async () => {
       try {
         const res = await apiPost("notifications/mark-all-read", {});
         const data = await res.json();
         if (data && data.success) {
-          listEl.querySelectorAll(".notif-item.unread").forEach((li) => {
-            li.classList.remove("unread");
-            li.classList.add("read");
+          $listEl.find(".notif-item.unread").each(function() {
+            $(this).removeClass("unread");
+            $(this).addClass("read");
           });
-          if (bellBadge) bellBadge.classList.add("d-none");
+          if ($bellBadge.length) $bellBadge.addClass("d-none");
         }
       } catch (_) {
         /* ignore */
@@ -535,29 +525,29 @@ document.addEventListener("DOMContentLoaded", function () {
 })();
 
 // Response messages handling (alerts, toasts, error lists)
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function() {
   // Unified responseMessage handling
 
   // Function to dismiss any responseMessage
-  function dismissResponseMessage(element, isToast = false) {
+  function dismissResponseMessage($element, isToast = false) {
     if (isToast) {
-      element.classList.remove("show");
-      element.classList.add("hide");
+      $element.removeClass("show");
+      $element.addClass("hide");
     } else {
-      element.classList.add("fade-out");
+      $element.addClass("fade-out");
     }
 
     // Wait for animation to complete before removing
     setTimeout(
-      function () {
-        if (element.parentElement) {
-          element.remove();
+      function() {
+        if ($element.parent().length) {
+          $element.remove();
 
           // Special handling for error list items
-          if (element.classList.contains("error-item")) {
-            const ul = element.closest(".error-list");
-            if (ul && ul.children.length === 0) {
-              ul.remove();
+          if ($element.hasClass("error-item")) {
+            const $ul = $element.closest(".error-list");
+            if ($ul.length && $ul.children().length === 0) {
+              $ul.remove();
             }
           }
         }
@@ -567,32 +557,31 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Handle all close buttons
-  document.querySelectorAll(".responseMessage-close").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      const responseMessage = this.closest(".responseMessage");
-      const isToast = responseMessage.classList.contains("toast");
-      dismissResponseMessage(responseMessage, isToast);
+  $(".responseMessage-close").each(function() {
+    $(this).on("click", function() {
+      const $responseMessage = $(this).closest(".responseMessage");
+      const isToast = $responseMessage.hasClass("toast");
+      dismissResponseMessage($responseMessage, isToast);
     });
   });
 
   // Auto-dismiss standard responseMessages
-  document
-    .querySelectorAll(".custom-alert, .error-list")
-    .forEach(function (alert) {
-      setTimeout(function () {
-        dismissResponseMessage(alert, false);
-      }, 10000);
-    });
+  $(".custom-alert, .error-list").each(function() {
+    const $alert = $(this);
+    setTimeout(function() {
+      dismissResponseMessage($alert, false);
+    }, 10000);
+  });
 
   // Handle toast responseMessages
-  const toast = document.getElementById("toast");
-  if (toast) {
-    setTimeout(function () {
-      toast.classList.add("show");
+  const $toast = $("#toast");
+  if ($toast.length) {
+    setTimeout(function() {
+      $toast.addClass("show");
     }, 100);
 
-    setTimeout(function () {
-      dismissResponseMessage(toast, true);
+    setTimeout(function() {
+      dismissResponseMessage($toast, true);
     }, 7000);
   }
 });

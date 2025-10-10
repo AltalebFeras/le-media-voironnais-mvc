@@ -2,8 +2,8 @@ const EventInteractions = (function() {
     let eventUiid = null;
     let isLoggedIn = false;
     let interactionData = null;
-    let currentUserUiid = null; // Changed from currentUserId to currentUserUiid
-    let openRepliesSections = new Set(); // Track which reply sections are open
+    let currentUserUiid = null;
+    let openRepliesSections = new Set();
 
     const SVG_ICONS = {
         likeActive: `<svg stroke="currentColor" fill="#0053f9ff" stroke-width="1" viewBox="0 0 1024 1024" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg"><path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7 0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4A106.62 106.62 0 0 0 471 99.9c-52 0-98 35-111.8 85.1l-85.9 311h-.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4 47.6-20.3 78.3-66.8 78.3-118.4 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7-.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z"></path></svg>`,
@@ -34,41 +34,39 @@ const EventInteractions = (function() {
 
     function updateUI() {
         // Update likes count and icon
-        const likesCountEl = document.getElementById('event-likes-count');
-        if (likesCountEl) {
+        const $likesCountEl = $('#event-likes-count');
+        if ($likesCountEl.length) {
             const count = interactionData.likesCount;
-            likesCountEl.textContent = `${count} personne${count > 1 ? 's' : ''} aime${count > 1 ? 'nt' : ''} cet événement`;
+            $likesCountEl.text(`${count} personne${count > 1 ? 's' : ''} aime${count > 1 ? 'nt' : ''} cet événement`);
         }
 
-        const likeIconEl = document.getElementById('like-icon');
-        if (likeIconEl) {
-            likeIconEl.innerHTML = interactionData.userHasLiked ? SVG_ICONS.likeActive : SVG_ICONS.likeInactive;
+        const $likeIconEl = $('#like-icon');
+        if ($likeIconEl.length) {
+            $likeIconEl.html(interactionData.userHasLiked ? SVG_ICONS.likeActive : SVG_ICONS.likeInactive);
         }
 
         // Update favourite icon
-        const favouriteIconEl = document.getElementById('favourite-icon');
-        if (favouriteIconEl) {
-            favouriteIconEl.innerHTML = interactionData.userHasFavourited ? SVG_ICONS.favouriteActive : SVG_ICONS.favouriteInactive;
+        const $favouriteIconEl = $('#favourite-icon');
+        if ($favouriteIconEl.length) {
+            $favouriteIconEl.html(interactionData.userHasFavourited ? SVG_ICONS.favouriteActive : SVG_ICONS.favouriteInactive);
         }
 
         // Update comments count
-        const commentsCountEl = document.getElementById('event-comments-count');
-        if (commentsCountEl) {
+        const $commentsCountEl = $('#event-comments-count');
+        if ($commentsCountEl.length) {
             const count = interactionData.commentsCount;
-            commentsCountEl.textContent = `${count} commentaire${count > 1 ? 's' : ''}`;
+            $commentsCountEl.text(`${count} commentaire${count > 1 ? 's' : ''}`);
         }
 
-        // Render comments
         renderComments();
     }
 
     function renderComments() {
-        const commentsList = document.getElementById('comments-list');
-        if (!commentsList) return;
+        const $commentsList = $('#comments-list');
+        if (!$commentsList.length) return;
 
         const { comments, replies } = interactionData;
 
-        // Group replies by parentId
         const repliesByParent = {};
         replies.forEach(reply => {
             if (!repliesByParent[reply.parentId]) {
@@ -79,14 +77,11 @@ const EventInteractions = (function() {
 
         let html = '';
         comments.forEach(comment => {
-            if (comment.parentId) return; // Skip replies, they'll be nested
-
+            if (comment.parentId) return;
             html += renderComment(comment, repliesByParent[comment.idEventComment] || []);
         });
 
-        commentsList.innerHTML = html || '<p>Aucun commentaire pour le moment.</p>';
-
-        // Attach event listeners
+        $commentsList.html(html || '<p>Aucun commentaire pour le moment.</p>');
         attachCommentEventListeners();
     }
 
@@ -221,72 +216,40 @@ const EventInteractions = (function() {
     }
 
     function attachCommentEventListeners() {
-        // Like button
-        document.getElementById('like-btn')?.addEventListener('click', handleEventLike);
+        $('#like-btn').off('click').on('click', handleEventLike);
+        $('#favourite-btn').off('click').on('click', handleEventFavourite);
+        $('#comments-btn').off('click').on('click', openCommentsModal);
+        $('.close-comments-modal').off('click').on('click', closeCommentsModal);
         
-        // Favourite button
-        document.getElementById('favourite-btn')?.addEventListener('click', handleEventFavourite);
-
-        // Comments button - open modal
-        document.getElementById('comments-btn')?.addEventListener('click', openCommentsModal);
-        
-        // Close comments modal
-        document.querySelector('.close-comments-modal')?.addEventListener('click', closeCommentsModal);
-        
-        // Close modal when clicking outside
-        document.getElementById('comments-modal')?.addEventListener('click', function(e) {
-            if (e.target === this) {
+        $('#comments-modal').off('click').on('click', function(e) {
+            if ($(e.target).is(this)) {
                 closeCommentsModal();
             }
         });
 
-        // Comment like buttons
-        document.querySelectorAll('.like-comment-btn').forEach(btn => {
-            btn.addEventListener('click', handleCommentLike);
-        });
-
-        // Reply buttons
-        document.querySelectorAll('.reply-comment-btn').forEach(btn => {
-            btn.addEventListener('click', handleReplyToggle);
-        });
-
-        // Delete buttons
-        document.querySelectorAll('.delete-comment-btn').forEach(btn => {
-            btn.addEventListener('click', handleCommentDelete);
-        });
-
-        // Report buttons
-        document.querySelectorAll('.report-comment-btn').forEach(btn => {
-            btn.addEventListener('click', handleCommentReport);
-        });
-
-        // Show/hide replies
-        document.querySelectorAll('.show-replies-btn').forEach(btn => {
-            btn.addEventListener('click', handleToggleReplies);
-        });
-
-        // Reply forms
-        document.querySelectorAll('.reply-form').forEach(form => {
-            form.addEventListener('submit', handleReplySubmit);
-        });
-
-        // Main comment form
-        document.getElementById('add-comment-form')?.addEventListener('submit', handleCommentSubmit);
+        $('.like-comment-btn').off('click').on('click', handleCommentLike);
+        $('.reply-comment-btn').off('click').on('click', handleReplyToggle);
+        $('.delete-comment-btn').off('click').on('click', handleCommentDelete);
+        $('.report-comment-btn').off('click').on('click', handleCommentReport);
+        $('.show-replies-btn').off('click').on('click', handleToggleReplies);
+        
+        $('.reply-form').off('submit').on('submit', handleReplySubmit);
+        $('#add-comment-form').off('submit').on('submit', handleCommentSubmit);
     }
 
     function openCommentsModal() {
-        const modal = document.getElementById('comments-modal');
-        if (modal) {
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        const $modal = $('#comments-modal');
+        if ($modal.length) {
+            $modal.css('display', 'flex');
+            $('body').css('overflow', 'hidden');
         }
     }
 
     function closeCommentsModal() {
-        const modal = document.getElementById('comments-modal');
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restore scrolling
+        const $modal = $('#comments-modal');
+        if ($modal.length) {
+            $modal.css('display', 'none');
+            $('body').css('overflow', 'auto');
         }
     }
 
@@ -309,13 +272,13 @@ const EventInteractions = (function() {
     }
 
     async function handleCommentLike(e) {
-        const commentUiid = this.dataset.uiid;
-        const parentUiid = this.dataset.parent;
+        const $this = $(this);
+        const commentUiid = $this.data('uiid');
+        const parentUiid = $this.data('parent');
         
-        // Track if parent replies section is open
         if (parentUiid) {
-            const repliesDiv = document.getElementById(`replies-${parentUiid}`);
-            if (repliesDiv && repliesDiv.style.display === 'block') {
+            const $repliesDiv = $(`#replies-${parentUiid}`);
+            if ($repliesDiv.length && $repliesDiv.css('display') === 'block') {
                 openRepliesSections.add(parentUiid);
             }
         }
@@ -328,85 +291,78 @@ const EventInteractions = (function() {
     }
 
     function handleReplyToggle(e) {
-        const commentUiid = this.dataset.uiid; // The comment/reply being replied to
-        const parentUiid = this.dataset.parent; // For replies, this is the UIID of the comment/reply itself
-        const rootUiid = this.dataset.root || parentUiid; // For nested replies, the root comment
+        const $this = $(this);
+        const commentUiid = $this.data('uiid');
+        const parentUiid = $this.data('parent');
+        const rootUiid = $this.data('root') || parentUiid;
         
-        // Find the root comment div to append the form
-        const rootCommentDiv = document.querySelector(`.comment[data-uiid="${rootUiid}"]`);
-        if (!rootCommentDiv) return;
+        const $rootCommentDiv = $(`.comment[data-uiid="${rootUiid}"]`);
+        if (!$rootCommentDiv.length) return;
         
-        // Get the author name of the person being replied to
-        const targetComment = document.querySelector(`[data-uiid="${commentUiid}"]`);
-        const authorName = targetComment ? targetComment.dataset.author : '';
+        const $targetComment = $(`[data-uiid="${commentUiid}"]`);
+        const authorName = $targetComment.length ? $targetComment.data('author') : '';
         
-        // Check if form already exists for this specific reply
-        let form = rootCommentDiv.querySelector(`.reply-form[data-reply-to="${commentUiid}"]`);
+        let $form = $rootCommentDiv.find(`.reply-form[data-reply-to="${commentUiid}"]`);
         
-        if (!form) {
-            // Create a new reply form
-            form = document.createElement('form');
-            form.className = 'reply-form';
-            form.dataset.parent = rootUiid;
-            form.dataset.replyTo = commentUiid;
-            form.style.marginLeft = '2em';
-            form.innerHTML = `
-                <div style="margin-bottom:0.5em;">
-                    <small style="color:#666;">Répondre à <strong>${escapeHtml(authorName)}</strong></small>
-                </div>
-                <textarea name="content" required style="flex:1;"></textarea>
-                <input type="hidden" name="eventUiid" value="${eventUiid}">
-                <input type="hidden" name="parentUiid" value="${commentUiid}">
-                <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;">
-                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg"><path d="m476.59 227.05-.16-.07L49.35 49.84A23.56 23.56 0 0 0 27.14 52 24.65 24.65 0 0 0 16 72.59v113.29a24 24 0 0 0 19.52 23.57l232.93 43.07a4 4 0 0 1 0 7.86L35.53 303.45A24 24 0 0 0 16 327v113.31A23.57 23.57 0 0 0 26.59 460a23.94 23.94 0 0 0 13.22 4 24.55 24.55 0 0 0 9.52-1.93L476.4 285.94l.19-.09a32 32 0 0 0 0-58.8z"></path></svg>
-                </button>
-            `;
+        if (!$form.length) {
+            $form = $('<form></form>')
+                .addClass('reply-form')
+                .attr('data-parent', rootUiid)
+                .attr('data-reply-to', commentUiid)
+                .css('margin-left', '2em')
+                .html(`
+                    <div style="margin-bottom:0.5em;">
+                        <small style="color:#666;">Répondre à <strong>${escapeHtml(authorName)}</strong></small>
+                    </div>
+                    <textarea name="content" required style="flex:1;"></textarea>
+                    <input type="hidden" name="eventUiid" value="${eventUiid}">
+                    <input type="hidden" name="parentUiid" value="${commentUiid}">
+                    <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="32px" width="32px" xmlns="http://www.w3.org/2000/svg"><path d="m476.59 227.05-.16-.07L49.35 49.84A23.56 23.56 0 0 0 27.14 52 24.65 24.65 0 0 0 16 72.59v113.29a24 24 0 0 0 19.52 23.57l232.93 43.07a4 4 0 0 1 0 7.86L35.53 303.45A24 24 0 0 0 16 327v113.31A23.57 23.57 0 0 0 26.59 460a23.94 23.94 0 0 0 13.22 4 24.55 24.55 0 0 0 9.52-1.93L476.4 285.94l.19-.09a32 32 0 0 0 0-58.8z"></path></svg>
+                    </button>
+                `);
             
-            // Add submit handler
-            form.addEventListener('submit', handleReplySubmit);
+            $form.on('submit', handleReplySubmit);
             
-            // Insert the form after the root comment's existing reply form
-            const existingForm = rootCommentDiv.querySelector('.reply-form');
-            if (existingForm && existingForm.nextSibling) {
-                rootCommentDiv.insertBefore(form, existingForm.nextSibling);
+            const $existingForm = $rootCommentDiv.find('.reply-form').first();
+            if ($existingForm.length && $existingForm.next().length) {
+                $existingForm.next().before($form);
             } else {
-                rootCommentDiv.appendChild(form);
+                $rootCommentDiv.append($form);
             }
         }
         
-        // Hide all other reply forms in this comment thread
-        rootCommentDiv.querySelectorAll('.reply-form').forEach(f => {
-            if (f !== form) f.style.display = 'none';
+        $rootCommentDiv.find('.reply-form').each(function() {
+            if (!$(this).is($form)) {
+                $(this).css('display', 'none');
+            }
         });
         
-        // Show replies if hidden
-        const repliesDiv = document.getElementById(`replies-${rootUiid}`);
-        if (repliesDiv && repliesDiv.style.display === 'none') {
-            repliesDiv.style.display = 'block';
+        const $repliesDiv = $(`#replies-${rootUiid}`);
+        if ($repliesDiv.length && $repliesDiv.css('display') === 'none') {
+            $repliesDiv.css('display', 'block');
             openRepliesSections.add(rootUiid);
-            const showBtn = rootCommentDiv.querySelector(`.show-replies-btn[data-uiid="${rootUiid}"]`);
-            if (showBtn) {
-                showBtn.textContent = 'Masquer les réponses';
+            const $showBtn = $rootCommentDiv.find(`.show-replies-btn[data-uiid="${rootUiid}"]`);
+            if ($showBtn.length) {
+                $showBtn.text('Masquer les réponses');
             }
         }
         
-        // Toggle form visibility
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        $form.css('display', $form.css('display') === 'none' ? 'block' : 'none');
         
-        // Focus the textarea if showing
-        if (form.style.display === 'block') {
-            form.querySelector('textarea').focus();
+        if ($form.css('display') === 'block') {
+            $form.find('textarea').focus();
         }
     }
 
     async function handleCommentDelete(e) {
-        const commentUiid = this.dataset.uiid;
-        const parentUiid = this.dataset.parent;
+        const $this = $(this);
+        const commentUiid = $this.data('uiid');
+        const parentUiid = $this.data('parent');
         
-        // Track if parent replies section is open
         if (parentUiid) {
-            const repliesDiv = document.getElementById(`replies-${parentUiid}`);
-            if (repliesDiv && repliesDiv.style.display === 'block') {
+            const $repliesDiv = $(`#replies-${parentUiid}`);
+            if ($repliesDiv.length && $repliesDiv.css('display') === 'block') {
                 openRepliesSections.add(parentUiid);
             }
         }
@@ -419,49 +375,58 @@ const EventInteractions = (function() {
     }
 
     async function handleCommentReport(e) {
-        const commentUiid = this.dataset.uiid;
+        const $this = $(this);
+        const commentUiid = $this.data('uiid');
         showReportModal(commentUiid);
     }
 
     function showReportModal(commentUiid) {
-        // Create modal if it doesn't exist
-        let modal = document.getElementById('report-comment-modal');
-        if (!modal) {
-            modal = document.createElement('div');
-            modal.id = 'report-comment-modal';
-            modal.className = 'popup';
-            modal.style.cssText = 'display:none;position:fixed;z-index:10001;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);align-items:center;justify-content:center;';
-            modal.innerHTML = `
-                <div class="card" style="max-width:500px;position:relative;background:white;border-radius:12px;padding:24px;">
-                    <h3>Signaler un commentaire</h3>
-                    <button type="button" class="close-modal" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:24px; cursor:pointer;">×</button>
-                    <div class="mt mb">
-                        <p>Pourquoi signalez-vous ce commentaire ?</p>
-                        <textarea id="report-reason" class="form-control" rows="4" placeholder="Expliquez la raison du signalement..." required></textarea>
+        let $modal = $('#report-comment-modal');
+        if (!$modal.length) {
+            $modal = $('<div></div>')
+                .attr('id', 'report-comment-modal')
+                .addClass('popup')
+                .css({
+                    display: 'none',
+                    position: 'fixed',
+                    zIndex: 10001,
+                    left: 0,
+                    top: 0,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                })
+                .html(`
+                    <div class="card" style="max-width:500px;position:relative;background:white;border-radius:12px;padding:24px;">
+                        <h3>Signaler un commentaire</h3>
+                        <button type="button" class="close-modal" style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:24px; cursor:pointer;">×</button>
+                        <div class="mt mb">
+                            <p>Pourquoi signalez-vous ce commentaire ?</p>
+                            <textarea id="report-reason" class="form-control" rows="4" placeholder="Expliquez la raison du signalement..." required></textarea>
+                        </div>
+                        <div class="flex-row justify-content-between" style="display:flex;gap:1em;margin-top:1em;">
+                            <button type="button" class="btn cancel-report">Annuler</button>
+                            <button type="button" class="btn btn-danger confirm-report">Signaler</button>
+                        </div>
                     </div>
-                    <div class="flex-row justify-content-between" style="display:flex;gap:1em;margin-top:1em;">
-                        <button type="button" class="btn cancel-report">Annuler</button>
-                        <button type="button" class="btn btn-danger confirm-report">Signaler</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
+                `);
+            $('body').append($modal);
 
-            // Close modal handlers
-            modal.querySelector('.close-modal').addEventListener('click', () => {
-                modal.style.display = 'none';
-                modal.querySelector('#report-reason').value = '';
+            $modal.find('.close-modal').on('click', () => {
+                $modal.css('display', 'none');
+                $modal.find('#report-reason').val('');
             });
 
-            modal.querySelector('.cancel-report').addEventListener('click', () => {
-                modal.style.display = 'none';
-                modal.querySelector('#report-reason').value = '';
+            $modal.find('.cancel-report').on('click', () => {
+                $modal.css('display', 'none');
+                $modal.find('#report-reason').val('');
             });
 
-            // Confirm report handler
-            modal.querySelector('.confirm-report').addEventListener('click', async () => {
-                const reason = modal.querySelector('#report-reason').value.trim();
-                const storedCommentUiid = modal.dataset.commentUiid;
+            $modal.find('.confirm-report').on('click', async () => {
+                const reason = $modal.find('#report-reason').val().trim();
+                const storedCommentUiid = $modal.data('commentUiid');
 
                 if (!reason) {
                     showErrorMessage('Veuillez expliquer la raison du signalement.');
@@ -473,39 +438,55 @@ const EventInteractions = (function() {
                     body: new URLSearchParams({ commentUiid: storedCommentUiid, reason })
                 });
 
-                modal.style.display = 'none';
-                modal.querySelector('#report-reason').value = '';
-                
-                // Show success message
+                $modal.css('display', 'none');
+                $modal.find('#report-reason').val('');
                 showSuccessMessage('Commentaire signalé avec succès');
             });
         }
 
-        // Store comment ID and show modal
-        modal.dataset.commentUiid = commentUiid;
-        modal.style.display = 'flex';
+        $modal.data('commentUiid', commentUiid);
+        $modal.css('display', 'flex');
     }
 
     function showSuccessMessage(message) {
-        const successDiv = document.createElement('div');
-        successDiv.className = 'alert alert-success';
-        successDiv.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;padding:1em;background:#28a745;color:white;border-radius:4px;';
-        successDiv.textContent = message;
-        document.body.appendChild(successDiv);
+        const $successDiv = $('<div></div>')
+            .addClass('alert alert-success')
+            .css({
+                position: 'fixed',
+                top: '20px',
+                right: '20px',
+                zIndex: 10000,
+                padding: '1em',
+                background: '#28a745',
+                color: 'white',
+                borderRadius: '4px'
+            })
+            .text(message);
+        $('body').append($successDiv);
         
         setTimeout(() => {
-            successDiv.remove();
+            $successDiv.remove();
         }, 5000);
     }
+
     function showErrorMessage(message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'alert alert-danger';
-        errorDiv.style.cssText = 'position:fixed;top:20px;right:20px;z-index:10000;padding:1em;background:#dc3545;color:white;border-radius:4px;';
-        errorDiv.textContent = message;
-        document.body.appendChild(errorDiv);
+        const $errorDiv = $('<div></div>')
+            .addClass('alert alert-danger')
+            .css({
+                position: 'fixed',
+                top: '20px',
+                right: '20px',
+                zIndex: 10000,
+                padding: '1em',
+                background: '#dc3545',
+                color: 'white',
+                borderRadius: '4px'
+            })
+            .text(message);
+        $('body').append($errorDiv);
 
         setTimeout(() => {
-            errorDiv.remove();
+            $errorDiv.remove();
         }, 5000);
     }
 
@@ -529,10 +510,10 @@ const EventInteractions = (function() {
 
     async function handleReplySubmit(e) {
         e.preventDefault();
+        const $form = $(this);
         const formData = new FormData(this);
-        const parentUiid = this.dataset.parent;
+        const parentUiid = $form.data('parent');
 
-        // Track that this section should stay open
         if (parentUiid) {
             openRepliesSections.add(parentUiid);
         }
@@ -545,7 +526,7 @@ const EventInteractions = (function() {
         
         if (data.success) {
             this.reset();
-            this.style.display = 'none';
+            $form.css('display', 'none');
             await loadInteractions();
         } else {
             showErrorMessage(data.error || "Erreur");
@@ -553,18 +534,19 @@ const EventInteractions = (function() {
     }
 
     function handleToggleReplies(e) {
-        const commentUiid = this.dataset.uiid;
-        const repliesDiv = document.getElementById(`replies-${commentUiid}`);
-        const count = repliesDiv.children.length;
+        const $this = $(this);
+        const commentUiid = $this.data('uiid');
+        const $repliesDiv = $(`#replies-${commentUiid}`);
+        const count = $repliesDiv.children().length;
         
-        if (repliesDiv.style.display === 'none') {
-            repliesDiv.style.display = 'block';
+        if ($repliesDiv.css('display') === 'none') {
+            $repliesDiv.css('display', 'block');
             openRepliesSections.add(commentUiid);
-            this.textContent = "Masquer les réponses";
+            $this.text("Masquer les réponses");
         } else {
-            repliesDiv.style.display = 'none';
+            $repliesDiv.css('display', 'none');
             openRepliesSections.delete(commentUiid);
-            this.textContent = `Voir toutes les ${count} réponse${count > 1 ? 's' : ''}`;
+            $this.text(`Voir toutes les ${count} réponse${count > 1 ? 's' : ''}`);
         }
     }
 
@@ -580,10 +562,10 @@ const EventInteractions = (function() {
     }
 
     return {
-        init: function(evUiid, loggedIn, userUiid = null) { // Changed parameter name
+        init: function(evUiid, loggedIn, userUiid = null) {
             eventUiid = evUiid;
             isLoggedIn = loggedIn;
-            currentUserUiid = userUiid; // Store userUiid instead of userId
+            currentUserUiid = userUiid;
             loadInteractions();
         },
         openCommentsModal: openCommentsModal,
