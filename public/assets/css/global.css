@@ -367,8 +367,8 @@ header {
 
 /* General classes for button and link for tags button and a */
 .btn {
-    /* background: linear-gradient(90deg, #3a7ca5 0%, #6ed3cf 100%); */
-    background: radial-gradient(circle at 6.3% 21.8%, rgb(236, 6, 117) 0%, rgb(13, 32, 67) 90%);
+    background: linear-gradient(90deg, #3a7ca5 0%, #6ed3cf 100%);
+    /* background: radial-gradient(circle at 6.3% 21.8%, rgb(236, 6, 117) 0%, rgb(13, 32, 67) 90%); */
     color: #fff;
     cursor: pointer;
     border: none;
@@ -662,6 +662,9 @@ input[type="submit"] {
     justify-content: center;
     align-items: center;
     gap: 1rem;
+}
+.flex-basis-content {
+    flex-basis: content;
 }
 
 .text-primary {

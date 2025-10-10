@@ -29,8 +29,8 @@
       <label for="passwordConfirmation">Mot de passe confirmé:</label>
       <input type="password" id="passwordConfirmation" name="passwordConfirmation" placeholder="Confirmez votre mot de passe" value="<?= $_SESSION['form_data']['passwordConfirmation'] ?? '' ?>" required autocomplete="new-password" />
     </div>
-    <div>
-      <input type="checkbox" name="rgpd" id="rgpd" <?= isset($_SESSION['form_data']['rgpd']) && $_SESSION['form_data']['rgpd'] === 'on' ? 'checked' : '' ?> required />
+    <div class="d-flex">
+      <input class="form-check-input flex-basis-content" type="checkbox" name="rgpd" id="rgpd" <?= isset($_SESSION['form_data']['rgpd']) && $_SESSION['form_data']['rgpd'] === 'on' ? 'checked' : '' ?> required />
       <label for="rgpd">J'accepte Le règlement général de protection des données <span><a target="_blank" href="<?= HOME_URL . 'cgu' ?>" class="">RGPD</a></span> </label>
     </div>
     <div class="g-recaptcha mb mt" data-sitekey="6Lc8mVYrAAAAAFQcZnr7_3rLS65SegjP0Yk0nX-s"></div>

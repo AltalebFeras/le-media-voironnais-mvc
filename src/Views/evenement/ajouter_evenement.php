@@ -127,18 +127,18 @@
 
             </div>
 
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" name="isPublic" value="1"
-                        <?= isset($_SESSION['form_data']['isPublic']) && $_SESSION['form_data']['isPublic'] ? 'checked' : '' ?>>
+            <div class="form-group d-flex">
+                <input id="isPublic" class="form-check-input flex-basis-content" type="checkbox" name="isPublic" value="1"
+                <?= isset($_SESSION['form_data']['isPublic']) && $_SESSION['form_data']['isPublic'] ? 'checked' : '' ?>>
+                <label for="isPublic">
                     Événement public
                 </label>
             </div>
 
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" name="requiresApproval" value="1"
+            <div class="form-group d-flex">
+                <input id="requiresApproval" class="form-check-input flex-basis-content" type="checkbox" name="requiresApproval" value="1"
                         <?= isset($_SESSION['form_data']['requiresApproval']) && $_SESSION['form_data']['requiresApproval'] ? 'checked' : '' ?>>
+                <label for="requiresApproval">
                     Inscription avec approbation
                 </label>
             </div>

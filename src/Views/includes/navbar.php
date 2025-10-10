@@ -60,7 +60,7 @@
             <div class="nav-dropdown-menu" id="moiDropdownMenu">
               <a class="nav-dropdown-item" href="<?= HOME_URL . 'mon_compte' ?>">
                 <span class="material-icons">account_circle</span>
-                <span>Mon Compte</span>
+                <span><?= $_SESSION['firstName'] ?> <?= $_SESSION['lastName'] ?></span>
               </a>
               <a class="nav-dropdown-item" href="<?= HOME_URL . 'dashboard' ?>">
                 <span class="material-icons">dashboard</span>
