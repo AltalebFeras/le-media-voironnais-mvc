@@ -1,7 +1,10 @@
 <div class="notif-container">
-  <button id="notifBell" class="notif-bell" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
-    <span class="material-icons">notifications</span>
-    <span id="notifCount" class="notif-badge d-none">0</span>
+  <button id="notifBell" class="link nav-item notif-bell-btn" aria-haspopup="true" aria-expanded="false" aria-label="Notifications">
+    <div class="notif-icon-wrapper">
+      <span class="material-icons">notifications</span>
+      <span id="notifCount" class="notif-badge d-none">0</span>
+    </div>
+    <span class="nav-text">Notifications</span>
   </button>
 
   <div id="notifDropdown" class="notif-dropdown d-none" role="menu" aria-label="Notifications">

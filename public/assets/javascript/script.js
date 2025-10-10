@@ -176,6 +176,35 @@ document.addEventListener("DOMContentLoaded", function () {
       nav.classList.remove("open");
     }
   });
+
+  // Profile dropdown toggle (Moi)
+  const moiToggle = document.getElementById("moiDropdownToggle");
+  const moiMenu = document.getElementById("moiDropdownMenu");
+
+  if (moiToggle && moiMenu) {
+    moiToggle.addEventListener("click", function (e) {
+      e.stopPropagation();
+      const isExpanded = moiToggle.getAttribute("aria-expanded") === "true";
+      moiToggle.setAttribute("aria-expanded", !isExpanded);
+      moiMenu.classList.toggle("show");
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (e) {
+      if (!moiToggle.contains(e.target) && !moiMenu.contains(e.target)) {
+        moiToggle.setAttribute("aria-expanded", "false");
+        moiMenu.classList.remove("show");
+      }
+    });
+
+    // Close dropdown when clicking on menu items
+    moiMenu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        moiToggle.setAttribute("aria-expanded", "false");
+        moiMenu.classList.remove("show");
+      });
+    });
+  }
 });
 
 // Notifications (polling + dropdown)
@@ -252,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
               : ""
           }
           <div class="notif-meta">
-            <span class="notif-type ${item.type || "info"}">${
+            <span class="notif-type badge-info ${item.type || "info"}">${
           item.type || "info"
         }</span>
             <time class="notif-date">${new Date(
