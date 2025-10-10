@@ -18,30 +18,63 @@
                     <div id="currentBanner" class="evenement-banner-placeholder">Aucune bannière</div>
                 <?php endif; ?>
                 <img id="bannerPreview" style="display:none;">
+                <?php if ($isOwner): ?>
+                    <span id="toggleBannerActions" class="material-icons more_vert bg-linear-primary">photo_camera</span>
+                <?php endif; ?>
             </div>
-
-            <?php if ($isOwner): ?>
-                <div class="evenement-banner-actions">
-                    <form method="post" action="<?= HOME_URL . 'evenement/modifier' ?>" enctype="multipart/form-data">
-                        <input type="hidden" name="action" value="modifier_banner">
-                        <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
-                        <label for="bannerInput" class="btn">
-                            Changer bannière
-                            <input type="file" id="bannerInput" name="banner" accept="image/*" required>
-                        </label>
-                        <button type="submit" class="btn" id="bannerSubmitBtn" disabled>Valider</button>
-                        <button type="button" id="cancelBannerBtn" class="btn" style="display:none;">Annuler</button>
-                    </form>
-                    <?php if ($evenement['bannerPath']): ?>
-                        <form method="post" action="<?= HOME_URL . 'evenement/modifier' ?>">
-                            <input type="hidden" name="action" value="supprimer_banner">
-                            <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
-                            <button type="submit" class="btn bg-danger">Supprimer</button>
-                        </form>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
         </div>
+
+        <!-- Banner Popup Modal -->
+        <?php if ($isOwner): ?>
+            <div class="popup" id="bannerPopup">
+                <div class="card max-width-50">
+                    <div class="flex-row justify-content-between align-items-center mb">
+                        <h3 class="m-0">Gérer la bannière</h3>
+                        <button id="closeBannerPopup" class="btn btn-primary" style="padding: 0.5rem;">
+                            <span class="material-icons">close</span>
+                        </button>
+                    </div>
+                    
+                    <div class="banner-preview-container" style="text-align: center; margin: 1rem 0;">
+                        <?php if ($evenement['bannerPath']): ?>
+                            <img id="bannerPreviewModal" src="<?= $evenement['bannerPath'] ?>" alt="Banner preview" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 0 auto;">
+                        <?php else: ?>
+                            <div id="bannerPreviewModal" class="evenement-banner-placeholder" style="max-width: 100%; height: 200px; margin: 0 auto;">Aucune bannière</div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div id="bannerActionsDefault">
+                        <form method="post" action="<?= HOME_URL . 'evenement/modifier' ?>" enctype="multipart/form-data">
+                            <input type="hidden" name="action" value="modifier_banner">
+                            <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
+                            <div class="flex-row justify-content-center gap-2" style="gap: 1rem;">
+                                <label for="bannerInput" class="btn">
+                                    Changer bannière
+                                    <input type="file" id="bannerInput" name="banner" accept="image/*" style="display: none;" required>
+                                </label>
+                                <button type="submit" class="btn btn-success d-none mb" id="bannerSubmitBtn">Valider</button>
+                            </div>
+                        </form>
+                        <?php if ($evenement['bannerPath']): ?>
+                            <form method="post" action="<?= HOME_URL . 'evenement/modifier' ?>" class="mt" id="deleteBannerForm">
+                                <input type="hidden" name="action" value="supprimer_banner">
+                                <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
+                                <div class="flex-row justify-content-center">
+                                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                                </div>
+                            </form>
+                        <?php endif; ?>
+                    </div>
+
+                    <div id="bannerActionsPreview" class="d-none">
+                        <div class="flex-row justify-content-center gap-2" style="gap: 1rem;">
+                            <button type="button" id="cancelBannerBtn" class="btn btn-dark">Annuler</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
         <!-- Main Content -->
