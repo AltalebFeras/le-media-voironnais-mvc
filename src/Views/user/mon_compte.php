@@ -225,7 +225,7 @@ if(isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])
                     </p>
                     <p>Email :
                         <?= $_SESSION['email'] ?> 
-                        <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=email' ?>" class=" linkNotDecorated btn">Modifier</a>
+                        <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=email' ?>" class=" linkNotDecorated btn btn-warning text-bold">Modifier</a>
                     </p>
                     <?php if (isset($_SESSION['newEmail'])): ?>
                         <div class="card">
@@ -260,19 +260,19 @@ if(isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])
                     <p>Téléphone :
                         <?= $_SESSION['phone'] ?? '' ?>
                         <?php if (empty($_SESSION['phone'])): ?>
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=phone' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=phone' ?>" class="btn linkNotDecorated btn-success">Ajouter</a>
                         <?php endif; ?>
                     </p>
                     <p>Bio :
                         <?= $_SESSION['bio'] ?? '' ?>
                         <?php if (empty($_SESSION['bio'])): ?>
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=bio' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=bio' ?>" class="btn linkNotDecorated  btn-success">Ajouter</a>
                         <?php endif; ?>
                     </p>
                     <p>Date de naissance :
                         <?= $_SESSION['dateOfBirth'] ?? '' ?>
                         <?php if (empty($_SESSION['dateOfBirth'])): ?>
-                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=date_of_birth' ?>" class="btn linkNotDecorated btn-add">Ajouter</a>
+                            <a href="<?= HOME_URL . 'mon_compte?action=edit_profile&field=date_of_birth' ?>" class="btn linkNotDecorated btn-success">Ajouter</a>
                         <?php endif; ?>
                     </p>
                     <p>Compte valide : <?= $_SESSION['isActivated'] ? 'Oui' : 'Non' ?> </p>
@@ -288,14 +288,16 @@ if(isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])
                             Jamais
                         <?php endif; ?>
                     </p>
-                    <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated">Modifier</a>
+                    <div style="width: auto;">
+                        <a href="<?= HOME_URL . 'mon_compte?action=edit_profile' ?>" class="btn linkNotDecorated">Modifier</a>
+                    </div>
                 </div>
 
 
             </div>
             <div class="account-actions">
-                <a href="<?= HOME_URL . 'mon_compte?action=change_password' ?>" class="btn linkNotDecorated bg-info text-bold">Changer mon mot de passe</a>
-                <a href="<?= HOME_URL . 'mon_compte?action=delete_account' ?>" class="btn linkNotDecorated bg-danger text-bold">Supprimer mon compte</a>
+                <a href="<?= HOME_URL . 'mon_compte?action=change_password' ?>" class="btn linkNotDecorated btn-secondary text-bold">Changer mon mot de passe</a>
+                <a href="<?= HOME_URL . 'mon_compte?action=delete_account' ?>" class="btn linkNotDecorated btn-danger text-bold">Supprimer mon compte</a>
             </div>
         <?php endif; ?>
 </main>

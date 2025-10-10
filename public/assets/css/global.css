@@ -381,6 +381,9 @@ header {
 .btn-primary {
     background: linear-gradient(90deg, #3a7ca5 0%, #6ed3cf 100%);
 }
+.btn-secondary {
+    background: linear-gradient(90deg, #0E2A34 0%, #213944 100%);
+}
 .btn-info {
     background: linear-gradient(90deg, #6ed3cf 0%, #3a7ca5 100%);
 }
