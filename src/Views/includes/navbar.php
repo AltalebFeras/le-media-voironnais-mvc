@@ -7,7 +7,9 @@
         <a href="<?= HOME_URL ?>">
           <img src="<?= DOMAIN . HOME_URL . 'assets/images/logo/logo.png' ?>" alt="Logo" height="60" />
         </a>
-        <?php include __DIR__ . '/notification_badge.php'; ?>
+        <?php if (isset($_SESSION['connected'])) : ?>
+          <?php include __DIR__ . '/notification_badge.php'; ?>
+        <?php endif; ?>
       </div>
 
       <!-- Search Form (always visible on desktop) -->
