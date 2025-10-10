@@ -130,7 +130,7 @@ header {
     align-items: center;
     justify-content: space-between;
     position: relative;
-    padding: 0.5rem 1rem;
+    padding: 0rem 1rem;
     gap: 1rem;
 }
 
@@ -761,7 +761,9 @@ input[type="submit"] {
 }
 
 .bg-secondary {
-    background-color: #0E2A34;
+    /* background-color: #0E2A34; */
+    background-color: grey;
+    color: white;
 }
 
 .bg-success {
@@ -774,6 +776,7 @@ input[type="submit"] {
 
 .bg-warning {
     background-color: #ffc107;
+    color: #212529;
 }
 
 .bg-info {

@@ -7,6 +7,7 @@
         <a href="<?= HOME_URL ?>">
           <img src="<?= DOMAIN . HOME_URL . 'assets/images/logo/logo.png' ?>" alt="Logo" height="60" />
         </a>
+        <?php include __DIR__ . '/notification_badge.php'; ?>
       </div>
 
       <!-- Search Form (always visible on desktop) -->
@@ -38,16 +39,9 @@
               <span class="nav-text">Chat</span>
             </a></li>
 
-          <li class="nav-item-notification">
-            <!-- Notification Badge include -->
-            <?php include __DIR__ . '/notification_badge.php'; ?>
-          </li>
-
-
-
           <li><a class="link nav-item" href="<?= HOME_URL . 'mes_entreprises' ?>">
               <span class="material-icons">business</span>
-              <span class="nav-text">Entreprises</span>
+              <span class="nav-text">Structures</span>
             </a></li>
 
           <!-- Moi Dropdown -->
