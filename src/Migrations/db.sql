@@ -481,7 +481,7 @@ CREATE TABLE IF NOT EXISTS `notification` (
   `idNotification` int NOT NULL AUTO_INCREMENT,
   `idUser` int NOT NULL,
   `idEvenement` int DEFAULT NULL,
-  `type` enum('activation','inscription','preinscription','invitation','mise_a_jour','rappel','systeme','alert','message','autre') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'systeme',
+  `type` enum('activation','inscription','preinscription','invitation','mise_a_jour','rappel','systeme','alert','message','contact','autre') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'systeme',
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `url` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,

@@ -65,15 +65,14 @@ class ContactController extends AbstractController
             $modelErrors = $contact->validate();
             $errors = array_merge($errors, $modelErrors);
 
-            // Check for existing recent contact from same email
+            // Check for existing recent contact from same email interval 60 minutes
             $recentContacts = $this->repo->searchContacts($email);
             if (!empty($recentContacts)) {
                 $lastContact = $recentContacts[0];
                 $lastContactTime = new DateTime($lastContact->getCreatedAt());
                 $now = new DateTime();
                 $interval = $now->diff($lastContactTime);
-
-                if ($interval->i < 5 && $interval->h == 0 && $interval->days == 0) {
+                if ($interval->i < 60 && $interval->h == 0 && $interval->days == 0) {
                     $errors['email'] = "Vous avez déjà envoyé un message récemment. Veuillez attendre avant d'envoyer un nouveau message.";
                 }
             }
@@ -82,13 +81,31 @@ class ContactController extends AbstractController
 
             // Save contact
             $created = $this->repo->createContact($contact);
+            $idAdmin = 1;
+            $type = 'contact';
+            $title = 'Nouveau message de contact';
+            $message = 'Vous avez reçu un nouveau message de contact de ' . $firstName . ' ' . $lastName . '.';
+            $url = HOME_URL . 'admin/contacts';
+            $priority = 0;
 
             if ($created) {
                 // Send notification email to admin
-                $this->sendNotificationToAdmin($contact);
+                $this->sendNotification($idAdmin, $type, $title, $message, $url, $priority);
 
-                // Send confirmation email to user
-                $this->sendConfirmationToUser($contact);
+                if ($_SESSION['connected']) {
+                    // Send in-app notification to user
+                    $idUser = $_SESSION['idUser'];
+                    $type = 'message';
+                    $title = 'Confirmation de réception de votre message';
+                    $message = 'Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais.';
+                    $url = HOME_URL;
+                    $priority = 0;
+
+                    $this->sendNotification($idUser, $type, $title, $message, $url, $priority);
+                } else {
+                    // Send confirmation email to user
+                    $this->sendConfirmationToUser($contact);
+                }
 
                 unset($_SESSION['form_data']);
                 $_SESSION['success'] = "Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.";
@@ -99,50 +116,6 @@ class ContactController extends AbstractController
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('nous_contacter', ['error' => 'true']);
-        }
-    }
-
-    /**
-     * Send notification email to admin
-     */
-    private function sendNotificationToAdmin(Contact $contact): void
-    {
-        try {
-            $mail = new Mail();
-
-            $subject = "Nouveau message de contact - " . $contact->getSubject();
-
-            $body = "
-                <h3>Nouveau message de contact reçu</h3>
-                
-                <h4>Informations du contact :</h4>
-                <ul>
-                    <li><strong>Nom :</strong> " . $contact->getFirstName() . " " . $contact->getLastName() . "</li>
-                    <li><strong>Email :</strong> " . $contact->getEmail() . "</li>
-                    <li><strong>Téléphone :</strong> " . ($contact->getPhone() ?: 'Non renseigné') . "</li>
-                    <li><strong>Sujet :</strong> " . $contact->getSubject() . "</li>
-                    <li><strong>Date :</strong> " . date('d/m/Y H:i', strtotime($contact->getCreatedAt())) . "</li>
-                </ul>
-                
-                <h4>Message :</h4>
-                <div style='background-color: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; margin: 15px 0;'>
-                    " . nl2br($contact->getMessage()) . "
-                </div>
-                
-                <p><em>Vous pouvez répondre à ce message depuis l'interface d'administration.</em></p>
-            ";
-
-            $mail->sendEmail(
-                NO_REPLY_EMAIL,
-                'Le Média Voironnais - Contact',
-                ADMIN_EMAIL,
-                'Administrateur',
-                $subject,
-                $body
-            );
-        } catch (Exception $e) {
-            // Log error but don't throw exception to not break the main flow
-            error_log("Erreur envoi email admin contact: " . $e->getMessage());
         }
     }
 
@@ -181,7 +154,7 @@ class ContactController extends AbstractController
 
             $mail->sendEmail(
                 ADMIN_EMAIL,
-                'Le Média Voironnais',
+                ADMIN_SENDER_NAME,
                 $contact->getEmail(),
                 $contact->getFirstName() . ' ' . $contact->getLastName(),
                 $subject,
@@ -248,7 +221,7 @@ class ContactController extends AbstractController
     {
         try {
             $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
-            
+
             if (!$uiid) {
                 throw new Exception("Contact invalide");
             }
@@ -262,7 +235,6 @@ class ContactController extends AbstractController
 
             $_SESSION['success'] = "Le message a été marqué comme lu";
             $this->redirect('admin/contacts');
-
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('admin/contacts');
@@ -276,7 +248,7 @@ class ContactController extends AbstractController
     {
         try {
             $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
-            
+
             if (!$uiid) {
                 throw new Exception("Contact invalide");
             }
@@ -290,7 +262,6 @@ class ContactController extends AbstractController
 
             $_SESSION['success'] = "Le message a été archivé";
             $this->redirect('admin/contacts');
-
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('admin/contacts');
@@ -338,7 +309,6 @@ class ContactController extends AbstractController
             }
 
             $this->redirect('admin/contacts');
-
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('admin/contacts');
@@ -352,7 +322,7 @@ class ContactController extends AbstractController
     {
         try {
             $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
-            
+
             if (!$uiid) {
                 throw new Exception("Contact invalide");
             }
@@ -366,7 +336,6 @@ class ContactController extends AbstractController
 
             $_SESSION['success'] = "Le message a été supprimé";
             $this->redirect('admin/contacts');
-
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('admin/contacts');

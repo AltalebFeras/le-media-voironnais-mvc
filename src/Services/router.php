@@ -480,7 +480,7 @@ switch ($route) {
 
     // Notifications routes
     case HOME_URL . 'notifications':
-        if ($connectionSecured) {
+        if ($connectionSecured || $connectionSecuredAdmin) {
             if ($method === 'GET') {
                 $notificationController->displayNotifications();
             } else {
@@ -493,7 +493,7 @@ switch ($route) {
         break;
 
     case HOME_URL . 'notifications/count':
-        if ($connectionSecured) {
+        if ($connectionSecured || $connectionSecuredAdmin) {
             if ($method === 'GET') {
                 $notificationController->notificationsCount();
             } else {
@@ -506,7 +506,7 @@ switch ($route) {
         break;
 
     case HOME_URL . 'notifications/list':
-        if ($connectionSecured) {
+        if ($connectionSecured || $connectionSecuredAdmin) {
             if ($method === 'GET') {
                 $notificationController->notificationsList();
             } else {
@@ -519,7 +519,7 @@ switch ($route) {
         break;
 
     case HOME_URL . 'notifications/mark-read':
-        if ($connectionSecured) {
+        if ($connectionSecured || $connectionSecuredAdmin) {
             if ($method === 'POST') {
                 $notificationController->notificationMarkRead();
             } else {
@@ -532,7 +532,7 @@ switch ($route) {
         break;
 
     case HOME_URL . 'notifications/mark-all-read':
-        if ($connectionSecured) {
+        if ($connectionSecured || $connectionSecuredAdmin) {
 
             if ($method === 'POST') {
                 $notificationController->notificationsMarkAllRead();

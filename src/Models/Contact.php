@@ -13,7 +13,7 @@ class Contact
     private ?string $phone = null;
     private ?string $subject = null;
     private ?string $message = null;
-    private ?string $status = 'nouveau'; // nouveau, lu, traite, archive
+    private ?string $status = 'nouveau';
     private ?string $response = null;
     private ?string $createdAt = null;
     private ?string $repliedAt = null;

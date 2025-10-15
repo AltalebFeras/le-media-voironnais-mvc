@@ -277,7 +277,7 @@ function showReplyModal(uiid, email, name) {
     document.getElementById('replySubject').value = subject;
     document.getElementById('replySubjectDisplay').textContent = subject;
     
-    document.getElementById('replyMessage').value = `Bonjour ${name},\n\nMerci pour votre message.\n\n\n\nCordialement,\nL'équipe du Média Voironnais`;
+    document.getElementById('replyMessage').value = `Merci pour votre message.\n\n\nCordialement,\nL'équipe du Média Voironnais`;
     document.getElementById('replyModal').style.display = 'flex';
 }
 

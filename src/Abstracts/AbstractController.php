@@ -4,6 +4,7 @@ namespace src\Abstracts;
 
 use Error;
 use Exception;
+use src\Repositories\NotificationRepository;
 
 abstract class AbstractController
 {
@@ -134,5 +135,48 @@ abstract class AbstractController
         }
 
         return $isValid;
+    }
+
+
+    /**
+     * Send a notification to a user.
+     *
+     * @param int $idUser The user ID to notify.
+     * @param int $idEvenement The event ID related to the notification.
+     * @param string $type The type of notification (e.g.,'activation','inscription','preinscription','invitation','mise_a_jour','rappel','systeme','alert','message','autre').
+     * @param string $title The notification title.
+     * @param string $message The notification message.
+     * @param string $url The URL related to the notification.
+     * @return bool True if notification was sent, false otherwise.
+     */
+    public function sendNotification(int $idUser, string $type, string $title, string $message, string $url , int $priority): bool
+    {
+        $notification = new NotificationRepository();
+        $data = [
+            'idUser' => $idUser,
+            'idEvenement' => null,
+            'type' => $type,
+            'title' => $title,
+            'message' => $message,
+            'url' => $url,
+            'priority' => $priority ?? false,
+            'createdAt' => (new \DateTime())->format('Y-m-d H:i:s')
+        ];
+        return $notification->pushNotification($data);
+    }
+    public function sendNotificationForEvent(int $idUser, int $idEvenement, string $type, string $title, string $message, string $url): bool
+    {
+        $notification = new NotificationRepository();
+        $data = [
+            'idUser' => $idUser,
+            'idEvenement' => $idEvenement,
+            'type' => $type,
+            'title' => $title,
+            'message' => $message,
+            'url' => $url,
+            'priority' => $priority ?? false,
+            'createdAt' => (new \DateTime())->format('Y-m-d H:i:s')
+        ];
+        return $notification->pushNotification($data);
     }
 }

@@ -23,6 +23,10 @@
             <h2>Toutes les demandes d'activation d'entreprise</h2>
             <p>Voir toutes les demandes d'activation d'entreprise.</p>
         </a>
+        <a href="<?= HOME_URL . "admin/contacts" ?>" class="cardDashboard">
+            <h2>Contacts</h2>
+            <p>Voir tous les contacts.</p>
+        </a>
 
     </div>
 </main>
