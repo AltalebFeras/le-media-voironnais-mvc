@@ -177,12 +177,12 @@ class ContactRepository
     public function updateContactStatus(int $idContact, string $status): bool
     {
         try {
-            $sql = "UPDATE contact SET status = :status, updatedAt = :updatedAt WHERE idContact = :idContact";
+            $sql = "UPDATE contact SET status = :status, repliedAt = :repliedAt WHERE idContact = :idContact";
             $stmt = $this->DB->prepare($sql);
             
             return $stmt->execute([
                 ':status' => $status,
-                ':updatedAt' => (new \DateTime())->format('Y-m-d H:i:s'),
+                ':repliedAt' => (new \DateTime())->format('Y-m-d H:i:s'),
                 ':idContact' => $idContact
             ]);
         } catch (Exception $e) {

@@ -78,7 +78,7 @@ class ContactController extends AbstractController
                 }
             }
 
-            $this->returnAllErrors($errors, 'nous_contacter',['error' => 'true']);
+            $this->returnAllErrors($errors, 'nous_contacter', ['error' => 'true']);
 
             // Save contact
             $created = $this->repo->createContact($contact);

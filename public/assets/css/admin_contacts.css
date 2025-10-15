@@ -248,6 +248,8 @@
     justify-content: center;
     align-items: center;
     padding: 1rem;
+    backdrop-filter: blur(3px);
+    animation: fadeIn 0.3s ease;
 }
 
 .popup .card {
@@ -255,6 +257,7 @@
     border-radius: 12px;
     padding: 2rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease;
 }
 
 /* Form Styles in Modal */
@@ -288,6 +291,70 @@
 .form-group input[readonly] {
     background: #f8f9fa;
     color: #6c757d;
+}
+
+.form-group textarea {
+    font-family: inherit;
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Reply Info Display */
+.reply-info {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin: 0;
+    color: #1a2636;
+    font-weight: 500;
+}
+
+/* Delete Modal Specific Styles */
+#deleteModal .card {
+    border-left: 4px solid #dc3545;
+}
+
+#deleteModal h3 {
+    color: #dc3545;
+}
+
+#deleteModal .text-muted {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Enhanced Modal Styles */
+.popup {
+    backdrop-filter: blur(3px);
+    animation: fadeIn 0.3s ease;
+}
+
+.popup .card {
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Button improvements in modals */
+.popup .btn {
+    min-width: 120px;
+    justify-content: center;
 }
 
 /* Responsive Design */

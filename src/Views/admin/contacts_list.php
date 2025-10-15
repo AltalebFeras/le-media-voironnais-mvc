@@ -130,10 +130,10 @@
                                     </form>
                                 <?php endif; ?>
 
-                                <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?')">
+                                <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form">
                                     <input type="hidden" name="uiid" value="<?= $contact->getUiid() ?>">
                                     <input type="hidden" name="action" value="delete">
-                                    <button type="submit" class="btn btn-danger">
+                                    <button type="button" class="btn btn-danger" onclick="showDeleteModal('<?= $contact->getUiid() ?>', '<?= htmlspecialchars($contact->getFirstName() . ' ' . $contact->getLastName()) ?>')">
                                         <span class="material-icons">delete</span>
                                         Supprimer
                                     </button>
@@ -193,13 +193,15 @@
             <input type="hidden" name="action" value="reply">
             
             <div class="form-group">
-                <label for="replyTo">Destinataire :</label>
-                <input type="email" id="replyTo" name="replyTo" readonly>
+                <label>Destinataire :</label>
+                <p id="replyToDisplay" class="reply-info"></p>
+                <input type="hidden" id="replyTo" name="replyTo">
             </div>
 
             <div class="form-group">
-                <label for="replySubject">Sujet :</label>
-                <input type="text" id="replySubject" name="replySubject" required>
+                <label>Sujet :</label>
+                <p id="replySubjectDisplay" class="reply-info"></p>
+                <input type="hidden" id="replySubject" name="replySubject">
             </div>
 
             <div class="form-group">
@@ -214,6 +216,38 @@
                 <button type="submit" class="btn btn-primary">
                     <span class="material-icons">send</span>
                     Envoyer la réponse
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="popup" id="deleteModal" style="display: none;">
+    <div class="card" style="max-width: 500px; width: 90%;">
+        <div class="flex-row justify-between align-center mb-4">
+            <h3>Confirmer la suppression</h3>
+            <button onclick="closeDeleteModal()" class="btn btn-secondary">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+
+        <div class="mb-4">
+            <p>Êtes-vous sûr de vouloir supprimer le message de <strong id="deleteContactName"></strong> ?</p>
+            <p class="text-muted">Cette action est irréversible.</p>
+        </div>
+
+        <form method="POST" action="<?= HOME_URL ?>admin/contacts" id="deleteForm">
+            <input type="hidden" name="uiid" id="deleteUiid">
+            <input type="hidden" name="action" value="delete">
+            
+            <div class="flex-row justify-between">
+                <button type="button" onclick="closeDeleteModal()" class="btn btn-secondary">
+                    Annuler
+                </button>
+                <button type="submit" class="btn btn-danger">
+                    <span class="material-icons">delete</span>
+                    Supprimer définitivement
                 </button>
             </div>
         </form>
@@ -237,9 +271,20 @@ function toggleContact(uiid) {
 function showReplyModal(uiid, email, name) {
     document.getElementById('replyUiid').value = uiid;
     document.getElementById('replyTo').value = email;
-    document.getElementById('replySubject').value = 'Re: Votre message de contact';
+    document.getElementById('replyToDisplay').textContent = email;
+    
+    const subject = 'Re: Votre message de contact';
+    document.getElementById('replySubject').value = subject;
+    document.getElementById('replySubjectDisplay').textContent = subject;
+    
     document.getElementById('replyMessage').value = `Bonjour ${name},\n\nMerci pour votre message.\n\n\n\nCordialement,\nL'équipe du Média Voironnais`;
     document.getElementById('replyModal').style.display = 'flex';
+}
+
+function showDeleteModal(uiid, contactName) {
+    document.getElementById('deleteUiid').value = uiid;
+    document.getElementById('deleteContactName').textContent = contactName;
+    document.getElementById('deleteModal').style.display = 'flex';
 }
 
 function closeReplyModal() {
@@ -247,10 +292,21 @@ function closeReplyModal() {
     document.getElementById('replyForm').reset();
 }
 
-// Close modal when clicking outside
+function closeDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+    document.getElementById('deleteForm').reset();
+}
+
+// Close modals when clicking outside
 document.getElementById('replyModal').addEventListener('click', function(e) {
     if (e.target === this) {
         closeReplyModal();
+    }
+});
+
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
     }
 });
 </script>
