@@ -682,6 +682,41 @@ switch ($route) {
         $homeController->page404();
         break;
 
+    // Admin contact routes - consolidated into single route with POST actions
+    case HOME_URL . 'admin/contacts':
+        if ($connectionSecuredAdmin) {
+            if ($method === 'GET') {
+                $contactController->displayAllContacts();
+            } elseif ($method === 'POST') {
+                // Handle different actions via POST parameter
+                $action = isset($_POST['action']) ? $_POST['action'] : null;
+                
+                switch ($action) {
+                    case 'mark_read':
+                        $contactController->markContactAsRead();
+                        break;
+                    case 'archive':
+                        $contactController->archiveContact();
+                        break;
+                    case 'reply':
+                        $contactController->replyToContact();
+                        break;
+                    case 'delete':
+                        $contactController->deleteContact();
+                        break;
+                    default:
+                        $homeController->page404();
+                        break;
+                }
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
     default:
         $homeController->page404();
         break;
