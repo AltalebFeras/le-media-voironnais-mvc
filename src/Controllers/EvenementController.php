@@ -896,30 +896,16 @@ class EvenementController extends AbstractController
                 $title = ($status === 'liste_attente') ? 'Nouvelle pré-inscription' : 'Nouvelle inscription';
                 $message = "Un utilisateur vient de s'inscrire à votre événement : " . $evenement['title'];
                 $urlCreator = "mes_evenements?action=voir&uiid=" . $evenement['uiid'];
-                $dataCreator = [
-                    'idUser' => $idCreator,
-                    'idEvenement' => $idEvenement,
-                    'type' => $type,
-                    'title' => $title,
-                    'message' => $message,
-                    'url' => $urlCreator,
-                    'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
-                ];
+                $priority = 0;
+                $this->sendNotificationForEvent($idCreator, $idEvenement, $type, $title, $message, $urlCreator, $priority);
 
-                $notifyCreator = $notification->pushNotification($dataCreator);
-                $urlUser = "evenements/{$ville_slug}/{$category_slug}/{$slug}";
                 // notify user
-                $dataUser = [
-                    'idUser' => $idUser,
-                    'idEvenement' => $idEvenement,
-                    'type' => $type,
-                    'title' => ($status === 'liste_attente') ? 'Pré-inscription enregistrée' : 'Inscription confirmée',
-                    'message' => "Vous êtes " . ($status === 'liste_attente' ? 'pré-inscrit' : 'inscrit') . " à l'événement : " . $evenement['title'],
-                    'url' => $urlUser,
-                    'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
-                ];
-                $notifyUser = $notification->pushNotification($dataUser);
-                // send email to user if max participants of the event less than 50 persons (to avoid spam)
+                $title = ($status === 'liste_attente') ? 'Pré-inscription enregistrée' : 'Inscription confirmée';
+                $message = "Vous êtes " . ($status === 'liste_attente' ? 'pré-inscrit' : 'inscrit') . " à l'événement : " . $evenement['title'];
+                $urlUser = "evenements/{$ville_slug}/{$category_slug}/{$slug}";
+                $priority = 0;
+                $this->sendNotificationForEvent($idUser, $idEvenement, $type, $title, $message, $urlUser, $priority);
+
                 if ($evenement['maxParticipants'] < 50) {
                     $mail = new Mail();
                     $subject = ($status === 'liste_attente') ? "Pré-inscription enregistrée" : "Inscription confirmée";
@@ -971,20 +957,13 @@ class EvenementController extends AbstractController
             $acceptRequest = $this->repo->updateSubscriptionStatus($idEventParticipant, $idEvenement, $newStatus = 'inscrit');
 
             // Notify participant
-            $notification = new NotificationRepository();
+            $idUser = $subscription['idUser'];
+            $type = 'inscription';
             $title = 'Inscription confirmée';
             $message = "Votre inscription à l'événement : " . $evenement['title'] . " a été confirmée.";
             $url = "evenements/" . $evenement['ville_slug'] . "/" . $evenement['category_slug'] . "/" . $evenement['slug'];
-            $dataParticipant = [
-                'idUser' => $subscription['idUser'],
-                'idEvenement' => $idEvenement,
-                'type' => 'inscription',
-                'title' => $title,
-                'message' => $message,
-                'url' => $url,
-                'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
-            ];
-            $notifyParticipant = $notification->pushNotification($dataParticipant);
+            $priority = 0;
+            $this->sendNotificationForEvent($idUser, $idEvenement, $type, $title, $message, $url, $priority);
 
             // send email to participant if max participants of the event less than 50 persons (to avoid spam)
             if ($evenement['maxParticipants'] < 50) {
@@ -1032,20 +1011,13 @@ class EvenementController extends AbstractController
             $refuseRequest = $this->repo->updateSubscriptionStatus($idEventParticipant, $idEvenement, $newStatus = 'refuse');
 
             // Notify participant
-            $notification = new NotificationRepository();
+            $idUser = $subscription['idUser'];
+            $type = 'inscription';
             $title = 'Inscription refusée';
             $message = "Votre inscription à l'événement : " . $evenement['title'] . " a été refusée.";
             $url = "evenements/" . $evenement['ville_slug'] . "/" . $evenement['category_slug'] . "/" . $evenement['slug'];
-            $dataParticipant = [
-                'idUser' => $subscription['idUser'],
-                'idEvenement' => $idEvenement,
-                'type' => 'inscription',
-                'title' => $title,
-                'message' => $message,
-                'url' => $url,
-                'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
-            ];
-            $notifyParticipant = $notification->pushNotification($dataParticipant);
+            $priority = 0;
+            $this->sendNotificationForEvent($idUser, $idEvenement, $type, $title, $message, $url, $priority);
 
             // send email to participant if max participants of the event less than 50 persons (to avoid spam)
             if ($evenement['maxParticipants'] < 50) {
@@ -1172,20 +1144,14 @@ class EvenementController extends AbstractController
                 $idEvenement = $this->repo->getIdByUiid($eventUiid);
                 $event = $this->repo->getEventCompleteById($idEvenement);
 
-                $notificationRepo = new NotificationRepository();
                 $currentUser = $parentUserRepo->getUserById($idUser);
-
-                $notificationData = [
-                    'idUser' => $parentComment['idUser'],
-                    'idEvenement' => $idEvenement,
-                    'type' => 'mention',
-                    'title' => 'Vous avez été mentionné',
-                    'message' => $currentUser->getFirstName() . " " . $currentUser->getLastName() . " vous a mentionné dans un commentaire sur l'événement : " . $event['title'],
-                    'url' => "evenements/" . $event['ville_slug'] . "/" . $event['category_slug'] . "/" . $event['slug'],
-                    'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
-                ];
-
-                $notificationRepo->pushNotification($notificationData);
+                $idUser = $parentComment['idUser'];
+                $type = 'mention';
+                $title = 'Vous avez été mentionné';
+                $message = $currentUser->getFirstName() . " " . $currentUser->getLastName() . " vous a mentionné dans un commentaire sur l'événement : " . $event['title'];
+                $url = "evenements/" . $event['ville_slug'] . "/" . $event['category_slug'] . "/" . $event['slug'];
+                $priority = 0;
+                $this->sendNotificationForEvent($idUser, $idEvenement, $type, $title, $message, $url, $priority);
             }
 
             echo json_encode(['success' => true, 'commentUiid' => $commentUiid]);
@@ -1241,22 +1207,21 @@ class EvenementController extends AbstractController
         try {
             $idUser = $_SESSION['idUser'];
             $eventUiid = isset($_POST['eventUiid']) ? htmlspecialchars(trim($_POST['eventUiid'])) : null;
-            
+
             if (!$eventUiid) {
                 throw new Exception("Événement invalide");
             }
-            
+
             $idEvenement = $this->repo->getIdByUiid($eventUiid);
             if (!$idEvenement) {
                 throw new Exception("Événement introuvable");
             }
-            
+
             // Remove from favorites
             $this->repo->toggleEventFavourite($idUser, $idEvenement);
-            
+
             $_SESSION['success'] = "L'événement a été retiré de vos favoris";
             $this->redirect('mes_favoris');
-            
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('mes_favoris', ['error' => 'true']);

@@ -164,7 +164,19 @@ abstract class AbstractController
         ];
         return $notification->pushNotification($data);
     }
-    public function sendNotificationForEvent(int $idUser, int $idEvenement, string $type, string $title, string $message, string $url): bool
+
+    /**
+     * Summary of sendNotificationForEvent
+     * @param int $idUser
+     * @param int $idEvenement
+     * @param string $type
+     * @param string $title
+     * @param string $message
+     * @param string $url
+     * @param int $priority
+     * @return bool
+     */
+    public function sendNotificationForEvent(int $idUser, int $idEvenement, string $type, string $title, string $message, string $url, int $priority): bool
     {
         $notification = new NotificationRepository();
         $data = [

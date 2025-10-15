@@ -5,7 +5,6 @@ namespace src\Controllers;
 use Exception;
 use src\Abstracts\AbstractController;
 use src\Repositories\AdminRepository;
-use src\Repositories\NotificationRepository;
 use src\Services\Mail;
 
 use function PHPSTORM_META\type;
@@ -13,12 +12,10 @@ use function PHPSTORM_META\type;
 class AdminController extends AbstractController
 {
     protected $repo;
-    protected $notificationRepo;
 
     public function __construct()
     {
         $this->repo = new AdminRepository();
-        $this->notificationRepo = new NotificationRepository();
     }
     public function displayAdminDashboard()
     {
@@ -190,7 +187,7 @@ class AdminController extends AbstractController
         try {
             $uiid = isset($_POST['entreprise_uiid']) ? trim($_POST['entreprise_uiid']) : '';
             $message = isset($_POST['message']) ? trim($_POST['message']) : '';
-            
+
             if (empty($uiid)) {
                 throw new Exception("UIID de l'entreprise manquant.");
             }
@@ -215,17 +212,15 @@ class AdminController extends AbstractController
             }
             if ($acceptSuccess) {
                 // Add notification to the user
-                $userId = $entreprise['idUser'] ?? null;
-                if ($userId) {
-                    $notification = [
-                        'idUser' => $userId,
-                        'type' => 'activation',
-                        'title' => "Activation de votre compte entreprise",
-                        'message' => "Votre compte entreprise \"" . $entreprise['name'] . "\" a été activé avec succès.",
-                        'link' => HOME_URL . "mes_entreprises?action=voir&uiid=" . $entreprise['uiid'],
-                        'createdAt' => date('Y-m-d H:i:s')
-                    ];
-                    $this->notificationRepo->pushNotification($notification);
+                $idUser = $entreprise['idUser'] ?? null;
+                if ($idUser) {
+                    $type = 'activation';
+                    $title = "Activation de votre compte entreprise";
+                    $message = "Votre compte entreprise \"" . $entreprise['name'] . "\" a été activé avec succès.";
+                    $url = HOME_URL . "mes_entreprises?action=voir&uiid=" . $entreprise['uiid'];
+                    $priority = 1;
+
+                    $this->sendNotification($idUser, $type, $title, $message, $url, $priority);
                 }
             }
 
@@ -242,11 +237,11 @@ class AdminController extends AbstractController
         try {
             $message = isset($_POST['message']) ? trim($_POST['message']) : '';
             $uiid = isset($_POST['entreprise_uiid']) ? trim($_POST['entreprise_uiid']) : '';
-            
+
             if (empty($uiid)) {
                 throw new Exception("UIID de l'entreprise manquant.");
             }
-            
+
             $entreprise = $this->repo->findEntrepriseByUiid($uiid);
             if (!$entreprise) {
                 throw new Exception("Entreprise non trouvée.");
@@ -266,15 +261,13 @@ class AdminController extends AbstractController
                 // Add notification to the user
                 $userId = $entreprise['idUser'] ?? null;
                 if ($userId) {
-                    $notification = [
-                        'idUser' => $userId,
-                        'type' => 'activation',
-                        'title' => "Refus de l'activation de votre compte entreprise",
-                        'message' => "Votre demande d'activation de compte entreprise \"" . $entreprise['name'] . "\" a été refusée.",
-                        'link' => HOME_URL . "mes_entreprises",
-                        'createdAt' => date('Y-m-d H:i:s')
-                    ];
-                    $this->notificationRepo->pushNotification($notification);
+                    $type = 'activation';
+                    $title = "Refus de l'activation de votre compte entreprise";
+                    $message = "Votre demande d'activation de compte entreprise \"" . $entreprise['name'] . "\" a été refusée. Veuillez nous contacter pour plus d'informations.";
+                    $url = HOME_URL . "mes_entreprises";
+                    $priority = 1;
+
+                    $this->sendNotification($userId, $type, $title, $message, $url, $priority);
                 }
             }
             $_SESSION['success'] = "La demande d'activation de l'entreprise \"" . $entreprise['name'] . "\" a été refusée avec succès.";
