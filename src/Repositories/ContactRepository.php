@@ -172,17 +172,23 @@ class ContactRepository
     }
 
     /**
-     * Update contact status
+     * Update contact status with validation
      */
     public function updateContactStatus(int $idContact, string $status): bool
     {
         try {
-            $sql = "UPDATE contact SET status = :status, repliedAt = :repliedAt WHERE idContact = :idContact";
+            // Validate status
+            $validStatuses = ['nouveau', 'lu', 'traite', 'archive'];
+            if (!in_array($status, $validStatuses)) {
+                throw new Exception("Statut invalide");
+            }
+
+            // Don't update repliedAt when just changing status (not adding response)
+            $sql = "UPDATE contact SET status = :status WHERE idContact = :idContact";
             $stmt = $this->DB->prepare($sql);
             
             return $stmt->execute([
                 ':status' => $status,
-                ':repliedAt' => (new \DateTime())->format('Y-m-d H:i:s'),
                 ':idContact' => $idContact
             ]);
         } catch (Exception $e) {

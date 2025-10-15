@@ -112,23 +112,62 @@
                                     </form>
                                 <?php endif; ?>
 
-                                <?php if ($contact->getStatus() !== 'traite'): ?>
+                                <?php 
+                                // Can reply only if no response exists yet
+                                $hasResponse = !empty($contact->getResponse()) && !empty($contact->getRepliedAt());
+                                if (!$hasResponse): 
+                                ?>
                                     <button onclick="showReplyModal('<?= $contact->getUiid() ?>', '<?= htmlspecialchars($contact->getEmail()) ?>', '<?= htmlspecialchars($contact->getFirstName() . ' ' . $contact->getLastName()) ?>')" class="btn btn-primary">
                                         <span class="material-icons">reply</span>
                                         Répondre
                                     </button>
                                 <?php endif; ?>
 
-                                <?php if ($contact->getStatus() !== 'archive'): ?>
-                                    <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form">
-                                        <input type="hidden" name="uiid" value="<?= $contact->getUiid() ?>">
-                                        <input type="hidden" name="action" value="archive">
-                                        <button type="submit" class="btn btn-warning">
-                                            <span class="material-icons">archive</span>
-                                            Archiver
-                                        </button>
-                                    </form>
-                                <?php endif; ?>
+                                <?php 
+                                // Status change logic based on response existence
+                                if ($hasResponse): 
+                                    // If has response, can only move between 'traite' and 'archive'
+                                    if ($contact->getStatus() === 'traite'): ?>
+                                        <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form">
+                                            <input type="hidden" name="uiid" value="<?= $contact->getUiid() ?>">
+                                            <input type="hidden" name="action" value="archive">
+                                            <button type="submit" class="btn btn-warning">
+                                                <span class="material-icons">archive</span>
+                                                Archiver
+                                            </button>
+                                        </form>
+                                    <?php elseif ($contact->getStatus() === 'archive'): ?>
+                                        <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form">
+                                            <input type="hidden" name="uiid" value="<?= $contact->getUiid() ?>">
+                                            <input type="hidden" name="action" value="mark_treated">
+                                            <button type="submit" class="btn btn-success">
+                                                <span class="material-icons">mark_email_read</span>
+                                                Marquer traité
+                                            </button>
+                                        </form>
+                                    <?php endif;
+                                else: 
+                                    // If no response, flexible movement between 'lu' and 'archive'
+                                    if ($contact->getStatus() === 'lu'): ?>
+                                        <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form">
+                                            <input type="hidden" name="uiid" value="<?= $contact->getUiid() ?>">
+                                            <input type="hidden" name="action" value="archive">
+                                            <button type="submit" class="btn btn-warning">
+                                                <span class="material-icons">archive</span>
+                                                Archiver
+                                            </button>
+                                        </form>
+                                    <?php elseif ($contact->getStatus() === 'archive'): ?>
+                                        <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form">
+                                            <input type="hidden" name="uiid" value="<?= $contact->getUiid() ?>">
+                                            <input type="hidden" name="action" value="mark_read">
+                                            <button type="submit" class="btn btn-info">
+                                                <span class="material-icons">visibility</span>
+                                                Marquer lu
+                                            </button>
+                                        </form>
+                                    <?php endif;
+                                endif; ?>
 
                                 <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form">
                                     <input type="hidden" name="uiid" value="<?= $contact->getUiid() ?>">
@@ -253,62 +292,6 @@
         </form>
     </div>
 </div>
-
-<script>
-function toggleContact(uiid) {
-    const details = document.getElementById('contact-' + uiid);
-    const toggle = document.querySelector(`[onclick="toggleContact('${uiid}')"] .material-icons`);
-    
-    if (details.style.display === 'none') {
-        details.style.display = 'block';
-        toggle.textContent = 'expand_less';
-    } else {
-        details.style.display = 'none';
-        toggle.textContent = 'expand_more';
-    }
-}
-
-function showReplyModal(uiid, email, name) {
-    document.getElementById('replyUiid').value = uiid;
-    document.getElementById('replyTo').value = email;
-    document.getElementById('replyToDisplay').textContent = email;
-    
-    const subject = 'Re: Votre message de contact';
-    document.getElementById('replySubject').value = subject;
-    document.getElementById('replySubjectDisplay').textContent = subject;
-    
-    document.getElementById('replyMessage').value = `Merci pour votre message.\n\n\nCordialement,\nL'équipe du Média Voironnais`;
-    document.getElementById('replyModal').style.display = 'flex';
-}
-
-function showDeleteModal(uiid, contactName) {
-    document.getElementById('deleteUiid').value = uiid;
-    document.getElementById('deleteContactName').textContent = contactName;
-    document.getElementById('deleteModal').style.display = 'flex';
-}
-
-function closeReplyModal() {
-    document.getElementById('replyModal').style.display = 'none';
-    document.getElementById('replyForm').reset();
-}
-
-function closeDeleteModal() {
-    document.getElementById('deleteModal').style.display = 'none';
-    document.getElementById('deleteForm').reset();
-}
-
-// Close modals when clicking outside
-document.getElementById('replyModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeReplyModal();
-    }
-});
-
-document.getElementById('deleteModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeDeleteModal();
-    }
-});
-</script>
+<script src="<?= HOME_URL .'assets/javascript/contacts-list.js' ?>"></script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

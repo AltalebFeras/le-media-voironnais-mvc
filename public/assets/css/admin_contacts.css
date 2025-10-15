@@ -69,6 +69,21 @@
     opacity: 0.8;
 }
 
+/* Disabled state for replied contacts */
+.contact-card.has-response .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Visual indication for contacts with responses */
+.contact-card.has-response {
+    border-left-color: #28a745;
+}
+
+.contact-card.has-response .contact-header {
+    background: linear-gradient(90deg, rgba(40, 167, 69, 0.05) 0%, transparent 100%);
+}
+
 /* Contact Header */
 .contact-header {
     display: flex;

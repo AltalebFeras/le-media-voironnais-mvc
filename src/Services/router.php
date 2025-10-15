@@ -690,10 +690,13 @@ switch ($route) {
             } elseif ($method === 'POST') {
                 // Handle different actions via POST parameter
                 $action = isset($_POST['action']) ? $_POST['action'] : null;
-                
+
                 switch ($action) {
                     case 'mark_read':
                         $contactController->markContactAsRead();
+                        break;
+                    case 'mark_treated':
+                        $contactController->markContactAsTreated();
                         break;
                     case 'archive':
                         $contactController->archiveContact();

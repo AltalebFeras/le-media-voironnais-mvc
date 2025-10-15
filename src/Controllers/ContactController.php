@@ -226,14 +226,57 @@ class ContactController extends AbstractController
                 throw new Exception("Contact invalide");
             }
 
-            $idContact = $this->repo->getIdByUiid($uiid);
-            if (!$idContact) {
+            $contact = $this->repo->getContactByUiid($uiid);
+            if (!$contact) {
                 throw new Exception("Contact introuvable");
+            }
+
+            $idContact = $contact->getIdContact();
+            $hasResponse = !empty($contact->getResponse()) && !empty($contact->getRepliedAt());
+
+            // If contact has response, cannot mark as 'lu'
+            if ($hasResponse) {
+                throw new Exception("Impossible de marquer comme lu un message qui a déjà reçu une réponse");
             }
 
             $this->repo->updateContactStatus($idContact, 'lu');
 
             $_SESSION['success'] = "Le message a été marqué comme lu";
+            $this->redirect('admin/contacts');
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('admin/contacts');
+        }
+    }
+
+    /**
+     * Mark contact as treated
+     */
+    public function markContactAsTreated(): void
+    {
+        try {
+            $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
+
+            if (!$uiid) {
+                throw new Exception("Contact invalide");
+            }
+
+            $contact = $this->repo->getContactByUiid($uiid);
+            if (!$contact) {
+                throw new Exception("Contact introuvable");
+            }
+
+            $idContact = $contact->getIdContact();
+            $hasResponse = !empty($contact->getResponse()) && !empty($contact->getRepliedAt());
+
+            // Can only mark as treated if there is a response
+            if (!$hasResponse) {
+                throw new Exception("Impossible de marquer comme traité un message sans réponse");
+            }
+
+            $this->repo->updateContactStatus($idContact, 'traite');
+
+            $_SESSION['success'] = "Le message a été marqué comme traité";
             $this->redirect('admin/contacts');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
@@ -258,6 +301,7 @@ class ContactController extends AbstractController
                 throw new Exception("Contact introuvable");
             }
 
+            // Archive is always allowed regardless of response status
             $this->repo->updateContactStatus($idContact, 'archive');
 
             $_SESSION['success'] = "Le message a été archivé";
@@ -275,35 +319,44 @@ class ContactController extends AbstractController
     {
         try {
             $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
-            $replyTo = isset($_POST['replyTo']) ? htmlspecialchars(trim($_POST['replyTo'])) : null;
-            $subject = isset($_POST['replySubject']) ? htmlspecialchars(trim($_POST['replySubject'])) : null;
             $message = isset($_POST['replyMessage']) ? htmlspecialchars(trim($_POST['replyMessage'])) : null;
 
-            if (!$uiid || !$replyTo || !$subject || !$message) {
+            if (!$uiid || !$message) {
                 throw new Exception("Tous les champs sont requis");
             }
 
-            $idContact = $this->repo->getIdByUiid($uiid);
-            if (!$idContact) {
+            $contact = $this->repo->getContactByUiid($uiid);
+            if (!$contact) {
                 throw new Exception("Contact introuvable");
             }
+
+            // Check if already replied
+            $hasResponse = !empty($contact->getResponse()) && !empty($contact->getRepliedAt());
+            if ($hasResponse) {
+                throw new Exception("Une réponse a déjà été envoyée pour ce message");
+            }
+
+            $idContact = $contact->getIdContact();
+            $email = $contact->getEmail();
+            $fullName = $contact->getFirstName() . ' ' . $contact->getLastName();
+            $subject = 'Réponse: ' . $contact->getSubject();
 
             // Send email reply
             $mail = new Mail();
             $emailSent = $mail->sendEmail(
                 ADMIN_EMAIL,
-                'Le Média Voironnais',
-                $replyTo,
-                '',
+                ADMIN_SENDER_NAME,
+                $email,
+                $fullName,
                 $subject,
                 nl2br($message)
             );
 
             if ($emailSent) {
-                // Save response in database
+                // Save response in database and automatically set status to 'traite'
                 $this->repo->addResponse($idContact, $message);
 
-                $_SESSION['success'] = "Votre réponse a été envoyée avec succès";
+                $_SESSION['success'] = "Votre réponse a été envoyée avec succès et le message a été marqué comme traité";
             } else {
                 throw new Exception("Erreur lors de l'envoi de l'email");
             }
@@ -311,7 +364,7 @@ class ContactController extends AbstractController
             $this->redirect('admin/contacts');
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('admin/contacts');
+            $this->redirect('admin/contacts', ['error' => 'true']);
         }
     }
 
