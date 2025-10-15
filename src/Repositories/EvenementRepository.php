@@ -867,43 +867,6 @@ class EvenementRepository
         return $stmt->execute([$idUser, $idEventComment, $reason]);
     }
 
-    // // Fetch comments for an event (with likes count, replies, etc.)
-    // public function getEventComments($idEvenement)
-    // {
-    //     $stmt = $this->pdo->prepare("
-    //         SELECT c.*, u.firstName, u.lastName,
-    //             (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
-    //             (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount
-    //         FROM event_comment c
-    //         JOIN user u ON u.idUser = c.idUser
-    //         WHERE c.idEvenement = ? AND c.parentId IS NULL AND c.isDeleted = 0
-    //         ORDER BY c.createdAt DESC
-    //     ");
-    //     $stmt->execute([$idEvenement]);
-    //     $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    //     // Fetch replies for all comments
-    //     $replies = $this->getEventCommentReplies($idEvenement);
-
-    //     return ['comments' => $comments, 'replies' => $replies];
-    // }
-
-    // Fetch replies for all comments of an event
-    // public function getEventCommentReplies($idEvenement)
-    // {
-    //     $stmt = $this->pdo->prepare("
-    //         SELECT c.*, u.firstName, u.lastName,
-    //             (SELECT COUNT(*) FROM event_comment_like l WHERE l.idEventComment = c.idEventComment) as likesCount,
-    //             (SELECT COUNT(*) FROM event_comment_report r WHERE r.idEventComment = c.idEventComment) as reportsCount
-    //         FROM event_comment c
-    //         JOIN user u ON u.idUser = c.idUser
-    //         WHERE c.idEvenement = ? AND c.parentId IS NOT NULL AND c.isDeleted = 0
-    //         ORDER BY c.createdAt ASC
-    //     ");
-    //     $stmt->execute([$idEvenement]);
-    //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    // }
-
     // Get a single comment by id
     public function getEventCommentById($idEventComment)
     {
@@ -952,4 +915,36 @@ class EvenementRepository
         $stmt->execute([$idUser, $idEvenement]);
         return (bool)$stmt->fetchColumn();
     }
+    public function getUserFavouriteEvents($idUser, $currentPage, $evenementsPerPage): array
+    {
+        $offset = max(0, ($currentPage - 1) * $evenementsPerPage);
+        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, ec.slug as category_slug, a.name as association_name
+                FROM event_favourite ef
+                JOIN evenement e ON ef.idEvenement = e.idEvenement
+                LEFT JOIN ville v ON e.idVille = v.idVille 
+                LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
+                LEFT JOIN association a ON e.idAssociation = a.idAssociation
+                WHERE ef.idUser = :idUser AND e.isDeleted = 0 AND e.isPublic = 1
+                ORDER BY ef.createdAt DESC
+                LIMIT :offset, :evenementsPerPage";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':evenementsPerPage', $evenementsPerPage, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } 
+    public function countUserFavouriteEvents($idUser): int
+    {
+        $sql = "SELECT COUNT(*) FROM event_favourite ef
+                JOIN evenement e ON ef.idEvenement = e.idEvenement
+                WHERE ef.idUser = :idUser AND e.isDeleted = 0 AND e.isPublic = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn();
+    }  
 }

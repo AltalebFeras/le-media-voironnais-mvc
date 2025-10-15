@@ -733,7 +733,7 @@ class EvenementController extends AbstractController
                 'isRefused' => $isRefused ?? false,
                 'isCancelled' => $isCancelled ?? false,
                 'comments' => $comments ?? [],
-                'replies'=> $replies ?? [],
+                'replies' => $replies ?? [],
                 'likesCount' => $likesCount,
                 'commentsCount' => $commentsCount,
                 'userHasLiked' => $userHasLiked,
@@ -744,16 +744,16 @@ class EvenementController extends AbstractController
             $this->redirect('evenements', ['error' => 'true']);
         }
     }
-      /**
+    /**
      * Get event interaction data (comments, likes, favorites) as JSON
      */
     public function getEventInteractions()
     {
         try {
             header('Content-Type: application/json');
-            
+
             $eventUiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
-            
+
             if (!$eventUiid) {
                 throw new Exception("UIID d'événement invalide");
             }
@@ -776,7 +776,7 @@ class EvenementController extends AbstractController
             $userHasLiked = false;
             $userHasFavourited = false;
             $currentUserUiid = null; // Changed from currentUserId
-            
+
             if (isset($_SESSION['idUser'])) {
                 $currentUserId = $_SESSION['idUser'];
                 $currentUserUiid = $_SESSION['userUiid']; // Use userUiid
@@ -907,7 +907,7 @@ class EvenementController extends AbstractController
                 ];
 
                 $notifyCreator = $notification->pushNotification($dataCreator);
-                $urlUser = "evenements/{$ville_slug}/{$category_slug}/{$slug}"  ;
+                $urlUser = "evenements/{$ville_slug}/{$category_slug}/{$slug}";
                 // notify user
                 $dataUser = [
                     'idUser' => $idUser,
@@ -1066,7 +1066,7 @@ class EvenementController extends AbstractController
             $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
-public function likeEvent()
+    public function likeEvent()
     {
         $idUser = $_SESSION['idUser'];
         $eventUiid = htmlspecialchars(trim($_POST['eventUiid'] ?? ''));
@@ -1088,12 +1088,12 @@ public function likeEvent()
         $eventUiid = htmlspecialchars(trim($_POST['eventUiid'] ?? ''));
         $content = trim($_POST['content'] ?? '');
         $parentUiid = isset($_POST['parentUiid']) ? htmlspecialchars(trim($_POST['parentUiid'])) : null;
-        
+
         if (!$content) {
             echo json_encode(['success' => false, 'error' => 'Le commentaire ne peut pas être vide.']);
             return;
         }
-        
+
         try {
             $commentUiid = $this->repo->addEventCommentByUiid($idUser, $eventUiid, $content, $parentUiid);
             echo json_encode(['success' => true, 'commentUiid' => $commentUiid]);
@@ -1125,25 +1125,25 @@ public function likeEvent()
         $eventUiid = htmlspecialchars(trim($_POST['eventUiid'] ?? ''));
         $parentUiid = htmlspecialchars(trim($_POST['parentUiid'] ?? ''));
         $content = trim($_POST['content'] ?? '');
-        
+
         if (!$content) {
             echo json_encode(['success' => false, 'error' => 'Le commentaire ne peut pas être vide.']);
             return;
         }
-        
+
         try {
             // Get parent comment to find the user to mention
             $parentComment = $this->repo->getEventCommentByUiid($parentUiid);
-            
+
             if (!$parentComment) {
                 echo json_encode(['success' => false, 'error' => 'Commentaire parent introuvable.']);
                 return;
             }
-            
+
             // Get parent user details - we mention the DIRECT parent, not the root
             $parentUserRepo = new \src\Repositories\UserRepository();
             $parentUser = $parentUserRepo->getUserById($parentComment['idUser']);
-            
+
             // Only add @mention if replying to someone else
             if ($parentComment['idUser'] != $idUser && $parentUser) {
                 $mentionName = "@" . $parentUser->getFirstName() . " " . $parentUser->getLastName();
@@ -1152,7 +1152,7 @@ public function likeEvent()
                     $content = $mentionName . " " . $content;
                 }
             }
-            
+
             // For nested replies, we need to store them under the ROOT parent comment
             // Find the root parent comment UIID
             $rootParentUiid = $parentUiid;
@@ -1163,18 +1163,18 @@ public function likeEvent()
                     $rootParentUiid = $tempParent['uiid'];
                 }
             }
-            
+
             // Add comment using the ROOT parent UIID so all replies stay grouped
             $commentUiid = $this->repo->addEventCommentByUiid($idUser, $eventUiid, $content, $rootParentUiid);
-            
+
             // Send notification to the mentioned user (the DIRECT parent author)
             if ($parentComment['idUser'] != $idUser && $parentUser) {
                 $idEvenement = $this->repo->getIdByUiid($eventUiid);
                 $event = $this->repo->getEventCompleteById($idEvenement);
-                
+
                 $notificationRepo = new NotificationRepository();
                 $currentUser = $parentUserRepo->getUserById($idUser);
-                
+
                 $notificationData = [
                     'idUser' => $parentComment['idUser'],
                     'idEvenement' => $idEvenement,
@@ -1184,10 +1184,10 @@ public function likeEvent()
                     'url' => "evenements/" . $event['ville_slug'] . "/" . $event['category_slug'] . "/" . $event['slug'],
                     'createdAt' => (new DateTime())->format('Y-m-d H:i:s')
                 ];
-                
+
                 $notificationRepo->pushNotification($notificationData);
             }
-            
+
             echo json_encode(['success' => true, 'commentUiid' => $commentUiid]);
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'error' => $e->getMessage()]);
@@ -1199,19 +1199,67 @@ public function likeEvent()
         $idUser = $_SESSION['idUser'];
         $commentUiid = htmlspecialchars(trim($_POST['commentUiid'] ?? ''));
         $comment = $this->repo->getEventCommentByUiid($commentUiid);
-        
+
         if (!$comment) {
             echo json_encode(['success' => false, 'error' => 'Commentaire introuvable.']);
             return;
         }
-        
+
         if ($comment['idUser'] != $idUser) {
             echo json_encode(['success' => false, 'error' => 'Vous ne pouvez supprimer que vos propres commentaires.']);
             return;
         }
-        
+
         $this->repo->deleteEventCommentWithRepliesByUiid($commentUiid);
         echo json_encode(['success' => true]);
     }
+    public function getAllMyFavouriteEvents()
+    {
+        try {
+            $idUser = $_SESSION['idUser'];
 
+            // Get all favourite events with pagination
+            $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+            $evenementsPerPage = 12;
+            $favouriteEvents = $this->repo->getUserFavouriteEvents($idUser, $currentPage, $evenementsPerPage);
+            $totalEvenements = $this->repo->countUserFavouriteEvents($idUser);
+            $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
+            $this->render('user/mes_favoris', [
+                'favouriteEvents' => $favouriteEvents,
+                'title' => 'Mes événements favoris',
+                'total' => $totalEvenements,
+                'currentPage' => $currentPage,
+                'totalPages' => $totalPages
+            ]);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('/', ['error' => 'true']);
+        }
+    }
+    public function removeFavoriteEvent()
+    {
+        try {
+            $idUser = $_SESSION['idUser'];
+            $eventUiid = isset($_POST['eventUiid']) ? htmlspecialchars(trim($_POST['eventUiid'])) : null;
+            
+            if (!$eventUiid) {
+                throw new Exception("Événement invalide");
+            }
+            
+            $idEvenement = $this->repo->getIdByUiid($eventUiid);
+            if (!$idEvenement) {
+                throw new Exception("Événement introuvable");
+            }
+            
+            // Remove from favorites
+            $this->repo->toggleEventFavourite($idUser, $idEvenement);
+            
+            $_SESSION['success'] = "L'événement a été retiré de vos favoris";
+            $this->redirect('mes_favoris');
+            
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('mes_favoris', ['error' => 'true']);
+        }
+    }
 }

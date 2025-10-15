@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Psr7\Message;
 use src\Controllers\AdminController;
+use src\Controllers\ContactController;
 use src\Controllers\EvenementController;
 use src\Controllers\HomeController;
 use src\Controllers\NotificationController;
@@ -19,6 +20,7 @@ $entrepriseController = new EntrepriseController();
 $evenementController = new EvenementController();
 $realisationController = new RealisationController();
 $notificationController = new NotificationController();
+$contactController = new ContactController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -459,6 +461,23 @@ switch ($route) {
         }
         break;
 
+    case HOME_URL . 'mes_favoris':
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                if (isset($_POST['action']) && $_POST['action'] === 'remove_favorite') {
+                    $evenementController->removeFavoriteEvent();
+                } else {
+                    $homeController->page404();
+                }
+            } else {
+                $evenementController->getAllMyFavouriteEvents();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
     // Notifications routes
     case HOME_URL . 'notifications':
         if ($connectionSecured) {
@@ -643,11 +662,11 @@ switch ($route) {
         }
         break;
     // Contact form (public)
-    case HOME_URL . 'contact':
+    case HOME_URL . 'nous_contacter':
         if ($method === 'POST') {
-            $homeController->submitContactForm();
+            $contactController->submitContactForm();
         } else {
-            $homeController->displayContactForm();
+            $contactController->displayContactForm();
         }
         break;
     case HOME_URL . 'cgu':

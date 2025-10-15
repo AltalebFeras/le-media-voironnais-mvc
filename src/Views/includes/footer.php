@@ -25,6 +25,7 @@
   <ul class="footer-links">
     <li><a href="<?= HOME_URL . 'cgu' ?>">CGU</a></li>
     <li><a href="<?= HOME_URL . 'mentions_legales' ?>">Mentions légales</a></li>
+    <li><a href="<?= HOME_URL . 'nous_contacter' ?>">Nous contacter</a></li>
   </ul>
   <script src="<?= HOME_URL . 'assets/javascript/script.js' ?>"></script>
 </footer>

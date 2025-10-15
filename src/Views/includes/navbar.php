@@ -70,6 +70,10 @@
                 <span class="material-icons">groups</span>
                 <span>Mes Associations</span>
               </a>
+              <a class="nav-dropdown-item" href="<?= HOME_URL . 'mes_favoris' ?>">
+                <span class="material-icons">favorite</span>
+                <span>Mes Favoris</span>
+              </a>
               <div class="nav-dropdown-divider"></div>
               <a class="nav-dropdown-item" href="<?= HOME_URL . 'deconnexion' ?>">
                 <span class="material-icons">logout</span>
