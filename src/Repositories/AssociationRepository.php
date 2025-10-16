@@ -16,7 +16,7 @@ class AssociationRepository
     {
         $this->DB = Database::getInstance()->getDB();
     }
-    public function getIdByUiid($uiid): int|null
+    public function getIdAssociationByUiid($uiid): int|null
     {
         try {
             $query = "SELECT idAssociation FROM association WHERE uiid = :uiid";

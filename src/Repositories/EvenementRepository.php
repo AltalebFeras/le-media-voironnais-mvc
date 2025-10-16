@@ -57,7 +57,7 @@ class EvenementRepository
 
         return (int)$stmt->fetchColumn();
     }
-    public function getIdByUiid($uiid)
+    public function getIdEvenementByUiid($uiid)
     {
         $sql = "SELECT idEvenement FROM evenement WHERE uiid = :uiid AND isDeleted = 0";
         $stmt = $this->pdo->prepare($sql);
@@ -79,7 +79,7 @@ class EvenementRepository
     // Toggle event like by UIID
     public function toggleEventLikeByUiid($idUser, $eventUiid): bool
     {
-        $idEvenement = $this->getIdByUiid($eventUiid);
+        $idEvenement = $this->getIdEvenementByUiid($eventUiid);
         if (!$idEvenement) return false;
         
         $stmt = $this->pdo->prepare("SELECT idEventLike FROM event_like WHERE idUser = ? AND idEvenement = ?");
@@ -96,7 +96,7 @@ class EvenementRepository
     // Toggle event favourite by UIID
     public function toggleEventFavouriteByUiid($idUser, $eventUiid): bool
     {
-        $idEvenement = $this->getIdByUiid($eventUiid);
+        $idEvenement = $this->getIdEvenementByUiid($eventUiid);
         if (!$idEvenement) return false;
         
         $stmt = $this->pdo->prepare("SELECT idEventFavourite FROM event_favourite WHERE idUser = ? AND idEvenement = ?");
@@ -113,7 +113,7 @@ class EvenementRepository
     // Add event comment with UIID
     public function addEventCommentByUiid($idUser, $eventUiid, $content, $parentUiid = null)
     {
-        $idEvenement = $this->getIdByUiid($eventUiid);
+        $idEvenement = $this->getIdEvenementByUiid($eventUiid);
         if (!$idEvenement) return false;
         
         // Check for bad words

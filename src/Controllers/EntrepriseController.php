@@ -31,7 +31,7 @@ class EntrepriseController extends AbstractController
         } else {
             $uiid = null;
         }
-        return $this->repo->getIdByUiid($uiid);
+        return $this->repo->getIdEntrepriseByUiid($uiid);
     }
     public function mesEntreprises(): void
     {

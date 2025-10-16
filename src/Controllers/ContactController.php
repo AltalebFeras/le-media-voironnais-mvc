@@ -178,7 +178,7 @@ class ContactController extends AbstractController
         } else {
             $uiid = null;
         }
-        return $this->repo->getIdByUiid($uiid);
+        return $this->repo->getIdContactByUiid($uiid);
     }
 
     /**
@@ -296,7 +296,7 @@ class ContactController extends AbstractController
                 throw new Exception("Contact invalide");
             }
 
-            $idContact = $this->repo->getIdByUiid($uiid);
+            $idContact = $this->repo->getIdContactByUiid($uiid);
             if (!$idContact) {
                 throw new Exception("Contact introuvable");
             }
@@ -380,7 +380,7 @@ class ContactController extends AbstractController
                 throw new Exception("Contact invalide");
             }
 
-            $idContact = $this->repo->getIdByUiid($uiid);
+            $idContact = $this->repo->getIdContactByUiid($uiid);
             if (!$idContact) {
                 throw new Exception("Contact introuvable");
             }

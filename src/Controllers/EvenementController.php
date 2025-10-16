@@ -40,7 +40,7 @@ class EvenementController extends AbstractController
         } else {
             $uiid = null;
         }
-        return $this->repo->getIdByUiid($uiid);
+        return $this->repo->getIdEvenementByUiid($uiid);
     }
 
     /**
@@ -153,10 +153,10 @@ class EvenementController extends AbstractController
             $errors = [];
             $_SESSION['form_data'] = $_POST;
             if ($association_uiid) {
-                $idAssociation = $this->associationRepo->getIdByUiid($association_uiid);
+                $idAssociation = $this->associationRepo->getIdAssociationByUiid($association_uiid);
             }
             if ($entreprise_uiid) {
-                $idEntreprise = $this->entrepriseRepo->getIdByUiid($entreprise_uiid);
+                $idEntreprise = $this->entrepriseRepo->getIdEntrepriseByUiid($entreprise_uiid);
             }
             // Validate association ownership
             $userAssociations = $this->repo->getUserAssociations($idUser);
@@ -347,10 +347,10 @@ class EvenementController extends AbstractController
             // Store form data in session for error cases
             $_SESSION['form_data'] = $_POST;
             if ($association_uiid) {
-                $idAssociation = $this->associationRepo->getIdByUiid($association_uiid);
+                $idAssociation = $this->associationRepo->getIdAssociationByUiid($association_uiid);
             }
             if ($entreprise_uiid) {
-                $idEntreprise = $this->entrepriseRepo->getIdByUiid($entreprise_uiid);
+                $idEntreprise = $this->entrepriseRepo->getIdEntrepriseByUiid($entreprise_uiid);
             }
             // Validate association ownership
             $userAssociations = $this->repo->getUserAssociations($idUser);
@@ -764,7 +764,7 @@ class EvenementController extends AbstractController
                 throw new Exception("UIID d'événement invalide");
             }
 
-            $idEvenement = $this->repo->getIdByUiid($eventUiid);
+            $idEvenement = $this->repo->getIdEvenementByUiid($eventUiid);
             if (!$idEvenement) {
                 throw new Exception("Événement introuvable");
             }
@@ -1147,7 +1147,7 @@ class EvenementController extends AbstractController
 
             // Send notification to the mentioned user (the DIRECT parent author)
             if ($parentComment['idUser'] != $idUser && $parentUser) {
-                $idEvenement = $this->repo->getIdByUiid($eventUiid);
+                $idEvenement = $this->repo->getIdEvenementByUiid($eventUiid);
                 $event = $this->repo->getEventCompleteById($idEvenement);
 
                 $currentUser = $parentUserRepo->getUserById($idUser);
@@ -1218,7 +1218,7 @@ class EvenementController extends AbstractController
                 throw new Exception("Événement invalide");
             }
 
-            $idEvenement = $this->repo->getIdByUiid($eventUiid);
+            $idEvenement = $this->repo->getIdEvenementByUiid($eventUiid);
             if (!$idEvenement) {
                 throw new Exception("Événement introuvable");
             }

@@ -29,7 +29,7 @@ class AssociationController extends AbstractController
         } else {
             $uiid = null;
         }
-        return $this->repo->getIdByUiid($uiid);
+        return $this->repo->getIdAssociationByUiid($uiid);
     }
     /**
      * Display list of user associations

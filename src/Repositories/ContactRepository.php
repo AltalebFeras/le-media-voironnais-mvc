@@ -91,7 +91,7 @@ class ContactRepository
     /**
      * Get ID by UIID
      */
-    public function getIdByUiid(?string $uiid): ?int
+    public function getIdContactByUiid(?string $uiid): ?int
     {
         if (!$uiid) return null;
         

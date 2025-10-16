@@ -17,7 +17,7 @@ class EntrepriseRepository
         $this->DB = Database::getInstance()->getDB();
     }
 
-    public function getIdByUiid($uiid)
+    public function getIdEntrepriseByUiid($uiid)
     {
         try {
             $query = "SELECT idEntreprise FROM entreprise WHERE uiid = :uiid";

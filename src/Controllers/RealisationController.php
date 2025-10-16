@@ -29,13 +29,13 @@ class RealisationController extends AbstractController
         } else {
             $uiid = null;
         }
-        return $this->repo->getIdByUiid($uiid);
+        return $this->repo->getIdRealisationByUiid($uiid);
     }
 
     private function getEntrepriseId()
     {
         $uiid = isset($_GET['entreprise_uiid']) ? htmlspecialchars(trim($_GET['entreprise_uiid'])) : null;
-        return $this->entrepriseRepo->getIdByUiid($uiid);
+        return $this->entrepriseRepo->getIdEntrepriseByUiid($uiid);
     }
 
     /**
@@ -243,7 +243,7 @@ class RealisationController extends AbstractController
         try {
             $idUser = $_SESSION['idUser'];
             $realisationUiid = isset($_POST['realisation_uiid']) ? htmlspecialchars(trim($_POST['realisation_uiid'])) : null;
-            $idRealisation = $this->repo->getIdByUiid($realisationUiid);
+            $idRealisation = $this->repo->getIdRealisationByUiid($realisationUiid);
             $realisation = $this->repo->getRealisationById($idRealisation);
 
             if (!$realisation || !$idRealisation) {
@@ -321,7 +321,7 @@ class RealisationController extends AbstractController
         try {
             $idUser = $_SESSION['idUser'];
             $realisationUiid = isset($_POST['realisation_uiid']) ? htmlspecialchars(trim($_POST['realisation_uiid'])) : null;
-            $idRealisation = $this->repo->getIdByUiid($realisationUiid);
+            $idRealisation = $this->repo->getIdRealisationByUiid($realisationUiid);
             $realisation = $this->repo->getRealisationById($idRealisation);
 
             if (!$realisation || !$idRealisation) {
@@ -351,7 +351,7 @@ class RealisationController extends AbstractController
         try {
             $idUser = $_SESSION['idUser'];
             $realisationUiid = isset($_GET['realisation_uiid']) ? htmlspecialchars(trim($_GET['realisation_uiid'])) : null;
-            $idRealisation = $this->repo->getIdByUiid($realisationUiid);
+            $idRealisation = $this->repo->getIdRealisationByUiid($realisationUiid);
             $realisation = $this->repo->getRealisationById($idRealisation);
 
             if (!$realisation || !$idRealisation) {
@@ -390,7 +390,7 @@ class RealisationController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $realisationUiid = isset($_GET['realisation_uiid']) ? htmlspecialchars(trim($_GET['realisation_uiid'])) : null;
             $idRealisationImage = isset($_GET['imageId']) ? (int)$_GET['imageId'] : null;
-            $idRealisation = $this->repo->getIdByUiid($realisationUiid);
+            $idRealisation = $this->repo->getIdRealisationByUiid($realisationUiid);
             $realisation = $this->repo->getRealisationById($idRealisation);
 
             if (!$realisation || !$idRealisation || !$idRealisationImage) {

@@ -97,7 +97,7 @@ class RealisationRepository
         return $realisation;
     }
 
-    public function getIdByUiid(string $uiid): ?int
+    public function getIdRealisationByUiid(string $uiid): ?int
     {
         $sql = "SELECT idRealisation FROM realisation WHERE uiid = :uiid AND isDeleted = 0";
         $stmt = $this->pdo->prepare($sql);
