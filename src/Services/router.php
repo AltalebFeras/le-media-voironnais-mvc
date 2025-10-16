@@ -193,10 +193,9 @@ switch ($route) {
         break;
 
     case HOME_URL . 'villes':
-        if ($method === 'POST' && $connectionSecured) {
-            $associationController->getVilles();
+        if ($method === 'POST') {
+            $homeController->getVilles();
         } else {
-            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette pagess.'];
             $homeController->displayAuth();
         }
         break;

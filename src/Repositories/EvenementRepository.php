@@ -405,42 +405,16 @@ class EvenementRepository
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function isEntrepriseActiveAndPublic($idEntreprise): bool
+    public function isEntrepriseActive($idEntreprise): bool
     {
-        $sql = "SELECT COUNT(*) FROM entreprise WHERE idEntreprise = :idEntreprise AND isActive = 1 AND isDeleted = 0 AND isPublic = 1";
+        $sql = "SELECT COUNT(*) FROM entreprise WHERE idEntreprise = :idEntreprise AND isActive = 1 AND isDeleted = 0";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':idEntreprise', $idEntreprise, PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt->fetchColumn() > 0;
     }
-    /**
-     * Get villes by postal code
-     */
-    public function getVillesByCp(string $codePostal): array
-    {
-        $sql = "SELECT idVille, ville_nom_reel FROM ville WHERE ville_code_postal = :codePostal ORDER BY ville_nom_reel ASC";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':codePostal', $codePostal, PDO::PARAM_STR);
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * Check if ville exists
-     */
-    public function isVilleExists($idVille): mixed
-    {
-        try {
-            $query = "SELECT ville_slug FROM ville WHERE idVille = :idVille";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute(['idVille' => $idVille]);
-            return $stmt->fetchColumn();
-        } catch (Exception $e) {
-            throw new Exception("Error checking if ville exists: " . $e->getMessage());
-        }
-    }
+   
 
     public function isEventCategoryExists(int $idEventCategory): mixed
     {
@@ -454,18 +428,7 @@ class EvenementRepository
         }
     }
 
-    /**
-     * Get ville by ID
-     */
-    public function getVilleById(int $idVille): ?array
-    {
-        $sql = "SELECT * FROM ville WHERE idVille = :idVille";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(':idVille', $idVille, PDO::PARAM_INT);
-        $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-    }
 
 
     /**

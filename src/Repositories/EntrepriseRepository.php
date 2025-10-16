@@ -193,6 +193,7 @@ class EntrepriseRepository
                      email = :email, 
                      website = :website,
                      siret = :siret,
+                     idVille = :idVille,
                      updatedAt = :updatedAt
                      WHERE idEntreprise = :idEntreprise";
 
@@ -206,6 +207,7 @@ class EntrepriseRepository
                 'email' => $entreprise->getEmail(),
                 'website' => $entreprise->getWebsite(),
                 'siret' => $entreprise->getSiret(),
+                'idVille' => $entreprise->getIdVille(),
                 'updatedAt' => $entreprise->getUpdatedAt(),
                 'idEntreprise' => $entreprise->getIdEntreprise()
             ]);

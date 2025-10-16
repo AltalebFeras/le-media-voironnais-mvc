@@ -92,19 +92,7 @@ class AssociationRepository
         }
     }
 
-    public function getVillesByCp($cp)
-    {
-        try {
-            $query = "SELECT idVille, ville_nom_reel, ville_code_postal FROM ville WHERE ville_code_postal = :cp";
-            $stmt = $this->DB->prepare($query);
-            $stmt->execute(['cp' => $cp]);
-
-            $villes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $villes;
-        } catch (Exception $e) {
-            throw new Exception("Error fetching villes by CP: " . $e->getMessage());
-        }
-    }
+  
     public function isSlugExists($slug): bool
     {
         try {
@@ -186,17 +174,6 @@ class AssociationRepository
             return $association !== false ? $association : null;
         } catch (Exception $e) {
             throw new Exception("Error fetching association by name for user: " . $e->getMessage());
-        }
-    }
-    public function isVilleExists($idVille): mixed
-    {
-        try {
-            $query = "SELECT ville_slug FROM ville WHERE idVille = :idVille";
-            $stmt = $this->DB->prepare($query);
-            $stmt->execute(['idVille' => $idVille]);
-            return $stmt->fetchColumn();
-        } catch (Exception $e) {
-            throw new Exception("Error checking if ville exists: " . $e->getMessage());
         }
     }
 
@@ -383,23 +360,6 @@ class AssociationRepository
             return (int)$stmt->fetchColumn() > 0;
         } catch (Exception $e) {
             throw new Exception("Error checking association ownership: " . $e->getMessage());
-        }
-    }
-
-    /**
-     * Get ville information by ID
-     */
-    public function getVilleById($idVille): ?array
-    {
-        try {
-            $query = "SELECT idVille, ville_nom_reel, ville_code_postal FROM ville WHERE idVille = :idVille";
-            $stmt = $this->DB->prepare($query);
-            $stmt->execute(['idVille' => $idVille]);
-
-            $ville = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $ville !== false ? $ville : null;
-        } catch (Exception $e) {
-            throw new Exception("Error fetching ville: " . $e->getMessage());
         }
     }
 

@@ -4,22 +4,23 @@ namespace src\Controllers;
 
 use src\Abstracts\AbstractController;
 use src\Models\Entreprise;
-use src\Repositories\AssociationRepository;
 use src\Repositories\EntrepriseRepository;
 use Exception;
 use DateTime;
+use src\Repositories\VilleRepository;
 use src\Services\Helper;
 use src\Services\Mail;
 
 class EntrepriseController extends AbstractController
 {
     private $repo;
-    private $AssocRepo = null;
+
+    private $VilleRepo = null;
 
     public function __construct()
     {
         $this->repo = new EntrepriseRepository();
-        $this->AssocRepo = new AssociationRepository();
+        $this->VilleRepo = new VilleRepository();
     }
     private function getId(): int|null
     {
@@ -60,7 +61,7 @@ class EntrepriseController extends AbstractController
             $idEntreprise = $this->getId();
             $entreprise = $this->repo->getEntrepriseById($idEntreprise);
             $realisation = $this->repo->getAllRealisationByEntrepriseId($idEntreprise);
-            $ville = $this->AssocRepo->getVilleById($entreprise->getIdVille());
+            $ville = $this->VilleRepo->getVilleById($entreprise->getIdVille());
 
             if (!$entreprise || !$idEntreprise) {
                 throw new Exception("L'entreprise demandée n'existe pas");
@@ -113,7 +114,7 @@ class EntrepriseController extends AbstractController
             if ($existingEntreprise) {
                 $errors['name'] = "Une entreprise avec ce nom existe déjà.";
             }
-            $nameVille = $this->AssocRepo->isVilleExists($idVille);
+            $nameVille = $this->VilleRepo->isVilleExists($idVille);
             if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
@@ -187,7 +188,7 @@ class EntrepriseController extends AbstractController
             if ($entreprise->getIdUser() != $idUser) {
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette entreprise");
             }
-            $ville = $this->AssocRepo->getVilleById($entreprise->getIdVille());
+            $ville = $this->VilleRepo->getVilleById($entreprise->getIdVille());
             $this->render('entreprise/modifier_entreprise', [
                 'entreprise' => $entreprise,
                 'ville' => $ville,
@@ -242,7 +243,7 @@ class EntrepriseController extends AbstractController
             if ($existingEntreprise && $name === $existingEntreprise->getName() && $existingEntreprise->getIdEntreprise() != $idEntreprise) {
                 $errors['name'] = "Une entreprise avec ce nom existe déjà.";
             }
-            $nameVille = $this->AssocRepo->isVilleExists($idVille);
+            $nameVille = $this->VilleRepo->isVilleExists($idVille);
             if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }

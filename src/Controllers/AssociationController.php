@@ -7,15 +7,18 @@ use src\Models\Association;
 use src\Repositories\AssociationRepository;
 use Exception;
 use DateTime;
+use src\Repositories\VilleRepository;
 use src\Services\Helper;
 
 class AssociationController extends AbstractController
 {
     private $repo;
+    private $villeRepo;
 
     public function __construct()
     {
         $this->repo = new AssociationRepository();
+        $this->villeRepo = new VilleRepository();
     }
     private function getId(): int|null
     {
@@ -78,7 +81,7 @@ class AssociationController extends AbstractController
 
             if ($association) {
                 $members = $this->repo->getAssociationMembers($idAssociation);
-                $ville = $this->repo->getVilleById($association->getIdVille());
+                $ville = $this->villeRepo->getVilleById($association->getIdVille());
 
                 // Check if user has access (owner or member or public association)
                 $isMember = false;
@@ -108,25 +111,7 @@ class AssociationController extends AbstractController
             $this->redirect('mes_associations');
         }
     }
-    public function getVilles()
-    {
-        try {
-            header('Content-Type: application/json');
 
-            // Get the raw JSON input
-            $input = json_decode(file_get_contents('php://input'), true);
-
-            $codePostal = isset($input['codePostal']) ? htmlspecialchars(trim($input['codePostal'])) : null;
-            if (!$codePostal) {
-                throw new Exception("Le code postal est requis");
-            }
-
-            $villes = $this->repo->getVillesByCp($codePostal);
-            echo json_encode(['succes' => true, 'data' => $villes]);
-        } catch (Exception $e) {
-            echo json_encode(['error' => $e->getMessage()]);
-        }
-    }
     public function showAddForm()
     {
         $this->render('association/ajouter_association');
@@ -154,7 +139,7 @@ class AssociationController extends AbstractController
             if ($existingAssociation && $existingAssociation->getIsDeleted() == false) {
                 $errors['name'] = "Vous avez déjà une association avec ce nom";
             }
-            $nameVille = $this->repo->isVilleExists($idVille);
+            $nameVille = $this->villeRepo->isVilleExists($idVille);
             if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
@@ -238,7 +223,7 @@ class AssociationController extends AbstractController
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette association");
             }
 
-            $ville = $this->repo->getVilleById($association->getIdVille());
+            $ville = $this->villeRepo->getVilleById($association->getIdVille());
 
             $this->render('association/modifier_association', [
                 'association' => $association,
@@ -293,7 +278,7 @@ class AssociationController extends AbstractController
                 $errors['name'] = "Vous avez déjà une association avec ce nom";
             }
 
-            $nameVille = $this->repo->isVilleExists($idVille);
+            $nameVille = $this->villeRepo->isVilleExists($idVille);
             if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }

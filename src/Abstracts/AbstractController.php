@@ -5,6 +5,7 @@ namespace src\Abstracts;
 use Error;
 use Exception;
 use src\Repositories\NotificationRepository;
+use src\Repositories\VilleRepository;
 
 abstract class AbstractController
 {
@@ -149,7 +150,7 @@ abstract class AbstractController
      * @param string $url The URL related to the notification.
      * @return bool True if notification was sent, false otherwise.
      */
-    public function sendNotification(int $idUser, string $type, string $title, string $message, string $url , int $priority): bool
+    public function sendNotification(int $idUser, string $type, string $title, string $message, string $url, int $priority): bool
     {
         $notification = new NotificationRepository();
         $data = [
@@ -190,5 +191,29 @@ abstract class AbstractController
             'createdAt' => (new \DateTime())->format('Y-m-d H:i:s')
         ];
         return $notification->pushNotification($data);
+    }
+
+    /**
+     * 
+     */
+
+    public function getVilles(): void
+    {
+        try {
+            header('Content-Type: application/json');
+
+            // Get the raw JSON input
+            $input = json_decode(file_get_contents('php://input'), true);
+
+            $codePostal = isset($input['codePostal']) ? htmlspecialchars(trim($input['codePostal'])) : null;
+            if (!$codePostal) {
+                throw new Exception("Le code postal est requis");
+            }
+            $repo = new VilleRepository();
+            $villes = $repo->getVillesByCp($codePostal);
+            echo json_encode(['succes' => true, 'data' => $villes]);
+        } catch (Exception $e) {
+            echo json_encode(['error' => $e->getMessage()]);
+        }
     }
 }

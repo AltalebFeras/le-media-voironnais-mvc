@@ -8,6 +8,7 @@ use src\Repositories\EvenementRepository;
 use Exception;
 use DateTime;
 use src\Repositories\NotificationRepository;
+use src\Repositories\VilleRepository;
 use src\Services\ConfigRouter;
 use src\Services\Helper;
 
@@ -17,10 +18,12 @@ use function PHPSTORM_META\type;
 class EvenementController extends AbstractController
 {
     private $repo;
+    private $villeRepo;
 
     public function __construct()
     {
         $this->repo = new EvenementRepository();
+        $this->villeRepo = new VilleRepository();
     }
     private function getId(): int|null
     {
@@ -75,7 +78,7 @@ class EvenementController extends AbstractController
                 throw new Exception("Vous n'avez pas l'autorisation de voir cet événement");
             }
 
-            $ville = $this->repo->getVilleById($evenement['idVille']);
+            $ville = $this->villeRepo->getVilleById($evenement['idVille']);
             $images = $this->repo->getEventImages($idEvenement);
             $participants = $this->repo->getEventParticipantsUponStatus($idEvenement, $idUser, $status = 'inscrit');
             if ($evenement['requiresApproval'] == true) {
@@ -157,12 +160,14 @@ class EvenementController extends AbstractController
                 $errors['idEntreprise'] = "L'entreprise sélectionnée est invalide";
             }
             // verify if the entreprise is active
-            $isActiveEntreprise = $this->repo->isEntrepriseActiveAndPublic($idEntreprise);
-            if ($idEntreprise && !$isActiveEntreprise) {
-                $errors['idEntreprise'] = "L'entreprise sélectionnée n'est pas active ni publique";
+            if ($idEntreprise) {
+                $isActiveEntreprise = $this->repo->isEntrepriseActive($idEntreprise);
+                if ($idEntreprise && !$isActiveEntreprise) {
+                    $errors['idEntreprise'] = "L'entreprise sélectionnée n'est pas active";
+                }
             }
             // Ville and category existence
-            $nameVille = $this->repo->isVilleExists($idVille);
+            $nameVille = $this->villeRepo->isVilleExists($idVille);
             if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
@@ -261,7 +266,7 @@ class EvenementController extends AbstractController
             $categories = $this->repo->getEventCategories();
             $associations = $this->repo->getUserAssociations($idUser);
             $entreprises = $this->repo->getUserEntreprise($idUser);
-            $ville = $this->repo->getVilleById($evenement['idVille']);
+            $ville = $this->villeRepo->getVilleById($evenement['idVille']);
 
             $this->render('evenement/modifier_evenement', [
                 'evenement' => $evenement,
@@ -343,11 +348,11 @@ class EvenementController extends AbstractController
                 $errors['idEntreprise'] = "L'entreprise sélectionnée est invalide";
             }
             // verify if the entreprise is active
-            $isActiveEntreprise = $this->repo->isEntrepriseActiveAndPublic($idEntreprise);
+            $isActiveEntreprise = $this->repo->isEntrepriseActive($idEntreprise);
             if ($idEntreprise && !$isActiveEntreprise) {
-                $errors['idEntreprise'] = "L'entreprise sélectionnée n'est pas active ni publique";
+                $errors['idEntreprise'] = "L'entreprise sélectionnée n'est pas active";
             }
-            $nameVille = $this->repo->isVilleExists($idVille);
+            $nameVille = $this->villeRepo->isVilleExists($idVille);
             if (!$nameVille) {
                 $errors['idVille'] = "La ville sélectionnée est invalide";
             }
@@ -453,28 +458,7 @@ class EvenementController extends AbstractController
             $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
-
-    /**
-     * Get cities by postal code (AJAX)
-     */
-    public function getVilles()
-    {
-        try {
-            header('Content-Type: application/json');
-
-            $input = json_decode(file_get_contents('php://input'), true);
-            $codePostal = isset($input['codePostal']) ? htmlspecialchars(trim($input['codePostal'])) : null;
-
-            if (!$codePostal) {
-                throw new Exception("Le code postal est requis");
-            }
-
-            $villes = $this->repo->getVillesByCp($codePostal);
-            echo json_encode(['succes' => true, 'data' => $villes]);
-        } catch (Exception $e) {
-            echo json_encode(['error' => $e->getMessage()]);
-        }
-    }
+  
     /**
      * Update event banner
      */
@@ -679,7 +663,7 @@ class EvenementController extends AbstractController
                     $isCancelled = $status === 'annule' ? true : false;
                 }
             }
-            $ville = $this->repo->getVilleById($evenement['idVille']);
+            $ville = $this->villeRepo->getVilleById($evenement['idVille']);
 
             // Verify that the ville_slug matches
             if ($ville['ville_slug'] !== $ville_slug) {
@@ -826,7 +810,7 @@ class EvenementController extends AbstractController
             }
             $idEvenement = $evenement['idEvenement'];
             // Verify that the ville_slug matches
-            $ville = $this->repo->getVilleById($evenement['idVille']);
+            $ville = $this->villeRepo->getVilleById($evenement['idVille']);
             if ($ville['ville_slug'] !== $ville_slug) {
                 throw new Exception("L'événement demandé n'existe pas");
             }
