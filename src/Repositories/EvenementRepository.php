@@ -23,12 +23,15 @@ class EvenementRepository
      */
     public function getUserEvents(int $idUser, $currentPage = 1, $evenementsPerPage = 10): array
     {
+        // i want to select also uiid for entreprise and for association
+
         $offset = max(0, ($currentPage - 1) * $evenementsPerPage);
-        $sql = "SELECT e.*, v.ville_nom_reel, ec.name as category_name, a.name as association_name 
+        $sql = "SELECT e.*, v.ville_nom_reel, ec.name as category_name, ent.uiid as entreprise_uiid, ent.name as entreprise_name, ent.slug as entreprise_slug, a.uiid as association_uiid, a.name as association_name, a.slug as association_slug
                 FROM evenement e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
                 LEFT JOIN association a ON e.idAssociation = a.idAssociation
+                LEFT JOIN entreprise ent ON e.idEntreprise = ent.idEntreprise
                 WHERE e.idUser = :idUser AND e.isDeleted = 0 
                 ORDER BY e.startDate ASC
                 LIMIT :offset, :evenementsPerPage";
@@ -218,7 +221,7 @@ class EvenementRepository
     public function getEventCompleteById(int $idEvenement): mixed
     {
         // Get basic event data with category and ville
-        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, ec.slug as category_slug, a.name as association_name, a.slug as association_slug, ent.name as entreprise_name, ent.slug as entreprise_slug
+        $sql = "SELECT e.*, v.ville_nom_reel, v.ville_slug, ec.name as category_name, ec.slug as category_slug,a.uiid as association_uiid, a.name as association_name, a.slug as association_slug,ent.uiid as entreprise_uiid, ent.name as entreprise_name, ent.slug as entreprise_slug
                 FROM evenement e 
                 LEFT JOIN ville v ON e.idVille = v.idVille 
                 LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
@@ -284,9 +287,9 @@ class EvenementRepository
     public function createEvent(Evenement $event): bool
     {
         $sql = "INSERT INTO evenement (uiid, title, slug, description, shortDescription, startDate, endDate, 
-                registrationDeadline, maxParticipants, currentParticipants, address, bannerPath, isPublic, isDeleted, price, currency, createdAt, idUser, idAssociation, idVille, idEventCategory) 
+                registrationDeadline, maxParticipants, currentParticipants, address, bannerPath, isPublic, isDeleted, price, currency, createdAt, idUser, idAssociation, idVille, idEventCategory, idEntreprise) 
                 VALUES (:uiid, :title, :slug, :description, :shortDescription, :startDate, :endDate, 
-                :registrationDeadline, :maxParticipants, :currentParticipants, :address, :bannerPath, :isPublic, :isDeleted, :price, :currency, :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory)";
+                :registrationDeadline, :maxParticipants, :currentParticipants, :address, :bannerPath, :isPublic, :isDeleted, :price, :currency, :createdAt, :idUser, :idAssociation, :idVille, :idEventCategory, :idEntreprise)";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -310,6 +313,7 @@ class EvenementRepository
             ':createdAt' => $event->getCreatedAt(),
             ':idUser' => $event->getIdUser(),
             ':idAssociation' => $event->getIdAssociation(),
+            ':idEntreprise' => $event->getIdEntreprise(),
             ':idVille' => $event->getIdVille(),
             ':idEventCategory' => $event->getIdEventCategory()
         ]);
@@ -325,7 +329,7 @@ class EvenementRepository
                 startDate = :startDate, endDate = :endDate, registrationDeadline = :registrationDeadline,
                 maxParticipants = :maxParticipants, address = :address, isPublic = :isPublic, requiresApproval = :requiresApproval,
                 price = :price, currency = :currency, updatedAt = :updatedAt, idVille = :idVille,
-                idEventCategory = :idEventCategory, idAssociation = :idAssociation
+                idEventCategory = :idEventCategory, idAssociation = :idAssociation, idEntreprise = :idEntreprise
                 WHERE idEvenement = :idEvenement AND idUser = :idUser";
 
         $stmt = $this->pdo->prepare($sql);
@@ -349,6 +353,7 @@ class EvenementRepository
             ':idEventCategory' => $event->getIdEventCategory(),
             ':idAssociation' => $event->getIdAssociation(),
             ':idEvenement' => $event->getIdEvenement(),
+            ':idEntreprise' => $event->getIdEntreprise(),
             ':idUser' => $event->getIdUser()
         ]);
     }
@@ -382,7 +387,7 @@ class EvenementRepository
      */
     public function getUserAssociations(int $idUser): array
     {
-        $sql = "SELECT a.idAssociation, a.name FROM association a 
+        $sql = "SELECT a.idAssociation, a.uiid as association_uiid, a.name FROM association a 
                 WHERE a.idUser = :idUser AND a.isActive = 1 AND a.isDeleted = 0
                 ORDER BY a.name ASC";
 
@@ -395,7 +400,7 @@ class EvenementRepository
 
     public function getUserEntreprise($idUser): array
     {
-        $sql = "SELECT e.idEntreprise, e.name FROM entreprise e 
+        $sql = "SELECT e.idEntreprise, e.uiid as entreprise_uiid, e.name FROM entreprise e 
                 WHERE e.idUser = :idUser  AND e.isDeleted = 0 AND e.isActive = 1
                 ORDER BY e.name ASC";
 

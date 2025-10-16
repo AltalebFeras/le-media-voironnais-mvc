@@ -29,6 +29,7 @@ class Evenement
     private ?string $updatedAt = null;
     private int $idUser;
     private ?int $idAssociation = null;
+    private ?int $idEntreprise = null;
     private int $idVille;
     private int $idEventCategory;
 
@@ -125,6 +126,10 @@ class Evenement
     public function getIdAssociation(): ?int
     {
         return $this->idAssociation;
+    }
+    public function getIdEntreprise(): ?int
+    {
+        return $this->idEntreprise;
     }
     public function getIdVille(): ?int
     {
@@ -270,6 +275,11 @@ class Evenement
     public function setIdAssociation(?int $idAssociation): self
     {
         $this->idAssociation = $idAssociation;
+        return $this;
+    }
+    public function setIdEntreprise(?int $idEntreprise): self
+    {
+        $this->idEntreprise = $idEntreprise;
         return $this;
     }
 

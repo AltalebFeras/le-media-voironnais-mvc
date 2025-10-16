@@ -4,6 +4,8 @@ namespace src\Controllers;
 
 use src\Abstracts\AbstractController;
 use src\Models\Evenement;
+use src\Repositories\AssociationRepository;
+use src\Repositories\EntrepriseRepository;
 use src\Repositories\EvenementRepository;
 use Exception;
 use DateTime;
@@ -18,11 +20,15 @@ use function PHPSTORM_META\type;
 class EvenementController extends AbstractController
 {
     private $repo;
+    private $associationRepo;
+    private $entrepriseRepo;
     private $villeRepo;
 
     public function __construct()
     {
         $this->repo = new EvenementRepository();
+        $this->associationRepo = new AssociationRepository();
+        $this->entrepriseRepo = new EntrepriseRepository();
         $this->villeRepo = new VilleRepository();
     }
     private function getId(): int|null
@@ -48,6 +54,8 @@ class EvenementController extends AbstractController
         $evenements = $this->repo->getUserEvents($idUser, $currentPage, $evenementsPerPage);
         $totalEvenements = $this->repo->countUserEvents($idUser);
         $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
+        // var_dump($evenements);
+        // die ;
         $this->render('evenement/mes_evenements', [
             'evenements' => $evenements,
             'title' => 'Mes événements',
@@ -85,6 +93,7 @@ class EvenementController extends AbstractController
                 $waitingList = $this->repo->getEventParticipantsUponStatus($idEvenement, $idUser, $status = 'liste_attente');
             }
 
+            // var_dump($evenement);die;
             // var_dump($waitingList , $participants); die;
             $this->render('evenement/voir_evenement', [
                 'evenement' => $evenement,
@@ -109,7 +118,7 @@ class EvenementController extends AbstractController
         $categories = $this->repo->getEventCategories();
         $associations = $this->repo->getUserAssociations($idUser);
         $entreprises = $this->repo->getUserEntreprise($idUser);
-
+        // var_dump($associations, $entreprises, $categories);die;
         $this->render('evenement/ajouter_evenement', [
             'categories' => $categories,
             'associations' => $associations,
@@ -137,12 +146,18 @@ class EvenementController extends AbstractController
             $currency = isset($_POST['currency']) ? htmlspecialchars(trim($_POST['currency'])) : 'EUR';
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
             $idEventCategory = isset($_POST['idEventCategory']) ? (int)$_POST['idEventCategory'] : null;
-            $idAssociation = isset($_POST['idAssociation']) && !empty($_POST['idAssociation']) ? (int)$_POST['idAssociation'] : null;
-            $idEntreprise = isset($_POST['idEntreprise']) && !empty($_POST['idEntreprise']) ? (int)$_POST['idEntreprise'] : null;
+            $association_uiid = isset($_POST['association_uiid']) && !empty($_POST['association_uiid']) ? htmlspecialchars(trim($_POST['association_uiid'])) : null;
+            $entreprise_uiid = isset($_POST['entreprise_uiid']) && !empty($_POST['entreprise_uiid']) ? htmlspecialchars(trim($_POST['entreprise_uiid'])) : null;
             $isPublic = isset($_POST['isPublic']) ? 1 : 0;
 
             $errors = [];
             $_SESSION['form_data'] = $_POST;
+            if ($association_uiid) {
+                $idAssociation = $this->associationRepo->getIdByUiid($association_uiid);
+            }
+            if ($entreprise_uiid) {
+                $idEntreprise = $this->entrepriseRepo->getIdByUiid($entreprise_uiid);
+            }
             // Validate association ownership
             $userAssociations = $this->repo->getUserAssociations($idUser);
             $associationIds = array_map(function ($assoc) {
@@ -207,6 +222,7 @@ class EvenementController extends AbstractController
                 ->setIsDeleted(false)
                 ->setIdUser($idUser)
                 ->setIdAssociation($idAssociation)
+                ->setIdEntreprise($idEntreprise)
                 ->setIdVille($idVille)
                 ->setIdEventCategory($idEventCategory)
                 ->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'))
@@ -320,8 +336,8 @@ class EvenementController extends AbstractController
             $price = isset($_POST['price']) ? (float)$_POST['price'] : null;
             $currency = isset($_POST['currency']) ? htmlspecialchars(trim($_POST['currency'])) : 'EUR';
             $idVille = isset($_POST['idVille']) ? (int)$_POST['idVille'] : null;
-            $idAssociation = isset($_POST['idAssociation']) && !empty($_POST['idAssociation']) ? (int)$_POST['idAssociation'] : null;
-            $idEntreprise = isset($_POST['idEntreprise']) && !empty($_POST['idEntreprise']) ? (int)$_POST['idEntreprise'] : null;
+            $association_uiid = isset($_POST['association_uiid']) && !empty($_POST['association_uiid']) ? htmlspecialchars(trim($_POST['association_uiid'])) : null;
+            $entreprise_uiid = isset($_POST['entreprise_uiid']) && !empty($_POST['entreprise_uiid']) ? htmlspecialchars(trim($_POST['entreprise_uiid'])) : null;
             $idEventCategory = isset($_POST['idEventCategory']) ? (int)$_POST['idEventCategory'] : null;
             $isPublic = isset($_POST['isPublic']) ? 1 : 0;
             $requiresApproval = isset($_POST['requiresApproval']) ? 1 : 0;
@@ -330,7 +346,12 @@ class EvenementController extends AbstractController
 
             // Store form data in session for error cases
             $_SESSION['form_data'] = $_POST;
-
+            if ($association_uiid) {
+                $idAssociation = $this->associationRepo->getIdByUiid($association_uiid);
+            }
+            if ($entreprise_uiid) {
+                $idEntreprise = $this->entrepriseRepo->getIdByUiid($entreprise_uiid);
+            }
             // Validate association ownership
             $userAssociations = $this->repo->getUserAssociations($idUser);
             $associationIds = array_map(function ($assoc) {
@@ -391,6 +412,7 @@ class EvenementController extends AbstractController
                 ->setIdVille($idVille)
                 ->setIdEventCategory($idEventCategory)
                 ->setIdAssociation($idAssociation)
+                ->setIdEntreprise($idEntreprise)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
 
             $helper = new Helper();
@@ -458,7 +480,7 @@ class EvenementController extends AbstractController
             $this->redirect('mes_evenements', ['action' => 'voir', 'uiid' => $uiid, 'error' => 'true']);
         }
     }
-  
+
     /**
      * Update event banner
      */

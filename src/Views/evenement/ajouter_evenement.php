@@ -101,24 +101,24 @@
             <div class="form-row">
 
                 <div class="form-group">
-                    <label for="idAssociation">Association organisatrice</label>
-                    <select id="idAssociation" name="idAssociation">
+                    <label for="association_uiid">Association organisatrice</label>
+                    <select id="association_uiid" name="association_uiid">
                         <option value="">Aucune association</option>
                         <?php foreach ($associations as $association): ?>
-                            <option value="<?= $association['idAssociation'] ?>"
-                                <?= isset($_SESSION['form_data']['idAssociation']) && $_SESSION['form_data']['idAssociation'] == $association['idAssociation'] ? 'selected' : '' ?>>
+                            <option value="<?= $association['association_uiid'] ?>"
+                                <?= isset($_SESSION['form_data']['association_uiid']) && $_SESSION['form_data']['association_uiid'] == $association['association_uiid'] ? 'selected' : '' ?>>
                                 <?= $association['name'] ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="idEntreprise">Entreprise organisatrice</label>
-                    <select id="idEntreprise" name="idEntreprise">
+                    <label for="entreprise_uiid">Entreprise organisatrice</label>
+                    <select id="entreprise_uiid" name="entreprise_uiid">
                         <option value="">Aucune entreprise</option>
                         <?php foreach ($entreprises as $entreprise): ?>
-                            <option value="<?= $entreprise['idEntreprise'] ?>"
-                                <?= isset($_SESSION['form_data']['idEntreprise']) && $_SESSION['form_data']['idEntreprise'] == $entreprise['idEntreprise'] ? 'selected' : '' ?>>
+                            <option value="<?= $entreprise['entreprise_uiid'] ?>"
+                                <?= isset($_SESSION['form_data']['entreprise_uiid']) && $_SESSION['form_data']['entreprise_uiid'] == $entreprise['entreprise_uiid'] ? 'selected' : '' ?>>
                                 <?= $entreprise['name'] ?>
                             </option>
                         <?php endforeach; ?>
