@@ -11,7 +11,10 @@
             <p class="events-hero-subtitle">Découvrez tous les événements passionnants organisés dans le Voironnais</p>
             <a href="#all-events" class="btn-timetable">VOIR LE PROGRAMME</a>
         </div>
+        
 
+        <!-- message -->
+    <?php include_once __DIR__ . '/../includes/messages.php'; ?>
         <!-- Upcoming Events Slider -->
         <?php if (!empty($upcomingEvents)): ?>
             <div class="upcoming-events-slider">

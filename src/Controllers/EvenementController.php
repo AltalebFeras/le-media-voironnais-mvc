@@ -686,7 +686,7 @@ class EvenementController extends AbstractController
                 }
             }
             $ville = $this->villeRepo->getVilleById($evenement['idVille']);
-
+            
             // Verify that the ville_slug matches
             if ($ville['ville_slug'] !== $ville_slug) {
                 throw new Exception("L'événement demandé n'existe pas");

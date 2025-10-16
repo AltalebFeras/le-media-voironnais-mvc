@@ -35,7 +35,7 @@ class VilleRepository
     public function getVilleById($idVille): ?array
     {
         try {
-            $query = "SELECT idVille, ville_nom_reel, ville_code_postal FROM ville WHERE idVille = :idVille";
+            $query = "SELECT idVille, ville_slug, ville_nom_reel, ville_code_postal FROM ville WHERE idVille = :idVille";
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['idVille' => $idVille]);
 
