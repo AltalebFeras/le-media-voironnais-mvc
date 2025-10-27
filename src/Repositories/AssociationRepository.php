@@ -75,6 +75,23 @@ class AssociationRepository
             throw new Exception("Error counting user associations: " . $e->getMessage());
         }
     }
+    public function getAllActiveAssociations(): array
+    {
+        try {
+            $query = "SELECT a.uiid, a.name, a.slug, a.logoPath, v.ville_nom_reel, v.ville_slug
+                      FROM association a
+                      LEFT JOIN ville v ON v.idVille = a.idVille
+                      WHERE a.isActive = 1 AND a.isDeleted = 0
+                      ORDER BY a.name ASC";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute();
+            $associations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $associations;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching active associations: " . $e->getMessage());
+        }
+    }
     /**
      * Get a specific association by ID
      */
@@ -91,8 +108,47 @@ class AssociationRepository
             throw new Exception("Error fetching association: " . $e->getMessage());
         }
     }
+public function getAssociationBySlug($slug)
+    {
+        try {
+            $query = "SELECT a.*, v.ville_nom_reel, v.ville_slug, u.firstName AS creator_firstName, u.lastName AS creator_lastName, u.slug AS creator_slug
+                      FROM association a
+                      LEFT JOIN ville v ON v.idVille = a.idVille
+                      LEFT JOIN user u ON u.idUser = a.idUser
+                      WHERE a.slug = :slug AND a.isDeleted = 0";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['slug' => $slug]);
+            $association = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($association) {
+                // Fetch members
+                $query = "SELECT u.idUser, u.firstName, u.lastName, u.slug AS user_slug, ua.role, u.avatarPath
+                          FROM user u
+                          INNER JOIN user_association ua ON u.idUser = ua.idUser
+                          WHERE ua.idAssociation = :idAssociation AND ua.isActive = 1 AND u.isDeleted = 0";
+                $stmt = $this->DB->prepare($query);
+                $stmt->execute(['idAssociation' => $association['idAssociation']]);
+                $members = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $association['members'] = $members;
 
-  
+                // Fetch events
+                $query = "SELECT title, slug, bannerPath, startDate FROM evenement 
+                          WHERE idAssociation = :idAssociation AND isDeleted = 0 AND isPublic = 1 
+                          ORDER BY startDate DESC LIMIT 10";
+                $stmt = $this->DB->prepare($query);
+                $stmt->execute(['idAssociation' => $association['idAssociation']]);
+                $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $association['associationEvents'] = $events;
+
+                return $association;
+            }
+            
+            return null;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching association by slug: " . $e->getMessage());
+        }
+    }
+
     public function isSlugExists($slug): bool
     {
         try {
@@ -369,10 +425,10 @@ class AssociationRepository
     public function getAssociationMembers($idAssociation): array
     {
         try {
-            $query = "SELECT u.idUser, u.firstName, u.lastName, u.email, ua.role, ua.joinedAt, ua.isActive
+            $query = "SELECT u.idUser, u.firstName, u.lastName, u.email, u.avatarPath, u.slug, ua.role, ua.joinedAt, ua.isActive
                       FROM user_association ua 
                       JOIN user u ON ua.idUser = u.idUser 
-                      WHERE ua.idAssociation = :idAssociation AND ua.isActive = 1
+                      WHERE ua.idAssociation = :idAssociation AND ua.isActive = 1 AND u.isDeleted = 0
                       ORDER BY ua.role DESC, u.lastName ASC";
 
             $stmt = $this->DB->prepare($query);

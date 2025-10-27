@@ -3,6 +3,9 @@ $title = htmlspecialchars($association['name']);
 $description = $association['description'] ? substr(strip_tags($association['description']), 0, 160) : 'Association sur Le Média Voironnais';
 ?>
 
+<?php include_once __DIR__ . '/../includes/header.php'; ?>
+<?php include_once __DIR__ . '/../includes/navbar.php'; ?>
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-12">
@@ -115,14 +118,14 @@ $description = $association['description'] ? substr(strip_tags($association['des
                             <?php endif; ?>
 
                             <!-- Members -->
-                            <?php if (!empty($members)): ?>
+                            <?php if (!empty($association['members'])): ?>
                                 <div class="border-top pt-4">
                                     <h4 class="mb-3">
                                         <i class="material-icons me-2">people</i>
-                                        Membres (<?= count($members) ?>)
+                                        Membres (<?= count($association['members']) ?>)
                                     </h4>
                                     <div class="row">
-                                        <?php foreach (array_slice($members, 0, 6) as $member): ?>
+                                        <?php foreach (array_slice($association['members'], 0, 6) as $member): ?>
                                             <div class="col-md-4 mb-3">
                                                 <div class="d-flex align-items-center">
                                                     <img src="<?= $member['avatarPath'] ?? DOMAIN . HOME_URL . 'assets/images/default-avatar.png' ?>" 
@@ -141,7 +144,7 @@ $description = $association['description'] ? substr(strip_tags($association['des
                                             </div>
                                         <?php endforeach; ?>
                                     </div>
-                                    <?php if (count($members) > 6): ?>
+                                    <?php if (count($association['members']) > 6): ?>
                                         <div class="text-center mt-3">
                                             <button class="btn btn-outline-primary">
                                                 Voir tous les membres
@@ -154,7 +157,7 @@ $description = $association['description'] ? substr(strip_tags($association['des
                     </div>
 
                     <!-- Recent Events -->
-                    <?php if (!empty($associationEvents)): ?>
+                    <?php if (!empty($association['associationEvents'])): ?>
                         <div class="card shadow-sm">
                             <div class="card-header">
                                 <h4 class="mb-0">
@@ -164,7 +167,7 @@ $description = $association['description'] ? substr(strip_tags($association['des
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <?php foreach (array_slice($associationEvents, 0, 4) as $event): ?>
+                                    <?php foreach (array_slice($association['associationEvents'], 0, 4) as $event): ?>
                                         <div class="col-md-6 mb-3">
                                             <div class="card h-100">
                                                 <?php if ($event['bannerPath']): ?>
@@ -254,3 +257,5 @@ function shareAssociation() {
     }
 }
 </script>
+
+<?php include_once __DIR__ . '/../includes/footer.php'; ?>

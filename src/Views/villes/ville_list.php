@@ -3,6 +3,9 @@ $title = 'Toutes les villes';
 $description = 'Découvrez toutes les villes disponibles sur Le Média Voironnais';
 ?>
 
+<?php include_once __DIR__ . '/../includes/header.php'; ?>
+<?php include_once __DIR__ . '/../includes/navbar.php'; ?>
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-12">
@@ -42,3 +45,5 @@ $description = 'Découvrez toutes les villes disponibles sur Le Média Voironnai
         </div>
     </div>
 </div>
+
+<?php include_once __DIR__ . '/../includes/footer.php'; ?>

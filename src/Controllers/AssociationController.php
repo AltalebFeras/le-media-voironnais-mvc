@@ -521,33 +521,30 @@ class AssociationController extends AbstractController
     {
         try {
             $association = $this->repo->getAssociationBySlug($associationSlug);
-            
+            // var_dump($association);die;
             if (!$association || !$association['isActive'] || $association['isDeleted']) {
-                $this->page404();
+                $_SESSION['error'] = "L'association demandée n'existe pas.";
+                $this->redirect('associations');
                 return;
             }
 
-            // Get association-related data
-            $members = $this->repo->getAssociationMembers($association['idAssociation']);
-            $associationEvents = $this->repo->getAssociationEvents($association['idAssociation']);
-
             $this->render('association/assoc_recherche_detail', [
                 'association' => $association,
-                'members' => $members,
-                'associationEvents' => $associationEvents
             ]);
         } catch (Exception $e) {
-            $this->page404();
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('associations');
         }
     }
 
     public function listPublicAssociations(): void
     {
         try {
-            $associations = $this->associationRepository->getAllActiveAssociations();
+            $associations = $this->repo->getAllActiveAssociations();
             $this->render('association/assoc_list', ['associations' => $associations]);
         } catch (Exception $e) {
-            $this->page404();
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('404');
         }
     }
 }

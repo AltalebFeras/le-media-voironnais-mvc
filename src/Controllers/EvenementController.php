@@ -1234,31 +1234,31 @@ class EvenementController extends AbstractController
         }
     }
 
-    public function displayPublicEventDetails(string $eventSlug): void
-    {
-        try {
-            $event = $this->evenementRepository->getEventBySlug($eventSlug);
+    // public function displayPublicEventDetails(string $eventSlug): void
+    // {
+    //     try {
+    //         $event = $this->evenementRepository->getEventBySlug($eventSlug);
             
-            if (!$event || !$event['isPublic'] || $event['isDeleted']) {
-                $this->page404();
-                return;
-            }
+    //         if (!$event || !$event['isPublic'] || $event['isDeleted']) {
+    //             $this->page404();
+    //             return;
+    //         }
 
-            // Get event-related data
-            $organizer = $this->evenementRepository->getEventOrganizer($event['idEvenement']);
-            $participants = $this->evenementRepository->getEventParticipants($event['idEvenement']);
-            $comments = $this->evenementRepository->getEventComments($event['idEvenement']);
-            $eventImages = $this->evenementRepository->getEventImages($event['idEvenement']);
+    //         // Get event-related data
+    //         $organizer = $this->evenementRepository->getEventOrganizer($event['idEvenement']);
+    //         $participants = $this->evenementRepository->getEventParticipants($event['idEvenement']);
+    //         $comments = $this->evenementRepository->getEventComments($event['idEvenement']);
+    //         $eventImages = $this->evenementRepository->getEventImages($event['idEvenement']);
 
-            $this->render('evenement/evenement_recherche_detail', [
-                'event' => $event,
-                'organizer' => $organizer,
-                'participants' => $participants,
-                'comments' => $comments,
-                'eventImages' => $eventImages
-            ]);
-        } catch (Exception $e) {
-            $this->page404();
-        }
-    }
+    //         $this->render('evenement/evenement_recherche_detail', [
+    //             'event' => $event,
+    //             'organizer' => $organizer,
+    //             'participants' => $participants,
+    //             'comments' => $comments,
+    //             'eventImages' => $eventImages
+    //         ]);
+    //     } catch (Exception $e) {
+    //         $this->page404();
+    //     }
+    // }
 }
