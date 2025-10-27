@@ -181,7 +181,6 @@ class HomeController extends AbstractController
             $events = $this->homeRepository->getEventsByCity($ville['idVille']);
             $entreprises = $this->homeRepository->getEntreprisesByCity($ville['idVille']);
             $associations = $this->homeRepository->getAssociationsByCity($ville['idVille']);
-
             $this->render('villes/ville_publique_detail', [
                 'ville' => $ville,
                 'events' => $events,

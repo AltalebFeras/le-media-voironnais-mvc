@@ -79,7 +79,7 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                                                 <?php endif; ?>
                                                 <div class="card-body">
                                                     <h6 class="card-title">
-                                                        <a href="<?= HOME_URL . 'evenements/' . $event['slug'] ?>" class="text-decoration-none">
+                                                        <a href="<?= HOME_URL . 'evenements/' . $event['ville_slug'] . '/'  . $event['category_slug'] . '/' . $event['slug'] ?>" class="text-decoration-none">
                                                             <?= htmlspecialchars($event['title']) ?>
                                                         </a>
                                                     </h6>

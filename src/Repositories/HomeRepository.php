@@ -108,8 +108,10 @@ class HomeRepository
     public function getEventsByCity(int $villeId, int $limit = 10): array
     {
         try {
-            $sql = "SELECT e.*, u.firstName, u.lastName FROM evenement e 
+            $sql = "SELECT e.*, u.firstName, u.lastName, v.ville_slug, v.ville_nom_reel, c.slug as category_slug FROM evenement e 
                     LEFT JOIN user u ON e.idUser = u.idUser 
+                    LEFT JOIN ville v ON e.idVille = v.idVille
+                    LEFT JOIN event_category c ON e.idEventCategory = c.idEventCategory
                     WHERE e.idVille = :villeId AND e.isPublic = 1 AND e.isDeleted = 0 
                     ORDER BY e.startDate ASC LIMIT :limit";
             $stmt = $this->DB->prepare($sql);
