@@ -639,7 +639,7 @@ class EntrepriseController extends AbstractController
                throw new Exception("L'entreprise demandée n'existe pas");
             }
 
-            $this->render('entreprise/entreprise_recherche_detail', [
+            $this->render('entreprise/entreprise_publique_detail', [
                 'entreprise' => $entreprise
             ]);
         } catch (Exception $e) {

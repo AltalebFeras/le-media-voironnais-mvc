@@ -642,7 +642,7 @@ class EvenementController extends AbstractController
             $allEvents = $this->repo->getEvents($currentPage, $evenementsPerPage);
             $totalEvenements = $this->repo->countEvents();
             $totalPages = (int)ceil($totalEvenements / $evenementsPerPage);
-            $this->render('evenement/publique_evenements_listes', [
+            $this->render('evenement/evenements_liste', [
                 'upcomingEvents' => $upcomingEvents,
                 'recentEvents' => $recentEvents,
                 'allEvents' => $allEvents,
@@ -727,7 +727,7 @@ class EvenementController extends AbstractController
                 'telegram' => "https://t.me/share/url?url={$shareUrl}&text=%F0%9F%8E%89%20{$shareTitle}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%E2%9C%A8%20{$shareDesc}",
                 'email' => "mailto:?subject={$shareTitle}&body=%F0%9F%8E%89%20Bonjour%2C%0A%0A{$shareDesc}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%0A👉%20{$shareUrl}"
             ];
-            $this->render('evenement/publique_evenement_detail', [
+            $this->render('evenement/evenement_publique_detail', [
                 'evenement' => $evenement,
                 'ville' => $ville,
                 'title' => $evenement['title'],
@@ -1234,31 +1234,4 @@ class EvenementController extends AbstractController
         }
     }
 
-    // public function displayPublicEventDetails(string $eventSlug): void
-    // {
-    //     try {
-    //         $event = $this->evenementRepository->getEventBySlug($eventSlug);
-            
-    //         if (!$event || !$event['isPublic'] || $event['isDeleted']) {
-    //             $this->page404();
-    //             return;
-    //         }
-
-    //         // Get event-related data
-    //         $organizer = $this->evenementRepository->getEventOrganizer($event['idEvenement']);
-    //         $participants = $this->evenementRepository->getEventParticipants($event['idEvenement']);
-    //         $comments = $this->evenementRepository->getEventComments($event['idEvenement']);
-    //         $eventImages = $this->evenementRepository->getEventImages($event['idEvenement']);
-
-    //         $this->render('evenement/evenement_recherche_detail', [
-    //             'event' => $event,
-    //             'organizer' => $organizer,
-    //             'participants' => $participants,
-    //             'comments' => $comments,
-    //             'eventImages' => $eventImages
-    //         ]);
-    //     } catch (Exception $e) {
-    //         $this->page404();
-    //     }
-    // }
 }

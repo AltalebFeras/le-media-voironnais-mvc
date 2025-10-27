@@ -949,7 +949,7 @@ class UserController extends AbstractController
                 throw new Exception('Utilisateur introuvable.');
             }
 
-            $this->render('user/user_recherche_profil', [
+            $this->render('user/user_publique_profil', [
                 'user' => $user,
                 'userEvents' => $user['userEvents'],
                 'userAssociations' => $user['userAssociations']

@@ -528,7 +528,7 @@ class AssociationController extends AbstractController
                 return;
             }
 
-            $this->render('association/assoc_recherche_detail', [
+            $this->render('association/assoc_publique_detail', [
                 'association' => $association,
             ]);
         } catch (Exception $e) {

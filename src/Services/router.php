@@ -116,7 +116,7 @@ switch ($route) {
     case $part0 === 'evenements':
         if ($part1 && !$part2) {
             // Display single event by slug
-            $evenementController->displayPublicEventDetails($part1);
+            // $evenementController->displayPublicEventDetails($part1);
         } elseif ($part2 && !$part3) {
             // $evenementController->viewEventByVilleSlugAndCategorySlug($composedRoute);
         } elseif ($part3 && !$part4) {
@@ -184,13 +184,13 @@ switch ($route) {
         }
         break;
 
-        case HOME_URL . 'recherche':
-            if ($method === 'POST') {
-                $homeController->search();
-            } else {
-                $homeController->page404();
-            }
-            break;
+    case HOME_URL . 'recherche':
+        if ($method === 'POST') {
+            $homeController->search();
+        } else {
+            $homeController->page404();
+        }
+        break;
 
     case HOME_URL . 'dashboard':
         if ($connectionSecured) {
