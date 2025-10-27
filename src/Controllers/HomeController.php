@@ -156,7 +156,7 @@ class HomeController extends AbstractController
                     'title' => htmlspecialchars($ville['name'], ENT_QUOTES, 'UTF-8'),
                     'subtitle' => isset($ville['code_postal']) ? htmlspecialchars($ville['code_postal'], ENT_QUOTES, 'UTF-8') : '',
                     'image' => null,
-                    'url' => HOME_URL . 'villes/' . htmlspecialchars($ville['slug'], ENT_QUOTES, 'UTF-8')
+                    'url' => HOME_URL . 'ville/' . htmlspecialchars($ville['slug'], ENT_QUOTES, 'UTF-8')
                 ];
             }
             
