@@ -108,11 +108,21 @@ class HomeController extends AbstractController
             // Search events
             $events = $this->homeRepository->searchEvents($query);
             foreach ($events as $event) {
+                // Build event URL with city and category slugs: evenements/ville/category/event-slug
+                $eventUrl = HOME_URL . 'evenements/';
+                if ($event['ville_slug']) {
+                    $eventUrl .= htmlspecialchars($event['ville_slug'], ENT_QUOTES, 'UTF-8') . '/';
+                }
+                if ($event['category_slug']) {
+                    $eventUrl .= htmlspecialchars($event['category_slug'], ENT_QUOTES, 'UTF-8') . '/';
+                }
+                $eventUrl .= htmlspecialchars($event['slug'], ENT_QUOTES, 'UTF-8');
+                
                 $results[] = [
                     'type' => 'evenement',
                     'title' => htmlspecialchars($event['title'], ENT_QUOTES, 'UTF-8'),
                     'image' => $event['bannerPath'] ? htmlspecialchars($event['bannerPath'], ENT_QUOTES, 'UTF-8') : null,
-                    'url' => HOME_URL . 'evenements/' . htmlspecialchars($event['slug'], ENT_QUOTES, 'UTF-8')
+                    'url' => $eventUrl
                 ];
             }
             

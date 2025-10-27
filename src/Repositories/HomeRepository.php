@@ -34,7 +34,11 @@ class HomeRepository
     public function searchEvents(string $query, int $limit = 5): array
     {
         try {
-            $sql = "SELECT title, slug, bannerPath FROM evenement WHERE title LIKE :query AND isPublic = 1 AND isDeleted = 0 LIMIT :limit";
+            // get the category slug and the ville slug and evenement slug
+            $sql = "SELECT e.*, ec.slug AS category_slug, v.ville_slug AS ville_slug FROM evenement e
+                    LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
+                    LEFT JOIN ville v ON e.idVille = v.idVille
+                    WHERE e.title LIKE :query AND e.isPublic = 1 AND e.isDeleted = 0 LIMIT :limit";
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':query', "%$query%", PDO::PARAM_STR);
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
