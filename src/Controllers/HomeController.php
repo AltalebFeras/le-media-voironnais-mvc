@@ -157,4 +157,40 @@ class HomeController extends AbstractController
         }
     }
 
+    public function displayCityDetails(string $citySlug): void
+    {
+        try {
+            $ville = $this->homeRepository->getCityBySlug($citySlug);
+            
+            if (!$ville) {
+                $this->page404();
+                return;
+            }
+
+            // Get city-related data
+            $events = $this->homeRepository->getEventsByCity($ville['idVille']);
+            $entreprises = $this->homeRepository->getEntreprisesByCity($ville['idVille']);
+            $associations = $this->homeRepository->getAssociationsByCity($ville['idVille']);
+
+            $this->render('villes/ville_recherche_detail', [
+                'ville' => $ville,
+                'events' => $events,
+                'entreprises' => $entreprises,
+                'associations' => $associations
+            ]);
+        } catch (Exception $e) {
+            $this->page404();
+        }
+    }
+
+    public function listCities(): void
+    {
+        try {
+            $cities = $this->homeRepository->getAllCities();
+            $this->render('villes/ville_list', ['cities' => $cities]);
+        } catch (Exception $e) {
+            $this->page404();
+        }
+    }
+
 }

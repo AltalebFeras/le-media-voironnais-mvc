@@ -516,4 +516,38 @@ class AssociationController extends AbstractController
             $this->redirect('mes_associations?action=voir&uiid=' . $uiid . '&error=true');
         }
     }
+
+    public function displayPublicAssociationDetails(string $associationSlug): void
+    {
+        try {
+            $association = $this->repo->getAssociationBySlug($associationSlug);
+            
+            if (!$association || !$association['isActive'] || $association['isDeleted']) {
+                $this->page404();
+                return;
+            }
+
+            // Get association-related data
+            $members = $this->repo->getAssociationMembers($association['idAssociation']);
+            $associationEvents = $this->repo->getAssociationEvents($association['idAssociation']);
+
+            $this->render('association/assoc_recherche_detail', [
+                'association' => $association,
+                'members' => $members,
+                'associationEvents' => $associationEvents
+            ]);
+        } catch (Exception $e) {
+            $this->page404();
+        }
+    }
+
+    public function listPublicAssociations(): void
+    {
+        try {
+            $associations = $this->associationRepository->getAllActiveAssociations();
+            $this->render('association/assoc_list', ['associations' => $associations]);
+        } catch (Exception $e) {
+            $this->page404();
+        }
+    }
 }

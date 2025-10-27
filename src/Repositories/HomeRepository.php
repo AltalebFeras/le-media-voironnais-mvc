@@ -86,4 +86,77 @@ class HomeRepository
             return [];
         }
     }
+
+    public function getCityBySlug(string $slug): ?array
+    {
+        try {
+            $sql = "SELECT * FROM ville WHERE ville_slug = :slug LIMIT 1";
+            $stmt = $this->DB->prepare($sql);
+            $stmt->bindValue(':slug', $slug, PDO::PARAM_STR);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ?: null;
+        } catch (PDOException $e) {
+            return null;
+        }
+    }
+
+    public function getEventsByCity(int $villeId, int $limit = 10): array
+    {
+        try {
+            $sql = "SELECT e.*, u.firstName, u.lastName FROM evenement e 
+                    LEFT JOIN user u ON e.idUser = u.idUser 
+                    WHERE e.idVille = :villeId AND e.isPublic = 1 AND e.isDeleted = 0 
+                    ORDER BY e.startDate ASC LIMIT :limit";
+            $stmt = $this->DB->prepare($sql);
+            $stmt->bindValue(':villeId', $villeId, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    public function getEntreprisesByCity(int $villeId, int $limit = 10): array
+    {
+        try {
+            $sql = "SELECT * FROM entreprise WHERE idVille = :villeId AND isActive = 1 AND isDeleted = 0 ORDER BY name ASC LIMIT :limit";
+            $stmt = $this->DB->prepare($sql);
+            $stmt->bindValue(':villeId', $villeId, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    public function getAssociationsByCity(int $villeId, int $limit = 10): array
+    {
+        try {
+            $sql = "SELECT * FROM association WHERE idVille = :villeId AND isActive = 1 AND isDeleted = 0 ORDER BY name ASC LIMIT :limit";
+            $stmt = $this->DB->prepare($sql);
+            $stmt->bindValue(':villeId', $villeId, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
+
+    public function getAllCities(int $limit = 100): array
+    {
+        try {
+            $sql = "SELECT ville_nom as name, ville_slug as slug, ville_code_postal as code_postal, ville_population_2012 as population 
+                    FROM ville ORDER BY ville_nom ASC LIMIT :limit";
+            $stmt = $this->DB->prepare($sql);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return [];
+        }
+    }
 }

@@ -76,6 +76,24 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
+    public function getUserAndHisAssociationsAndEventsAndHisEntreprisesBySlug($slug): array
+    {
+        try {
+            $query = 'SELECT u.*, r.name AS roleName,
+                      (SELECT COUNT(*) FROM association a WHERE a.idUser = u.idUser AND a.isDeleted = 0) AS associationCount,
+                      (SELECT COUNT(*) FROM evenement e WHERE e.idUser = u.idUser AND e.isDeleted = 0) AS eventCount,
+                      (SELECT COUNT(*) FROM entreprise ent WHERE ent.idUser = u.idUser AND ent.isDeleted = 0) AS enterpriseCount
+                      FROM user u
+                      JOIN role r ON u.idRole = r.idRole
+                      WHERE u.slug = :slug AND u.isDeleted = 0';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['slug' => $slug]);
+            $user = $req->fetch(PDO::FETCH_ASSOC);
+            return $user ?: [];
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
     public function isSlugExists($slug): bool
     {
         try {

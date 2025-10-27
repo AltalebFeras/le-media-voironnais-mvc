@@ -115,7 +115,8 @@ switch ($route) {
     // Example: /evenements/ville-slug or /evenements/ville-slug/category_slug/event-slug /evenements/ville-slug/category_slug
     case $part0 === 'evenements':
         if ($part1 && !$part2) {
-            // $evenementController->displayEventsForThisVille($composedRoute);
+            // Display single event by slug
+            $evenementController->displayPublicEventDetails($part1);
         } elseif ($part2 && !$part3) {
             // $evenementController->viewEventByVilleSlugAndCategorySlug($composedRoute);
         } elseif ($part3 && !$part4) {
@@ -723,6 +724,42 @@ switch ($route) {
         } else {
             $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
             $homeController->displayAuth();
+        }
+        break;
+
+    // User profile route
+    case $part0 === 'profil':
+        if ($part1 && !$part2) {
+            $userController->displayUserProfile($part1);
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    // Enterprise detail route
+    case $part0 === 'entreprises':
+        if ($part1 && !$part2) {
+            $entrepriseController->displayPublicEntrepriseDetails($part1);
+        } else {
+            $entrepriseController->listPublicEntreprises();
+        }
+        break;
+
+    // Association detail route
+    case $part0 === 'associations':
+        if ($part1 && !$part2) {
+            $associationController->displayPublicAssociationDetails($part1);
+        } else {
+            $associationController->listPublicAssociations();
+        }
+        break;
+
+    // City detail route
+    case $part0 === 'ville':
+        if ($part1 && !$part2) {
+            $homeController->displayCityDetails($part1);
+        } else {
+            $homeController->listCities();
         }
         break;
 

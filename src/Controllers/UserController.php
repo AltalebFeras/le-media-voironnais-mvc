@@ -939,4 +939,26 @@ class UserController extends AbstractController
             $this->redirect('mon_compte', ['error' => 'true']);
         }
     }
+
+    public function displayUserProfile(string $userSlug): void
+    {
+        try {
+            $user = $this->repo->getUserAndHisAssociationsAndEventsAndHisEntreprisesBySlug($userSlug);
+            
+            if (!$user || !$user['isActivated'] || $user['isBanned'] || $user['isDeleted']) {
+                throw new Exception('Utilisateur introuvable.');
+            }
+
+            // // Get user-related data
+            // $userEvents = $this->repo->getUserEvents($user['idUser']);
+            // $userAssociations = $this->repo->getUserAssociations($user['idUser']);
+
+            $this->render('user/user_recherche_profil', [
+                'user' => $user,
+            ]);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect(HOME_URL);
+        }
+    }
 }

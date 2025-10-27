@@ -630,4 +630,36 @@ class EntrepriseController extends AbstractController
             $this->redirect('mes_entreprises?action=voir&uiid=' . $uiid . '&error=true');
         }
     }
+
+    public function displayPublicEntrepriseDetails(string $entrepriseSlug): void
+    {
+        try {
+            $entreprise = $this->repo->getEntrepriseBySlug($entrepriseSlug);
+            
+            if (!$entreprise || !$entreprise['isActive'] || $entreprise['isDeleted']) {
+                $this->page404();
+                return;
+            }
+
+            // Get enterprise-related data
+            $realisations = $this->repo->getPublicRealisationsByEntreprise($entreprise['idEntreprise']);
+
+            $this->render('entreprise/entreprise_recherche_detail', [
+                'entreprise' => $entreprise,
+                'realisations' => $realisations
+            ]);
+        } catch (Exception $e) {
+            $this->page404();
+        }
+    }
+
+    public function listPublicEntreprises(): void
+    {
+        try {
+            $entreprises = $this->entrepriseRepository->getAllActiveEntreprises();
+            $this->render('entreprise/entreprise_list', ['entreprises' => $entreprises]);
+        } catch (Exception $e) {
+            $this->page404();
+        }
+    }
 }
