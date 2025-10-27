@@ -183,6 +183,41 @@ $(document).ready(function() {
     }
   });
 
+  // Structures dropdown toggle
+  const $structuresToggle = $("#structuresDropdownToggle");
+  const $structuresMenu = $("#structuresDropdownMenu");
+
+  if ($structuresToggle.length && $structuresMenu.length) {
+    $structuresToggle.on("click", function(e) {
+      e.stopPropagation();
+      const isExpanded = $structuresToggle.attr("aria-expanded") === "true";
+      
+      // Close other dropdowns first
+      $("#moiDropdownToggle").attr("aria-expanded", "false");
+      $("#moiDropdownMenu").removeClass("show");
+      
+      $structuresToggle.attr("aria-expanded", !isExpanded);
+      $structuresMenu.toggleClass("show");
+    });
+
+    // Close dropdown when clicking outside
+    $(document).on("click", function(e) {
+      if (!$structuresToggle.is(e.target) && !$structuresToggle.has(e.target).length && 
+          !$structuresMenu.is(e.target) && !$structuresMenu.has(e.target).length) {
+        $structuresToggle.attr("aria-expanded", "false");
+        $structuresMenu.removeClass("show");
+      }
+    });
+
+    // Close dropdown when clicking on menu items
+    $structuresMenu.find("a").each(function() {
+      $(this).on("click", function() {
+        $structuresToggle.attr("aria-expanded", "false");
+        $structuresMenu.removeClass("show");
+      });
+    });
+  }
+
   // Profile dropdown toggle (Moi)
   const $moiToggle = $("#moiDropdownToggle");
   const $moiMenu = $("#moiDropdownMenu");
@@ -191,6 +226,11 @@ $(document).ready(function() {
     $moiToggle.on("click", function(e) {
       e.stopPropagation();
       const isExpanded = $moiToggle.attr("aria-expanded") === "true";
+      
+      // Close other dropdowns first
+      $("#structuresDropdownToggle").attr("aria-expanded", "false");
+      $("#structuresDropdownMenu").removeClass("show");
+      
       $moiToggle.attr("aria-expanded", !isExpanded);
       $moiMenu.toggleClass("show");
     });

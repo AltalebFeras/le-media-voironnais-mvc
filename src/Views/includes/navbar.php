@@ -39,20 +39,32 @@
             <span class="material-icons">event</span>
             <span class="nav-text">Événements</span>
           </a></li>
+          
 
+        <!-- Structures Dropdown -->
+        <li class="nav-item-dropdown">
+          <button class="link nav-item nav-dropdown-toggle" id="structuresDropdownToggle" aria-haspopup="true" aria-expanded="false">
+            <span class="material-icons">account_balance</span>
+            <span class="nav-text">Structures</span>
+            <span class="material-icons dropdown-arrow">arrow_drop_down</span>
+          </button>
+          <div class="nav-dropdown-menu" id="structuresDropdownMenu">
+            <a class="nav-dropdown-item" href="<?= HOME_URL . 'entreprises' ?>">
+              <span class="material-icons">business</span>
+              <span>Entreprises</span>
+            </a>
+            <a class="nav-dropdown-item" href="<?= HOME_URL . 'associations' ?>">
+              <span class="material-icons">groups</span>
+              <span>Associations</span>
+            </a>
+            <a class="nav-dropdown-item" href="<?= HOME_URL . 'ville' ?>">
+              <span class="material-icons">location_city</span>
+              <span>Villes</span>
+            </a>
+          </div>
+        </li>
 
         <?php if (isset($_SESSION['connected'])) : ?>
-          <!-- Connected User Links -->
-          <li><a class="link nav-item" href="<?= HOME_URL . 'chat' ?>">
-              <span class="material-icons">chat</span>
-              <span class="nav-text">Chat</span>
-            </a></li>
-
-          <li><a class="link nav-item" href="<?= HOME_URL . 'mes_entreprises' ?>">
-              <span class="material-icons">business</span>
-              <span class="nav-text">Structures</span>
-            </a></li>
-
           <!-- Moi Dropdown -->
           <li class="nav-item-dropdown">
             <button class="link nav-item nav-dropdown-toggle" id="moiDropdownToggle" aria-haspopup="true" aria-expanded="false">
@@ -106,7 +118,7 @@
     .search-container {
       position: relative;
     }
-    
+
     .search-results {
       position: absolute;
       top: 100%;
@@ -115,13 +127,13 @@
       background: white;
       border: 1px solid #ddd;
       border-radius: 4px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       z-index: 1000;
       max-height: 400px;
       overflow-y: auto;
       display: none;
     }
-    
+
     .search-result-item {
       padding: 12px;
       border-bottom: 1px solid #eee;
@@ -130,42 +142,42 @@
       align-items: center;
       gap: 10px;
     }
-    
+
     .search-result-item:hover {
       background-color: #f5f5f5;
     }
-    
+
     .search-result-item:last-child {
       border-bottom: none;
     }
-    
+
     .search-result-image {
       width: 40px;
       height: 40px;
       object-fit: cover;
       border-radius: 4px;
     }
-    
+
     .search-result-content {
       flex: 1;
     }
-    
+
     .search-result-title {
       font-weight: 500;
       color: #333;
     }
-    
+
     .search-result-subtitle {
       font-size: 11px;
       color: #999;
     }
-    
+
     .search-result-type {
       font-size: 12px;
       color: #666;
       text-transform: capitalize;
     }
-    
+
     .search-error {
       padding: 12px;
       color: #dc3545;
@@ -177,28 +189,28 @@
   <script>
     $(document).ready(function() {
       let searchTimeout;
-      
+
       function setupSearch(inputId, resultsId) {
         const $searchInput = $('#' + inputId);
         const $searchResults = $('#' + resultsId);
-        
+
         if (!$searchInput.length || !$searchResults.length) return;
-        
+
         $searchInput.on('input', function() {
           clearTimeout(searchTimeout);
           const query = $(this).val().trim();
-          
+
           if (query.length < 3) {
             $searchResults.hide();
             return;
           }
-          
+
           if (query.length > 100) {
             $searchResults.html('<div class="search-error">La recherche ne peut pas dépasser 100 caractères</div>');
             $searchResults.show();
             return;
           }
-          
+
           // Validate characters - Fixed regex pattern
           const validPattern = /^[a-zA-Z0-9àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝŸ\s\-'\.]+$/u;
           if (!validPattern.test(query)) {
@@ -206,12 +218,12 @@
             $searchResults.show();
             return;
           }
-          
+
           searchTimeout = setTimeout(() => {
             const formData = new FormData();
             formData.append('q', query);
             formData.append('csrf_token', $('input[name="csrf_token"]').val());
-            
+
             $.ajax({
               url: '<?= HOME_URL ?>recherche',
               type: 'POST',
@@ -235,23 +247,23 @@
             });
           }, 300);
         });
-        
+
         // Hide results when clicking outside
         $(document).on('click', function(event) {
-          if (!$searchInput.is(event.target) && !$searchResults.is(event.target) && 
-              $searchResults.has(event.target).length === 0) {
+          if (!$searchInput.is(event.target) && !$searchResults.is(event.target) &&
+            $searchResults.has(event.target).length === 0) {
             $searchResults.hide();
           }
         });
       }
-      
+
       function displaySearchResults(results, $container) {
         if (results.length === 0) {
           $container.html('<div class="search-result-item">Aucun résultat trouvé</div>');
           $container.show();
           return;
         }
-        
+
         const typeLabels = {
           'user': 'Utilisateur',
           'evenement': 'Événement',
@@ -259,33 +271,33 @@
           'association': 'Association',
           'ville': 'Ville'
         };
-        
+
         const resultsHtml = results.map(function(result) {
-          const imageHtml = result.image ? 
+          const imageHtml = result.image ?
             '<img src="' + result.image + '" alt="' + result.title + '" class="search-result-image">' :
             '<div class="search-result-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #666;">' +
-              (result.type === 'ville' ? '🏙️' : 
-               result.type === 'user' ? '👤' : 
-               result.type === 'evenement' ? '📅' : 
-               result.type === 'entreprise' ? '🏢' : '🏛️') +
+            (result.type === 'ville' ? '🏙️' :
+              result.type === 'user' ? '👤' :
+              result.type === 'evenement' ? '📅' :
+              result.type === 'entreprise' ? '🏢' : '🏛️') +
             '</div>';
-          
-          const subtitleHtml = result.subtitle ? 
+
+          const subtitleHtml = result.subtitle ?
             '<div class="search-result-subtitle">' + result.subtitle + '</div>' : '';
-          
+
           return '<div class="search-result-item" data-url="' + result.url + '">' +
-                   imageHtml +
-                   '<div class="search-result-content">' +
-                     '<div class="search-result-title">' + result.title + '</div>' +
-                     subtitleHtml +
-                     '<div class="search-result-type">' + (typeLabels[result.type] || result.type) + '</div>' +
-                   '</div>' +
-                 '</div>';
+            imageHtml +
+            '<div class="search-result-content">' +
+            '<div class="search-result-title">' + result.title + '</div>' +
+            subtitleHtml +
+            '<div class="search-result-type">' + (typeLabels[result.type] || result.type) + '</div>' +
+            '</div>' +
+            '</div>';
         }).join('');
-        
+
         $container.html(resultsHtml);
         $container.show();
-        
+
         // Add click handlers to result items
         $container.off('click', '.search-result-item').on('click', '.search-result-item', function(e) {
           e.preventDefault();
@@ -295,7 +307,7 @@
           }
         });
       }
-      
+
       // Initialize search for mobile
       setupSearch('search-input-mobile', 'search-results-mobile');
     });
