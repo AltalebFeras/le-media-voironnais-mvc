@@ -2,10 +2,19 @@
 
 namespace src\Controllers;
 
+use Exception;
 use src\Abstracts\AbstractController;
+use src\Repositories\HomeRepository;
 
 class HomeController extends AbstractController
 {
+    private $homeRepository;
+
+    public function __construct()
+    {
+        $this->homeRepository = new HomeRepository();
+    }
+
     public function displayHomepage(): void
     {
         $this->render('home/accueil');
@@ -47,6 +56,105 @@ class HomeController extends AbstractController
         header("Content-Type: text/html; charset=utf-8");
         $this->render('home/404');
     }
-  
+    public function search(): void
+    {
+        header('Content-Type: application/json');
+        
+        // // Verify CSRF token for security
+        // if (!$this->verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        //     echo json_encode(['error' => 'Token CSRF invalide', 'results' => []]);
+        //     return;
+        // }
+        
+        // Strict input validation
+        if (!isset($_POST['q'])) {
+            echo json_encode(['error' => 'Paramètre de recherche manquant', 'results' => []]);
+            return;
+        }
+        
+        $query = trim($_POST['q']);
+        
+        // Validate query length (minimum 3 characters, maximum 100)
+        if (strlen($query) < 3) {
+            echo json_encode(['error' => 'La recherche doit contenir au moins 3 caractères', 'results' => []]);
+            return;
+        }
+        
+        if (strlen($query) > 100) {
+            echo json_encode(['error' => 'La recherche ne peut pas dépasser 100 caractères', 'results' => []]);
+            return;
+        }
+        
+        // Sanitize input - remove special characters that could be harmful
+        if (!preg_match('/^[a-zA-Z0-9àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝŸ\s\-\'\.]+$/u', $query)) {
+            echo json_encode(['error' => 'Caractères non autorisés dans la recherche', 'results' => []]);
+            return;
+        }
+        
+        try {
+            $results = [];
+            
+            // Search users
+            $users = $this->homeRepository->searchUsers($query);
+            foreach ($users as $user) {
+                $results[] = [
+                    'type' => 'user',
+                    'title' => htmlspecialchars($user['firstName'] . ' ' . $user['lastName'], ENT_QUOTES, 'UTF-8'),
+                    'image' => $user['avatarPath'] ? htmlspecialchars($user['avatarPath'], ENT_QUOTES, 'UTF-8') : null,
+                    'url' => HOME_URL . 'profil/' . htmlspecialchars($user['slug'], ENT_QUOTES, 'UTF-8')
+                ];
+            }
+            
+            // Search events
+            $events = $this->homeRepository->searchEvents($query);
+            foreach ($events as $event) {
+                $results[] = [
+                    'type' => 'evenement',
+                    'title' => htmlspecialchars($event['title'], ENT_QUOTES, 'UTF-8'),
+                    'image' => $event['bannerPath'] ? htmlspecialchars($event['bannerPath'], ENT_QUOTES, 'UTF-8') : null,
+                    'url' => HOME_URL . 'evenements/' . htmlspecialchars($event['slug'], ENT_QUOTES, 'UTF-8')
+                ];
+            }
+            
+            // Search enterprises
+            $entreprises = $this->homeRepository->searchEntreprises($query);
+            foreach ($entreprises as $entreprise) {
+                $results[] = [
+                    'type' => 'entreprise',
+                    'title' => htmlspecialchars($entreprise['name'], ENT_QUOTES, 'UTF-8'),
+                    'image' => $entreprise['logoPath'] ? htmlspecialchars($entreprise['logoPath'], ENT_QUOTES, 'UTF-8') : null,
+                    'url' => HOME_URL . 'entreprises/' . htmlspecialchars($entreprise['slug'], ENT_QUOTES, 'UTF-8')
+                ];
+            }
+            
+            // Search associations
+            $associations = $this->homeRepository->searchAssociations($query);
+            foreach ($associations as $association) {
+                $results[] = [
+                    'type' => 'association',
+                    'title' => htmlspecialchars($association['name'], ENT_QUOTES, 'UTF-8'),
+                    'image' => $association['logoPath'] ? htmlspecialchars($association['logoPath'], ENT_QUOTES, 'UTF-8') : null,
+                    'url' => HOME_URL . 'associations/' . htmlspecialchars($association['slug'], ENT_QUOTES, 'UTF-8')
+                ];
+            }
+            
+            // Search villes
+            $villes = $this->homeRepository->searchVilles($query);
+            foreach ($villes as $ville) {
+                $results[] = [
+                    'type' => 'ville',
+                    'title' => htmlspecialchars($ville['name'], ENT_QUOTES, 'UTF-8'),
+                    'subtitle' => isset($ville['code_postal']) ? htmlspecialchars($ville['code_postal'], ENT_QUOTES, 'UTF-8') : '',
+                    'image' => null,
+                    'url' => HOME_URL . 'ville/' . htmlspecialchars($ville['slug'], ENT_QUOTES, 'UTF-8')
+                ];
+            }
+            
+            echo json_encode(['results' => $results]);
+            
+        } catch (Exception $e) {
+            echo json_encode(['error' => 'Erreur lors de la recherche', 'results' => []]);
+        }
+    }
 
 }
