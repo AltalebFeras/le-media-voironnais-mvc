@@ -99,7 +99,7 @@ class EntrepriseRepository
             throw new Exception("Error fetching company with realisations: " . $e->getMessage());
         }
     }
-    public function getEntrepriseByName($name): ?Entreprise 
+    public function getEntrepriseByName($name): ?Entreprise
     {
         try {
             $query = "SELECT * FROM entreprise WHERE name = :name";
@@ -127,6 +127,58 @@ class EntrepriseRepository
             return $entreprises;
         } catch (Exception $e) {
             throw new Exception("Error fetching all companies: " . $e->getMessage());
+        }
+    }
+    public function getListPublicEntreprises(): array
+    {
+        //get uiid,name,slug,logoPath, ville_nom_reel for all entreprises where isActive = 1 and isDeleted = 0 
+        try {
+            $query = "SELECT uiid, name, slug, logoPath, (SELECT ville_nom_reel FROM ville WHERE idVille = entreprise.idVille) AS ville_nom_reel FROM entreprise WHERE isActive = 1 AND isDeleted = 0 ORDER BY name ASC";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute();
+
+            $entreprises = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $entreprises;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching public companies: " . $e->getMessage());
+        }
+    }
+
+    public function getEntrepriseBySlug($slug)
+    {
+        try {
+            $query = "SELECT e.*, v.ville_nom_reel, u.firstName as creator_firstName, u.lastName as creator_lastName, u.slug as creator_slug
+                      FROM entreprise e 
+                      LEFT JOIN ville v ON e.idVille = v.idVille 
+                      LEFT JOIN user u ON e.idUser = u.idUser 
+                      WHERE e.slug = :slug AND e.isDeleted = 0";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['slug' => $slug]);
+            $entreprise = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$entreprise) {
+                return null;
+            }
+
+            // Fetch evenements
+            $query = "SELECT title as evenement_title, slug as evenement_slug , bannerPath as evenement_bannerPath FROM evenement WHERE idEntreprise = :idEntreprise AND isDeleted = 0";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idEntreprise' => $entreprise['idEntreprise']]);
+            $evenements = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $entreprise['evenements'] = $evenements;
+
+            // Fetch realisations with images from realisation_image table
+            $query = "SELECT r.title as realisation_title, r.slug as realisation_slug
+                      FROM realisation r
+                      LEFT JOIN realisation_image ri ON r.idRealisation = ri.idRealisation
+                      WHERE r.idEntreprise = :idEntreprise AND r.isDeleted = 0";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['idEntreprise' => $entreprise['idEntreprise']]);
+            $realisations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $entreprise['realisations'] = $realisations;
+
+            return $entreprise;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching company by slug: " . $e->getMessage());
         }
     }
     public function isSlugExists($slug): bool

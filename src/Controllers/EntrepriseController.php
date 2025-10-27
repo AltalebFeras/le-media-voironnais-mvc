@@ -635,31 +635,22 @@ class EntrepriseController extends AbstractController
     {
         try {
             $entreprise = $this->repo->getEntrepriseBySlug($entrepriseSlug);
-            
             if (!$entreprise || !$entreprise['isActive'] || $entreprise['isDeleted']) {
-                $this->page404();
-                return;
+               throw new Exception("L'entreprise demandée n'existe pas");
             }
-
-            // Get enterprise-related data
-            $realisations = $this->repo->getPublicRealisationsByEntreprise($entreprise['idEntreprise']);
 
             $this->render('entreprise/entreprise_recherche_detail', [
                 'entreprise' => $entreprise,
-                'realisations' => $realisations
             ]);
         } catch (Exception $e) {
-            $this->page404();
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('entreprises',['error'=>'true']);
         }
     }
 
     public function listPublicEntreprises(): void
     {
-        try {
-            $entreprises = $this->entrepriseRepository->getAllActiveEntreprises();
-            $this->render('entreprise/entreprise_list', ['entreprises' => $entreprises]);
-        } catch (Exception $e) {
-            $this->page404();
-        }
+        $entreprises = $this->repo->getListPublicEntreprises();
+        $this->render('entreprise/entreprise_list', ['entreprises' => $entreprises]);
     }
 }
