@@ -79,17 +79,49 @@ class UserRepository
     public function getUserAndHisAssociationsAndEventsAndHisEntreprisesBySlug($slug): array
     {
         try {
-            $query = 'SELECT u.*, r.name AS roleName,
-                      (SELECT COUNT(*) FROM association a WHERE a.idUser = u.idUser AND a.isDeleted = 0) AS associationCount,
-                      (SELECT COUNT(*) FROM evenement e WHERE e.idUser = u.idUser AND e.isDeleted = 0) AS eventCount,
-                      (SELECT COUNT(*) FROM entreprise ent WHERE ent.idUser = u.idUser AND ent.isDeleted = 0) AS enterpriseCount
+            $query = 'SELECT u.idUser, u.firstName, u.lastName, u.email, u.phone, u.avatarPath, u.bannerPath, u.bio, u.dateOfBirth, u.isActivated, u.isBanned, u.isDeleted, u.isOnline, u.lastSeen, u.createdAt, u.updatedAt, r.name AS roleName,
+                      (SELECT COUNT(*) FROM association a WHERE a.idUser = u.idUser AND a.isActive = 1 AND a.isDeleted = 0) AS associationCount,
+                      (SELECT COUNT(*) FROM evenement e WHERE e.idUser = u.idUser AND e.isPublic = 1 AND e.isDeleted = 0) AS eventCount,
+                      (SELECT COUNT(*) FROM entreprise ent WHERE ent.idUser = u.idUser AND ent.isActive = 1 AND ent.isDeleted = 0) AS enterpriseCount,
+                      (SELECT JSON_ARRAYAGG(
+                          JSON_OBJECT(
+                              "name", a.name,
+                              "slug", a.slug,
+                              "logoPath", a.logoPath,
+                              "role", ua.role
+                          )
+                      ) FROM association a 
+                      LEFT JOIN user_association ua ON a.idAssociation = ua.idAssociation
+                      WHERE ua.idUser = u.idUser AND a.isActive = 1 AND a.isDeleted = 0 AND ua.isActive = 1
+                      LIMIT 3) AS userAssociations,
+                      (SELECT JSON_ARRAYAGG(
+                          JSON_OBJECT(
+                              "title", e.title,
+                              "slug", e.slug,
+                              "bannerPath", e.bannerPath,
+                              "startDate", e.startDate
+                          )
+                      ) FROM evenement e 
+                      WHERE e.idUser = u.idUser AND e.isPublic = 1 AND e.isDeleted = 0
+                      ORDER BY e.startDate DESC
+                      LIMIT 3) AS userEvents
                       FROM user u
                       JOIN role r ON u.idRole = r.idRole
-                      WHERE u.slug = :slug AND u.isDeleted = 0';
+                      WHERE u.slug = :slug AND u.isActivated = 1 AND u.isBanned = 0 AND u.isDeleted = 0';
+     
             $req = $this->DBuser->prepare($query);
             $req->execute(['slug' => $slug]);
             $user = $req->fetch(PDO::FETCH_ASSOC);
-            return $user ?: [];
+            
+            if (!$user) {
+                return [];
+            }
+            
+            // Decode JSON arrays
+            $user['userAssociations'] = $user['userAssociations'] ? json_decode($user['userAssociations'], true) : [];
+            $user['userEvents'] = $user['userEvents'] ? json_decode($user['userEvents'], true) : [];
+            
+            return $user;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }

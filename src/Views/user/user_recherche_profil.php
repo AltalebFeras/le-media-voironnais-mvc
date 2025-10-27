@@ -2,7 +2,10 @@
 $title = htmlspecialchars($user['firstName'] . ' ' . $user['lastName']);
 $description = $user['bio'] ?? 'Profil utilisateur sur Le Média Voironnais';
 ?>
-<?php var_dump($user); ?>
+
+<?php include_once __DIR__ . '/../includes/header.php'; ?>
+<?php include_once __DIR__ . '/../includes/navbar.php'; ?>
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-12">
@@ -72,6 +75,28 @@ $description = $user['bio'] ?? 'Profil utilisateur sur Le Média Voironnais';
                                     </div>
                                 <?php endif; ?>
                             </div>
+
+                            <!-- Stats Row -->
+                            <div class="row mt-3">
+                                <div class="col-sm-4">
+                                    <div class="text-center">
+                                        <h5 class="mb-0 text-primary"><?= $user['eventCount'] ?></h5>
+                                        <small class="text-muted">Événements</small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="text-center">
+                                        <h5 class="mb-0 text-success"><?= $user['associationCount'] ?></h5>
+                                        <small class="text-muted">Associations</small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="text-center">
+                                        <h5 class="mb-0 text-info"><?= $user['enterpriseCount'] ?></h5>
+                                        <small class="text-muted">Entreprises</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -89,7 +114,7 @@ $description = $user['bio'] ?? 'Profil utilisateur sur Le Média Voironnais';
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <?php foreach (array_slice($userEvents, 0, 3) as $event): ?>
+                                <?php foreach ($userEvents as $event): ?>
                                     <div class="d-flex align-items-center mb-3">
                                         <img src="<?= $event['bannerPath'] ?? DOMAIN . HOME_URL . 'assets/images/default-event.png' ?>" 
                                              alt="<?= htmlspecialchars($event['title']) ?>" 
@@ -122,7 +147,7 @@ $description = $user['bio'] ?? 'Profil utilisateur sur Le Média Voironnais';
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <?php foreach (array_slice($userAssociations, 0, 3) as $association): ?>
+                                <?php foreach ($userAssociations as $association): ?>
                                     <div class="d-flex align-items-center mb-3">
                                         <img src="<?= $association['logoPath'] ?? DOMAIN . HOME_URL . 'assets/images/default-association.png' ?>" 
                                              alt="<?= htmlspecialchars($association['name']) ?>" 
@@ -148,3 +173,5 @@ $description = $user['bio'] ?? 'Profil utilisateur sur Le Média Voironnais';
         </div>
     </div>
 </div>
+
+<?php include_once __DIR__ . '/../includes/footer.php'; ?>
