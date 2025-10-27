@@ -118,8 +118,21 @@ class UserController extends AbstractController
         // Generate UIID for new user
         $helper = new Helper();
         $uiid = $helper->generateUiid();
-        
+        $slug = $helper->generateSlug($firstName, $lastName);
+        $existSlug = $this->repo->isSlugExists($slug);
+        if ($existSlug) {
+
+            $suffix = random_int(1, 999999);
+            $finalSlug = "{$slug}-{$suffix}";
+            while ($this->repo->isSlugExists($finalSlug)) {
+                $suffix++;
+                $finalSlug = "{$slug}-{$suffix}";
+            }
+            $slug = $finalSlug;
+        }
+
         $user->setUiid($uiid);
+        $user->setSlug($slug);
         $user->setFirstName($firstName);
         $user->setLastName($lastName);
         $user->setEmail($email);

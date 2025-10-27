@@ -76,15 +76,28 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
+    public function isSlugExists($slug): bool
+    {
+        try {
+            $query = 'SELECT COUNT(*) FROM user WHERE slug = :slug';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['slug' => $slug]);
+            $count = $req->fetchColumn();
+            return $count > 0;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
     public function signUp(User $user): bool
     {
         try {
-            $query = 'INSERT INTO user (uiid, firstName, lastName, email, password, isActivated, isBanned, isDeleted, token, createdAt, idRole, rgpdAcceptedDate) 
-            VALUES (:uiid, :firstName, :lastName, :email, :password, :isActivated, :isBanned, :isDeleted, :token, :createdAt, :idRole, :rgpdAcceptedDate)';
+            $query = 'INSERT INTO user (uiid,slug, firstName, lastName, email, password, isActivated, isBanned, isDeleted, token, createdAt, idRole, rgpdAcceptedDate) 
+            VALUES (:uiid, :slug, :firstName, :lastName, :email, :password, :isActivated, :isBanned, :isDeleted, :token, :createdAt, :idRole, :rgpdAcceptedDate)';
 
             $req = $this->DBuser->prepare($query);
             $req->execute([
                 'uiid' => $user->getUiid(),
+                'slug' => $user->getSlug(),
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
                 'email' => $user->getEmail(),

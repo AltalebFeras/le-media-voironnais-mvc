@@ -578,6 +578,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `idUser` int NOT NULL AUTO_INCREMENT,
   `uiid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `slug` varchar(180) COLLATE utf8mb4_general_ci NOT NULL,
   `idRole` int NOT NULL,
   `firstName` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `lastName` varchar(55) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -604,6 +605,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`idUser`),
   UNIQUE KEY `UQ_idUser` (`idUser`),
   UNIQUE KEY `uiid` (`uiid`),
+  UNIQUE KEY `slug` (`slug`),
   UNIQUE KEY `UQ_email` (`email`(191)),
   UNIQUE KEY `authCode` (`authCode`),
   UNIQUE KEY `authCode_2` (`authCode`),
@@ -611,7 +613,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_user_email` (`email`(250)),
   KEY `idx_user_online` (`isOnline`),
   KEY `idx_user_last_seen` (`lastSeen`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 

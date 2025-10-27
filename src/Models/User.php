@@ -32,6 +32,7 @@ class User
     private DateTime|string|null $passwordResetAt;
     private string $roleName;
     private string $uiid;
+    private string $slug;
 
     use Hydration;
 
@@ -718,6 +719,26 @@ class User
     public function setUiid(string $uiid): self
     {
         $this->uiid = $uiid;
+        return $this;
+    }
+
+    /**
+     * Get the value of slug
+     */ 
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set the value of slug
+     *
+     * @return  self
+     */ 
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
         return $this;
     }
 }
