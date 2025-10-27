@@ -11,11 +11,6 @@
         <?php endif; ?>
       </div>
 
-      <!-- Search Form (always visible on desktop) -->
-      <form class="navbar-search" action="<?= HOME_URL . 'admin/recherche' ?>" method="GET">
-        <input type="search" name="q" placeholder="Rechercher..." aria-label="Rechercher" />
-      </form>
-
       <div class="burger" id="burger-menu">
         <span></span>
         <span></span>

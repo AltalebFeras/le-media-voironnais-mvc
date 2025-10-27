@@ -183,6 +183,13 @@ switch ($route) {
         }
         break;
 
+        case HOME_URL . 'recherche':
+            if ($method === 'POST') {
+                $homeController->search();
+            } else {
+                $homeController->page404();
+            }
+            break;
 
     case HOME_URL . 'dashboard':
         if ($connectionSecured) {

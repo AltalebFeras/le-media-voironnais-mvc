@@ -12,10 +12,7 @@
         <?php endif; ?>
       </div>
 
-      <!-- Search Form (always visible on desktop) -->
-      <form class="navbar-search" action="<?= HOME_URL . 'recherche' ?>" method="GET">
-        <input type="search" name="q" placeholder="Rechercher..." aria-label="Rechercher" />
-      </form>
+
 
       <div class="burger" id="burger-menu">
         <span></span>
@@ -25,6 +22,15 @@
 
       <ul class="nav-links" id="nav-links">
         <!-- Public Links -->
+        <!-- Search Form for mobile -->
+        <li class="nav-item-mobile-search">
+          <div class="nav-item">
+            <form class="search-form" action="<?= HOME_URL . 'recherche' ?>" method="GET">
+              <input type="search" name="q" placeholder="Rechercher..." aria-label="Rechercher" />
+            </form>
+          </div>
+        </li>
+
         <li><a class="link nav-item" href="<?= HOME_URL . 'actus' ?>">
             <span class="material-icons">article</span>
             <span class="nav-text">Actus</span>
@@ -33,6 +39,7 @@
             <span class="material-icons">event</span>
             <span class="nav-text">Événements</span>
           </a></li>
+
 
         <?php if (isset($_SESSION['connected'])) : ?>
           <!-- Connected User Links -->
