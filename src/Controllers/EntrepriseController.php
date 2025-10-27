@@ -640,7 +640,7 @@ class EntrepriseController extends AbstractController
             }
 
             $this->render('entreprise/entreprise_recherche_detail', [
-                'entreprise' => $entreprise,
+                'entreprise' => $entreprise
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
