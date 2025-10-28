@@ -550,6 +550,23 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+        // mes inscriptions routes
+    case HOME_URL . 'mes_inscriptions':
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                if (isset($_POST['action']) && $_POST['action'] === 'cancel_inscription') {
+                    $evenementController->cancelInscription();
+                } else {
+                    $homeController->page404();
+                }
+            } else {
+                $evenementController->displayAllUserInscriptions();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
 
     // Notifications routes
     case HOME_URL . 'notifications':

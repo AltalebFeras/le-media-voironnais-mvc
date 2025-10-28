@@ -915,4 +915,61 @@ class EvenementRepository
 
         return (int)$stmt->fetchColumn();
     }  
+
+    /**
+     * Get all events user is inscribed for with pagination
+     */
+    public function getUserInscriptions(int $idUser, int $currentPage = 1, int $itemsPerPage = 12): array
+    {
+        try {
+            $offset = max(0, ($currentPage - 1) * $itemsPerPage);
+            
+            $query = "SELECT e.*, v.ville_nom_reel, v.ville_slug, 
+                      ec.name as category_name, ec.slug as category_slug,
+                      ep.status, ep.joinedAt, ep.approvedAt,
+                      u.firstName as creator_firstName, u.lastName as creator_lastName
+                      FROM event_participant ep
+                      INNER JOIN evenement e ON ep.idEvenement = e.idEvenement
+                      LEFT JOIN ville v ON e.idVille = v.idVille
+                      LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
+                      LEFT JOIN user u ON e.idUser = u.idUser
+                      WHERE ep.idUser = :idUser 
+                      AND e.isDeleted = 0
+                      AND ep.status IN ('inscrit', 'liste_attente')
+                      ORDER BY e.startDate DESC
+                      LIMIT :offset, :itemsPerPage";
+            
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->bindValue(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            throw new Exception("Error fetching user registrations: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Count user's event inscriptions
+     */
+    public function countUserInscriptions(int $idUser): int
+    {
+        try {
+            $query = "SELECT COUNT(*) 
+                      FROM event_participant ep
+                      INNER JOIN evenement e ON ep.idEvenement = e.idEvenement
+                      WHERE ep.idUser = :idUser 
+                      AND e.isDeleted = 0
+                      AND ep.status IN ('inscrit', 'liste_attente')";
+
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['idUser' => $idUser]);
+            
+            return (int)$stmt->fetchColumn();
+        } catch (Exception $e) {
+            throw new Exception("Error counting user inscriptions: " . $e->getMessage());
+        }
+    }
 }

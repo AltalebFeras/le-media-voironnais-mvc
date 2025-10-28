@@ -1234,4 +1234,32 @@ class EvenementController extends AbstractController
             $this->redirect('mes_favoris', ['error' => 'true']);
         }
     }
+
+    /**
+     * Display user's event inscriptions
+     */
+    public function displayAllUserInscriptions(): void
+    {
+        try {
+            $idUser = $_SESSION['idUser'];
+            
+            $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+            $itemsPerPage = 12;
+
+            $inscriptions = $this->repo->getUserInscriptions($idUser, $currentPage, $itemsPerPage);
+            $totalInscriptions = $this->repo->countUserInscriptions($idUser);
+            $totalPages = (int)ceil($totalInscriptions / $itemsPerPage);
+
+            $this->render('evenement/mes_inscriptions', [
+                'inscriptions' => $inscriptions,
+                'title' => 'Mes inscriptions',
+                'totalInscriptions' => $totalInscriptions,
+                'currentPage' => $currentPage,
+                'totalPages' => $totalPages
+            ]);
+        } catch (Exception $e) {
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect('dashboard', ['error' => 'true']);
+        }
+    }
 }

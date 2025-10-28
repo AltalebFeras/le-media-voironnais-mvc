@@ -93,6 +93,10 @@
                 <span class="material-icons">favorite</span>
                 <span>Mes Favoris</span>
               </a>
+              <a class="nav-dropdown-item" href="<?= HOME_URL . 'mes_inscriptions' ?>">
+                <span class="material-icons">event_available</span>
+                <span>Mes Inscriptions</span>
+              </a>
               <div class="nav-dropdown-divider"></div>
               <a class="nav-dropdown-item" href="<?= HOME_URL . 'deconnexion' ?>">
                 <span class="material-icons">logout</span>
