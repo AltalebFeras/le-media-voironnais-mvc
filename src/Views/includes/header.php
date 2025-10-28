@@ -12,6 +12,9 @@
 
   <?php
   // SEO Variables - can be set from individual pages
+  if (isset($title) && strlen($title) > 60) {
+    $title = substr($title, 0, 57) . '...';
+  }
   $title = !empty($title) ? (ucfirst($title) . ' | Le Media Voironnais') : 'Le Media Voironnais';
   $description ??= 'Le Media Voironnais - Votre source d\'information locale à Voiron';
   $keywords ??= 'media, voiron, actualités, information locale, voironnais';
@@ -24,9 +27,9 @@
   $locale ??= 'fr_FR';
   $siteName ??= 'Le Media Voironnais';
   ?>
-
+   
   <title><?= $title ?></title>
-
+  <meta name="title" content="<?= htmlspecialchars($title) ?>">
   <!-- SEO Meta Tags -->
   <meta name="description" content="<?= htmlspecialchars($description) ?>">
   <meta name="keywords" content="<?= htmlspecialchars($keywords) ?>">

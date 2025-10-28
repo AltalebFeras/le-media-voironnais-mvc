@@ -686,7 +686,7 @@ class EvenementController extends AbstractController
                 }
             }
             $ville = $this->villeRepo->getVilleById($evenement['idVille']);
-            
+
             // Verify that the ville_slug matches
             if ($ville['ville_slug'] !== $ville_slug) {
                 throw new Exception("L'événement demandé n'existe pas");
@@ -727,10 +727,11 @@ class EvenementController extends AbstractController
                 'telegram' => "https://t.me/share/url?url={$shareUrl}&text=%F0%9F%8E%89%20{$shareTitle}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%E2%9C%A8%20{$shareDesc}",
                 'email' => "mailto:?subject={$shareTitle}&body=%F0%9F%8E%89%20Bonjour%2C%0A%0A{$shareDesc}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%0A👉%20{$shareUrl}"
             ];
+            
             $this->render('evenement/evenement_publique_detail', [
                 'evenement' => $evenement,
                 'ville' => $ville,
-                'title' => $evenement['title'],
+                'title' =>  $evenement['title'] . ' | ' . $evenement['ville_nom_reel'] .  ' | ' . $evenement['category_name'],
                 'eventImages' => $images,
                 'shareTable' => $shareTable,
                 'isOwner' => $isOwner ?? false,
@@ -1233,5 +1234,4 @@ class EvenementController extends AbstractController
             $this->redirect('mes_favoris', ['error' => 'true']);
         }
     }
-
 }
