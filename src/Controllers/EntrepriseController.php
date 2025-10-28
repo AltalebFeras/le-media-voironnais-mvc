@@ -650,7 +650,15 @@ class EntrepriseController extends AbstractController
 
     public function listPublicEntreprises(): void
     {
-        $entreprises = $this->repo->getListPublicEntreprises();
-        $this->render('entreprise/entreprise_list', ['entreprises' => $entreprises]);
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $itemsPerPage = 2; // Nombre d'entreprises par page
+        $offset = ($currentPage - 1) * $itemsPerPage;
+
+
+        $entreprises = $this->repo->getListPublicEntreprises($offset, $itemsPerPage);
+        $totalEntreprises = $this->repo->countPublicEntreprises();
+        $totalPages = (int)ceil($totalEntreprises / $itemsPerPage);
+        $this->render('entreprise/entreprise_list', 
+        ['entreprises' => $entreprises, 'currentPage' => $currentPage, 'totalPages' => $totalPages, 'title' => 'Annuaire des entreprises', 'description' => 'Découvrez toutes les entreprises partenaires sur Le Média Voironnais']);
     }
 }
