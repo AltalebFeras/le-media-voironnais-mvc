@@ -1,7 +1,7 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 <main>
-  <h1>Connexion</h1>
+  <h1>Connexijjjjjjjjjjjon</h1>
   <p>Connectez-vous pour accéder à votre espace personnel sur Le Media Voironnais.<br>
   Créez, gérez vos événements, associations, entreprises et discutez avec la communauté locale !</p>
   <!-- Alert Messages -->
