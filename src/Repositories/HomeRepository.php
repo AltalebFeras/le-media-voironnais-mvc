@@ -91,7 +91,7 @@ class HomeRepository
         }
     }
 
-    public function getCityBySlug(string $slug): ?array
+    public function getVilleBySlug(string $slug): ?array
     {
         try {
             $sql = "SELECT * FROM ville WHERE ville_slug = :slug LIMIT 1";
@@ -105,7 +105,7 @@ class HomeRepository
         }
     }
 
-    public function getEventsByCity(int $villeId, int $limit = 10): array
+    public function getEventsByVille(int $villeId, int $limit = 10): array
     {
         try {
             $sql = "SELECT e.*, u.firstName, u.lastName, v.ville_slug, v.ville_nom_reel, c.slug as category_slug FROM evenement e 
@@ -124,7 +124,7 @@ class HomeRepository
         }
     }
 
-    public function getEntreprisesByCity(int $villeId, int $limit = 10): array
+    public function getEntreprisesByVille(int $villeId, int $limit = 10): array
     {
         try {
             $sql = "SELECT * FROM entreprise WHERE idVille = :villeId AND isActive = 1 AND isDeleted = 0 ORDER BY name ASC LIMIT :limit";
@@ -138,7 +138,7 @@ class HomeRepository
         }
     }
 
-    public function getAssociationsByCity(int $villeId, int $limit = 10): array
+    public function getAssociationsByVille(int $villeId, int $limit = 10): array
     {
         try {
             $sql = "SELECT * FROM association WHERE idVille = :villeId AND isActive = 1 AND isDeleted = 0 ORDER BY name ASC LIMIT :limit";
@@ -152,17 +152,30 @@ class HomeRepository
         }
     }
 
-    public function getAllCities(int $limit = 100): array
+    public function getAllVilles(int $itemsPerPage, int $offset): array
     {
         try {
             $sql = "SELECT ville_nom as name, ville_slug as slug, ville_code_postal as code_postal, ville_population_2012 as population 
-                    FROM ville ORDER BY ville_nom ASC LIMIT :limit";
+                    FROM ville ORDER BY ville_nom ASC LIMIT :limit OFFSET :offset";
             $stmt = $this->DB->prepare($sql);
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $itemsPerPage, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [];
+        }
+    }
+    public function getTotalVillesCount(): int
+    {
+        try {
+            $sql = "SELECT COUNT(*) as total FROM ville";
+            $stmt = $this->DB->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ? (int)$result['total'] : 0;
+        } catch (PDOException $e) {
+            return 0;
         }
     }
 }

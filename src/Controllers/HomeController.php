@@ -59,41 +59,41 @@ class HomeController extends AbstractController
     public function search(): void
     {
         header('Content-Type: application/json');
-        
+
         // // Verify CSRF token for security
         // if (!$this->verifyCsrfToken($_POST['csrf_token'] ?? '')) {
         //     echo json_encode(['error' => 'Token CSRF invalide', 'results' => []]);
         //     return;
         // }
-        
+
         // Strict input validation
         if (!isset($_POST['q'])) {
             echo json_encode(['error' => 'Paramètre de recherche manquant', 'results' => []]);
             return;
         }
-        
+
         $query = trim($_POST['q']);
-        
+
         // Validate query length (minimum 3 characters, maximum 100)
         if (strlen($query) < 3) {
             echo json_encode(['error' => 'La recherche doit contenir au moins 3 caractères', 'results' => []]);
             return;
         }
-        
+
         if (strlen($query) > 100) {
             echo json_encode(['error' => 'La recherche ne peut pas dépasser 100 caractères', 'results' => []]);
             return;
         }
-        
+
         // Sanitize input - remove special characters that could be harmful
         if (!preg_match('/^[a-zA-Z0-9àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝŸ\s\-\'\.]+$/u', $query)) {
             echo json_encode(['error' => 'Caractères non autorisés dans la recherche', 'results' => []]);
             return;
         }
-        
+
         try {
             $results = [];
-            
+
             // Search users
             $users = $this->homeRepository->searchUsers($query);
             foreach ($users as $user) {
@@ -104,7 +104,7 @@ class HomeController extends AbstractController
                     'url' => HOME_URL . 'profil/' . htmlspecialchars($user['slug'], ENT_QUOTES, 'UTF-8')
                 ];
             }
-            
+
             // Search events
             $events = $this->homeRepository->searchEvents($query);
             foreach ($events as $event) {
@@ -117,7 +117,7 @@ class HomeController extends AbstractController
                     $eventUrl .= htmlspecialchars($event['category_slug'], ENT_QUOTES, 'UTF-8') . '/';
                 }
                 $eventUrl .= htmlspecialchars($event['slug'], ENT_QUOTES, 'UTF-8');
-                
+
                 $results[] = [
                     'type' => 'evenement',
                     'title' => htmlspecialchars($event['title'], ENT_QUOTES, 'UTF-8'),
@@ -125,7 +125,7 @@ class HomeController extends AbstractController
                     'url' => $eventUrl
                 ];
             }
-            
+
             // Search enterprises
             $entreprises = $this->homeRepository->searchEntreprises($query);
             foreach ($entreprises as $entreprise) {
@@ -136,7 +136,7 @@ class HomeController extends AbstractController
                     'url' => HOME_URL . 'entreprises/' . htmlspecialchars($entreprise['slug'], ENT_QUOTES, 'UTF-8')
                 ];
             }
-            
+
             // Search associations
             $associations = $this->homeRepository->searchAssociations($query);
             foreach ($associations as $association) {
@@ -147,7 +147,7 @@ class HomeController extends AbstractController
                     'url' => HOME_URL . 'associations/' . htmlspecialchars($association['slug'], ENT_QUOTES, 'UTF-8')
                 ];
             }
-            
+
             // Search villes
             $villes = $this->homeRepository->searchVilles($query);
             foreach ($villes as $ville) {
@@ -159,28 +159,27 @@ class HomeController extends AbstractController
                     'url' => HOME_URL . 'ville/' . htmlspecialchars($ville['slug'], ENT_QUOTES, 'UTF-8')
                 ];
             }
-            
+
             echo json_encode(['results' => $results]);
-            
         } catch (Exception $e) {
             echo json_encode(['error' => 'Erreur lors de la recherche', 'results' => []]);
         }
     }
 
-    public function displayCityDetails(string $citySlug): void
+    public function displayVilleDetails(string $villeSlug): void
     {
         try {
-            $ville = $this->homeRepository->getCityBySlug($citySlug);
-            
+            $ville = $this->homeRepository->getVilleBySlug($villeSlug);
+
             if (!$ville) {
                 $this->page404();
                 return;
             }
 
             // Get city-related data
-            $events = $this->homeRepository->getEventsByCity($ville['idVille']);
-            $entreprises = $this->homeRepository->getEntreprisesByCity($ville['idVille']);
-            $associations = $this->homeRepository->getAssociationsByCity($ville['idVille']);
+            $events = $this->homeRepository->getEventsByVille($ville['idVille']);
+            $entreprises = $this->homeRepository->getEntreprisesByVille($ville['idVille']);
+            $associations = $this->homeRepository->getAssociationsByVille($ville['idVille']);
             $this->render('villes/ville_publique_detail', [
                 'ville' => $ville,
                 'events' => $events,
@@ -192,14 +191,28 @@ class HomeController extends AbstractController
         }
     }
 
-    public function listCities(): void
+    public function listVilles(): void
     {
         try {
-            $cities = $this->homeRepository->getAllCities();
-            $this->render('villes/ville_list', ['cities' => $cities]);
+            $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+            $itemsPerPage = 12; // Nombre de Villes par page
+            $offset = ($currentPage - 1) * $itemsPerPage;
+            $villes = $this->homeRepository->getAllVilles($itemsPerPage, $offset);
+            $totalVilles = $this->homeRepository->getTotalVillesCount();
+            $totalPages = (int)ceil($totalVilles / $itemsPerPage);
+            $this->render(
+                'villes/villes_list',
+                [
+                    'villes' => $villes,
+                    'totalPages' => $totalPages,
+                    'currentPage' => $currentPage,
+                    'itemsPerPage' => $itemsPerPage,
+                    'title' => 'Toutes les villes',
+                    'description' => 'Découvrez toutes les villes disponibles sur Le Média Voironnais'
+                ]
+            );
         } catch (Exception $e) {
             $this->page404();
         }
     }
-
 }

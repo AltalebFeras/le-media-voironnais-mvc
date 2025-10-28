@@ -57,7 +57,7 @@
               <span class="material-icons">groups</span>
               <span>Associations</span>
             </a>
-            <a class="nav-dropdown-item" href="<?= HOME_URL . 'ville' ?>">
+            <a class="nav-dropdown-item" href="<?= HOME_URL . 'villes' ?>">
               <span class="material-icons">location_city</span>
               <span>Villes</span>
             </a>

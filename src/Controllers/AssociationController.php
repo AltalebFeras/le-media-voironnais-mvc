@@ -544,7 +544,7 @@ class AssociationController extends AbstractController
             $itemsPerPage = 12; // Nombre d'entreprises par page
             $offset = ($currentPage - 1) * $itemsPerPage;
             $associations = $this->repo->getAllActiveAssociations($offset, $itemsPerPage);
-             $totalEntreprises = $this->repo->countAllActiveAssociations();
+            $totalEntreprises = $this->repo->countAllActiveAssociations();
             $totalPages = (int)ceil($totalEntreprises / $itemsPerPage);
             $this->render('association/assoc_list', [
                 'associations' => $associations,

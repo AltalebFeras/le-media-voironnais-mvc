@@ -246,21 +246,16 @@ switch ($route) {
         }
         break;
 
-    case $part0 === 'ville':
-        if ($part1 && !$part2) {
-            $homeController->displayCityDetails($part1);
+    case $part0 === 'villes':
+        if ($method === 'POST') {
+            $homeController->getVilles();
+        } elseif ($part1 && !$part2) {
+            $homeController->displayVilleDetails($part1);
         } else {
-            $homeController->listCities();
+            $homeController->listVilles();
         }
         break;
 
-    case HOME_URL . 'villes':
-        if ($method === 'POST') {
-            $homeController->getVilles();
-        } else {
-            $homeController->displayAuth();
-        }
-        break;
     // Public routes End
 
     // User connected routes Start
