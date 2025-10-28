@@ -1,6 +1,5 @@
 <?php
 
-use GuzzleHttp\Psr7\Message;
 use src\Controllers\AdminController;
 use src\Controllers\ContactController;
 use src\Controllers\EvenementController;
@@ -555,7 +554,7 @@ switch ($route) {
         if ($connectionSecured) {
             if ($method === 'POST') {
                 if (isset($_POST['action']) && $_POST['action'] === 'cancel_inscription') {
-                    $evenementController->cancelInscription();
+                    // $evenementController->cancelInscription();
                 } else {
                     $homeController->page404();
                 }

@@ -200,6 +200,9 @@ class HomeController extends AbstractController
             $villes = $this->homeRepository->getAllVilles($itemsPerPage, $offset);
             $totalVilles = $this->homeRepository->getTotalVillesCount();
             $totalPages = (int)ceil($totalVilles / $itemsPerPage);
+            if ($currentPage > $totalPages && $totalPages > 0) {
+                throw new Exception("Page not found");
+            }
             $this->render(
                 'villes/villes_list',
                 [
@@ -212,7 +215,8 @@ class HomeController extends AbstractController
                 ]
             );
         } catch (Exception $e) {
-            $this->page404();
+            $_SESSION['error'] = $e->getMessage();
+            $this->redirect(HOME_URL, ['error' => 'true']);
         }
     }
 }
