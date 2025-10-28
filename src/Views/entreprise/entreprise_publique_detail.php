@@ -12,7 +12,7 @@ $description = $entreprise['description'] ? substr(strip_tags($entreprise['descr
             <!-- Enterprise Banner -->
             <?php if ($entreprise['bannerPath']): ?>
                 <div class="enterprise-banner mb-4">
-                    <img src="<?= DOMAIN . HOME_URL . htmlspecialchars($entreprise['bannerPath']) ?>" 
+                    <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($entreprise['bannerPath']) ?>" 
                          alt="Bannière <?= htmlspecialchars($entreprise['name']) ?>" 
                          class="img-fluid w-100" 
                          style="height: 300px; object-fit: cover; border-radius: 8px;">
@@ -25,7 +25,7 @@ $description = $entreprise['description'] ? substr(strip_tags($entreprise['descr
                     <div class="card shadow-sm mb-4">
                         <div class="card-body">
                             <div class="d-flex align-items-start mb-4">
-                                <img src="<?= DOMAIN . HOME_URL . htmlspecialchars($entreprise['logoPath']) ?>" 
+                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($entreprise['logoPath']) ?>" 
                                      alt="Logo <?= htmlspecialchars($entreprise['name']) ?>" 
                                      class="rounded me-4" 
                                      style="width: 100px; height: 100px; object-fit: cover;">
@@ -172,7 +172,7 @@ $description = $entreprise['description'] ? substr(strip_tags($entreprise['descr
                                         <div class="col-md-6 mb-3">
                                             <div class="card h-100">
                                                 <?php if ($evenement['evenement_bannerPath']): ?>
-                                                    <img src="<?= DOMAIN . HOME_URL . htmlspecialchars($evenement['evenement_bannerPath']) ?>" 
+                                                    <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($evenement['evenement_bannerPath']) ?>" 
                                                          class="card-img-top" 
                                                          alt="<?= htmlspecialchars($evenement['evenement_title']) ?>"
                                                          style="height: 150px; object-fit: cover;">

@@ -147,7 +147,7 @@ class UserController extends AbstractController
 
 
         $mail = new Mail();
-        $activationLink = DOMAIN . HOME_URL . 'activer_mon_compte';
+        $activationLink = BASE_URL . HOME_URL . 'activer_mon_compte';
         $subject = 'Activation de votre compte';
         $body = "Veuillez cliquer sur le bouton ci-dessous pour activer votre compte :<br>";
         $body .= "<a href='$activationLink?token=$activationToken' style='display: inline-block; padding: 10px 20px; font-size: 16px; color: #ffffff; background-color: #007BFF; text-decoration: none; border-radius: 5px;'>Activer mon compte</a><br><br>";
@@ -256,8 +256,8 @@ class UserController extends AbstractController
             $_SESSION['lastName'] = $user->getLastName();
             $_SESSION['email'] = $user->getEmail();
             $_SESSION['phone'] = $user->getPhone();
-            $_SESSION['avatarPath'] = $user->getAvatarPath() ?? DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
-            $_SESSION['bannerPath'] = $user->getBannerPath() ?? DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.jpg';
+            $_SESSION['avatarPath'] = $user->getAvatarPath() ?? BASE_URL . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
+            $_SESSION['bannerPath'] = $user->getBannerPath() ?? BASE_URL . HOME_URL . 'assets/images/uploads/banners/default_banner.jpg';
             $_SESSION['bio'] = $user->getBio();
             $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
             $_SESSION['isActivated'] = $user->getIsActivated();
@@ -372,7 +372,7 @@ class UserController extends AbstractController
             $token = bin2hex(random_bytes(16));
 
             // send password reset email (same as before)
-            $resetLink = DOMAIN . HOME_URL . "reinit_mon_mot_de_passe?token=$token";
+            $resetLink = BASE_URL . HOME_URL . "reinit_mon_mot_de_passe?token=$token";
             $mail = new Mail();
             $subject = 'Réinitialisation de votre mot de passe';
             $body = "Veuillez cliquer sur le lien ci-dessous pour réinitialiser votre mot de passe:<br>";
@@ -832,12 +832,12 @@ class UserController extends AbstractController
 
             // Delete old profile picture if not default
             if ($currentPicturePath && strpos($currentPicturePath, HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') === false) {
-                $oldImagePath = str_replace(DOMAIN . HOME_URL, '', $currentPicturePath);
+                $oldImagePath = str_replace(BASE_URL . HOME_URL, '', $currentPicturePath);
                 $helper->handleDeleteImage($oldImagePath);
             }
 
             // Build new profile picture URL
-            $newProfilePicturePath = DOMAIN . HOME_URL . $avatarPath;
+            $newProfilePicturePath = BASE_URL . HOME_URL . $avatarPath;
 
             // Update database
             $this->repo->updateProfilePicture($idUser, $newProfilePicturePath);
@@ -864,11 +864,11 @@ class UserController extends AbstractController
 
             // Delete file from server using Helper
             $helper = new Helper();
-            $oldImagePath = str_replace(DOMAIN . HOME_URL, '', $currentPicturePath);
+            $oldImagePath = str_replace(BASE_URL . HOME_URL, '', $currentPicturePath);
             $helper->handleDeleteImage($oldImagePath);
 
             // Set to default profile picture
-            $defaultProfilePicturePath = DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
+            $defaultProfilePicturePath = BASE_URL . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png';
             $this->repo->updateProfilePicture($idUser, $defaultProfilePicturePath);
             $_SESSION['avatarPath'] = $defaultProfilePicturePath;
 
@@ -892,12 +892,12 @@ class UserController extends AbstractController
 
             // Delete old banner if not default
             if ($currentBannerPath && strpos($currentBannerPath, HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') === false) {
-                $oldImagePath = str_replace(DOMAIN . HOME_URL, '', $currentBannerPath);
+                $oldImagePath = str_replace(BASE_URL . HOME_URL, '', $currentBannerPath);
                 $helper->handleDeleteImage($oldImagePath);
             }
 
             // Build new banner URL
-            $newBannerPath = DOMAIN . HOME_URL . $bannerPath;
+            $newBannerPath = BASE_URL . HOME_URL . $bannerPath;
 
             // Update database
             $this->repo->updateBanner($idUser, $newBannerPath);
@@ -924,11 +924,11 @@ class UserController extends AbstractController
 
             // Delete file from server using Helper
             $helper = new Helper();
-            $oldImagePath = str_replace(DOMAIN . HOME_URL, '', $currentBannerPath);
+            $oldImagePath = str_replace(BASE_URL . HOME_URL, '', $currentBannerPath);
             $helper->handleDeleteImage($oldImagePath);
 
             // Set to default banner
-            $defaultBannerPath = DOMAIN . HOME_URL . 'assets/images/uploads/banners/default_banner.jpg';
+            $defaultBannerPath = BASE_URL . HOME_URL . 'assets/images/uploads/banners/default_banner.jpg';
             $this->repo->updateBanner($idUser, $defaultBannerPath);
             $_SESSION['bannerPath'] = $defaultBannerPath;
 

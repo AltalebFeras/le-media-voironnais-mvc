@@ -32,7 +32,7 @@
 					$last = $user['lastName'] ?? '';
 					$email = $user['email'] ?? '';
 					$created = $user['createdAt'] ?? '';
-					$avatar = !empty($user['avatarPath']) ? $user['avatarPath'] : (DOMAIN . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png');
+					$avatar = !empty($user['avatarPath']) ? $user['avatarPath'] : (BASE_URL . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png');
 					$online = !empty($user['isOnline']) && ((int)$user['isOnline'] === 1);
 					// initials fallback
 					$initials = '';

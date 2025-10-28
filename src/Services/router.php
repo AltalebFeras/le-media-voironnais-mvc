@@ -30,7 +30,7 @@ $connectionSecuredAdmin = isset($_SESSION['connectedAdmin']) && $_SESSION['role'
 $connectionSecuredSuperAdmin = isset($_SESSION['connectedSuperAdmin']) && $_SESSION['role'] === 'super_admin' && ConfigRouter::checkConnection();
 
 $composedRoute = ConfigRouter::getComposedRoute($route);
-// url = DOMAIN . HOME_URL part0/part1/part2/part3/part4/part5
+// url = BASE_URL . HOME_URL part0/part1/part2/part3/part4/part5
 //['part0' => 'evenements', 'part1' => 'ville-slug', 'part2' => 'cate-slug', 'part3' => 'inscription']
 $part0 = $composedRoute[0] ?? null;
 $part1 = $composedRoute[1] ?? null;

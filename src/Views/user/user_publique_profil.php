@@ -21,7 +21,7 @@ $description = $user['bio'] ?? 'Profil utilisateur sur Le Média Voironnais';
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-md-3 text-center">
-                            <img src="<?= $user['avatarPath'] ?? DOMAIN . HOME_URL . 'assets/images/default-avatar.png' ?>" 
+                            <img src="<?= $user['avatarPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-avatar.png' ?>" 
                                  alt="Avatar de <?= htmlspecialchars($user['firstName']) ?>" 
                                  class="rounded-circle img-fluid" 
                                  style="width: 150px; height: 150px; object-fit: cover;">
@@ -116,7 +116,7 @@ $description = $user['bio'] ?? 'Profil utilisateur sur Le Média Voironnais';
                             <div class="card-body">
                                 <?php foreach ($userEvents as $event): ?>
                                     <div class="d-flex align-items-center mb-3">
-                                        <img src="<?= $event['bannerPath'] ?? DOMAIN . HOME_URL . 'assets/images/default-event.png' ?>" 
+                                        <img src="<?= $event['bannerPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-event.png' ?>" 
                                              alt="<?= htmlspecialchars($event['title']) ?>" 
                                              class="rounded me-3" 
                                              style="width: 50px; height: 50px; object-fit: cover;">
@@ -149,7 +149,7 @@ $description = $user['bio'] ?? 'Profil utilisateur sur Le Média Voironnais';
                             <div class="card-body">
                                 <?php foreach ($userAssociations as $association): ?>
                                     <div class="d-flex align-items-center mb-3">
-                                        <img src="<?= $association['logoPath'] ?? DOMAIN . HOME_URL . 'assets/images/default-association.png' ?>" 
+                                        <img src="<?= $association['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-association.png' ?>" 
                                              alt="<?= htmlspecialchars($association['name']) ?>" 
                                              class="rounded me-3" 
                                              style="width: 50px; height: 50px; object-fit: cover;">

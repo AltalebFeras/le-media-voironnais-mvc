@@ -21,7 +21,7 @@ $description = 'Découvrez toutes les entreprises partenaires sur Le Média Voir
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
                                     <div class="d-flex align-items-start mb-3">
-                                        <img src="<?= DOMAIN . HOME_URL . htmlspecialchars($entreprise['logoPath']) ?>" 
+                                        <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($entreprise['logoPath']) ?>" 
                                              alt="Logo <?= htmlspecialchars($entreprise['name']) ?>" 
                                              class="rounded me-3" 
                                              style="width: 60px; height: 60px; object-fit: cover;">

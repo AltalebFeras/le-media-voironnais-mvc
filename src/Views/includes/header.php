@@ -44,5 +44,9 @@
   
   <!-- jQuery -->
   <script src="<?= HOME_URL . 'assets/javascript/jquery/dist/jquery.min.js' ?>"></script>
-  
+   <!-- Make HOME_URL available to JavaScript -->
+   <script>
+    window.HOME_URL = '<?= HOME_URL ?>';
+    window.BASE_URL = '<?= BASE_URL ?>';
+  </script>
   <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/global.css' ?>">

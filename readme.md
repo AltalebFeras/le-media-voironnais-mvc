@@ -142,7 +142,7 @@ Plateforme web communautaire pour la région de Voiron, permettant la gestion d'
    composer install
    ```
 3. Créer un fichier de configuration à partir de l'exemple :
-   - Copier `config_example.php` → `config.php` et adapter les constantes (DB_HOST, DB_NAME, DB_USER, DB_PWD, DOMAIN, HOME_URL, SEL, ADMIN_EMAIL, etc.).
+   - Copier `config_example.php` → `config.php` et adapter les constantes (DB_HOST, DB_NAME, DB_USER, DB_PWD, BASE_URL, HOME_URL, SEL, ADMIN_EMAIL, etc.).
 4. Importer la base de données :
    - Utiliser `src/Migrations/db.sql` ou `src/Migrations/erd.sql` selon vos besoins pour créer les tables et insérer des données factices.
    - Exemple : `mysql -u user -p le-media-voironnais < src/Migrations/db.sql`
@@ -151,7 +151,7 @@ Plateforme web communautaire pour la région de Voiron, permettant la gestion d'
 
 - `config.php` doit définir au minimum :
   - DB_HOST, DB_NAME, DB_USER, DB_PWD
-  - DOMAIN (ex : <http://localhost>)
+  - BASE_URL (ex : <http://localhost>)
   - HOME_URL (chemin racine de l'app, ex : /)
   - SEL (chaîne utilisée comme "pepper" pour le hash des mots de passe)
   - ADMIN_EMAIL, ADMIN_SENDER_NAME

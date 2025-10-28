@@ -1559,3 +1559,72 @@ ul {
     top: 105px;
     right: 15px;
 }
+  .search-container {
+      position: relative;
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      max-height: 400px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .search-result-item {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-result-item:hover {
+      background-color: #f5f5f5;
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-result-image {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .search-result-content {
+      flex: 1;
+    }
+
+    .search-result-title {
+      font-weight: 500;
+      color: #333;
+    }
+
+    .search-result-subtitle {
+      font-size: 11px;
+      color: #999;
+    }
+
+    .search-result-type {
+      font-size: 12px;
+      color: #666;
+      text-transform: capitalize;
+    }
+
+    .search-error {
+      padding: 12px;
+      color: #dc3545;
+      font-size: 14px;
+      text-align: center;
+    }

@@ -711,7 +711,7 @@ class EvenementController extends AbstractController
             }
 
             // Generate share URLs for social media
-            $shareUrl = DOMAIN . HOME_URL . "evenements/{$ville_slug}/{$slug}";
+            $shareUrl = BASE_URL . HOME_URL . "evenements/{$ville_slug}/{$slug}";
             $shareTitle = urlencode($evenement['title']);
             $shareDesc = urlencode(substr($evenement['shortDescription'] ?? $evenement['description'], 0, 100) . '...');
             $shareDate = urlencode(date('d/m/Y H:i', strtotime($evenement['startDate'])));

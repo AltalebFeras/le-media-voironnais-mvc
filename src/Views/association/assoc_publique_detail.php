@@ -25,7 +25,7 @@ $description = $association['description'] ? substr(strip_tags($association['des
                     <div class="card shadow-sm mb-4">
                         <div class="card-body">
                             <div class="d-flex align-items-start mb-4">
-                                <img src="<?= $association['logoPath'] ?? DOMAIN . HOME_URL . 'assets/images/default-association.png' ?>" 
+                                <img src="<?= $association['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-association.png' ?>" 
                                      alt="Logo <?= htmlspecialchars($association['name']) ?>" 
                                      class="rounded me-4" 
                                      style="width: 100px; height: 100px; object-fit: cover;">
@@ -128,7 +128,7 @@ $description = $association['description'] ? substr(strip_tags($association['des
                                         <?php foreach (array_slice($association['members'], 0, 6) as $member): ?>
                                             <div class="col-md-4 mb-3">
                                                 <div class="d-flex align-items-center">
-                                                    <img src="<?= $member['avatarPath'] ?? DOMAIN . HOME_URL . 'assets/images/default-avatar.png' ?>" 
+                                                    <img src="<?= $member['avatarPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-avatar.png' ?>" 
                                                          alt="<?= htmlspecialchars($member['firstName']) ?>" 
                                                          class="rounded-circle me-3" 
                                                          style="width: 50px; height: 50px; object-fit: cover;">

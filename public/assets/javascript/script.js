@@ -645,3 +645,127 @@ $(document).ready(function() {
   }
 });
 
+ $(document).ready(function() {
+      let searchTimeout;
+
+      function setupSearch(inputId, resultsId) {
+        const $searchInput = $('#' + inputId);
+        const $searchResults = $('#' + resultsId);
+
+        if (!$searchInput.length || !$searchResults.length) return;
+
+        $searchInput.on('input', function() {
+          clearTimeout(searchTimeout);
+          const query = $(this).val().trim();
+
+          if (query.length < 3) {
+            $searchResults.hide();
+            return;
+          }
+
+          if (query.length > 100) {
+            $searchResults.html('<div class="search-error">La recherche ne peut pas dépasser 100 caractères</div>');
+            $searchResults.show();
+            return;
+          }
+
+          // Validate characters - Fixed regex pattern
+          const validPattern = /^[a-zA-Z0-9àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝŸ\s\-'\.]+$/u;
+          if (!validPattern.test(query)) {
+            $searchResults.html('<div class="search-error">Caractères non autorisés dans la recherche</div>');
+            $searchResults.show();
+            return;
+          }
+
+          searchTimeout = setTimeout(() => {
+            const formData = new FormData();
+            formData.append('q', query);
+            formData.append('csrf_token', $('input[name="csrf_token"]').val());
+
+            $.ajax({
+              url: window.HOME_URL + 'recherche',
+              type: 'POST',
+              data: formData,
+              processData: false,
+              contentType: false,
+              dataType: 'json',
+              success: function(data) {
+                if (data.error) {
+                  $searchResults.html('<div class="search-error">' + data.error + '</div>');
+                  $searchResults.show();
+                } else {
+                  displaySearchResults(data.results, $searchResults);
+                }
+              },
+              error: function(xhr, status, error) {
+                console.error('Search error:', error);
+                $searchResults.html('<div class="search-error">Erreur lors de la recherche</div>');
+                $searchResults.show();
+              }
+            });
+          }, 300);
+        });
+
+        // Hide results when clicking outside
+        $(document).on('click', function(event) {
+          if (!$searchInput.is(event.target) && !$searchResults.is(event.target) &&
+            $searchResults.has(event.target).length === 0) {
+            $searchResults.hide();
+          }
+        });
+      }
+
+      function displaySearchResults(results, $container) {
+        if (results.length === 0) {
+          $container.html('<div class="search-result-item">Aucun résultat trouvé</div>');
+          $container.show();
+          return;
+        }
+
+        const typeLabels = {
+          'user': 'Utilisateur',
+          'evenement': 'Événement',
+          'entreprise': 'Entreprise',
+          'association': 'Association',
+          'ville': 'Ville'
+        };
+
+        const resultsHtml = results.map(function(result) {
+          const imageHtml = result.image ?
+            '<img src="' + result.image + '" alt="' + result.title + '" class="search-result-image">' :
+            '<div class="search-result-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #666;">' +
+            (result.type === 'ville' ? '🏙️' :
+              result.type === 'user' ? '👤' :
+              result.type === 'evenement' ? '📅' :
+              result.type === 'entreprise' ? '🏢' : '🏛️') +
+            '</div>';
+
+          const subtitleHtml = result.subtitle ?
+            '<div class="search-result-subtitle">' + result.subtitle + '</div>' : '';
+
+          return '<div class="search-result-item" data-url="' + result.url + '">' +
+            imageHtml +
+            '<div class="search-result-content">' +
+            '<div class="search-result-title">' + result.title + '</div>' +
+            subtitleHtml +
+            '<div class="search-result-type">' + (typeLabels[result.type] || result.type) + '</div>' +
+            '</div>' +
+            '</div>';
+        }).join('');
+
+        $container.html(resultsHtml);
+        $container.show();
+
+        // Add click handlers to result items
+        $container.off('click', '.search-result-item').on('click', '.search-result-item', function(e) {
+          e.preventDefault();
+          const url = $(this).data('url');
+          if (url) {
+            window.location.href = url;
+          }
+        });
+      }
+
+      // Initialize search for mobile
+      setupSearch('search-input-mobile', 'search-results-mobile');
+    });

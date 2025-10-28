@@ -30,7 +30,7 @@
                     $address = $request['address'] ?? '';
                     $requestDate = $request['requestDate'] ?? '';
                     $createdAt = $request['createdAt'] ?? '';
-                    $logo = !empty($request['logoPath']) ? DOMAIN . HOME_URL . $request['logoPath'] : (DOMAIN . HOME_URL . 'assets/images/uploads/logos/default_logo.png');
+                    $logo = !empty($request['logoPath']) ? BASE_URL . HOME_URL . $request['logoPath'] : (BASE_URL . HOME_URL . 'assets/images/uploads/logos/default_logo.png');
                     ?>
                     <article class="card user-card" role="article" aria-labelledby="request-<?= $uiid; ?>">
                         <div class="user-header">

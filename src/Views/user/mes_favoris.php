@@ -30,7 +30,7 @@
                 <?php foreach ($favouriteEvents as $evenement): ?>
                     <div class="event-card">
                         <div class="event-image">
-                            <img src="<?= DOMAIN . HOME_URL . $evenement['bannerPath'] ?>" 
+                            <img src="<?= BASE_URL . HOME_URL . $evenement['bannerPath'] ?>" 
                                  alt="<?= htmlspecialchars($evenement['title']) ?>" 
                                  loading="lazy">
                             <div class="event-category">

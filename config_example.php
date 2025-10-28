@@ -26,8 +26,8 @@ if ($isLocal) {
     // Application secret / pepper — replace with a long random string
     define('SEL', 'replace_with_dev_pepper_string');
 
-    // Domain & base URL for links
-    define('DOMAIN', 'http://localhost');
+    // BASE_URL & base URL for links
+    define('BASE_URL', 'http://localhost');
     define('HOME_URL', '/');
 
     // reCAPTCHA keys (optional)
@@ -57,7 +57,7 @@ if ($isLocal) {
     // Application secret / pepper — use a secure random string
     define('SEL', 'replace_with_production_pepper');
 
-    define('DOMAIN', 'https://your-production-domain.tld');
+    define('BASE_URL', 'https://your-production-BASE_URL.tld');
     define('HOME_URL', '/');
 
     // reCAPTCHA production keys
@@ -70,9 +70,9 @@ if ($isLocal) {
     define('USERNAME', 'smtp_user');
     define('PASSWORD', 'smtp_password');
 
-    define('MAIL_DESTINATAIRE', 'contact@your-production-domain.tld');
+    define('MAIL_DESTINATAIRE', 'contact@your-production-BASE_URL.tld');
     define('SENDER', 'Le Media Voironnais');
-    define('ADMIN_EMAIL', 'admin@your-production-domain.tld');
+    define('ADMIN_EMAIL', 'admin@your-production-BASE_URL.tld');
     define('ADMIN_SENDER_NAME', 'Administrateur');
 }
 

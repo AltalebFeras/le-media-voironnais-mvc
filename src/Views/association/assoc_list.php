@@ -21,7 +21,7 @@ $description = 'Découvrez toutes les associations actives sur Le Média Voironn
                             <div class="card h-100 shadow-sm">
                                 <div class="card-body">
                                     <div class="d-flex align-items-start mb-3">
-                                        <img src="<?= DOMAIN . HOME_URL . htmlspecialchars($association['logoPath']) ?>" 
+                                        <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($association['logoPath']) ?>" 
                                              alt="Logo <?= htmlspecialchars($association['name']) ?>" 
                                              class="rounded me-3" 
                                              style="width: 60px; height: 60px; object-fit: cover;">

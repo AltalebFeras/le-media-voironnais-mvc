@@ -122,7 +122,7 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                             <div class="card-body">
                                 <?php foreach (array_slice($entreprises, 0, 5) as $entreprise): ?>
                                     <div class="d-flex align-items-center mb-3">
-                                        <img src="<?= $entreprise['logoPath'] ?? DOMAIN . HOME_URL . 'assets/images/default-company.png' ?>" 
+                                        <img src="<?= $entreprise['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-company.png' ?>" 
                                              alt="<?= htmlspecialchars($entreprise['name']) ?>" 
                                              class="rounded me-3" 
                                              style="width: 50px; height: 50px; object-fit: cover;">
@@ -159,7 +159,7 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                             <div class="card-body">
                                 <?php foreach (array_slice($associations, 0, 5) as $association): ?>
                                     <div class="d-flex align-items-center mb-3">
-                                        <img src="<?= $association['logoPath'] ?? DOMAIN . HOME_URL . 'assets/images/default-association.png' ?>" 
+                                        <img src="<?= $association['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-association.png' ?>" 
                                              alt="<?= htmlspecialchars($association['name']) ?>" 
                                              class="rounded me-3" 
                                              style="width: 50px; height: 50px; object-fit: cover;">

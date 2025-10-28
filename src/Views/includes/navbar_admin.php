@@ -4,7 +4,7 @@
     <nav class="navbar">
       <div class="logo">
         <a href="<?= HOME_URL ?>">
-          <img src="<?= DOMAIN . HOME_URL . 'assets/images/logo/logo.png' ?>" alt="Logo" height="60" />
+          <img src="<?= BASE_URL . HOME_URL . 'assets/images/logo/logo.png' ?>" alt="Logo" height="60" />
         </a>
         <?php if (isset($_SESSION['connectedAdmin'])) : ?>
           <?php include __DIR__ . '/notification_badge.php'; ?>

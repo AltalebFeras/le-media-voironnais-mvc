@@ -72,7 +72,7 @@ final class Mail
         $salutation = $this->getSalutation();
         $souhait = $this->getSouhait();
         $currentYear = date('Y');
-        $logoPath = DOMAIN . HOME_URL . 'assets/images/logo/logo.png';
+        $logoPath = BASE_URL . HOME_URL . 'assets/images/logo/logo.png';
 
         return <<<HTML
 <!DOCTYPE html>

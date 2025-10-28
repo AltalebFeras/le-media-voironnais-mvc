@@ -12,7 +12,7 @@
         <div class="association-banner-section">
             <div class="association-banner-wrapper">
                 <?php if ($association->getBannerPath()): ?>
-                    <img id="currentBanner" src="<?= DOMAIN . HOME_URL . $association->getBannerPath() ?>" alt="Bannière de <?= $association->getName() ?>" class="association-banner-img">
+                    <img id="currentBanner" src="<?= BASE_URL . HOME_URL . $association->getBannerPath() ?>" alt="Bannière de <?= $association->getName() ?>" class="association-banner-img">
                 <?php else: ?>
                     <div id="currentBanner" class="association-banner-placeholder">Aucune bannière</div>
                 <?php endif; ?>
@@ -52,7 +52,7 @@
                     
                     <div class="banner-preview-container" style="text-align: center; margin: 1rem 0;">
                         <?php if ($association->getBannerPath()): ?>
-                            <img id="bannerPreviewModal" src="<?= DOMAIN . HOME_URL . $association->getBannerPath() ?>" alt="Banner preview" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 0 auto;">
+                            <img id="bannerPreviewModal" src="<?= BASE_URL . HOME_URL . $association->getBannerPath() ?>" alt="Banner preview" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 0 auto;">
                         <?php else: ?>
                             <div id="bannerPreviewModal" class="association-banner-placeholder" style="max-width: 100%; height: 200px; margin: 0 auto;">Aucune bannière</div>
                         <?php endif; ?>
