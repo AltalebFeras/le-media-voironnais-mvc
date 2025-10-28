@@ -5,13 +5,13 @@
 // if form id is not "formGroupCalculator", do not apply the loader
 
 // Loader logic: apply loader on any form submit, remove on form:invalid
-$("form").each(function() {
-  $(this).on("submit", function(e) {
+$("form").each(function () {
+  $(this).on("submit", function (e) {
     // Exclude specific forms if needed, e.g.:
     let formIdExclusions = ["add-comment-form", "reply-comment-form"];
     if (formIdExclusions.includes(this.id)) return;
     if ($("#loaderOverlay").length === 0) {
-      const overlay = $('<div></div>').attr('id', 'loaderOverlay').css({
+      const overlay = $("<div></div>").attr("id", "loaderOverlay").css({
         position: "fixed",
         top: 0,
         left: 0,
@@ -25,11 +25,14 @@ $("form").each(function() {
       });
 
       // Detect Firefox browser
-      const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+      const isFirefox =
+        navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 
       if (isFirefox) {
         // Use inline SVG for Firefox (matches external loader design)
-        const loaderContainer = $('<div></div>').html(`
+        const loaderContainer = $("<div></div>")
+          .html(
+            `
           <svg width="150" height="150" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <style>
@@ -50,21 +53,27 @@ $("form").each(function() {
               <path d="M10,50 A40,40 0 0,1 50,10" fill="none" stroke="#000000" stroke-width="8" stroke-linecap="round" opacity="0.1"/>
             </g>
           </svg>
-        `).attr("role", "status").attr("aria-label", "Chargement...").css({
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center"
-        });
+        `
+          )
+          .attr("role", "status")
+          .attr("aria-label", "Chargement...")
+          .css({
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          });
         overlay.append(loaderContainer);
       } else {
         // Use external SVG for other browsers
-        const loaderImage = $('<img>').attr({
-          src: "/assets/images/loader/loader.svg",
-          alt: "Chargement..."
-        }).css({
-          width: "150px",
-          zIndex: 9999
-        });
+        const loaderImage = $("<img>")
+          .attr({
+            src: "/assets/images/loader/loader.svg",
+            alt: "Chargement...",
+          })
+          .css({
+            width: "150px",
+            zIndex: 9999,
+          });
         overlay.append(loaderImage);
       }
 
@@ -83,7 +92,7 @@ $("form").each(function() {
 });
 
 // Remove loader overlay if present when navigating back/forward
-$(window).on("pageshow", function(event) {
+$(window).on("pageshow", function (event) {
   if (
     event.originalEvent.persisted ||
     performance.getEntriesByType("navigation")[0]?.type === "back_forward"
@@ -91,7 +100,7 @@ $(window).on("pageshow", function(event) {
     const $overlay = $("#loaderOverlay");
     if ($overlay.length) $overlay.remove();
     // Optionally re-enable submit buttons if needed
-    $("form [type='submit']").each(function() {
+    $("form [type='submit']").each(function () {
       $(this).prop("disabled", false);
       if ($(this).data("originalText")) {
         $(this).text($(this).data("originalText"));
@@ -101,14 +110,14 @@ $(window).on("pageshow", function(event) {
 });
 
 // Listen for custom "form:valid" event to show loader and submit
-$(document).on("form:valid", function(e) {
+$(document).on("form:valid", function (e) {
   const form = e.target;
   // Loader already shown on submit, just submit the form
   form.submit();
 });
 
 // Listen for custom "form:invalid" event to remove loader and re-enable submit
-$(document).on("form:invalid", function(e) {
+$(document).on("form:invalid", function (e) {
   const $form = $(e.target);
   const $overlay = $("#loaderOverlay");
   if ($overlay.length) $overlay.remove();
@@ -122,16 +131,16 @@ $(document).on("form:invalid", function(e) {
 });
 
 // This is a toggle functionality to password inputs, allowing users to show or hide their passwords with an eye icon.
-$('input[type="password"]').each(function() {
+$('input[type="password"]').each(function () {
   const $input = $(this);
-  const $wrapper = $('<div></div>').addClass("password-wrapper");
+  const $wrapper = $("<div></div>").addClass("password-wrapper");
   $input.before($wrapper);
   $wrapper.append($input);
 
-  const $eyeIcon = $('<span></span>').addClass("toggle-password").text("👁️‍🗨️");
+  const $eyeIcon = $("<span></span>").addClass("toggle-password").text("👁️‍🗨️");
   $wrapper.append($eyeIcon);
 
-  $eyeIcon.on("click", function() {
+  $eyeIcon.on("click", function () {
     const currentType = $input.attr("type");
     $input.attr("type", currentType === "password" ? "text" : "password");
     $eyeIcon.text(currentType === "password" ? "🙈" : "👁️‍🗨️");
@@ -146,40 +155,42 @@ $('input[type="password"]').each(function() {
 });
 
 //  handle the burger menu functionality for mobile navigation.
-$(document).ready(function() {
+$(function () {
   const $burger = $("#burger-menu");
   const $nav = $("#nav-links");
 
-  $burger.on("click", function(e) {
+  $burger.on("click", function (e) {
     e.stopPropagation();
     $burger.toggleClass("active");
     $nav.toggleClass("open");
-    
+
     // Prevent body scroll when menu is open
     if ($nav.hasClass("open")) {
-      $('body').addClass("menu-open");
+      $("body").addClass("menu-open");
     } else {
-      $('body').removeClass("menu-open");
+      $("body").removeClass("menu-open");
     }
   });
 
-  $nav.find("a").each(function() {
-    $(this).on("click", function() {
+  $nav.find("a").each(function () {
+    $(this).on("click", function () {
       $burger.removeClass("active");
       $nav.removeClass("open");
-      $('body').removeClass("menu-open");
+      $("body").removeClass("menu-open");
     });
   });
 
-  $(document).on("click", function(e) {
+  $(document).on("click", function (e) {
     if (
       $nav.hasClass("open") &&
-      !$nav.is(e.target) && !$nav.has(e.target).length &&
-      !$burger.is(e.target) && !$burger.has(e.target).length
+      !$nav.is(e.target) &&
+      !$nav.has(e.target).length &&
+      !$burger.is(e.target) &&
+      !$burger.has(e.target).length
     ) {
       $burger.removeClass("active");
       $nav.removeClass("open");
-      $('body').removeClass("menu-open");
+      $("body").removeClass("menu-open");
     }
   });
 
@@ -188,30 +199,34 @@ $(document).ready(function() {
   const $structuresMenu = $("#structuresDropdownMenu");
 
   if ($structuresToggle.length && $structuresMenu.length) {
-    $structuresToggle.on("click", function(e) {
+    $structuresToggle.on("click", function (e) {
       e.stopPropagation();
       const isExpanded = $structuresToggle.attr("aria-expanded") === "true";
-      
+
       // Close other dropdowns first
       $("#moiDropdownToggle").attr("aria-expanded", "false");
       $("#moiDropdownMenu").removeClass("show");
-      
+
       $structuresToggle.attr("aria-expanded", !isExpanded);
       $structuresMenu.toggleClass("show");
     });
 
     // Close dropdown when clicking outside
-    $(document).on("click", function(e) {
-      if (!$structuresToggle.is(e.target) && !$structuresToggle.has(e.target).length && 
-          !$structuresMenu.is(e.target) && !$structuresMenu.has(e.target).length) {
+    $(document).on("click", function (e) {
+      if (
+        !$structuresToggle.is(e.target) &&
+        !$structuresToggle.has(e.target).length &&
+        !$structuresMenu.is(e.target) &&
+        !$structuresMenu.has(e.target).length
+      ) {
         $structuresToggle.attr("aria-expanded", "false");
         $structuresMenu.removeClass("show");
       }
     });
 
     // Close dropdown when clicking on menu items
-    $structuresMenu.find("a").each(function() {
-      $(this).on("click", function() {
+    $structuresMenu.find("a").each(function () {
+      $(this).on("click", function () {
         $structuresToggle.attr("aria-expanded", "false");
         $structuresMenu.removeClass("show");
       });
@@ -223,30 +238,34 @@ $(document).ready(function() {
   const $moiMenu = $("#moiDropdownMenu");
 
   if ($moiToggle.length && $moiMenu.length) {
-    $moiToggle.on("click", function(e) {
+    $moiToggle.on("click", function (e) {
       e.stopPropagation();
       const isExpanded = $moiToggle.attr("aria-expanded") === "true";
-      
+
       // Close other dropdowns first
       $("#structuresDropdownToggle").attr("aria-expanded", "false");
       $("#structuresDropdownMenu").removeClass("show");
-      
+
       $moiToggle.attr("aria-expanded", !isExpanded);
       $moiMenu.toggleClass("show");
     });
 
     // Close dropdown when clicking outside
-    $(document).on("click", function(e) {
-      if (!$moiToggle.is(e.target) && !$moiToggle.has(e.target).length && 
-          !$moiMenu.is(e.target) && !$moiMenu.has(e.target).length) {
+    $(document).on("click", function (e) {
+      if (
+        !$moiToggle.is(e.target) &&
+        !$moiToggle.has(e.target).length &&
+        !$moiMenu.is(e.target) &&
+        !$moiMenu.has(e.target).length
+      ) {
         $moiToggle.attr("aria-expanded", "false");
         $moiMenu.removeClass("show");
       }
     });
 
     // Close dropdown when clicking on menu items
-    $moiMenu.find("a").each(function() {
-      $(this).on("click", function() {
+    $moiMenu.find("a").each(function () {
+      $(this).on("click", function () {
         $moiToggle.attr("aria-expanded", "false");
         $moiMenu.removeClass("show");
       });
@@ -255,7 +274,7 @@ $(document).ready(function() {
 });
 
 // Notifications (polling + popup)
-(function() {
+(function () {
   const $bell = $("#notifBell");
   const $badge = $("#notifCount");
   const $popup = $("#notifDropdown");
@@ -263,7 +282,8 @@ $(document).ready(function() {
   const $markAllBtn = $("#notifMarkAll");
   const $closeBtn = $("#notifClosePopup");
 
-  if (!$bell.length || !$badge.length || !$popup.length || !$list.length) return;
+  if (!$bell.length || !$badge.length || !$popup.length || !$list.length)
+    return;
 
   let polling = null;
   let lastOpenAt = 0;
@@ -305,7 +325,9 @@ $(document).ready(function() {
       );
       const data = await res.json();
       if (!data || data.success !== true) {
-        $list.html('<li class="notif-item muted">Erreur lors du chargement</li>');
+        $list.html(
+          '<li class="notif-item muted">Erreur lors du chargement</li>'
+        );
         return;
       }
       if (!data.items || data.items.length === 0) {
@@ -314,7 +336,9 @@ $(document).ready(function() {
       }
       $list.html("");
       data.items.forEach((item) => {
-        const $li = $('<li></li>').addClass(`notif-item ${item.isRead ? "read" : "unread"}`).data('id', item.idNotification);
+        const $li = $("<li></li>")
+          .addClass(`notif-item ${item.isRead ? "read" : "unread"}`)
+          .data("id", item.idNotification);
         $li.html(`
           <div class="notif-title">${escapeHtml(
             item.title || "(sans titre)"
@@ -374,7 +398,7 @@ $(document).ready(function() {
   function openPopup() {
     $popup.removeClass("d-none");
     $bell.attr("aria-expanded", "true");
-    $('body').css('overflow', 'hidden');
+    $("body").css("overflow", "hidden");
     const now = Date.now();
     if (now - lastOpenAt > 800) {
       loadList(1, 10);
@@ -385,7 +409,7 @@ $(document).ready(function() {
   function closePopup() {
     $popup.addClass("d-none");
     $bell.attr("aria-expanded", "false");
-    $('body').css('overflow', 'auto');
+    $("body").css("overflow", "auto");
   }
 
   $bell.on("click", (e) => {
@@ -405,14 +429,14 @@ $(document).ready(function() {
   }
 
   // Click outside to close (on overlay)
-  $popup.on("click", function(e) {
+  $popup.on("click", function (e) {
     if ($(e.target).is($popup)) {
       closePopup();
     }
   });
 
   // Prevent clicks inside popup content from closing
-  $popup.find('.notif-popup-content').on('click', function(e) {
+  $popup.find(".notif-popup-content").on("click", function (e) {
     e.stopPropagation();
   });
 
@@ -423,7 +447,7 @@ $(document).ready(function() {
         const data = await res.json();
         if (data && data.success) {
           $badge.addClass("d-none");
-          $list.find(".notif-item.unread").each(function() {
+          $list.find(".notif-item.unread").each(function () {
             $(this).removeClass("unread");
             $(this).addClass("read");
           });
@@ -451,7 +475,7 @@ $(document).ready(function() {
 })();
 
 // Notifications page (full list + load more + mark all)
-(function() {
+(function () {
   const $listEl = $("#pageNotifList");
   const $loadMoreBtn = $("#pageLoadMore");
   const $markAllBtn = $("#pageMarkAll");
@@ -485,7 +509,9 @@ $(document).ready(function() {
   }
 
   function renderItem(item) {
-    const $li = $('<li></li>').addClass(`notif-item ${item.isRead ? "read" : "unread"}`).data('id', item.idNotification || item.id);
+    const $li = $("<li></li>")
+      .addClass(`notif-item ${item.isRead ? "read" : "unread"}`)
+      .data("id", item.idNotification || item.id);
     $li.html(`
       <div class="notif-title">${escapeHtml(item.title || "(sans titre)")}</div>
       ${
@@ -551,7 +577,9 @@ $(document).ready(function() {
       page += 1;
     } catch (_) {
       if (page === 1) {
-        $listEl.html('<li class="notif-item muted">Erreur lors du chargement</li>');
+        $listEl.html(
+          '<li class="notif-item muted">Erreur lors du chargement</li>'
+        );
       }
     } finally {
       loading = false;
@@ -567,7 +595,7 @@ $(document).ready(function() {
         const res = await apiPost("notifications/mark-all-read", {});
         const data = await res.json();
         if (data && data.success) {
-          $listEl.find(".notif-item.unread").each(function() {
+          $listEl.find(".notif-item.unread").each(function () {
             $(this).removeClass("unread");
             $(this).addClass("read");
           });
@@ -584,7 +612,7 @@ $(document).ready(function() {
 })();
 
 // Response messages handling (alerts, toasts, error lists)
-$(document).ready(function() {
+$(function () {
   // Unified responseMessage handling
 
   // Function to dismiss any responseMessage
@@ -598,7 +626,7 @@ $(document).ready(function() {
 
     // Wait for animation to complete before removing
     setTimeout(
-      function() {
+      function () {
         if ($element.parent().length) {
           $element.remove();
 
@@ -616,8 +644,8 @@ $(document).ready(function() {
   }
 
   // Handle all close buttons
-  $(".responseMessage-close").each(function() {
-    $(this).on("click", function() {
+  $(".responseMessage-close").each(function () {
+    $(this).on("click", function () {
       const $responseMessage = $(this).closest(".responseMessage");
       const isToast = $responseMessage.hasClass("toast");
       dismissResponseMessage($responseMessage, isToast);
@@ -625,9 +653,9 @@ $(document).ready(function() {
   });
 
   // Auto-dismiss standard responseMessages
-  $(".custom-alert, .error-list").each(function() {
+  $(".custom-alert, .error-list").each(function () {
     const $alert = $(this);
-    setTimeout(function() {
+    setTimeout(function () {
       dismissResponseMessage($alert, false);
     }, 10000);
   });
@@ -635,137 +663,173 @@ $(document).ready(function() {
   // Handle toast responseMessages
   const $toast = $("#toast");
   if ($toast.length) {
-    setTimeout(function() {
+    setTimeout(function () {
       $toast.addClass("show");
     }, 100);
 
-    setTimeout(function() {
+    setTimeout(function () {
       dismissResponseMessage($toast, true);
     }, 7000);
   }
 });
 
- $(document).ready(function() {
-      let searchTimeout;
+$(function () {
+  let searchTimeout;
 
-      function setupSearch(inputId, resultsId) {
-        const $searchInput = $('#' + inputId);
-        const $searchResults = $('#' + resultsId);
+  function setupSearch(inputId, resultsId) {
+    const $searchInput = $("#" + inputId);
+    const $searchResults = $("#" + resultsId);
 
-        if (!$searchInput.length || !$searchResults.length) return;
+    if (!$searchInput.length || !$searchResults.length) return;
 
-        $searchInput.on('input', function() {
-          clearTimeout(searchTimeout);
-          const query = $(this).val().trim();
+    $searchInput.on("input", function () {
+      clearTimeout(searchTimeout);
+      const query = $(this).val().trim();
 
-          if (query.length < 3) {
-            $searchResults.hide();
-            return;
-          }
-
-          if (query.length > 100) {
-            $searchResults.html('<div class="search-error">La recherche ne peut pas dépasser 100 caractères</div>');
-            $searchResults.show();
-            return;
-          }
-
-          // Validate characters - Fixed regex pattern
-          const validPattern = /^[a-zA-Z0-9àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝŸ\s\-'\.]+$/u;
-          if (!validPattern.test(query)) {
-            $searchResults.html('<div class="search-error">Caractères non autorisés dans la recherche</div>');
-            $searchResults.show();
-            return;
-          }
-
-          searchTimeout = setTimeout(() => {
-            const formData = new FormData();
-            formData.append('q', query);
-            formData.append('csrf_token', $('input[name="csrf_token"]').val());
-
-            $.ajax({
-              url: window.HOME_URL + 'recherche',
-              type: 'POST',
-              data: formData,
-              processData: false,
-              contentType: false,
-              dataType: 'json',
-              success: function(data) {
-                if (data.error) {
-                  $searchResults.html('<div class="search-error">' + data.error + '</div>');
-                  $searchResults.show();
-                } else {
-                  displaySearchResults(data.results, $searchResults);
-                }
-              },
-              error: function(xhr, status, error) {
-                console.error('Search error:', error);
-                $searchResults.html('<div class="search-error">Erreur lors de la recherche</div>');
-                $searchResults.show();
-              }
-            });
-          }, 300);
-        });
-
-        // Hide results when clicking outside
-        $(document).on('click', function(event) {
-          if (!$searchInput.is(event.target) && !$searchResults.is(event.target) &&
-            $searchResults.has(event.target).length === 0) {
-            $searchResults.hide();
-          }
-        });
+      if (query.length < 3) {
+        $searchResults.hide();
+        return;
       }
 
-      function displaySearchResults(results, $container) {
-        if (results.length === 0) {
-          $container.html('<div class="search-result-item">Aucun résultat trouvé</div>');
-          $container.show();
-          return;
-        }
-
-        const typeLabels = {
-          'user': 'Utilisateur',
-          'evenement': 'Événement',
-          'entreprise': 'Entreprise',
-          'association': 'Association',
-          'ville': 'Ville'
-        };
-
-        const resultsHtml = results.map(function(result) {
-          const imageHtml = result.image ?
-            '<img src="' + result.image + '" alt="' + result.title + '" class="search-result-image">' :
-            '<div class="search-result-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #666;">' +
-            (result.type === 'ville' ? '🏙️' :
-              result.type === 'user' ? '👤' :
-              result.type === 'evenement' ? '📅' :
-              result.type === 'entreprise' ? '🏢' : '🏛️') +
-            '</div>';
-
-          const subtitleHtml = result.subtitle ?
-            '<div class="search-result-subtitle">' + result.subtitle + '</div>' : '';
-
-          return '<div class="search-result-item" data-url="' + result.url + '">' +
-            imageHtml +
-            '<div class="search-result-content">' +
-            '<div class="search-result-title">' + result.title + '</div>' +
-            subtitleHtml +
-            '<div class="search-result-type">' + (typeLabels[result.type] || result.type) + '</div>' +
-            '</div>' +
-            '</div>';
-        }).join('');
-
-        $container.html(resultsHtml);
-        $container.show();
-
-        // Add click handlers to result items
-        $container.off('click', '.search-result-item').on('click', '.search-result-item', function(e) {
-          e.preventDefault();
-          const url = $(this).data('url');
-          if (url) {
-            window.location.href = url;
-          }
-        });
+      if (query.length > 100) {
+        $searchResults.html(
+          '<div class="search-error">La recherche ne peut pas dépasser 100 caractères</div>'
+        );
+        $searchResults.show();
+        return;
       }
 
-      // Initialize search for mobile
-      setupSearch('search-input-mobile', 'search-results-mobile');
+      // Validate characters - Fixed regex pattern
+      const validPattern =
+        /^[a-zA-Z0-9àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝŸ\s\-'\.]+$/u;
+      if (!validPattern.test(query)) {
+        $searchResults.html(
+          '<div class="search-error">Caractères non autorisés dans la recherche</div>'
+        );
+        $searchResults.show();
+        return;
+      }
+
+      searchTimeout = setTimeout(() => {
+        const formData = new FormData();
+        formData.append("q", query);
+        formData.append("csrf_token", $('input[name="csrf_token"]').val());
+
+        $.ajax({
+          url: window.HOME_URL + "recherche",
+          type: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          dataType: "json",
+          success: function (data) {
+            if (data.error) {
+              $searchResults.html(
+                '<div class="search-error">' + data.error + "</div>"
+              );
+              $searchResults.show();
+            } else {
+              displaySearchResults(data.results, $searchResults);
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error("Search error:", error);
+            $searchResults.html(
+              '<div class="search-error">Erreur lors de la recherche</div>'
+            );
+            $searchResults.show();
+          },
+        });
+      }, 300);
     });
+
+    // Hide results when clicking outside
+    $(document).on("click", function (event) {
+      if (
+        !$searchInput.is(event.target) &&
+        !$searchResults.is(event.target) &&
+        $searchResults.has(event.target).length === 0
+      ) {
+        $searchResults.hide();
+      }
+    });
+  }
+
+  function displaySearchResults(results, $container) {
+    if (results.length === 0) {
+      $container.html(
+        '<div class="search-result-item">Aucun résultat trouvé</div>'
+      );
+      $container.show();
+      return;
+    }
+
+    const typeLabels = {
+      user: "Utilisateur",
+      evenement: "Événement",
+      entreprise: "Entreprise",
+      association: "Association",
+      ville: "Ville",
+    };
+
+    const resultsHtml = results
+      .map(function (result) {
+        const imageHtml = result.image
+          ? '<img src="' +
+            result.image +
+            '" alt="' +
+            result.title +
+            '" class="search-result-image">'
+          : '<div class="search-result-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #666;">' +
+            (result.type === "ville"
+              ? "🏙️"
+              : result.type === "user"
+              ? "👤"
+              : result.type === "evenement"
+              ? "📅"
+              : result.type === "entreprise"
+              ? "🏢"
+              : "🏛️") +
+            "</div>";
+
+        const subtitleHtml = result.subtitle
+          ? '<div class="search-result-subtitle">' + result.subtitle + "</div>"
+          : "";
+
+        return (
+          '<div class="search-result-item" data-url="' +
+          result.url +
+          '">' +
+          imageHtml +
+          '<div class="search-result-content">' +
+          '<div class="search-result-title">' +
+          result.title +
+          "</div>" +
+          subtitleHtml +
+          '<div class="search-result-type">' +
+          (typeLabels[result.type] || result.type) +
+          "</div>" +
+          "</div>" +
+          "</div>"
+        );
+      })
+      .join("");
+
+    $container.html(resultsHtml);
+    $container.show();
+
+    // Add click handlers to result items
+    $container
+      .off("click", ".search-result-item")
+      .on("click", ".search-result-item", function (e) {
+        e.preventDefault();
+        const url = $(this).data("url");
+        if (url) {
+          window.location.href = url;
+        }
+      });
+  }
+
+  // Initialize search for mobile
+  setupSearch("search-input-mobile", "search-results-mobile");
+});

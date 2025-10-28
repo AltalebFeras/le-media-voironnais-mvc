@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function () {
   const $codePostalInput = $("#codePostal");
   const $villeSelect = $("#ville");
   const $idVilleInput = $("#idVille");
@@ -23,14 +23,14 @@ $(document).ready(function() {
 
   $villeSelect.on("change", function () {
     // Update the hidden idVille field when a city is selected
-    const selectedOption = $(this).find('option:selected');
+    const selectedOption = $(this).find("option:selected");
     $idVilleInput.val(selectedOption.val());
   });
 
   async function fetchVilles(codePostal) {
     // Show loading state
     $villeSelect.html('<option value="">Chargement...</option>');
-    $villeSelect.prop('disabled', true);
+    $villeSelect.prop("disabled", true);
 
     try {
       const response = await fetch("http://le-media-voironnais/villes", {
@@ -48,7 +48,7 @@ $(document).ready(function() {
     } catch (error) {
       console.error("Error fetching cities:", error);
       $villeSelect.html('<option value="">Erreur lors du chargement</option>');
-      $villeSelect.prop('disabled', true);
+      $villeSelect.prop("disabled", true);
     }
   }
 
@@ -63,10 +63,12 @@ $(document).ready(function() {
       response.data.length > 0
     ) {
       response.data.forEach((city) => {
-        const option = $('<option></option>').val(city.idVille).text(city.ville_nom_reel);
+        const option = $("<option></option>")
+          .val(city.idVille)
+          .text(city.ville_nom_reel);
         $villeSelect.append(option);
       });
-      $villeSelect.prop('disabled', false);
+      $villeSelect.prop("disabled", false);
       $villeSelect.css("backgroundColor", "#6ed3cf"); // Green background
 
       // If there's only one city, select it by default
@@ -76,14 +78,14 @@ $(document).ready(function() {
       }
     } else {
       $villeSelect.html('<option value="">Aucune ville trouvée</option>');
-      $villeSelect.prop('disabled', true);
+      $villeSelect.prop("disabled", true);
       $villeSelect.css("backgroundColor", "#f5c2c7"); // Red background
     }
   }
 
   function resetVilleSelect() {
     $villeSelect.html('<option value="">Sélectionnez une ville</option>');
-    $villeSelect.prop('disabled', true);
+    $villeSelect.prop("disabled", true);
     $idVilleInput.val("");
     $villeSelect.css("backgroundColor", ""); // Reset background
   }

@@ -4,7 +4,7 @@
  * for associations, entreprises, and evenements
  */
 
-$(document).ready(function () {
+$(function () {
   // Toggle banner actions visibility - Open Popup
   const $toggleBannerActions = $("#toggleBannerActions");
   const $bannerPopup = $("#bannerPopup");
@@ -77,7 +77,11 @@ $(document).ready(function () {
   const $profilePicturePopup = $("#profilePicturePopup");
   const $closeProfilePopup = $("#closeProfilePopup");
 
-  if ($toggleLogoActions.length && $profilePicturePopup.length && !$logoPopup.length) {
+  if (
+    $toggleLogoActions.length &&
+    $profilePicturePopup.length &&
+    !$logoPopup.length
+  ) {
     $toggleLogoActions.on("click", function () {
       $profilePicturePopup.css("display", "flex");
     });
@@ -115,21 +119,24 @@ $(document).ready(function () {
   const $bannerActionsPreview = $("#bannerActionsPreview");
   const $deleteBannerForm = $("#deleteBannerForm");
   const $modifyBannerLabel = $('label[for="bannerInput"]');
-  const originalBannerSrc = $bannerPreviewModal.length && $bannerPreviewModal.prop('tagName') === 'IMG' 
-    ? $bannerPreviewModal.attr('src') 
-    : null;
+  const originalBannerSrc =
+    $bannerPreviewModal.length && $bannerPreviewModal.prop("tagName") === "IMG"
+      ? $bannerPreviewModal.attr("src")
+      : null;
 
   function resetBannerPreview() {
     if ($bannerPreviewModal.length) {
-      if (originalBannerSrc && $bannerPreviewModal.prop('tagName') === 'IMG') {
-        $bannerPreviewModal.attr('src', originalBannerSrc);
+      if (originalBannerSrc && $bannerPreviewModal.prop("tagName") === "IMG") {
+        $bannerPreviewModal.attr("src", originalBannerSrc);
       }
     }
     if ($bannerSubmitBtn.length) $bannerSubmitBtn.addClass("d-none");
-    if ($bannerActionsDefault.length) $bannerActionsDefault.removeClass("d-none");
+    if ($bannerActionsDefault.length)
+      $bannerActionsDefault.removeClass("d-none");
     if ($bannerActionsPreview.length) $bannerActionsPreview.addClass("d-none");
     if ($deleteBannerForm.length) $deleteBannerForm.css("display", "block");
-    if ($modifyBannerLabel.length) $modifyBannerLabel.css("display", "inline-block");
+    if ($modifyBannerLabel.length)
+      $modifyBannerLabel.css("display", "inline-block");
   }
 
   if ($bannerInput.length) {
@@ -139,27 +146,30 @@ $(document).ready(function () {
         const reader = new FileReader();
         reader.onload = function (e) {
           if ($bannerPreviewModal.length) {
-            if ($bannerPreviewModal.prop('tagName') === 'IMG') {
-              $bannerPreviewModal.attr('src', e.target.result);
+            if ($bannerPreviewModal.prop("tagName") === "IMG") {
+              $bannerPreviewModal.attr("src", e.target.result);
             } else {
-              const $newImg = $('<img>', {
-                id: 'bannerPreviewModal',
+              const $newImg = $("<img>", {
+                id: "bannerPreviewModal",
                 src: e.target.result,
-                alt: 'Banner preview',
+                alt: "Banner preview",
                 css: {
-                  'max-width': '100%',
-                  'max-height': '300px',
-                  'border-radius': '12px',
-                  'margin': '0 auto'
-                }
+                  "max-width": "100%",
+                  "max-height": "300px",
+                  "border-radius": "12px",
+                  margin: "0 auto",
+                },
               });
               $bannerPreviewModal.replaceWith($newImg);
             }
           }
           if ($bannerSubmitBtn.length) $bannerSubmitBtn.removeClass("d-none");
-          if ($deleteBannerForm.length) $deleteBannerForm.css("display", "none");
-          if ($modifyBannerLabel.length) $modifyBannerLabel.css("display", "none");
-          if ($bannerActionsPreview.length) $bannerActionsPreview.removeClass("d-none");
+          if ($deleteBannerForm.length)
+            $deleteBannerForm.css("display", "none");
+          if ($modifyBannerLabel.length)
+            $modifyBannerLabel.css("display", "none");
+          if ($bannerActionsPreview.length)
+            $bannerActionsPreview.removeClass("d-none");
         };
         reader.readAsDataURL(file);
       } else {
@@ -184,17 +194,20 @@ $(document).ready(function () {
   const $logoActionsPreview = $("#logoActionsPreview");
   const $deleteLogoForm = $("#deleteLogoForm");
   const $modifyLogoLabel = $('label[for="logoInput"]');
-  const originalLogoSrc = $logoPreviewModal.length ? $logoPreviewModal.attr('src') : null;
+  const originalLogoSrc = $logoPreviewModal.length
+    ? $logoPreviewModal.attr("src")
+    : null;
 
   function resetLogoPreview() {
     if ($logoPreviewModal.length && originalLogoSrc) {
-      $logoPreviewModal.attr('src', originalLogoSrc);
+      $logoPreviewModal.attr("src", originalLogoSrc);
     }
     if ($logoSubmitBtn.length) $logoSubmitBtn.addClass("d-none");
     if ($logoActionsDefault.length) $logoActionsDefault.removeClass("d-none");
     if ($logoActionsPreview.length) $logoActionsPreview.addClass("d-none");
     if ($deleteLogoForm.length) $deleteLogoForm.css("display", "block");
-    if ($modifyLogoLabel.length) $modifyLogoLabel.css("display", "inline-block");
+    if ($modifyLogoLabel.length)
+      $modifyLogoLabel.css("display", "inline-block");
   }
 
   if ($logoInput.length) {
@@ -204,12 +217,13 @@ $(document).ready(function () {
         const reader = new FileReader();
         reader.onload = function (e) {
           if ($logoPreviewModal.length) {
-            $logoPreviewModal.attr('src', e.target.result);
+            $logoPreviewModal.attr("src", e.target.result);
           }
           if ($logoSubmitBtn.length) $logoSubmitBtn.removeClass("d-none");
           if ($deleteLogoForm.length) $deleteLogoForm.css("display", "none");
           if ($modifyLogoLabel.length) $modifyLogoLabel.css("display", "none");
-          if ($logoActionsPreview.length) $logoActionsPreview.removeClass("d-none");
+          if ($logoActionsPreview.length)
+            $logoActionsPreview.removeClass("d-none");
         };
         reader.readAsDataURL(file);
       } else {
@@ -234,15 +248,21 @@ $(document).ready(function () {
   const $profileActionsPreview = $("#profileActionsPreview");
   const $deleteProfileForm = $("#deleteProfileForm");
   const $modifyProfilePictureLabel = $('label[for="profilePicture"]');
-  const originalProfileSrc = $profilePicturePreviewModal.length ? $profilePicturePreviewModal.attr('src') : "";
+  const originalProfileSrc = $profilePicturePreviewModal.length
+    ? $profilePicturePreviewModal.attr("src")
+    : "";
 
   function resetProfilePreview() {
-    if ($profilePicturePreviewModal.length) $profilePicturePreviewModal.attr('src', originalProfileSrc);
+    if ($profilePicturePreviewModal.length)
+      $profilePicturePreviewModal.attr("src", originalProfileSrc);
     if ($profileSubmitBtn.length) $profileSubmitBtn.addClass("d-none");
-    if ($profileActionsDefault.length) $profileActionsDefault.removeClass("d-none");
-    if ($profileActionsPreview.length) $profileActionsPreview.addClass("d-none");
+    if ($profileActionsDefault.length)
+      $profileActionsDefault.removeClass("d-none");
+    if ($profileActionsPreview.length)
+      $profileActionsPreview.addClass("d-none");
     if ($deleteProfileForm.length) $deleteProfileForm.css("display", "block");
-    if ($modifyProfilePictureLabel.length) $modifyProfilePictureLabel.css("display", "inline-block");
+    if ($modifyProfilePictureLabel.length)
+      $modifyProfilePictureLabel.css("display", "inline-block");
   }
 
   if ($profilePictureInput.length) {
@@ -252,12 +272,15 @@ $(document).ready(function () {
         const reader = new FileReader();
         reader.onload = function (e) {
           if ($profilePicturePreviewModal.length) {
-            $profilePicturePreviewModal.attr('src', e.target.result);
+            $profilePicturePreviewModal.attr("src", e.target.result);
           }
           if ($profileSubmitBtn.length) $profileSubmitBtn.removeClass("d-none");
-          if ($deleteProfileForm.length) $deleteProfileForm.css("display", "none");
-          if ($modifyProfilePictureLabel.length) $modifyProfilePictureLabel.css("display", "none");
-          if ($profileActionsPreview.length) $profileActionsPreview.removeClass("d-none");
+          if ($deleteProfileForm.length)
+            $deleteProfileForm.css("display", "none");
+          if ($modifyProfilePictureLabel.length)
+            $modifyProfilePictureLabel.css("display", "none");
+          if ($profileActionsPreview.length)
+            $profileActionsPreview.removeClass("d-none");
         };
         reader.readAsDataURL(file);
       } else {
