@@ -45,6 +45,7 @@ switch ($route) {
     case HOME_URL:
         $homeController->displayHomepage();
         break;
+
     // Authentication routes
     case HOME_URL . 'connexion':
         if ($method === 'POST') {
@@ -76,6 +77,11 @@ switch ($route) {
                 $homeController->displayFormInscription();
             }
         }
+        break;
+
+
+    case HOME_URL . 'deconnexion':
+        $userController->deconnexion();
         break;
 
     case HOME_URL . 'activer_mon_compte':
@@ -113,7 +119,7 @@ switch ($route) {
         }
         break;
 
-    // Contact routes 
+    // Contact and legal routes
     case HOME_URL . 'nous_contacter':
         if ($method === 'POST') {
             $contactController->submitContactForm();
@@ -130,9 +136,6 @@ switch ($route) {
         $homeController->mentions_legales();
         break;
 
-    case HOME_URL . 'deconnexion':
-        $userController->deconnexion();
-        break;
 
     case HOME_URL . '404':
         $homeController->page404();
