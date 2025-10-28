@@ -333,19 +333,6 @@
     gap: 0.5rem;
 }
 
-/* Enhanced pagination */
-.pagination-link {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.pagination-dots {
-    padding: 0 0.5rem;
-    color: #999;
-    font-weight: bold;
-}
-
 /* Search and Filter */
 .events-search-filter {
     display: flex;
@@ -582,11 +569,6 @@
         max-width: 100%;
         margin: 0 1rem;
     }
-    
-    .pagination-link {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-    }
 }
 
 @media (max-width: 480px) {
@@ -608,16 +590,6 @@
     
     .search-box {
         margin: 0 0.5rem;
-    }
-    
-    .pagination {
-        flex-wrap: wrap;
-        gap: 5px;
-    }
-    
-    .pagination-link {
-        padding: 6px 10px;
-        min-width: auto;
     }
 }
 
@@ -657,8 +629,7 @@
 
 .btn-timetable:focus,
 .btn-buy-tickets:focus,
-.search-btn:focus,
-.pagination-link:focus {
+.search-btn:focus {
     outline: 2px solid #667eea;
     outline-offset: 2px;
 }
