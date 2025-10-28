@@ -1,9 +1,9 @@
 <!-- Pagination -->
 <?php if ($totalPages > 1): ?>
     <div class="pagination-container">
-        
-         <div class="pagination-info">
-            <p>Page <?= $currentPage ?> sur <?= $totalPages ?></p>
+
+        <div class="pagination-info">
+            <p class="text-info">Page <span class="current-page"><?= $currentPage ?></span> sur <span class="total-pages"><?= $totalPages ?></span></p>
         </div>
         <div class="pagination">
             <?php if ($currentPage > 1): ?>
@@ -42,10 +42,11 @@
                 </a>
             <?php endif; ?>
         </div>
-       
+
 
     </div>
 <?php endif; ?>
+
 <style>
     /* Pagination */
     .pagination-container {
