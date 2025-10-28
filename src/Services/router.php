@@ -40,8 +40,8 @@ $part4 = $composedRoute[4] ?? null;
 $part5 = $composedRoute[5] ?? null;
 
 switch ($route) {
-    // Public routes
 
+    // Public routes Start
     case HOME_URL:
         $homeController->displayHomepage();
         break;
@@ -85,6 +85,7 @@ switch ($route) {
             $homeController->page404();
         }
         break;
+
     case HOME_URL . 'mdp_oublie':
         if ($method === 'POST') {
             $userController->treatmentForgotMyPassword();
@@ -111,6 +112,32 @@ switch ($route) {
             }
         }
         break;
+
+    // Contact routes 
+    case HOME_URL . 'nous_contacter':
+        if ($method === 'POST') {
+            $contactController->submitContactForm();
+        } else {
+            $contactController->displayContactForm();
+        }
+        break;
+
+    case HOME_URL . 'cgu':
+        $homeController->terms_of_service();
+        break;
+
+    case HOME_URL . 'mentions_legales':
+        $homeController->mentions_legales();
+        break;
+
+    case HOME_URL . 'deconnexion':
+        $userController->deconnexion();
+        break;
+
+    case HOME_URL . '404':
+        $homeController->page404();
+        break;
+
     // events public routes
     // Example: /evenements/ville-slug or /evenements/ville-slug/category_slug/event-slug /evenements/ville-slug/category_slug
     case $part0 === 'evenements':
@@ -192,11 +219,35 @@ switch ($route) {
         }
         break;
 
-    case HOME_URL . 'dashboard':
-        if ($connectionSecured) {
-            $userController->displayDashboard();
+    case $part0 === 'profil':
+        if ($part1 && !$part2) {
+            $userController->displayUserProfile($part1);
         } else {
-            $homeController->displayAuth();
+            $homeController->page404();
+        }
+        break;
+
+    case $part0 === 'entreprises':
+        if ($part1 && !$part2) {
+            $entrepriseController->displayPublicEntrepriseDetails($part1);
+        } else {
+            $entrepriseController->listPublicEntreprises();
+        }
+        break;
+
+    case $part0 === 'associations':
+        if ($part1 && !$part2) {
+            $associationController->displayPublicAssociationDetails($part1);
+        } else {
+            $associationController->listPublicAssociations();
+        }
+        break;
+
+    case $part0 === 'ville':
+        if ($part1 && !$part2) {
+            $homeController->displayCityDetails($part1);
+        } else {
+            $homeController->listCities();
         }
         break;
 
@@ -207,6 +258,17 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+    // Public routes End
+
+    // User connected routes Start
+    case HOME_URL . 'dashboard':
+        if ($connectionSecured) {
+            $userController->displayDashboard();
+        } else {
+            $homeController->displayAuth();
+        }
+        break;
+
     // Association routes
     case HOME_URL . 'mes_associations':
         if ($connectionSecured) {
@@ -222,6 +284,7 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+
     case HOME_URL . 'association/ajouter':
         if ($connectionSecured) {
             if ($method === 'POST') {
@@ -236,6 +299,7 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+
     case HOME_URL . 'association/modifier':
         if ($connectionSecured) {
             if ($method === 'POST') {
@@ -285,6 +349,7 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+
     case HOME_URL . 'entreprise/ajouter':
         if ($connectionSecured) {
             if ($method === 'POST') {
@@ -342,6 +407,7 @@ switch ($route) {
             $homeController->page404();
         }
         break;
+
     // Realisation routes
     case HOME_URL . 'entreprise/mes_realisations':
         if ($connectionSecured) {
@@ -357,6 +423,7 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+
     case HOME_URL . 'entreprise/mes_realisations/ajouter':
         if ($connectionSecured) {
             if ($method === 'POST') {
@@ -468,6 +535,7 @@ switch ($route) {
         }
         break;
 
+    // Favorites routes
     case HOME_URL . 'mes_favoris':
         if ($connectionSecured) {
             if ($method === 'POST') {
@@ -606,7 +674,9 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
-    // Admin routes
+    // User connected routes End
+
+    // Admin connected routes Start
 
     case HOME_URL . 'admin/dashboard_admin':
         if ($connectionSecuredAdmin) {
@@ -668,26 +738,7 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
-    // Contact form (public)
-    case HOME_URL . 'nous_contacter':
-        if ($method === 'POST') {
-            $contactController->submitContactForm();
-        } else {
-            $contactController->displayContactForm();
-        }
-        break;
-    case HOME_URL . 'cgu':
-        $homeController->terms_of_service();
-        break;
-    case HOME_URL . 'mentions_legales':
-        $homeController->mentions_legales();
-        break;
-    case HOME_URL . 'deconnexion':
-        $userController->deconnexion();
-        break;
-    case HOME_URL . '404':
-        $homeController->page404();
-        break;
+
 
     // Admin contact routes - consolidated into single route with POST actions
     case HOME_URL . 'admin/contacts':
@@ -726,43 +777,9 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
+    // Admin connected routes End
 
-    // User profile route
-    case $part0 === 'profil':
-        if ($part1 && !$part2) {
-            $userController->displayUserProfile($part1);
-        } else {
-            $homeController->page404();
-        }
-        break;
-
-    // Enterprise detail route
-    case $part0 === 'entreprises':
-        if ($part1 && !$part2) {
-            $entrepriseController->displayPublicEntrepriseDetails($part1);
-        } else {
-            $entrepriseController->listPublicEntreprises();
-        }
-        break;
-
-    // Association detail route
-    case $part0 === 'associations':
-        if ($part1 && !$part2) {
-            $associationController->displayPublicAssociationDetails($part1);
-        } else {
-            $associationController->listPublicAssociations();
-        }
-        break;
-
-    // City detail route
-    case $part0 === 'ville':
-        if ($part1 && !$part2) {
-            $homeController->displayCityDetails($part1);
-        } else {
-            $homeController->listCities();
-        }
-        break;
-
+    // 404 Not Found route
     default:
         $homeController->page404();
         break;
