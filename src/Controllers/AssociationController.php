@@ -381,7 +381,7 @@ class AssociationController extends AbstractController
             // Handle image upload
             $helper = new Helper();
             $bannerPath = $helper->handleImageUpload('banner', 'banners');
-         
+
             // Update association banner path
             $association->setBannerPath($bannerPath)
                 ->setUpdatedAt((new DateTime())->format('Y-m-d H:i:s'));
@@ -540,8 +540,20 @@ class AssociationController extends AbstractController
     public function listPublicAssociations(): void
     {
         try {
-            $associations = $this->repo->getAllActiveAssociations();
-            $this->render('association/assoc_list', ['associations' => $associations]);
+            $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+            $itemsPerPage = 12; // Nombre d'entreprises par page
+            $offset = ($currentPage - 1) * $itemsPerPage;
+            $associations = $this->repo->getAllActiveAssociations($offset, $itemsPerPage);
+             $totalEntreprises = $this->repo->countAllActiveAssociations();
+            $totalPages = (int)ceil($totalEntreprises / $itemsPerPage);
+            $this->render('association/assoc_list', [
+                'associations' => $associations,
+                'currentPage' => $currentPage,
+                'totalPages' => $totalPages,
+                'title' => 'Associations',
+                'description' => 'Liste des associations publiques'
+
+            ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('404');

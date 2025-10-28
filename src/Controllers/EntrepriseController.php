@@ -651,7 +651,7 @@ class EntrepriseController extends AbstractController
     public function listPublicEntreprises(): void
     {
         $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-        $itemsPerPage = 2; // Nombre d'entreprises par page
+        $itemsPerPage = 12; // Nombre d'entreprises par page
         $offset = ($currentPage - 1) * $itemsPerPage;
 
 

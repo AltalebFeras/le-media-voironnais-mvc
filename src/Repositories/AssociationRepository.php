@@ -75,15 +75,29 @@ class AssociationRepository
             throw new Exception("Error counting user associations: " . $e->getMessage());
         }
     }
-    public function getAllActiveAssociations(): array
+    public function countAllActiveAssociations(): int
+    {
+        try {
+            $query = "SELECT COUNT(*) FROM association WHERE isActive = 1 AND isDeleted = 0";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute();
+            return (int)$stmt->fetchColumn();
+        } catch (Exception $e) {
+            throw new Exception("Error counting active associations: " . $e->getMessage());
+        }
+    }
+    public function getAllActiveAssociations($offset, $itemsPerPage): array
     {
         try {
             $query = "SELECT a.uiid, a.name, a.slug, a.logoPath, v.ville_nom_reel, v.ville_slug
                       FROM association a
                       LEFT JOIN ville v ON v.idVille = a.idVille
                       WHERE a.isActive = 1 AND a.isDeleted = 0
-                      ORDER BY a.name ASC";
+                      ORDER BY a.name ASC
+                      LIMIT :offset, :itemsPerPage";
             $stmt = $this->DB->prepare($query);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->bindValue(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
             $stmt->execute();
             $associations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

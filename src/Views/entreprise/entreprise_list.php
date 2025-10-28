@@ -1,8 +1,3 @@
-<?php
-$title = 'Toutes les entreprises';
-$description = 'Découvrez toutes les entreprises partenaires sur Le Média Voironnais';
-?>
-
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 <main>
@@ -71,8 +66,8 @@ $description = 'Découvrez toutes les entreprises partenaires sur Le Média Voir
                                 </div>
                             </div>
                         <?php endforeach; ?>
+                        <!-- pagination -->
                         <?php include_once __DIR__ . '/../includes/pagination.php'; ?>
-
                     </div>
                 <?php else: ?>
                     <div class="text-center py-5">

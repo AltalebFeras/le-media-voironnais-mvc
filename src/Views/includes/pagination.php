@@ -5,7 +5,7 @@
             <?php if ($currentPage > 1): ?>
                 <a href="?page=<?= $currentPage - 1 ?>" class="pagination-link">
                     <span class="material-icons">chevron_left</span>
-                    Précédent
+                   <span class="spanBtnName">Précédent</span>
                 </a>
             <?php endif; ?>
 
@@ -33,7 +33,7 @@
 
             <?php if ($currentPage < $totalPages): ?>
                 <a href="?page=<?= $currentPage + 1 ?>" class="pagination-link">
-                    Suivant
+                   <span class="spanBtnName">Suivant</span>
                     <span class="material-icons">chevron_right</span>
                 </a>
             <?php endif; ?>
