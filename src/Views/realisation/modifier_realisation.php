@@ -77,8 +77,4 @@
     </div>
 </main>
 
-<?php 
-// Clean form data after displaying
-unset($_SESSION['form_data']); 
-include_once __DIR__ . '/../includes/footer.php'; 
-?>
+<?php include_once __DIR__ . '/../includes/footer.php'; ?>
