@@ -1,9 +1,9 @@
-<?php include_once __DIR__ . '/../includes/header.php'; ?>
-<?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 <?php
 $title = htmlspecialchars($ville['ville_nom']);
 $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_postal'] . ') - événements, entreprises et associations locales';
 ?>
+<?php include_once __DIR__ . '/../includes/header.php'; ?>
+<?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <div class="container mt-4">
     <div class="row">
