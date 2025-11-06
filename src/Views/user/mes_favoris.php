@@ -1,5 +1,5 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
-<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/favoris.css' ?>">
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/evenements/favoris.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <main class="pt">

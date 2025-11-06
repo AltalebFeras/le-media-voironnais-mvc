@@ -1,15 +1,12 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+<link rel="stylesheet" href="<?= HOME_URL ?>assets/css/evenements/public_event_detail.css">
+<?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <?php
 $startDate = new DateTime($evenement['startDate']);
 $endDate = new DateTime($evenement['endDate']);
 
 ?>
-
-<link rel="stylesheet" href="<?= HOME_URL ?>assets/css/public_event_detail.css">
-
-<?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-
 <main class="event-detail-main">
     <a href="<?= HOME_URL ?>evenements">
         <span class="material-icons btn btn-back" style="color:white;">arrow_back</span>

@@ -1,6 +1,6 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/404.css' ?>">
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/globals/404.css' ?>">
 <main>
 	<div class="page_404">
 		<div class="container_404">

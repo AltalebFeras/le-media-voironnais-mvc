@@ -1,6 +1,5 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-<?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
 <main>
     <div class="flex-row align-items-center mb">
@@ -9,6 +8,8 @@
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
+    <!-- messages -->
+    <?php include_once __DIR__ . '/../includes/messages.php'; ?>
     <div class="card max-width-75">
         <form action="<?= HOME_URL ?>evenement/ajouter" method="POST" enctype="multipart/form-data">
             <div class="form-row">

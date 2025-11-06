@@ -1,5 +1,6 @@
-@import url('/assets/css/animation.css');
-@import url('/assets/css/notification.css');
+@import url('/assets/css/globals/animation.css');
+@import url('/assets/css/globals/notification.css');
+@import url('/assets/css/globals/pagination.css');
 
 /* New color palette and font */
 * {
@@ -15,7 +16,7 @@
     font-family: 'Material Icons';
     font-style: normal;
     font-weight: 400;
-    src: url(./../font/icons/google-material-icons.woff2) format('woff2');
+    src: url(./../../font/icons/google-material-icons.woff2) format('woff2');
 }
 
 .material-icons {

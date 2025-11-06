@@ -1,11 +1,10 @@
+<?php include_once __DIR__ . '/../includes/header.php'; ?>
+<?php include_once __DIR__ . '/../includes/navbar.php'; ?>
+
 <?php
 $title = htmlspecialchars($user['firstName'] . ' ' . $user['lastName']);
 $description = $user['bio'] ?? 'Profil utilisateur sur Le Média Voironnais';
 ?>
-
-<?php include_once __DIR__ . '/../includes/header.php'; ?>
-<?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-
 <div class="container mt-4">
     <div class="row">
         <div class="col-12">

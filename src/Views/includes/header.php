@@ -114,4 +114,4 @@
   <script src="<?= HOME_URL . 'assets/javascript/jquery/dist/jquery.min.js' ?>"></script>
  
   <!-- Global CSS -->
-  <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/global.css' ?>">
+  <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/globals/global.css' ?>">

@@ -1,5 +1,5 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
-<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/mon_compte.css' ?>">
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/users/mon_compte.css' ?>">
 
 <?php
 if (isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin'])) {
