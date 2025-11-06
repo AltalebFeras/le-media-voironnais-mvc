@@ -36,6 +36,7 @@
 				<?php if (isset($_SESSION['connected']) && $_SESSION['connected'] === true) : ?>
 					<a href="<?= HOME_URL . 'dashboard'; ?>" class="link_404">Retour au tableau de bord</a>
 				<?php else : ?>
+					<a href="javascript:history.back()" class="link_404" id="goBack">Retour en arrière</a>
 					<a href="<?= HOME_URL; ?>" class="link_404">Retour à l'accueil</a>
 				<?php endif; ?>
 
@@ -54,8 +55,14 @@
 					</div>
 				</div>
 			</div>
-		</div>
 	</div>
 </main>
-
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
+<script>
+$(document).ready(function() {
+	$('#goBack').on('click', function(e) {
+		e.preventDefault();
+		window.history.back();
+	});
+});
+</script>
