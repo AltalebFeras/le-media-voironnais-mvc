@@ -27,7 +27,7 @@
   $locale ??= 'fr_FR';
   $siteName ??= 'Le Media Voironnais';
   ?>
-   
+
   <title><?= $title ?></title>
   <meta name="title" content="<?= htmlspecialchars($title) ?>">
   <!-- SEO Meta Tags -->
@@ -62,7 +62,7 @@
   <meta name="revisit-after" content="7 days">
   <meta name="rating" content="general">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
+
   <!-- Geographic Tags -->
   <?php if (isset($geoRegion)): ?>
     <meta name="geo.region" content="<?= htmlspecialchars($geoRegion) ?>">
@@ -112,8 +112,8 @@
 
   <!-- jQuery -->
   <script src="<?= HOME_URL . 'assets/javascript/jquery/dist/jquery.min.js' ?>"></script>
- 
+
   <!-- Global CSS -->
   <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/globals/global.css' ?>">
-
+  <!-- Icon Fonts -->
   <link rel="stylesheet" href="<?= HOME_URL . 'assets/font/material-icons-and-font-awesome-icons/style.css' ?>">
