@@ -1,6 +1,5 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-
 <main>
   <div class="flex-row">
     <div>
