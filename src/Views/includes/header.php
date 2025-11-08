@@ -116,4 +116,4 @@
   <!-- Global CSS -->
   <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/globals/global.css' ?>">
   <!-- Icon Fonts -->
-  <link rel="stylesheet" href="<?= HOME_URL . 'assets/font/material-icons-and-font-awesome-icons/style.css' ?>">
+  <link rel="stylesheet" href="<?= HOME_URL . 'assets/font/bootstrap-icons/style.css' ?>">
