@@ -460,7 +460,7 @@ $(function () {
 
   function startPolling() {
     if (polling) return;
-    polling = setInterval(refreshCount, 20000);
+    polling = setInterval(refreshCount, 60000);
     refreshCount();
   }
   function stopPolling() {
@@ -673,6 +673,8 @@ $(function () {
   }
 });
 
+// Search functionality
+
 $(function () {
   let searchTimeout;
 
@@ -755,6 +757,7 @@ $(function () {
     });
   }
 
+  
   function displaySearchResults(results, $container) {
     if (results.length === 0) {
       $container.html(

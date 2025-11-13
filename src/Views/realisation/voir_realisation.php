@@ -123,11 +123,13 @@
 
                                         <?php if ($isOwner): ?>
                                             <div class="image-actions">
-                                                <a href="<?= HOME_URL . 'realisation/delete_image?realisation_uiid=' . $realisation->getUiid() ?>&imageId=<?= $image['idRealisationImage'] ?>"
-                                                    class="btn bg-danger btn-sm"
-                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?');">
-                                                    Supprimer
-                                                </a>
+                                                <form method="post" action="<?= HOME_URL . 'realisation/delete_image' ?>" style="display: inline;">
+                                                    <input type="hidden" name="realisation_uiid" value="<?= $realisation->getUiid() ?>">
+                                                    <input type="hidden" name="realisation_image_uiid" value="<?= $image['realisation_image_uiid'] ?>">
+                                                    <button type="submit" class="btn bg-danger btn-sm">
+                                                        Supprimer
+                                                    </button>
+                                                </form>
                                             </div>
                                         <?php endif; ?>
                                     </div>

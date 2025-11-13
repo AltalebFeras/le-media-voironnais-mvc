@@ -459,6 +459,21 @@ switch ($route) {
         }
         break;
 
+    case HOME_URL . 'realisation/add_image':
+        if ($method === 'POST' && $connectionSecured) {
+            $realisationController->addRealisationImage();
+        } else {
+            $homeController->page404();
+        }
+        break;
+    case HOME_URL . 'realisation/delete_image':
+        if ($method === 'POST' && $connectionSecured) {
+            $realisationController->deleteRealisationImage();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
     // Evenement routes
     case HOME_URL . 'mes_evenements':
         if ($connectionSecured) {
@@ -549,7 +564,7 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
-        // mes inscriptions routes
+    // mes inscriptions routes
     case HOME_URL . 'mes_inscriptions':
         if ($connectionSecured) {
             if ($method === 'POST') {

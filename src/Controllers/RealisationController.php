@@ -68,7 +68,7 @@ class RealisationController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_entreprises?action=voir&uiid=' . ($entreprise->getUiid() ?? '').'&error=true');
+            $this->redirect('mes_entreprises?action=voir&uiid=' . ($entreprise->getUiid() ?? '') . '&error=true');
         }
     }
 
@@ -102,7 +102,7 @@ class RealisationController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_entreprises?action=voir&uiid=' . ($entreprise->getUiid() ?? '').'&error=true');
+            $this->redirect('mes_entreprises?action=voir&uiid=' . ($entreprise->getUiid() ?? '') . '&error=true');
         }
     }
 
@@ -126,7 +126,7 @@ class RealisationController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('mes_entreprises?action=voir&uiid=' . ($entreprise->getUiid() ?? '').'&error=true');
+            $this->redirect('mes_entreprises?action=voir&uiid=' . ($entreprise->getUiid() ?? '') . '&error=true');
         }
     }
 
@@ -346,11 +346,11 @@ class RealisationController extends AbstractController
     /**
      * Add realisation image
      */
-    public function addImage()
+    public function addRealisationImage()
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $realisationUiid = isset($_GET['realisation_uiid']) ? htmlspecialchars(trim($_GET['realisation_uiid'])) : null;
+            $realisationUiid = isset($_POST['realisation_uiid']) ? htmlspecialchars(trim($_POST['realisation_uiid'])) : null;
             $idRealisation = $this->repo->getIdRealisationByUiid($realisationUiid);
             $realisation = $this->repo->getRealisationById($idRealisation);
 
@@ -366,34 +366,43 @@ class RealisationController extends AbstractController
             $helper = new Helper();
             $imagePath = $helper->handleImageUpload('realisationImage', 'realisations');
             $altText = isset($_POST['altText']) ? htmlspecialchars(trim($_POST['altText'])) : '';
+            $uiid = $helper->generateUiid();
 
             // Get current max sort order
             $maxSortOrder = $this->repo->getMaxImageSortOrder($idRealisation);
             $sortOrder = $maxSortOrder + 1;
 
-            $this->repo->addRealisationImage($idRealisation, $imagePath, $altText, $sortOrder);
+            $this->repo->addRealisationImage($uiid, $idRealisation, $imagePath, $altText, $sortOrder);
 
             $_SESSION['success'] = "L'image a été ajoutée avec succès";
-            $this->redirect('realisation/voir?realisation_uiid=' . $realisationUiid);
+            $this->redirect('entreprise/mes_realisations', [
+                'action' => 'voir',
+                'entreprise_uiid' => $entreprise->getUiid(),
+                'realisation_uiid' => $realisationUiid
+            ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('realisation/voir?realisation_uiid=' . $realisationUiid . '&error=true');
+            $this->redirect('entreprise/mes_realisations', [
+                'action' => 'voir',
+                'entreprise_uiid' => $entreprise->getUiid(),
+                'realisation_uiid' => $realisationUiid,
+                'error' => true
+            ]);
         }
     }
-
     /**
      * Delete realisation image
      */
-    public function deleteImage()
+    public function deleteRealisationImage()
     {
         try {
             $idUser = $_SESSION['idUser'];
-            $realisationUiid = isset($_GET['realisation_uiid']) ? htmlspecialchars(trim($_GET['realisation_uiid'])) : null;
-            $idRealisationImage = isset($_GET['imageId']) ? (int)$_GET['imageId'] : null;
+            $realisationUiid = isset($_POST['realisation_uiid']) ? htmlspecialchars(trim($_POST['realisation_uiid'])) : null;
+            $realisationImageUiid = isset($_POST['realisation_image_uiid']) ? htmlspecialchars(trim($_POST['realisation_image_uiid'])) : null;
             $idRealisation = $this->repo->getIdRealisationByUiid($realisationUiid);
             $realisation = $this->repo->getRealisationById($idRealisation);
 
-            if (!$realisation || !$idRealisation || !$idRealisationImage) {
+            if (!$realisation || !$idRealisation || !$realisationImageUiid) {
                 throw new Exception("Paramètres invalides");
             }
 
@@ -402,7 +411,7 @@ class RealisationController extends AbstractController
                 throw new Exception("Vous n'avez pas l'autorisation de modifier cette réalisation");
             }
 
-            $image = $this->repo->getRealisationImageById($idRealisationImage);
+            $image = $this->repo->getRealisationImageByUiid($realisationImageUiid);
             if (!$image || $image['idRealisation'] != $idRealisation) {
                 throw new Exception("Image introuvable");
             }
@@ -412,13 +421,22 @@ class RealisationController extends AbstractController
             $helper->handleDeleteImage($image['imagePath']);
 
             // Delete from database
-            $this->repo->deleteRealisationImage($idRealisationImage);
+            $this->repo->deleteRealisationImage($realisationImageUiid);
 
             $_SESSION['success'] = "L'image a été supprimée avec succès";
-            $this->redirect('realisation/voir?realisation_uiid=' . $realisationUiid);
+            $this->redirect('entreprise/mes_realisations', [
+                'action' => 'voir',
+                'entreprise_uiid' => $entreprise->getUiid(),
+                'realisation_uiid' => $realisationUiid
+            ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('realisation/voir?realisation_uiid=' . $realisationUiid . '&error=true');
+            $this->redirect('entreprise/mes_realisations', [
+                'action' => 'voir',
+                'entreprise_uiid' => $entreprise->getUiid(),
+                'realisation_uiid' => $realisationUiid,
+                'error' => true
+            ]);
         }
     }
 }
