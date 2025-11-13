@@ -11,6 +11,7 @@
     box-sizing: border-box;
     font-size: var(--font-size-base);
     letter-spacing: var(--letter-spacing-tight);
+    font-family: var(--font-family-system);
 }
 
 /* Material Icons Font Start */
@@ -34,6 +35,7 @@
     word-wrap: normal;
     direction: ltr;
     -webkit-font-feature-settings: 'liga';
+    font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
 
@@ -51,6 +53,7 @@ body {
     background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     color: var(--color-text);
     line-height: var(--line-height-base);
+    font-family: var(--font-family-system);
 }
 
 main {
@@ -72,6 +75,7 @@ h6 {
     font-weight: var(--font-weight-bold);
     color: var(--color-text);
     letter-spacing: var(--letter-spacing-normal);
+    font-family: var(--font-family-system);
 }
 
 h1 {
@@ -103,6 +107,7 @@ p {
     margin-bottom: var(--spacing-md);
     font-weight: var(--font-weight-normal);
     color: var(--color-dark-medium);
+    font-family: var(--font-family-system);
 }
 
 .logo {
@@ -137,6 +142,7 @@ header {
     font-weight: var(--font-weight-semibold);
     box-shadow: var(--shadow-sm);
     transition: background var(--transition-fast), box-shadow var(--transition-fast);
+    font-family: var(--font-family-system);
 }
 
 .btn-primary {
@@ -213,6 +219,7 @@ label {
     font-weight: var(--font-weight-semibold);
     margin: var(--spacing-sm) var(--spacing-xs);
     color: var(--color-text);
+    font-family: var(--font-family-system);
 }
 
 input {
@@ -223,6 +230,7 @@ input {
     margin: var(--spacing-sm) 0;
     background: var(--bg-main);
     transition: border var(--transition-fast);
+    font-family: var(--font-family-system);
 }
 
 input:focus {
@@ -242,6 +250,7 @@ select {
     padding: 0.7rem;
     margin: var(--spacing-sm) 0;
     background: var(--bg-main);
+    font-family: var(--font-family-system);
 }
 
 option {
@@ -257,6 +266,7 @@ textarea {
     margin: var(--spacing-sm) 0;
     background: var(--bg-main);
     resize: vertical;
+    font-family: var(--font-family-system);
 }
 
 input[type="submit"] {
