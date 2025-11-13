@@ -3,6 +3,7 @@
 use src\Controllers\AdminController;
 use src\Controllers\ContactController;
 use src\Controllers\EvenementController;
+use src\Controllers\FriendController;
 use src\Controllers\HomeController;
 use src\Controllers\NotificationController;
 use src\Controllers\RealisationController;
@@ -20,6 +21,7 @@ $evenementController = new EvenementController();
 $realisationController = new RealisationController();
 $notificationController = new NotificationController();
 $contactController = new ContactController();
+$friendController = new FriendController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -263,6 +265,68 @@ switch ($route) {
             $userController->displayDashboard();
         } else {
             $homeController->displayAuth();
+        }
+        break;
+
+    // Friend system routes
+    case HOME_URL . 'mes_amis':
+        if ($connectionSecured) {
+            if ($method === 'GET') {
+                $friendController->displayFriendsList();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
+    case HOME_URL . 'amis/ajouter':
+        if ($connectionSecured && $method === 'POST') {
+            $friendController->sendFriendRequest();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    case HOME_URL . 'amis/accepter':
+        if ($connectionSecured && $method === 'POST') {
+            $friendController->acceptFriendRequest();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    case HOME_URL . 'amis/refuser':
+        if ($connectionSecured && $method === 'POST') {
+            $friendController->refuseFriendRequest();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    case HOME_URL . 'amis/supprimer':
+        if ($connectionSecured && $method === 'POST') {
+            $friendController->removeFriend();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    case HOME_URL . 'amis/bloquer':
+        if ($connectionSecured && $method === 'POST') {
+            $friendController->blockFriend();
+        } else {
+            $homeController->page404();
+        }
+        break;
+
+    case HOME_URL . 'amis/rechercher':
+        if ($connectionSecured && $method === 'POST') {
+            $friendController->searchUsers();
+        } else {
+            $homeController->page404();
         }
         break;
 

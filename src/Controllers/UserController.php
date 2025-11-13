@@ -7,6 +7,7 @@ use Exception;
 use src\Abstracts\AbstractController;
 use src\Models\User;
 use src\Repositories\UserRepository;
+use src\Repositories\FriendRepository;
 use src\Services\Encrypt_decrypt;
 use src\Services\Mail;
 use src\Services\Helper;
@@ -14,9 +15,12 @@ use src\Services\Helper;
 class UserController extends AbstractController
 {
     protected $repo;
+    private $friendRepo;
+    
     public function __construct()
     {
         $this->repo = new UserRepository();
+        $this->friendRepo = new FriendRepository();
     }
     /**
      * Generate a unique fingerprint for the machine connected to the server.
@@ -943,16 +947,47 @@ class UserController extends AbstractController
     public function displayUserProfile(string $userSlug): void
     {
         try {
-            $user = $this->repo->getUserAndHisAssociationsAndEventsAndHisEntreprisesBySlug($userSlug);
+            $user = $this->repo->getUserBySlug($userSlug);
             
-            if (!$user || !$user['isActivated'] || $user['isBanned'] || $user['isDeleted']) {
-                throw new Exception('Utilisateur introuvable.');
+            if (!$user || $user->getIsDeleted() || $user->getIsBanned() || !$user->getIsActivated()) {
+                throw new Exception("Le profil demandé n'existe pas");
             }
 
-            $this->render('user/user_publique_profil', [
+            // Check friendship status if user is connected
+            $friendshipStatus = null;
+            $isOwnProfile = false;
+            
+            if (isset($_SESSION['idUser'])) {
+                $currentUserId = $_SESSION['idUser'];
+                $isOwnProfile = ($currentUserId === $user->getIdUser());
+                
+                if (!$isOwnProfile) {
+                    // Check if current user sent request to this user
+                    $sentStatus = $this->friendRepo->getFriendshipStatus($currentUserId, $user->getIdUser());
+                    // Check if this user sent request to current user
+                    $receivedStatus = $this->friendRepo->getFriendshipStatus($user->getIdUser(), $currentUserId);
+                    
+                    if ($sentStatus === 'accepte' || $receivedStatus === 'accepte') {
+                        $friendshipStatus = 'friends';
+                    } elseif ($sentStatus === 'en_attente') {
+                        $friendshipStatus = 'request_sent';
+                    } elseif ($receivedStatus === 'en_attente') {
+                        $friendshipStatus = 'request_received';
+                    } elseif ($sentStatus === 'bloque') {
+                        $friendshipStatus = 'blocked_by_me';
+                    } elseif ($receivedStatus === 'bloque') {
+                        $friendshipStatus = 'blocked_by_them';
+                    } else {
+                        $friendshipStatus = 'none';
+                    }
+                }
+            }
+
+            $this->render('user/profil_utilisateur', [
                 'user' => $user,
-                'userEvents' => $user['userEvents'],
-                'userAssociations' => $user['userAssociations']
+                'title' => $user->getFirstName() . ' ' . $user->getLastName(),
+                'friendshipStatus' => $friendshipStatus,
+                'isOwnProfile' => $isOwnProfile
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
