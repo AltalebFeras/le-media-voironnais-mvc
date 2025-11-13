@@ -3,6 +3,7 @@
 @import url('/assets/css/globals/animation.css');
 @import url('/assets/css/globals/notification.css');
 @import url('/assets/css/globals/pagination.css');
+@import url('/assets/css/globals/message-alert-toast.css');
 
 * {
     margin: 0;
