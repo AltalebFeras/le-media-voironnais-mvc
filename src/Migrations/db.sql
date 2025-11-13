@@ -540,6 +540,7 @@ CREATE TABLE IF NOT EXISTS `realisation` (
 DROP TABLE IF EXISTS `realisation_image`;
 CREATE TABLE IF NOT EXISTS `realisation_image` (
   `idRealisationImage` int NOT NULL AUTO_INCREMENT,
+  `uiid` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
   `idRealisation` int NOT NULL,
   `imagePath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `altText` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -548,8 +549,10 @@ CREATE TABLE IF NOT EXISTS `realisation_image` (
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`idRealisationImage`),
   UNIQUE KEY `UQ_idRealisationImage` (`idRealisationImage`),
+  UNIQUE KEY `uiid` (`uiid`),
   KEY `FK_realisation_TO_realisation_image` (`idRealisation`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- --------------------------------------------------------
 
