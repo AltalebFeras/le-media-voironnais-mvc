@@ -553,7 +553,6 @@ CREATE TABLE IF NOT EXISTS `realisation_image` (
   KEY `FK_realisation_TO_realisation_image` (`idRealisation`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
 -- --------------------------------------------------------
 
 --
@@ -636,6 +635,28 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_friend`
+--
+
+DROP TABLE IF EXISTS `user_friend`;
+CREATE TABLE IF NOT EXISTS `user_friend` (
+  `idUserFriend` int NOT NULL AUTO_INCREMENT,
+  `idUser` int NOT NULL,
+  `idFriend` int NOT NULL,
+  `status` enum('en_attente','accepte','refuse','bloque') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'en_attente',
+  `requestedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `respondedAt` datetime DEFAULT NULL,
+  `isActive` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`idUserFriend`),
+  UNIQUE KEY `unique_user_friend` (`idUser`,`idFriend`),
+  KEY `idx_user_friend_user` (`idUser`),
+  KEY `idx_user_friend_friend` (`idFriend`),
+  KEY `idx_user_friend_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -825,6 +846,14 @@ ALTER TABLE `user`
 ALTER TABLE `user_association`
   ADD CONSTRAINT `FK_association_TO_user_association` FOREIGN KEY (`idAssociation`) REFERENCES `association` (`idAssociation`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_user_TO_user_association` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_friend`
+--
+ALTER TABLE `user_friend`
+  ADD CONSTRAINT `FK_user_TO_user_friend_user` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_user_TO_user_friend_friend` FOREIGN KEY (`idFriend`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
