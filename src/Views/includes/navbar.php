@@ -98,7 +98,7 @@
                 <span>Mes Inscriptions</span>
               </a>
               <div class="nav-dropdown-divider"></div>
-              <a class="nav-dropdown-item" href="<?= HOME_URL . 'deconnexion' ?>">
+              <a class="btn-warning nav-dropdown-item" href="<?= HOME_URL . 'deconnexion' ?>">
                 <span class="material-icons">logout</span>
                 <span>Déconnexion</span>
               </a>

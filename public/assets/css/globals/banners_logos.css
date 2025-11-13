@@ -1,5 +1,22 @@
 /* General Banner and Profile/Logo Styles - Shared between User Account, Association, Entreprise, and Evenement */
 
+/* camera icon more_vert */
+.more_vert {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: solid 1px linear-gradient(90deg, var(--color-accent) 0%, var(--color-primary) 100%);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: var(--radius-circle);
+    color: white;
+}
+
+.more_vert_logo {
+    top: 105px;
+    right: 15px;
+}
+
 /* Banner Section Base Styles */
 .banner-section, .account-banner-section, .association-banner-section, .entreprise-banner-section, .evenement-banner-section {
     position: relative;
