@@ -1,4 +1,5 @@
 @import url('/assets/css/root.css');
+@import url('/assets/css/globals/icons-fonts.css');
 @import url('/assets/css/globals/navbar.css');
 @import url('/assets/css/globals/animation.css');
 @import url('/assets/css/globals/notification.css');
@@ -14,32 +15,6 @@
     font-family: var(--font-family-system);
 }
 
-/* Material Icons Font Start */
-@font-face {
-    font-family: 'Material Icons';
-    font-style: normal;
-    font-weight: var(--font-weight-normal);
-    src: url(./../../font/icons/google-material-icons.woff2) format('woff2');
-}
-
-.material-icons {
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    font-size: var(--font-size-icon);
-    line-height: var(--line-height-tight);
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-feature-settings: 'liga';
-    font-feature-settings: 'liga';
-    -webkit-font-smoothing: antialiased;
-}
-
-/* Material Icons Font End */
 
 html {
     height: 100%;
@@ -139,7 +114,6 @@ header {
     border: none;
     padding: 0.7rem 1.2rem;
     border-radius: var(--radius-round);
-    font-weight: var(--font-weight-semibold);
     box-shadow: var(--shadow-sm);
     transition: background var(--transition-fast), box-shadow var(--transition-fast);
     font-family: var(--font-family-system);
