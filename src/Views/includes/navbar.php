@@ -97,6 +97,10 @@
                 <span class="material-icons">event_available</span>
                 <span>Mes Inscriptions</span>
               </a>
+              <a class="nav-dropdown-item" href="<?= HOME_URL . 'mes_amis' ?>">
+                <span class="material-icons">person_add</span>
+                <span>Mes Amis</span>
+              </a>
               <div class="nav-dropdown-divider"></div>
               <a class="btn-warning nav-dropdown-item" href="<?= HOME_URL . 'deconnexion' ?>">
                 <span class="material-icons">logout</span>

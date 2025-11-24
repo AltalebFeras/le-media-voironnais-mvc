@@ -11,7 +11,7 @@
 				<h2>Oups ! Page introuvable</h2>
 				<p>La page que vous recherchez n'existe pas, a été déplacée ou supprimée.</p>
 				<p>Ne vous inquiétez pas, nous sommes là pour vous aider à retrouver votre chemin !</p>
-
+				<?php require_once __DIR__ . '/../includes/messages.php'; ?>
 				<div class="error_description">
 					<h3>Que pouvez-vous faire ?</h3>
 					<ul>

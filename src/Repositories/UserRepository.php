@@ -28,6 +28,30 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
+    public function getUserByUiid($uiid): ?User
+    {
+        try {
+            $query = 'SELECT * FROM user WHERE uiid = :uiid';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['uiid' => $uiid]);
+            $user = $req->fetchObject(User::class);
+            return $user !== false ? $user : null;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+    public function getUserBySlug($slug): ?User
+    {
+        try {
+            $query = 'SELECT * FROM user WHERE slug = :slug';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['slug' => $slug]);
+            $user = $req->fetchObject(User::class);
+            return $user !== false ? $user : null;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
     public function getUserByToken($token): ?User
     {
         try {
@@ -108,19 +132,19 @@ class UserRepository
                       FROM user u
                       JOIN role r ON u.idRole = r.idRole
                       WHERE u.slug = :slug AND u.isActivated = 1 AND u.isBanned = 0 AND u.isDeleted = 0';
-     
+
             $req = $this->DBuser->prepare($query);
             $req->execute(['slug' => $slug]);
             $user = $req->fetch(PDO::FETCH_ASSOC);
-            
+
             if (!$user) {
                 return [];
             }
-            
+
             // Decode JSON arrays
             $user['userAssociations'] = $user['userAssociations'] ? json_decode($user['userAssociations'], true) : [];
             $user['userEvents'] = $user['userEvents'] ? json_decode($user['userEvents'], true) : [];
-            
+
             return $user;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
