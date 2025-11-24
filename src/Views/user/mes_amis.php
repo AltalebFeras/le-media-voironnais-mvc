@@ -3,8 +3,6 @@
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <main class="dashboard-container">
-
-
 <div class="friends-container">
     <!-- Header -->
     <div class="friends-header">
@@ -186,7 +184,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title">Rechercher un ami</h3>
-            <button onclick="closeSearchModal()" class="modal-close">
+            <button type="button" onclick="closeSearchModal()" class="modal-close">
                 <span class="material-icons">close</span>
             </button>
         </div>
@@ -197,9 +195,10 @@
                 id="userSearch" 
                 placeholder="Rechercher par nom..." 
                 class="search-input"
+                autocomplete="off"
             >
             
-            <div id="searchResults" class="search-results"></div>
+            <div class="searchFriendsResults"></div>
         </div>
     </div>
 </div>
@@ -209,14 +208,14 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3 id="friendOptionsTitle" class="modal-title"></h3>
-            <button onclick="closeFriendOptionsModal()" class="modal-close">
+            <button type="button" onclick="closeFriendOptionsModal()" class="modal-close">
                 <span class="material-icons">close</span>
             </button>
         </div>
         
         <div class="modal-body">
             <div class="option-actions">
-                <form method="POST" action="<?= HOME_URL ?>amis/supprimer" id="removeFriendForm">
+                <form method="POST" id="removeFriendForm" style="margin: 0;">
                     <input type="hidden" name="csrf_token" value="<?= $this->generateCsrfToken() ?>">
                     <input type="hidden" name="friend_uiid" id="removeFriendUiid">
                     <button 
@@ -229,7 +228,7 @@
                     </button>
                 </form>
                 
-                <form method="POST" action="<?= HOME_URL ?>amis/bloquer" id="blockFriendForm">
+                <form method="POST" id="blockFriendForm" style="margin: 0;">
                     <input type="hidden" name="csrf_token" value="<?= $this->generateCsrfToken() ?>">
                     <input type="hidden" name="friend_uiid" id="blockFriendUiid">
                     <button 
@@ -246,122 +245,5 @@
     </div>
 </div>
 </main>
-
-<script>
-// Tab functionality
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const tabName = btn.dataset.tab;
-        
-        // Update active tab button
-        document.querySelectorAll('.tab-btn').forEach(b => {
-            b.classList.remove('active');
-        });
-        btn.classList.add('active');
-        
-        // Show/hide tab content
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        document.getElementById(tabName + '-tab').classList.add('active');
-    });
-});
-
-// Search functionality
-function openSearchModal() {
-    document.getElementById('searchModal').classList.add('show');
-    document.getElementById('userSearch').focus();
-}
-
-function closeSearchModal() {
-    document.getElementById('searchModal').classList.remove('show');
-    document.getElementById('userSearch').value = '';
-    document.getElementById('searchResults').innerHTML = '';
-}
-
-// User search
-let searchTimeout;
-document.getElementById('userSearch').addEventListener('input', (e) => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => {
-        searchUsers(e.target.value);
-    }, 300);
-});
-
-function searchUsers(query) {
-    if (query.length < 2) {
-        document.getElementById('searchResults').innerHTML = '';
-        return;
-    }
-    
-    fetch('<?= HOME_URL ?>amis/rechercher', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: 'query=' + encodeURIComponent(query)
-    })
-    .then(response => response.json())
-    .then(data => {
-        const resultsDiv = document.getElementById('searchResults');
-        
-        if (data.success && data.users.length > 0) {
-            resultsDiv.innerHTML = data.users.map(user => `
-                <div class="search-result">
-                    <div class="search-user-info">
-                        <img src="${user.avatar}" alt="Avatar" class="search-user-avatar">
-                        <div>
-                            <h4 class="search-user-name">${user.name}</h4>
-                            ${user.bio ? `<p class="search-user-bio">${user.bio}</p>` : ''}
-                        </div>
-                    </div>
-                    <form method="POST" action="<?= HOME_URL ?>amis/ajouter" class="inline">
-                        <input type="hidden" name="csrf_token" value="<?= $this->generateCsrfToken() ?>">
-                        <input type="hidden" name="friend_uiid" value="${user.uiid}">
-                        <button type="submit" class="add-user-btn">
-                            Ajouter
-                        </button>
-                    </form>
-                </div>
-            `).join('');
-        } else {
-            resultsDiv.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 1rem;">Aucun utilisateur trouvé</p>';
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-    });
-}
-
-// Friend options modal
-function openFriendOptionsModal(friendUiid, friendName) {
-    document.getElementById('friendOptionsTitle').textContent = friendName;
-    document.getElementById('removeFriendUiid').value = friendUiid;
-    document.getElementById('blockFriendUiid').value = friendUiid;
-    document.getElementById('friendOptionsModal').classList.add('show');
-}
-
-function closeFriendOptionsModal() {
-    document.getElementById('friendOptionsModal').classList.remove('show');
-}
-
-// Friend options buttons
-document.querySelectorAll('.friend-options-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const friendUiid = btn.dataset.friendUiid;
-        const friendName = btn.dataset.friendName;
-        openFriendOptionsModal(friendUiid, friendName);
-    });
-});
-
-// Close modals on outside click
-document.getElementById('searchModal').addEventListener('click', (e) => {
-    if (e.target === e.currentTarget) closeSearchModal();
-});
-
-document.getElementById('friendOptionsModal').addEventListener('click', (e) => {
-    if (e.target === e.currentTarget) closeFriendOptionsModal();
-});
-</script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

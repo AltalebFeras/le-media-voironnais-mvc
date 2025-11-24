@@ -228,15 +228,20 @@ class FriendController extends AbstractController
      */
     public function searchUsers(): void
     {
-        header('Content-Type: application/json');
+        header('Content-Type: application/json; charset=utf-8');
 
         try {
-            $idUser = $_SESSION['idUser'];
+            $idUser = $_SESSION['idUser'] ?? null;
+            if (!$idUser) {
+                echo json_encode(['success' => false, 'error' => 'Utilisateur non authentifié']);
+                exit;
+            }
+
             $query = isset($_POST['query']) ? trim($_POST['query']) : '';
 
             if (strlen($query) < 2) {
                 echo json_encode(['success' => false, 'error' => 'La recherche doit contenir au moins 2 caractères']);
-                return;
+                exit;
             }
 
             $users = $this->friendRepo->searchUsers($idUser, $query);
@@ -253,8 +258,10 @@ class FriendController extends AbstractController
             }
 
             echo json_encode(['success' => true, 'users' => $results]);
+            exit;
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            exit;
         }
     }
 }

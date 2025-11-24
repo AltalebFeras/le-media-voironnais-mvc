@@ -27,6 +27,13 @@
     <li><a href="<?= HOME_URL . 'mentions_legales' ?>">Mentions légales</a></li>
     <li><a href="<?= HOME_URL . 'nous_contacter' ?>">Nous contacter</a></li>
   </ul>
+  
+  <!-- Global variables for JavaScript -->
+  <script>
+    window.HOME_URL = "<?= HOME_URL ?>";
+    window.BASE_URL = "<?= BASE_URL ?? '' ?>";
+  </script>
+  
   <script src="<?= HOME_URL . 'assets/javascript/script.js' ?>"></script>
 </footer>
 </body>
