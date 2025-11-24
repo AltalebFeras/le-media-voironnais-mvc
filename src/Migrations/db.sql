@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `association` (
   KEY `idx_association_user` (`idUser`),
   KEY `idx_association_active` (`isActive`),
   KEY `idx_association_ville` (`idVille`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
   `subject` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `status` enum('nouveau','lu','traite','archive') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'nouveau',
-  `response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `response` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `repliedAt` datetime DEFAULT NULL,
   `uiid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
   KEY `idx_contact_email` (`email`),
   KEY `idx_contact_status` (`status`),
   KEY `idx_contact_created` (`createdAt`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -193,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `entreprise` (
   KEY `idx_entreprise_user` (`idUser`),
   KEY `idx_entreprise_active` (`isActive`),
   KEY `idx_entreprise_ville` (`idVille`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -239,7 +239,7 @@ CREATE TABLE IF NOT EXISTS `evenement` (
   KEY `idx_evenement_association` (`idAssociation`),
   KEY `idx_evenement_entreprise` (`idEntreprise`),
   KEY `idx_evenement_category` (`idEventCategory`)
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -339,7 +339,7 @@ CREATE TABLE IF NOT EXISTS `event_favourite` (
   UNIQUE KEY `unique_event_favourite` (`idUser`,`idEvenement`),
   KEY `idx_event_favourite_user` (`idUser`),
   KEY `idx_event_favourite_event` (`idEvenement`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -422,7 +422,7 @@ CREATE TABLE IF NOT EXISTS `event_participant` (
   KEY `idx_event_participant_evenement` (`idEvenement`),
   KEY `idx_event_participant_user` (`idUser`),
   KEY `idx_event_participant_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -500,7 +500,7 @@ CREATE TABLE IF NOT EXISTS `notification` (
   KEY `idx_notification_type_created` (`type`,`createdAt`),
   KEY `idx_notification_priority_created` (`priority`,`createdAt`),
   KEY `FK_evenement_TO_notification` (`idEvenement`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -529,7 +529,7 @@ CREATE TABLE IF NOT EXISTS `realisation` (
   KEY `idx_realisation_entreprise` (`idEntreprise`),
   KEY `idx_realisation_public` (`isPublic`),
   KEY `idx_realisation_featured` (`isFeatured`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -615,7 +615,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `idx_user_email` (`email`(250)),
   KEY `idx_user_online` (`isOnline`),
   KEY `idx_user_last_seen` (`lastSeen`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -634,7 +634,7 @@ CREATE TABLE IF NOT EXISTS `user_association` (
   PRIMARY KEY (`idUserAssociation`),
   UNIQUE KEY `unique_user_association` (`idUser`,`idAssociation`),
   KEY `FK_association_TO_user_association` (`idAssociation`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -656,7 +656,7 @@ CREATE TABLE IF NOT EXISTS `user_friend` (
   KEY `idx_user_friend_user` (`idUser`),
   KEY `idx_user_friend_friend` (`idFriend`),
   KEY `idx_user_friend_status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
