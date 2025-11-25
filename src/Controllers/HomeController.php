@@ -17,7 +17,52 @@ class HomeController extends AbstractController
 
     public function displayHomepage(): void
     {
-        $this->render('home/accueil');
+        try {
+            // Fetch upcoming events (next 6 events)
+            $upcomingEvents = $this->homeRepository->getUpcomingEvents(6);
+            
+            // Fetch recent events (last 6 events that already happened)
+            $recentEvents = $this->homeRepository->getRecentEvents(6);
+            
+            // Fetch active enterprises (6 most recent)
+            $enterprises = $this->homeRepository->getRecentActiveEnterprises(6);
+            
+            // Fetch active associations (6 most recent)
+            $associations = $this->homeRepository->getRecentActiveAssociations(6);
+            
+            // Fetch featured cities (6 most active cities)
+            $featuredCities = $this->homeRepository->getFeaturedCities(6);
+            
+            // Get statistics
+            $stats = [
+                'totalEvents' => $this->homeRepository->getTotalEventsCount(),
+                'totalEnterprises' => $this->homeRepository->getTotalActiveEnterprisesCount(),
+                'totalAssociations' => $this->homeRepository->getTotalActiveAssociationsCount(),
+            ];
+            
+            $this->render('home/accueil', [
+                'upcomingEvents' => $upcomingEvents,
+                'recentEvents' => $recentEvents,
+                'enterprises' => $enterprises,
+                'associations' => $associations,
+                'stats' => $stats,
+                'title' => 'Accueil - Le Média Voironnais',
+                'description' => 'Découvrez les événements, entreprises et associations de votre région'
+            ]);
+        } catch (Exception $e) {
+            $this->render('home/accueil', [
+                'upcomingEvents' => [],
+                'recentEvents' => [],
+                'enterprises' => [],
+                'associations' => [],
+                'stats' => [
+                    'totalEvents' => 0,
+                    'totalEnterprises' => 0,
+                    'totalAssociations' => 0,
+                    'totalCities' => 0
+                ]
+            ]);
+        }
     }
 
     public function displayAuth(): void
