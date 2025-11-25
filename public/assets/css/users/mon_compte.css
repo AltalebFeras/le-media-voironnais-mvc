@@ -49,6 +49,52 @@
 }
 
 /* Banner buttons overlay */
+#toggleBannerActions {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10;
+    background: rgba(58, 124, 165, 0.9);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s, transform 0.2s;
+}
+
+#toggleBannerActions:hover {
+    background: rgba(58, 124, 165, 1);
+    transform: scale(1.1);
+}
+
+#toggleLogoActions {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    z-index: 25;
+    background: rgba(58, 124, 165, 0.9);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s, transform 0.2s;
+}
+
+#toggleLogoActions:hover {
+    background: rgba(58, 124, 165, 1);
+    transform: scale(1.1);
+}
+
 .account-banner-actions {
     position: absolute;
     top: 60px;
