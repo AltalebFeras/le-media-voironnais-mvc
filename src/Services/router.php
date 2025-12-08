@@ -10,6 +10,7 @@ use src\Controllers\RealisationController;
 use src\Controllers\UserController;
 use src\Controllers\AssociationController;
 use src\Controllers\EntrepriseController;
+use src\Controllers\PostController;
 use src\Services\ConfigRouter;
 
 $homeController = new HomeController();
@@ -22,6 +23,7 @@ $realisationController = new RealisationController();
 $notificationController = new NotificationController();
 $contactController = new ContactController();
 $friendController = new FriendController();
+$postController = new PostController();
 
 $route = $_SERVER['REDIRECT_URL'] ?? '/';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -265,6 +267,60 @@ switch ($route) {
             $userController->displayDashboard();
         } else {
             $homeController->displayAuth();
+        }
+        break;
+
+    // User posts routes (connected users only)
+    case HOME_URL . 'mes_posts':
+        if ($connectionSecured) {
+            $postController->myPosts();
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
+    case HOME_URL . 'post/ajouter':
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                $postController->createPost();
+            } else {
+                $postController->showAddPostForm();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
+    case HOME_URL . 'post/modifier':
+        if ($connectionSecured) {
+            if ($method === 'POST') {
+                if (isset($_POST['action']) && $_POST['action'] === 'modifier_image') {
+                    $postController->updatePostImage();
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'supprimer_image') {
+                    $postController->deletePostImage();
+                } elseif (isset($_POST['action']) && $_POST['action'] === 'modifier_post') {
+                    $postController->updatePost();
+                } else {
+                    $homeController->page404();
+                }
+            } elseif ($method === 'GET' && isset($_GET['uiid'])) {
+                $postController->showEditPostForm();
+            } else {
+                $homeController->page404();
+            }
+        } else {
+            $_SESSION['errors'] = ['Vous devez être connecté pour accéder à cette page.'];
+            $homeController->displayAuth();
+        }
+        break;
+
+    case HOME_URL . 'post/supprimer':
+        if ($connectionSecured && $method === 'POST') {
+            $postController->deletePost();
+        } else {
+            $homeController->page404();
         }
         break;
 

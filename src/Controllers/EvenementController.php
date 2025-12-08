@@ -16,7 +16,7 @@ use src\Services\Helper;
 
 use src\Services\Mail;
 use function PHPSTORM_META\type;
-
+// TODO ADD EVENT CREATOR AS A PARTICIPANT AUTOMATICALLY IF HE ACTIVATE THIS OPTION ? ALSO ADD POST FOR USER- ASSOCIATION - ENTREPRISE
 class EvenementController extends AbstractController
 {
     private $repo;

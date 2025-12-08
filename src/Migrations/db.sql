@@ -859,3 +859,34 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- Table: post
+-- Description: Stores post created by users, associations, and enterprises
+-- Note: This table must be created AFTER users, associations, and entreprises tables
+CREATE TABLE IF NOT EXISTS post (
+    idPost INT AUTO_INCREMENT PRIMARY KEY,
+    uiid VARCHAR(16) UNIQUE NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    imagePath VARCHAR(500) DEFAULT NULL,
+    idUser INT NOT NULL,
+    idAssociation INT DEFAULT NULL,
+    idEntreprise INT DEFAULT NULL,
+    authorType ENUM('user', 'association', 'entreprise') NOT NULL,
+    isPublished BOOLEAN DEFAULT FALSE,
+    createdAt DATETIME NOT NULL,
+    updatedAt DATETIME DEFAULT NULL,
+    
+    -- Foreign keys (only add if referenced tables exist)
+    CONSTRAINT fk_post_user FOREIGN KEY (idUser) REFERENCES user(idUser) ON DELETE CASCADE,
+    CONSTRAINT fk_post_association FOREIGN KEY (idAssociation) REFERENCES association(idAssociation) ON DELETE CASCADE,
+    CONSTRAINT fk_post_entreprise FOREIGN KEY (idEntreprise) REFERENCES entreprise(idEntreprise) ON DELETE CASCADE,
+    
+    -- Indexes for better performance
+    INDEX idx_published_created (isPublished, createdAt DESC),
+    INDEX idx_author_type (authorType),
+    INDEX idx_user (idUser),
+    INDEX idx_association (idAssociation),
+    INDEX idx_entreprise (idEntreprise),
+    INDEX idx_uiid (uiid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='post/actualités créés par les utilisateurs, associations et entreprises';

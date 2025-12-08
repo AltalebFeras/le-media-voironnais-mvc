@@ -60,11 +60,11 @@ class BadWordsFilter
         // Variations créatives
         'pd', 'pédé', 'pede', 'tapette', 'tarlouse', 'tarlouze', 'tarlouze',
         'conass', 'konass', 'salop', 'salo', 'salaud', 'salo',
-        'encul', 'nculé', 'enfoiré', 'nfoiré', 'nfoiré',
+        'encul', 'nculé', 'enfoiré', 'nfoiré', 
         
         // Insultes corporelles
         'gros', 'grosse', 'gras', 'grasse', 'obèse', 'baleine', 'hippopotame',
-        'laid', 'laide', 'moche', 'tronche', 'gueule', 'tête',
+        'laid', 'laide', 'moche', 'tronche', 'gueule', 'face de rat', 'face de cochon',
         
         // Autres termes vulgaires
         'caca', 'pipi', 'crotte', 'pet', 'péter', 'roter', 'vomir', 'gerber',
