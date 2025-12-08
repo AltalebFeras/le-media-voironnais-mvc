@@ -30,6 +30,17 @@
         </a>
 
     </div>
+
+    <div class="quick-actions">
+        <a href="<?= HOME_URL ?>post/ajouter" class="btn btn-primary">
+            <span class="material-icons">add</span>
+            Créer une actualité
+        </a>
+        <a href="<?= HOME_URL ?>evenement/ajouter" class="btn btn-primary">
+            <span class="material-icons">event</span>
+            Créer un événement
+        </a>
+    </div>
 </main>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

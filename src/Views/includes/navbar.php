@@ -39,6 +39,10 @@
             <span class="material-icons">event</span>
             <span class="nav-text">Événements</span>
           </a></li>
+          <li><a class="link nav-item" href="<?= HOME_URL . 'actu' ?>">
+            <span class="material-icons">article</span>
+            <span class="nav-text">Actualités</span>
+          </a></li>
           
 
         <!-- Structures Dropdown -->

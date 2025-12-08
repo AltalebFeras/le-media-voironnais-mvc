@@ -171,7 +171,7 @@ class PostRepository
 
     public function getIdPostByUiid(string $uiid): ?int
     {
-        $sql = "SELECT idPost FROM posts WHERE uiid = :uiid";
+        $sql = "SELECT idPost FROM post WHERE uiid = :uiid";
         $stmt = $this->DB->prepare($sql);
         $stmt->execute(['uiid' => $uiid]);
         $result = $stmt->fetchColumn();
