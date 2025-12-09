@@ -1,8 +1,9 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/globals/banners_logos.css' ?>">
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/entreprises/voir_entreprise.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
-<main class="p-0"">
+<main class="p-0 entreprise-detail-container">
     <?php if (!$entreprise): ?>
         <div class="custom-alert custom-alert-danger" style="margin: 20px;">
             <p>L'entreprise demandée n'existe pas ou vous n'avez pas les permissions nécessaires pour y accéder.</p>
@@ -156,7 +157,7 @@
                 </div>
             </div>
 
-            <div class="flex-row" style="gap: 20px;">
+            <div class="flex-row align-items-start" style="gap: 20px;">
                 <!-- Main Details Section -->
                 <div class="max-width-66">
                     <div class="card mb-4">

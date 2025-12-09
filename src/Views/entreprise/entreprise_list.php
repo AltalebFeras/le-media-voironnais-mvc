@@ -1,6 +1,7 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/entreprises/entreprise_list.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
-<main>
+<main class="entreprise-list-container">
 
     <div class="container mt-4">
         <div class="row">

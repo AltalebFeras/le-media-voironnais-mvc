@@ -4,9 +4,10 @@ $description = $entreprise['description'] ? substr(strip_tags($entreprise['descr
 ?>
 
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/entreprises/entreprise_publique_detail.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
-<div class="container mt-4">
+<div class="container mt-4 entreprise-detail-page">
     <div class="row">
         <div class="col-12">
             <!-- Enterprise Banner -->
