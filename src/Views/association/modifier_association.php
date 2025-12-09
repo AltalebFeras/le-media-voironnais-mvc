@@ -1,14 +1,17 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/associations/modifier_association.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
-<main>
-    <div class="flex-row justify-content-between">
-        <h1>Modifier l'association</h1>
-        <a href="<?=HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getUiid() ?>" class="">
-            <span class="material-icons btn" style="color:white;">arrow_back</span>
-        </a>
+<main class="modifier-association-container">
+    <div class="modifier-association-header">
+        <div class="flex-row justify-content-between">
+            <h1>Modifier l'association</h1>
+            <a href="<?=HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getUiid() ?>" class="">
+                <span class="material-icons btn" style="color:white;">arrow_back</span>
+            </a>
+        </div>
     </div>
-    <div class="flex-row">
+    <div class="flex-row align-items-start">
         <div class="max-width-50">
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 

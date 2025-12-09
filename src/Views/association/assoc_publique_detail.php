@@ -4,242 +4,227 @@ $description = $association['description'] ? substr(strip_tags($association['des
 ?>
 
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/associations/assoc_publique_detail.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <!-- Association Banner -->
-            <?php if ($association['bannerPath']): ?>
-                <div class="association-banner mb-4">
-                    <img src="<?= htmlspecialchars($association['bannerPath']) ?>" 
-                         alt="Bannière <?= htmlspecialchars($association['name']) ?>" 
-                         class="img-fluid w-100" 
-                         style="height: 300px; object-fit: cover; border-radius: 8px;">
-                </div>
-            <?php endif; ?>
-
-            <div class="row">
-                <div class="col-lg-8">
-                    <!-- Association Details -->
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-body">
-                            <div class="d-flex align-items-start mb-4">
-                                <img src="<?= $association['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-association.png' ?>" 
-                                     alt="Logo <?= htmlspecialchars($association['name']) ?>" 
-                                     class="rounded me-4" 
-                                     style="width: 100px; height: 100px; object-fit: cover;">
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <h1 class="h2 mb-2"><?= htmlspecialchars($association['name']) ?></h1>
-                                            <span class="badge bg-info text-dark">
-                                                <i class="material-icons me-1" style="font-size: 14px;">groups</i>
-                                                Association
-                                            </span>
-                                        </div>
-                                        <div class="text-end">
-                                            <small class="text-muted">
-                                                Créée en <?= date('M Y', strtotime($association['createdAt'])) ?>
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
+<main class="association-detail-page p-0">
+    <!-- Association Hero Banner -->
+    <div class="association-hero">
+        <?php if ($association['bannerPath']): ?>
+            <img src="<?= BASE_URL . HOME_URL .  htmlspecialchars($association['bannerPath']) ?>" 
+                 alt="Bannière <?= htmlspecialchars($association['name']) ?>" 
+                 class="association-hero-image">
+        <?php endif; ?>
+        
+        <div class="association-hero-overlay">
+            <div class="association-hero-content">
+                <div class="association-header-info">
+                    <img src="<?= BASE_URL . HOME_URL .  htmlspecialchars($association['logoPath'] ?? 'assets/images/default-association.png') ?>" 
+                         alt="Logo <?= htmlspecialchars($association['name']) ?>" 
+                         class="association-logo-large">
+                    
+                    <div class="association-title-section">
+                        <h1><?= htmlspecialchars($association['name']) ?></h1>
+                        <span class="association-badge">
+                            <span class="material-icons">groups</span>
+                            Association
+                        </span>
+                        <?php if ($association['ville_nom_reel']): ?>
+                            <div class="location-info">
+                                <span class="material-icons">location_on</span>
+                                <?= htmlspecialchars($association['ville_nom_reel']) ?>
                             </div>
-
-                            <!-- Contact Information -->
-                            <div class="row mb-4">
-                                <?php if ($association['address']): ?>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex align-items-center">
-                                            <i class="material-icons text-primary me-3">location_on</i>
-                                            <div>
-                                                <strong>Adresse</strong><br>
-                                                <span class="text-muted"><?= htmlspecialchars($association['address']) ?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-
-                                <?php if ($association['phone']): ?>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex align-items-center">
-                                            <i class="material-icons text-primary me-3">phone</i>
-                                            <div>
-                                                <strong>Téléphone</strong><br>
-                                                <a href="tel:<?= htmlspecialchars($association['phone']) ?>" class="text-decoration-none">
-                                                    <?= htmlspecialchars($association['phone']) ?>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-
-                                <?php if ($association['email']): ?>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex align-items-center">
-                                            <i class="material-icons text-primary me-3">email</i>
-                                            <div>
-                                                <strong>Email</strong><br>
-                                                <a href="mailto:<?= htmlspecialchars($association['email']) ?>" class="text-decoration-none">
-                                                    <?= htmlspecialchars($association['email']) ?>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-
-                                <?php if ($association['website']): ?>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex align-items-center">
-                                            <i class="material-icons text-primary me-3">language</i>
-                                            <div>
-                                                <strong>Site web</strong><br>
-                                                <a href="<?= htmlspecialchars($association['website']) ?>" 
-                                                   target="_blank" 
-                                                   class="text-decoration-none">
-                                                    <?= htmlspecialchars($association['website']) ?>
-                                                    <i class="material-icons ms-1" style="font-size: 16px;">open_in_new</i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-
-                            <!-- Description -->
-                            <?php if ($association['description']): ?>
-                                <div class="mb-4">
-                                    <h4>À propos de l'association</h4>
-                                    <div class="text-content">
-                                        <?= nl2br(htmlspecialchars($association['description'])) ?>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-
-                            <!-- Members -->
-                            <?php if (!empty($association['members'])): ?>
-                                <div class="border-top pt-4">
-                                    <h4 class="mb-3">
-                                        <i class="material-icons me-2">people</i>
-                                        Membres (<?= count($association['members']) ?>)
-                                    </h4>
-                                    <div class="row">
-                                        <?php foreach (array_slice($association['members'], 0, 6) as $member): ?>
-                                            <div class="col-md-4 mb-3">
-                                                <div class="d-flex align-items-center">
-                                                    <img src="<?= $member['avatarPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-avatar.png' ?>" 
-                                                         alt="<?= htmlspecialchars($member['firstName']) ?>" 
-                                                         class="rounded-circle me-3" 
-                                                         style="width: 50px; height: 50px; object-fit: cover;">
-                                                    <div>
-                                                        <h6 class="mb-1">
-                                                            <a href="<?= HOME_URL . 'profil/' . $member['slug'] ?>" class="text-decoration-none">
-                                                                <?= htmlspecialchars($member['firstName'] . ' ' . $member['lastName']) ?>
-                                                            </a>
-                                                        </h6>
-                                                        <small class="text-muted"><?= ucfirst($member['role']) ?></small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                    <?php if (count($association['members']) > 6): ?>
-                                        <div class="text-center mt-3">
-                                            <button class="btn btn-outline-primary">
-                                                Voir tous les membres
-                                            </button>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <!-- Recent Events -->
-                    <?php if (!empty($association['associationEvents'])): ?>
-                        <div class="card shadow-sm">
-                            <div class="card-header">
-                                <h4 class="mb-0">
-                                    <i class="material-icons me-2">event</i>
-                                    Événements récents
-                                </h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <?php foreach (array_slice($association['associationEvents'], 0, 4) as $event): ?>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="card h-100">
-                                                <?php if ($event['bannerPath']): ?>
-                                                    <img src="<?= htmlspecialchars($event['bannerPath']) ?>" 
-                                                         class="card-img-top" 
-                                                         alt="<?= htmlspecialchars($event['title']) ?>"
-                                                         style="height: 150px; object-fit: cover;">
-                                                <?php endif; ?>
-                                                <div class="card-body">
-                                                    <h6 class="card-title">
-                                                        <a href="<?= HOME_URL . 'evenements/' . $event['slug'] ?>" class="text-decoration-none">
-                                                            <?= htmlspecialchars($event['title']) ?>
-                                                        </a>
-                                                    </h6>
-                                                    <small class="text-muted">
-                                                        <i class="material-icons me-1" style="font-size: 16px;">schedule</i>
-                                                        <?= date('d/m/Y', strtotime($event['startDate'])) ?>
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                </div>
-
-                <div class="col-lg-4">
-                    <!-- Join Association Card -->
-                    <div class="card shadow-sm sticky-top" style="top: 100px;">
-                        <div class="card-header text-center">
-                            <h5 class="mb-0">Rejoindre l'association</h5>
-                        </div>
-                        <div class="card-body text-center">
-                            <p class="text-muted mb-3">
-                                Participez aux activités et projets de l'association !
-                            </p>
-                            
-                            <button class="btn btn-primary btn-lg w-100 mb-3" onclick="joinAssociation()">
-                                <i class="material-icons me-2">group_add</i>
-                                Demander à rejoindre
-                            </button>
-
-                            <div class="d-flex gap-2 justify-content-center">
-                                <?php if ($association['phone']): ?>
-                                    <a href="tel:<?= htmlspecialchars($association['phone']) ?>" 
-                                       class="btn btn-outline-primary" 
-                                       title="Appeler">
-                                        <i class="material-icons">phone</i>
-                                    </a>
-                                <?php endif; ?>
-
-                                <?php if ($association['email']): ?>
-                                    <a href="mailto:<?= htmlspecialchars($association['email']) ?>" 
-                                       class="btn btn-outline-primary" 
-                                       title="Email">
-                                        <i class="material-icons">email</i>
-                                    </a>
-                                <?php endif; ?>
-
-                                <button class="btn btn-outline-primary" onclick="shareAssociation()" title="Partager">
-                                    <i class="material-icons">share</i>
-                                </button>
-                            </div>
+                        <?php endif; ?>
+                        <div class="member-count">
+                            <?= !empty($association['members']) ? count($association['members']) . ' membres' : 'Aucun membre' ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Main Content -->
+    <div class="association-content">
+        <div class="association-container">
+            <!-- Left Column - Main Details -->
+            <div>
+                <!-- Contact Information -->
+                <div class="detail-card">
+                    <h3>Coordonnées</h3>
+                    <div class="contact-grid">
+                        <?php if ($association['address']): ?>
+                            <div class="contact-item">
+                                <span class="material-icons">location_on</span>
+                                <div class="contact-item-content">
+                                    <strong>Adresse</strong>
+                                    <?= htmlspecialchars($association['address']) ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($association['phone']): ?>
+                            <div class="contact-item">
+                                <span class="material-icons">phone</span>
+                                <div class="contact-item-content">
+                                    <strong>Téléphone</strong>
+                                    <a href="tel:<?= htmlspecialchars($association['phone']) ?>">
+                                        <?= htmlspecialchars($association['phone']) ?>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($association['email']): ?>
+                            <div class="contact-item">
+                                <span class="material-icons">email</span>
+                                <div class="contact-item-content">
+                                    <strong>Email</strong>
+                                    <a href="mailto:<?= htmlspecialchars($association['email']) ?>">
+                                        <?= htmlspecialchars($association['email']) ?>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ($association['website']): ?>
+                            <div class="contact-item">
+                                <span class="material-icons">language</span>
+                                <div class="contact-item-content">
+                                    <strong>Site web</strong>
+                                    <a href="<?= htmlspecialchars($association['website']) ?>" target="_blank">
+                                        <?= htmlspecialchars($association['website']) ?>
+                                        <span class="material-icons open-link">open_in_new</span>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Description -->
+                    <?php if ($association['description']): ?>
+                        <div class="description-section">
+                            <h4>À propos de l'association</h4>
+                            <div class="text-content">
+                                <?= nl2br(htmlspecialchars($association['description'])) ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Members -->
+                    <?php if (!empty($association['members'])): ?>
+                        <div class="members-section">
+                            <h4>
+                                <span class="material-icons">people</span>
+                                Membres (<?= count($association['members']) ?>)
+                            </h4>
+                            <div class="members-grid">
+                                <?php foreach (array_slice($association['members'], 0, 6) as $member): ?>
+                                    <div class="member-card">
+                                        <img src="<?= $member['avatarPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-avatar.png' ?>" 
+                                             alt="<?= htmlspecialchars($member['firstName']) ?>" 
+                                             class="member-avatar">
+                                        <div class="member-info">
+                                            <h6>
+                                                <a href="<?= HOME_URL . 'profil/' . $member['slug'] ?>">
+                                                    <?= htmlspecialchars($member['firstName'] . ' ' . $member['lastName']) ?>
+                                                </a>
+                                            </h6>
+                                            <small><?= ucfirst($member['role']) ?></small>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <?php if (count($association['members']) > 6): ?>
+                                <div class="text-center mt-3">
+                                    <button class="btn btn-outline-primary">
+                                        Voir tous les membres
+                                    </button>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Recent Events -->
+                <?php if (!empty($association['associationEvents'])): ?>
+                    <div class="related-content-card">
+                        <div class="card-header">
+                            <h4>
+                                <span class="material-icons">event</span>
+                                Événements récents
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <?php foreach (array_slice($association['associationEvents'], 0, 4) as $event): ?>
+                                <div class="related-item-card">
+                                    <?php if ($event['bannerPath']): ?>
+                                        <img src="<?= htmlspecialchars($event['bannerPath']) ?>" 
+                                             class="related-item-image" 
+                                             alt="<?= htmlspecialchars($event['title']) ?>">
+                                    <?php endif; ?>
+                                    <div class="related-item-content">
+                                        <div class="related-item-title">
+                                            <a href="<?= HOME_URL . 'evenements/' . $event['slug'] ?>">
+                                                <?= htmlspecialchars($event['title']) ?>
+                                            </a>
+                                        </div>
+                                        <div class="related-item-meta">
+                                            <span class="material-icons">schedule</span>
+                                            <?= date('d/m/Y', strtotime($event['startDate'])) ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Right Column - Join Card -->
+            <div class="join-sidebar">
+                <!-- Join Association Card -->
+                <div class="join-card">
+                    <div class="card-header">
+                        <h5>Rejoindre l'association</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-3">
+                            Participez aux activités et projets de l'association !
+                        </p>
+                        
+                        <button class="btn btn-primary linkNotDecorated" onclick="joinAssociation()">
+                            <span class="material-icons">group_add</span>
+                            Demander à rejoindre
+                        </button>
+
+                        <div class="quick-actions">
+                            <?php if ($association['phone']): ?>
+                                <a href="tel:<?= htmlspecialchars($association['phone']) ?>" 
+                                   class="quick-action-btn" 
+                                   title="Appeler">
+                                    <span class="material-icons">phone</span>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($association['email']): ?>
+                                <a href="mailto:<?= htmlspecialchars($association['email']) ?>" 
+                                   class="quick-action-btn" 
+                                   title="Email">
+                                    <span class="material-icons">email</span>
+                                </a>
+                            <?php endif; ?>
+
+                            <button class="quick-action-btn" onclick="shareAssociation()" title="Partager">
+                                <span class="material-icons">share</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 
 <script>
 function joinAssociation() {

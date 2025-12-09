@@ -1,8 +1,9 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
 <link rel="stylesheet" href="<?= HOME_URL . 'assets/css/globals/banners_logos.css' ?>">
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/associations/voir_association.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
-<main class="p-0">
+<main class="p-0 association-detail-container">
     <?php if (!$association): ?>
         <div class="custom-alert custom-alert-danger" style="margin: 20px;">
             <p>L'association demandée n'existe pas ou vous n'avez pas les permissions nécessaires pour y accéder.</p>
@@ -12,7 +13,7 @@
         <div class="association-banner-section">
             <div class="association-banner-wrapper">
                 <?php if ($association->getBannerPath()): ?>
-                    <img id="currentBanner" src="<?= BASE_URL . HOME_URL . $association->getBannerPath() ?>" alt="Bannière de <?= $association->getName() ?>" class="association-banner-img">
+                    <img id="currentBanner" src="<?= $association->getBannerPath() ?>" alt="Bannière de <?= $association->getName() ?>" class="association-banner-img">
                 <?php else: ?>
                     <div id="currentBanner" class="association-banner-placeholder">Aucune bannière</div>
                 <?php endif; ?>
@@ -26,7 +27,7 @@
             <?php if ($isOwner): ?>
                 <div class="association-logo-picture">
                     <img id="currentLogo"
-                        src="<?= $association->getLogoPath() ? $association->getLogoPath() : HOME_URL . 'assets/images/uploads/logos/default_logo.png' ?>"
+                        src="<?= $association->getLogoPath() ?: HOME_URL . 'assets/images/uploads/logos/default_logo.png' ?>"
                         alt="Logo de <?= $association->getName() ?>">
                     <span id="toggleLogoActions" class="material-icons more_vert more_vert_logo bg-linear-primary">photo_camera</span>
                 </div>
@@ -100,7 +101,7 @@
                     </div>
                     
                     <div class="logo-preview-container" style="text-align: center; margin: 1rem 0;">
-                        <img id="logoPreviewModal" src="<?= $association->getLogoPath() ? $association->getLogoPath() : HOME_URL . 'assets/images/uploads/logos/default_logo.png' ?>" alt="Logo preview" style="max-width: 180px; max-height: 180px; border-radius: 50%; margin: 0 auto;">
+                        <img id="logoPreviewModal" src="<?= $association->getLogoPath() ?: HOME_URL . 'assets/images/uploads/logos/default_logo.png' ?>" alt="Logo preview" style="max-width: 180px; max-height: 180px; border-radius: 50%; margin: 0 auto;">
                     </div>
 
                     <div id="logoActionsDefault">
@@ -156,7 +157,7 @@
                 </div>
             </div>
 
-            <div class="flex-row" style="gap: 20px;">
+            <div class="flex-row align-items-start" style="gap: 20px;">
                 <!-- Main Details Section -->
                 <div class="max-width-66">
                     <div class="card mb-4">

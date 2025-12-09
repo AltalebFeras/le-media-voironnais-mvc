@@ -89,7 +89,7 @@ class AssociationRepository
     public function getAllActiveAssociations($offset, $itemsPerPage): array
     {
         try {
-            $query = "SELECT a.uiid, a.name, a.slug, a.logoPath, v.ville_nom_reel, v.ville_slug
+            $query = "SELECT a.uiid, a.name, a.slug, a.logoPath, a.bannerPath, v.ville_nom_reel, v.ville_slug
                       FROM association a
                       LEFT JOIN ville v ON v.idVille = a.idVille
                       WHERE a.isActive = 1 AND a.isDeleted = 0
