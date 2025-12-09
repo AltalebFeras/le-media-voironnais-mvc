@@ -15,14 +15,14 @@
                             <div class="card h-100">
                                 <div class="card-body">
                                     <h5 class="card-title">
-                                        <a href="<?= HOME_URL . 'villes/' . htmlspecialchars($ville['slug']) ?>" class="text-decoration-none">
-                                            <?= htmlspecialchars($ville['name']) ?>
+                                        <a href="<?= HOME_URL . 'villes/' . htmlspecialchars($ville['ville_slug']) ?>" class="text-decoration-none">
+                                            <?= htmlspecialchars($ville['ville_nom_reel']) ?>
                                         </a>
                                     </h5>
                                     <p class="card-text">
                                         <small class="text-muted">
                                             <i class="material-icons me-1" style="font-size: 16px;">markunread_mailbox</i>
-                                            <?= htmlspecialchars($ville['code_postal']) ?>
+                                            <?= htmlspecialchars($ville['ville_code_postal']) ?>
                                         </small>
                                         <?php if ($ville['population']): ?>
                                             <br>

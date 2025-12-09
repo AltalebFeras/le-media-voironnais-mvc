@@ -248,6 +248,7 @@ class HomeController extends AbstractController
             if ($currentPage > $totalPages && $totalPages > 0) {
                 throw new Exception("Page not found");
             }
+            // var_dump($villes);die;
             $this->render(
                 'villes/villes_list',
                 [
