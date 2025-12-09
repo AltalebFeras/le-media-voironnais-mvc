@@ -149,7 +149,7 @@ class EntrepriseRepository
     {
         //get uiid,name,slug,logoPath, ville_nom_reel for all entreprises where isActive = 1 and isDeleted = 0 
         try {
-            $query = "SELECT uiid, name, slug, logoPath, (SELECT ville_nom_reel FROM ville WHERE idVille = entreprise.idVille) AS ville_nom_reel FROM entreprise WHERE isActive = 1 AND isDeleted = 0 ORDER BY name ASC LIMIT :offset, :itemsPerPage";
+            $query = "SELECT uiid, name, slug, logoPath, bannerPath, (SELECT ville_nom_reel FROM ville WHERE idVille = entreprise.idVille) AS ville_nom_reel FROM entreprise WHERE isActive = 1 AND isDeleted = 0 ORDER BY name ASC LIMIT :offset, :itemsPerPage";
             $stmt = $this->DB->prepare($query);
             $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
             $stmt->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
