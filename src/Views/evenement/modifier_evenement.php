@@ -139,20 +139,16 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" name="isPublic" value="1"
-                        <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['isPublic'])) ? $_SESSION['form_data']['isPublic'] : ($evenement['isPublic'] ?? false)) ? 'checked' : '' ?>>
-                    Événement public
-                </label>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="isPublic" name="isPublic" value="1"
+                    <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['isPublic'])) ? $_SESSION['form_data']['isPublic'] : ($evenement['isPublic'] ?? false)) ? 'checked' : '' ?>>
+                <label for="isPublic">Événement public</label>
             </div>
 
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" name="requiresApproval" value="1"
-                        <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['requiresApproval'])) ? $_SESSION['form_data']['requiresApproval'] : ($evenement['requiresApproval'] ?? false)) ? 'checked' : '' ?>>
-                    Inscription avec approbation
-                </label>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="requiresApproval" name="requiresApproval" value="1"
+                    <?= ((isset($_GET['error']) && isset($_SESSION['form_data']['requiresApproval'])) ? $_SESSION['form_data']['requiresApproval'] : ($evenement['requiresApproval'] ?? false)) ? 'checked' : '' ?>>
+                <label for="requiresApproval">Inscription avec approbation</label>
             </div>
 
             <div class="form-actions">
@@ -164,39 +160,5 @@
 </main>
 
 <script src="<?= HOME_URL ?>assets/javascript/villes.js"></script>
-
-<style>
-    .form-row {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .form-group {
-        flex: 1;
-        margin-bottom: 1rem;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 1rem;
-        margin-top: 2rem;
-    }
-
-    .current-image,
-    .current-banner {
-        margin-top: 0.5rem;
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        display: inline-block;
-    }
-
-    @media (max-width: 768px) {
-        .form-row {
-            flex-direction: column;
-        }
-    }
-</style>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
