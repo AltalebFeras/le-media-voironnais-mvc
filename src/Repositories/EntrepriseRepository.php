@@ -177,8 +177,14 @@ class EntrepriseRepository
                 return null;
             }
 
-            // Fetch evenements
-            $query = "SELECT title as evenement_title, slug as evenement_slug , bannerPath as evenement_bannerPath FROM evenement WHERE idEntreprise = :idEntreprise AND isDeleted = 0";
+            // Fetch evenements with category and ville slugs and return them tobe use as this category_slug evenement_title evenement_slug ville_slug
+            $query = "SELECT e.title as evenement_title, e.slug as evenement_slug, e.bannerPath as evenement_bannerPath, 
+                              c.slug as category_slug, v.ville_slug
+                      FROM evenement e
+                      LEFT JOIN event_category c ON e.idEventCategory = c.idEventCategory
+                      LEFT JOIN ville v ON e.idVille = v.idVille
+                      WHERE e.idEntreprise = :idEntreprise AND e.isDeleted = 0 
+                      ORDER BY e.startDate DESC";
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['idEntreprise' => $entreprise['idEntreprise']]);
             $evenements = $stmt->fetchAll(PDO::FETCH_ASSOC);

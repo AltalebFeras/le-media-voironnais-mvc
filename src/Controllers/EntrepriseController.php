@@ -636,7 +636,7 @@ class EntrepriseController extends AbstractController
         try {
             $entreprise = $this->repo->getEntrepriseBySlug($entrepriseSlug);
             if (!$entreprise || !$entreprise['isActive'] || $entreprise['isDeleted']) {
-               throw new Exception("L'entreprise demandée n'existe pas");
+                throw new Exception("L'entreprise demandée n'existe pas");
             }
 
             $this->render('entreprise/entreprise_publique_detail', [
@@ -644,7 +644,7 @@ class EntrepriseController extends AbstractController
             ]);
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            $this->redirect('entreprises',['error'=>'true']);
+            $this->redirect('entreprises', ['error' => 'true']);
         }
     }
 
@@ -658,7 +658,9 @@ class EntrepriseController extends AbstractController
         $entreprises = $this->repo->getListPublicEntreprises($offset, $itemsPerPage);
         $totalEntreprises = $this->repo->countPublicEntreprises();
         $totalPages = (int)ceil($totalEntreprises / $itemsPerPage);
-        $this->render('entreprise/entreprise_list', 
-        ['entreprises' => $entreprises, 'currentPage' => $currentPage, 'totalPages' => $totalPages, 'title' => 'Annuaire des entreprises', 'description' => 'Découvrez toutes les entreprises partenaires sur Le Média Voironnais']);
+        $this->render(
+            'entreprise/entreprise_list',
+            ['entreprises' => $entreprises, 'currentPage' => $currentPage, 'totalPages' => $totalPages, 'title' => 'Annuaire des entreprises', 'description' => 'Découvrez toutes les entreprises partenaires sur Le Média Voironnais']
+        );
     }
 }
