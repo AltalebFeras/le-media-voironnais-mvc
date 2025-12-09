@@ -1,4 +1,5 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/evenements/modifier_evenement.css' ?>">
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <main>
@@ -12,7 +13,7 @@
     </div>
 
     <?php include_once __DIR__ . '/../includes/messages.php'; ?>
-    <div class="card max-width-75">
+    <div class="card">
         <form action="<?= HOME_URL . 'evenement/modifier' ?>" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="uiid" value="<?= $evenement['uiid'] ?>">
             <input type="hidden" name="action" value="modifier_evenement">

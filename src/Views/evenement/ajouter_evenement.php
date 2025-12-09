@@ -10,7 +10,7 @@
     </div>
     <!-- messages -->
     <?php include_once __DIR__ . '/../includes/messages.php'; ?>
-    <div class="card max-width-75">
+    <div class="card">
         <form action="<?= HOME_URL ?>evenement/ajouter" method="POST" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group">
