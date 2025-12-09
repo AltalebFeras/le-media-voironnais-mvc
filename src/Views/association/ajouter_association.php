@@ -5,7 +5,7 @@
 <main class="ajouter-association-container">
     <div class="ajouter-association-header">
         <h1>Ajouter une association</h1>
-        <a href="<?=HOME_URL . 'mes_associations' ?>" class="">
+        <a href="<?= HOME_URL . 'mes_associations' ?>" class="">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
@@ -13,12 +13,12 @@
     <div class="flex-row align-items-start">
         <div class="max-width-50">
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
-            
+
             <form action="/association/ajouter" method="post" enctype="multipart/form-data" class="ajouter-association-form">
                 <div class="card">
                     <div class="form-section">
                         <h3 class="form-section-title">Informations générales</h3>
-                        
+
                         <div class="form-group">
                             <label for="name">Nom de l'association <span class="text-danger">*</span></label>
                             <input type="text" id="name" name="name"
@@ -36,7 +36,7 @@
 
                     <div class="form-section">
                         <h3 class="form-section-title">Localisation</h3>
-                        
+
                         <div class="form-group">
                             <label for="address">Adresse</label>
                             <input type="text" id="address" name="address"
@@ -49,9 +49,9 @@
                             <div class="max-width-50">
                                 <div class="form-group">
                                     <label for="codePostal">Code postal</label>
-                                    <input type="text" id="codePostal" name="codePostal" maxlength="5" 
-                                           value="<?= isset($_SESSION['form_data']['codePostal']) ? $_SESSION['form_data']['codePostal'] : '' ?>"
-                                           placeholder="38000">
+                                    <input type="text" id="codePostal" name="codePostal" maxlength="5"
+                                        value="<?= isset($_SESSION['form_data']['codePostal']) ? $_SESSION['form_data']['codePostal'] : '' ?>"
+                                        placeholder="38000">
                                     <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@
 
                     <div class="form-section">
                         <h3 class="form-section-title">Contact</h3>
-                        
+
                         <div class="flex-row">
                             <div class="max-width-50">
                                 <div class="form-group">

@@ -6,7 +6,7 @@
     <div class="modifier-association-header">
         <div class="flex-row justify-content-between">
             <h1>Modifier l'association</h1>
-            <a href="<?=HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getUiid() ?>" class="">
+            <a href="<?= HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getUiid() ?>" class="">
                 <span class="material-icons btn" style="color:white;">arrow_back</span>
             </a>
         </div>
@@ -42,8 +42,8 @@
                             <div class="max-width-50">
                                 <div>
                                     <label for="codePostal">Code postal</label>
-                                    <input type="text" id="codePostal" name="codePostal" maxlength="5" 
-                                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['codePostal'])) ? htmlspecialchars($_SESSION['form_data']['codePostal']) : ($ville ? htmlspecialchars($ville['ville_code_postal']) : '') ?>">
+                                    <input type="text" id="codePostal" name="codePostal" maxlength="5"
+                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['codePostal'])) ? htmlspecialchars($_SESSION['form_data']['codePostal']) : ($ville ? htmlspecialchars($ville['ville_code_postal']) : '') ?>">
                                     <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
                                 </div>
                             </div>
@@ -57,8 +57,8 @@
                                             <option value="">Sélectionnez une ville</option>
                                         <?php endif; ?>
                                     </select>
-                                    <input type="hidden" id="idVille" name="idVille" 
-                                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['idVille'])) ? htmlspecialchars($_SESSION['form_data']['idVille']) : htmlspecialchars($association->getIdVille()) ?>">
+                                    <input type="hidden" id="idVille" name="idVille"
+                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['idVille'])) ? htmlspecialchars($_SESSION['form_data']['idVille']) : htmlspecialchars($association->getIdVille()) ?>">
                                 </div>
                             </div>
                         </div>

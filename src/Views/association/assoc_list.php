@@ -130,23 +130,23 @@
 </main>
 
 <script>
-// Simple search functionality
-document.getElementById('searchInput')?.addEventListener('input', function(e) {
-    const searchTerm = e.target.value.toLowerCase();
-    const cards = document.querySelectorAll('.association-public-card');
+    // Simple search functionality
+    document.getElementById('searchInput')?.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.association-public-card');
 
-    cards.forEach(card => {
-        const name = card.querySelector('.association-name')?.textContent.toLowerCase() || '';
-        const description = card.querySelector('.association-description')?.textContent.toLowerCase() || '';
-        const location = card.querySelector('.association-location')?.textContent.toLowerCase() || '';
+        cards.forEach(card => {
+            const name = card.querySelector('.association-name')?.textContent.toLowerCase() || '';
+            const description = card.querySelector('.association-description')?.textContent.toLowerCase() || '';
+            const location = card.querySelector('.association-location')?.textContent.toLowerCase() || '';
 
-        if (name.includes(searchTerm) || description.includes(searchTerm) || location.includes(searchTerm)) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
-        }
+            if (name.includes(searchTerm) || description.includes(searchTerm) || location.includes(searchTerm)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
     });
-});
 </script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

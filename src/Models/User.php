@@ -724,7 +724,7 @@ class User
 
     /**
      * Get the value of slug
-     */ 
+     */
     public function getSlug()
     {
         return $this->slug;
@@ -734,7 +734,7 @@ class User
      * Set the value of slug
      *
      * @return  self
-     */ 
+     */
     public function setSlug($slug)
     {
         $this->slug = $slug;

@@ -22,7 +22,7 @@ final class Mail
         $this->mail->isSMTP();
         $this->mail->Host = HOST;
         $this->mail->Port = PORT;
-        
+
         // Configure authentication based on environment
         if (defined('SMTP_AUTH') && SMTP_AUTH === true) {
             $this->mail->SMTPAuth = true;

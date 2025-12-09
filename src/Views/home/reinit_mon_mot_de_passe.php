@@ -4,7 +4,7 @@
 <main>
     <h1 class="h1Password">Réinitialisation du mot de passe</h1>
     <!-- Alert Messages -->
-  <?php include_once __DIR__ . '/../includes/messages.php'; ?>
+    <?php include_once __DIR__ . '/../includes/messages.php'; ?>
     <form action="<?= BASE_URL . HOME_URL . 'reinit_mon_mot_de_passe' ?>" method="POST">
         <input type="hidden" name="token" value="<?= $_GET['token'] ?? '' ?>">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
@@ -20,7 +20,7 @@
             <label for="confirmPassword">Confirmer le mot de passe:</label>
             <input type="password" id="confirmPassword" name="confirmPassword" value="<?= $_SESSION['form_data']['confirmPassword'] ?? '' ?>" placeholder="Confirmez votre mot de passe" required />
         </div>
-    <div class="g-recaptcha mb mt" data-sitekey="6Lc8mVYrAAAAAFQcZnr7_3rLS65SegjP0Yk0nX-s"></div>
+        <div class="g-recaptcha mb mt" data-sitekey="6Lc8mVYrAAAAAFQcZnr7_3rLS65SegjP0Yk0nX-s"></div>
 
         <button type="submit" class="btn">
             Réinitialiser le mot de passe

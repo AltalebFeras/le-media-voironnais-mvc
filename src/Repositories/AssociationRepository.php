@@ -122,7 +122,7 @@ class AssociationRepository
             throw new Exception("Error fetching association: " . $e->getMessage());
         }
     }
-public function getAssociationBySlug($slug)
+    public function getAssociationBySlug($slug)
     {
         try {
             $query = "SELECT a.*, v.ville_nom_reel, v.ville_slug, u.firstName AS creator_firstName, u.lastName AS creator_lastName, u.slug AS creator_slug
@@ -133,7 +133,7 @@ public function getAssociationBySlug($slug)
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['slug' => $slug]);
             $association = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             if ($association) {
                 // Fetch members
                 $query = "SELECT u.idUser, u.firstName, u.lastName, u.slug AS user_slug, ua.role, u.avatarPath
@@ -156,7 +156,7 @@ public function getAssociationBySlug($slug)
 
                 return $association;
             }
-            
+
             return null;
         } catch (Exception $e) {
             throw new Exception("Error fetching association by slug: " . $e->getMessage());

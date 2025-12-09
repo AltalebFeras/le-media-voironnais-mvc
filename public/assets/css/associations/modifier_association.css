@@ -135,9 +135,14 @@
     padding: var(--spacing-xl);
 }
 
-.info-sidebar h3 { color: var(--color-primary); font-weight: 800; }
+.info-sidebar h3 {
+    color: var(--color-primary);
+    font-weight: 800;
+}
 
-.info-sidebar p { color: var(--color-text-light); }
+.info-sidebar p {
+    color: var(--color-text-light);
+}
 
 @media (max-width: 768px) {
     .modifier-association-header {
@@ -148,7 +153,16 @@
 }
 
 @media (max-width: 992px) {
-    .modifier-association-container { padding: var(--spacing-xl) var(--spacing-md); }
-    .flex-row { flex-direction: column; gap: var(--spacing-xl); }
-    .card { padding: var(--spacing-xl); }
+    .modifier-association-container {
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .flex-row {
+        flex-direction: column;
+        gap: var(--spacing-xl);
+    }
+
+    .card {
+        padding: var(--spacing-xl);
+    }
 }

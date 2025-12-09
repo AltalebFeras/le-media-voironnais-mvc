@@ -27,7 +27,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
     padding: 3rem 2rem 2rem;
 }
 
@@ -419,7 +419,7 @@
         position: static;
         margin-top: 2rem;
     }
-    
+
     .association-hero {
         height: 350px;
     }
@@ -431,12 +431,12 @@
         align-items: flex-start;
         gap: 1rem;
     }
-    
+
     .association-logo-large {
         width: 100px;
         height: 100px;
     }
-    
+
     .association-title-section h1 {
         font-size: 2rem;
     }
@@ -453,16 +453,16 @@
     .association-hero {
         height: 300px;
     }
-    
+
     .association-hero-overlay {
         padding: 2rem 1rem 1.5rem;
     }
-    
+
     .association-content {
         margin-top: -2rem;
         padding: 0 1rem 2rem;
     }
-    
+
     .detail-card {
         padding: 1.5rem;
     }
@@ -472,16 +472,16 @@
     .association-hero {
         height: 250px;
     }
-    
+
     .association-logo-large {
         width: 80px;
         height: 80px;
     }
-    
+
     .association-title-section h1 {
         font-size: 1.5rem;
     }
-    
+
     .detail-card h2,
     .detail-card h3,
     .detail-card h4 {

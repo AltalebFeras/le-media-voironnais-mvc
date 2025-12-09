@@ -1,4 +1,5 @@
 <?php
+
 /**
  * config_example.php
  * Copy this file to config.php and fill the placeholders with your environment values.

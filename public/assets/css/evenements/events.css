@@ -517,54 +517,57 @@
         padding: 3rem 1rem;
         min-height: 60vh;
     }
-    
+
     .events-hero-title {
         font-size: 2.5rem;
     }
-    
+
     .events-hero-subtitle {
         font-size: 1rem;
         margin-bottom: 1.5rem;
     }
-    
-    .btn-timetable, .btn-buy-tickets {
+
+    .btn-timetable,
+    .btn-buy-tickets {
         padding: 12px 24px;
         font-size: 0.85rem;
     }
-    
+
     .event-slide.active {
         flex-direction: column;
         gap: 2rem;
         padding: 2rem;
     }
-    
+
     .event-slide-image {
         flex: none;
         width: 100%;
         max-width: 400px;
     }
-    
+
     .event-slide-title {
         font-size: 2rem;
     }
-    
+
     .section-title {
         font-size: 2rem;
     }
-    
+
     .section-subtitle {
         font-size: 1rem;
     }
-    
-    .recent-events-grid, .all-events-grid {
+
+    .recent-events-grid,
+    .all-events-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
-    
-    .recent-events-section, .all-events-section {
+
+    .recent-events-section,
+    .all-events-section {
         padding: 3rem 1rem;
     }
-    
+
     .search-box {
         max-width: 100%;
         margin: 0 1rem;
@@ -575,34 +578,46 @@
     .events-hero-title {
         font-size: 2rem;
     }
-    
+
     .event-slide {
         padding: 1rem;
     }
-    
+
     .event-slide-title {
         font-size: 1.5rem;
     }
-    
+
     .event-slide-description {
         font-size: 1rem;
     }
-    
+
     .search-box {
         margin: 0 0.5rem;
     }
 }
 
 /* Loading and animation states */
-.event-card, .recent-event-card {
+.event-card,
+.recent-event-card {
     animation: fadeInUp 0.6s ease-out;
     animation-fill-mode: both;
 }
 
-.event-card:nth-child(1) { animation-delay: 0.1s; }
-.event-card:nth-child(2) { animation-delay: 0.2s; }
-.event-card:nth-child(3) { animation-delay: 0.3s; }
-.event-card:nth-child(4) { animation-delay: 0.4s; }
+.event-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.event-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.event-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.event-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
 
 /* Animation enhancements */
 .event-card {
@@ -610,13 +625,25 @@
     animation-fill-mode: both;
 }
 
-.event-card:nth-child(1) { animation-delay: 0.1s; }
-.event-card:nth-child(2) { animation-delay: 0.2s; }
-.event-card:nth-child(3) { animation-delay: 0.3s; }
-.event-card:nth-child(4) { animation-delay: 0.4s; }
+.event-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.event-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.event-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.event-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
 
 /* Smooth transitions */
-.event-card, .recent-event-card {
+.event-card,
+.recent-event-card {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

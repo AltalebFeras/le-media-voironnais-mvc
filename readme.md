@@ -138,9 +138,11 @@ Plateforme web communautaire pour la région de Voiron, permettant la gestion d'
 
 1. Cloner le dépôt dans votre environnement de développement.
 2. Installer les dépendances PHP :
+
    ```sh
    composer install
    ```
+
 3. Créer un fichier de configuration à partir de l'exemple :
    - Copier `config_example.php` → `config.php` et adapter les constantes (DB_HOST, DB_NAME, DB_USER, DB_PWD, BASE_URL, HOME_URL, SEL, ADMIN_EMAIL, etc.).
 4. Importer la base de données :
@@ -165,6 +167,7 @@ Remarque : ne pas committer `config.php` contenant des secrets.
 Option 1 — serveur PHP intégré (développement) :
 
 - Depuis la racine `public/` :
+
   ```sh
   php -S 127.0.0.1:8000
   ```

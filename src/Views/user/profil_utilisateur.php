@@ -6,22 +6,20 @@
     <div class="profile-container">
         <!-- Banner Section -->
         <div class="profile-banner">
-            <img 
-                src="<?= htmlspecialchars($user->getBannerPath() ?? BASE_URL . HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') ?>" 
+            <img
+                src="<?= htmlspecialchars($user->getBannerPath() ?? BASE_URL . HOME_URL . 'assets/images/uploads/banners/default_banner.jpg') ?>"
                 alt="Bannière de profil"
-                class="banner-image"
-            >
+                class="banner-image">
         </div>
 
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-header-content">
                 <div class="profile-avatar-section">
-                    <img 
-                        src="<?= htmlspecialchars($user->getAvatarPath() ?? BASE_URL . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') ?>" 
+                    <img
+                        src="<?= htmlspecialchars($user->getAvatarPath() ?? BASE_URL . HOME_URL . 'assets/images/uploads/avatars/default_avatar.png') ?>"
                         alt="Avatar"
-                        class="profile-avatar"
-                    >
+                        class="profile-avatar">
                     <div class="profile-info">
                         <h1 class="profile-name">
                             <?= htmlspecialchars($user->getFirstName() . ' ' . $user->getLastName()) ?>
@@ -49,11 +47,10 @@
                                 <span class="material-icons">message</span>
                                 Envoyer un message
                             </a>
-                            <button 
+                            <button
                                 class="btn btn-secondary friend-options-btn"
                                 data-friend-uiid="<?= htmlspecialchars($user->getUiid()) ?>"
-                                data-friend-name="<?= htmlspecialchars($user->getFirstName() . ' ' . $user->getLastName()) ?>"
-                            >
+                                data-friend-name="<?= htmlspecialchars($user->getFirstName() . ' ' . $user->getLastName()) ?>">
                                 <span class="material-icons">more_vert</span>
                             </button>
                         <?php elseif ($friendshipStatus === 'request_sent'): ?>
@@ -125,7 +122,7 @@
                             <span class="detail-value"><?= htmlspecialchars($user->getPhone()) ?></span>
                         </div>
                     <?php endif; ?>
-                    
+
                     <?php if ($user->getDateOfBirth()): ?>
                         <div class="detail-item">
                             <span class="material-icons">cake</span>
@@ -133,7 +130,7 @@
                             <span class="detail-value"><?= htmlspecialchars($user->getDateOfBirthFormatted()) ?></span>
                         </div>
                     <?php endif; ?>
-                    
+
                     <div class="detail-item">
                         <span class="material-icons">calendar_today</span>
                         <span class="detail-label">Membre depuis:</span>
@@ -147,46 +144,44 @@
 
 <!-- Friend Options Modal (reuse from mes_amis.php) -->
 <?php if (!$isOwnProfile && $friendshipStatus === 'friends'): ?>
-<div id="friendOptionsModal" class="modal-overlay options-modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="friendOptionsTitle" class="modal-title"><?= htmlspecialchars($user->getFirstName() . ' ' . $user->getLastName()) ?></h3>
-            <button type="button" onclick="closeFriendOptionsModal()" class="modal-close">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        
-        <div class="modal-body">
-            <div class="option-actions">
-                <form method="POST" id="removeFriendForm" action="<?= HOME_URL ?>amis/supprimer" style="margin: 0;">
-                    <input type="hidden" name="csrf_token" value="<?= $this->generateCsrfToken() ?>">
-                    <input type="hidden" name="friend_uiid" value="<?= htmlspecialchars($user->getUiid()) ?>">
-                    <button 
-                        type="submit"
-                        class="option-btn remove-btn"
-                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet ami ?')"
-                    >
-                        <span class="material-icons">person_remove</span>
-                        Supprimer de mes amis
-                    </button>
-                </form>
-                
-                <form method="POST" id="blockFriendForm" action="<?= HOME_URL ?>amis/bloquer" style="margin: 0;">
-                    <input type="hidden" name="csrf_token" value="<?= $this->generateCsrfToken() ?>">
-                    <input type="hidden" name="friend_uiid" value="<?= htmlspecialchars($user->getUiid()) ?>">
-                    <button 
-                        type="submit"
-                        class="option-btn block-btn"
-                        onclick="return confirm('Êtes-vous sûr de vouloir bloquer cet utilisateur ?')"
-                    >
-                        <span class="material-icons">block</span>
-                        Bloquer
-                    </button>
-                </form>
+    <div id="friendOptionsModal" class="modal-overlay options-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="friendOptionsTitle" class="modal-title"><?= htmlspecialchars($user->getFirstName() . ' ' . $user->getLastName()) ?></h3>
+                <button type="button" onclick="closeFriendOptionsModal()" class="modal-close">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="option-actions">
+                    <form method="POST" id="removeFriendForm" action="<?= HOME_URL ?>amis/supprimer" style="margin: 0;">
+                        <input type="hidden" name="csrf_token" value="<?= $this->generateCsrfToken() ?>">
+                        <input type="hidden" name="friend_uiid" value="<?= htmlspecialchars($user->getUiid()) ?>">
+                        <button
+                            type="submit"
+                            class="option-btn remove-btn"
+                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet ami ?')">
+                            <span class="material-icons">person_remove</span>
+                            Supprimer de mes amis
+                        </button>
+                    </form>
+
+                    <form method="POST" id="blockFriendForm" action="<?= HOME_URL ?>amis/bloquer" style="margin: 0;">
+                        <input type="hidden" name="csrf_token" value="<?= $this->generateCsrfToken() ?>">
+                        <input type="hidden" name="friend_uiid" value="<?= htmlspecialchars($user->getUiid()) ?>">
+                        <button
+                            type="submit"
+                            class="option-btn block-btn"
+                            onclick="return confirm('Êtes-vous sûr de vouloir bloquer cet utilisateur ?')">
+                            <span class="material-icons">block</span>
+                            Bloquer
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 <?php endif; ?>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

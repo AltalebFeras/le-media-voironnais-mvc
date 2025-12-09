@@ -48,129 +48,129 @@ $stats = $stats ?? ['totalEvents' => 0, 'totalEnterprises' => 0, 'totalAssociati
 
 <!-- Upcoming Events Section -->
 <?php if (!empty($upcomingEvents)): ?>
-<section class="content-section">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Événements à venir</h2>
-            <a href="<?= HOME_URL ?>evenements" class="section-link">Voir tous les événements →</a>
-        </div>
-        <div class="cards-grid">
-            <?php foreach ($upcomingEvents as $event): ?>
-            <div class="event-card">
-                <div class="card-image">
-                    <img src="<?= BASE_URL . HOME_URL . ($event['bannerPath'] ?? 'assets/images/uploads/banners/default_banner.png') ?>" 
-                         alt="<?= htmlspecialchars($event['title']) ?>">
-                    <div class="card-badge"><?= date('d M', strtotime($event['startDate'])) ?></div>
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title"><?= htmlspecialchars($event['title']) ?></h3>
-                    <p class="card-meta">
-                        <span>📍 <?= htmlspecialchars($event['ville_nom_reel'] ?? 'Ville') ?></span>
-                        <span>🏷️ <?= htmlspecialchars($event['category_name'] ?? 'Catégorie') ?></span>
-                    </p>
-                    <p class="card-description"><?= htmlspecialchars(substr($event['shortDescription'] ?? $event['description'], 0, 100)) ?>...</p>
-                    <a href="<?= HOME_URL ?>evenements/<?= $event['ville_slug'] ?>/<?= $event['category_slug'] ?>/<?= $event['slug'] ?>" class="card-link">En savoir plus →</a>
-                </div>
+    <section class="content-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Événements à venir</h2>
+                <a href="<?= HOME_URL ?>evenements" class="section-link">Voir tous les événements →</a>
             </div>
-            <?php endforeach; ?>
+            <div class="cards-grid">
+                <?php foreach ($upcomingEvents as $event): ?>
+                    <div class="event-card">
+                        <div class="card-image">
+                            <img src="<?= BASE_URL . HOME_URL . ($event['bannerPath'] ?? 'assets/images/uploads/banners/default_banner.png') ?>"
+                                alt="<?= htmlspecialchars($event['title']) ?>">
+                            <div class="card-badge"><?= date('d M', strtotime($event['startDate'])) ?></div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title"><?= htmlspecialchars($event['title']) ?></h3>
+                            <p class="card-meta">
+                                <span>📍 <?= htmlspecialchars($event['ville_nom_reel'] ?? 'Ville') ?></span>
+                                <span>🏷️ <?= htmlspecialchars($event['category_name'] ?? 'Catégorie') ?></span>
+                            </p>
+                            <p class="card-description"><?= htmlspecialchars(substr($event['shortDescription'] ?? $event['description'], 0, 100)) ?>...</p>
+                            <a href="<?= HOME_URL ?>evenements/<?= $event['ville_slug'] ?>/<?= $event['category_slug'] ?>/<?= $event['slug'] ?>" class="card-link">En savoir plus →</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php endif; ?>
 
 <!-- Recent Events Section -->
 <?php if (!empty($recentEvents)): ?>
-<section class="content-section alt-bg">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Événements récents</h2>
-            <a href="<?= HOME_URL ?>evenements" class="section-link">Tous les événements →</a>
-        </div>
-        <div class="cards-grid">
-            <?php foreach ($recentEvents as $event): ?>
-            <div class="event-card">
-                <div class="card-image">
-                    <img src="<?= BASE_URL . HOME_URL . ($event['bannerPath'] ?? 'assets/images/uploads/banners/default_banner.png') ?>" 
-                         alt="<?= htmlspecialchars($event['title']) ?>">
-                    <div class="card-badge past">Terminé</div>
-                </div>
-                <div class="card-content">
-                    <h3 class="card-title"><?= htmlspecialchars($event['title']) ?></h3>
-                    <p class="card-meta">
-                        <span>📍 <?= htmlspecialchars($event['ville_nom_reel'] ?? 'Ville') ?></span>
-                        <span>🏷️ <?= htmlspecialchars($event['category_name'] ?? 'Catégorie') ?></span>
-                    </p>
-                    <p class="card-description"><?= htmlspecialchars(substr($event['shortDescription'] ?? $event['description'], 0, 100)) ?>...</p>
-                    <a href="<?= HOME_URL ?>evenements/<?= $event['ville_slug'] ?>/<?= $event['category_slug'] ?>/<?= $event['slug'] ?>" class="card-link">Voir les détails →</a>
-                </div>
+    <section class="content-section alt-bg">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Événements récents</h2>
+                <a href="<?= HOME_URL ?>evenements" class="section-link">Tous les événements →</a>
             </div>
-            <?php endforeach; ?>
+            <div class="cards-grid">
+                <?php foreach ($recentEvents as $event): ?>
+                    <div class="event-card">
+                        <div class="card-image">
+                            <img src="<?= BASE_URL . HOME_URL . ($event['bannerPath'] ?? 'assets/images/uploads/banners/default_banner.png') ?>"
+                                alt="<?= htmlspecialchars($event['title']) ?>">
+                            <div class="card-badge past">Terminé</div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title"><?= htmlspecialchars($event['title']) ?></h3>
+                            <p class="card-meta">
+                                <span>📍 <?= htmlspecialchars($event['ville_nom_reel'] ?? 'Ville') ?></span>
+                                <span>🏷️ <?= htmlspecialchars($event['category_name'] ?? 'Catégorie') ?></span>
+                            </p>
+                            <p class="card-description"><?= htmlspecialchars(substr($event['shortDescription'] ?? $event['description'], 0, 100)) ?>...</p>
+                            <a href="<?= HOME_URL ?>evenements/<?= $event['ville_slug'] ?>/<?= $event['category_slug'] ?>/<?= $event['slug'] ?>" class="card-link">Voir les détails →</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php endif; ?>
 
 <!-- Enterprises Section -->
 <?php if (!empty($enterprises)): ?>
-<section class="content-section">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Entreprises partenaires</h2>
-            <a href="<?= HOME_URL ?>entreprises" class="section-link">Voir toutes les entreprises →</a>
-        </div>
-        <div class="cards-grid">
-            <?php foreach ($enterprises as $entreprise): ?>
-            <div class="entity-card">
-                <div class="entity-logo">
-                    <img src="<?= BASE_URL . HOME_URL . ($entreprise['logoPath'] ?? 'assets/images/uploads/logos/default_logo.png') ?>" 
-                         alt="<?= htmlspecialchars($entreprise['name']) ?>">
-                </div>
-                <div class="entity-content">
-                    <h3 class="entity-title"><?= htmlspecialchars($entreprise['name']) ?></h3>
-                    <p class="entity-meta">📍 <?= htmlspecialchars($entreprise['ville_nom_reel'] ?? 'Ville') ?></p>
-                    <p class="entity-description"><?= htmlspecialchars(substr($entreprise['description'], 0, 80)) ?>...</p>
-                    <a href="<?= HOME_URL ?>entreprises/<?= $entreprise['slug'] ?>" class="entity-link">Découvrir →</a>
-                </div>
+    <section class="content-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Entreprises partenaires</h2>
+                <a href="<?= HOME_URL ?>entreprises" class="section-link">Voir toutes les entreprises →</a>
             </div>
-            <?php endforeach; ?>
+            <div class="cards-grid">
+                <?php foreach ($enterprises as $entreprise): ?>
+                    <div class="entity-card">
+                        <div class="entity-logo">
+                            <img src="<?= BASE_URL . HOME_URL . ($entreprise['logoPath'] ?? 'assets/images/uploads/logos/default_logo.png') ?>"
+                                alt="<?= htmlspecialchars($entreprise['name']) ?>">
+                        </div>
+                        <div class="entity-content">
+                            <h3 class="entity-title"><?= htmlspecialchars($entreprise['name']) ?></h3>
+                            <p class="entity-meta">📍 <?= htmlspecialchars($entreprise['ville_nom_reel'] ?? 'Ville') ?></p>
+                            <p class="entity-description"><?= htmlspecialchars(substr($entreprise['description'], 0, 80)) ?>...</p>
+                            <a href="<?= HOME_URL ?>entreprises/<?= $entreprise['slug'] ?>" class="entity-link">Découvrir →</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php endif; ?>
 
 <!-- Associations Section -->
 <?php if (!empty($associations)): ?>
-<section class="content-section alt-bg">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Associations actives</h2>
-            <a href="<?= HOME_URL ?>associations" class="section-link">Voir toutes les associations →</a>
-        </div>
-        <div class="cards-grid">
-            <?php foreach ($associations as $association): ?>
-            <div class="entity-card">
-                <div class="entity-logo">
-                    <img src="<?= BASE_URL . HOME_URL . ($association['logoPath'] ?? 'assets/images/uploads/logos/default_logo.png') ?>" 
-                         alt="<?= htmlspecialchars($association['name']) ?>">
-                </div>
-                <div class="entity-content">
-                    <h3 class="entity-title"><?= htmlspecialchars($association['name']) ?></h3>
-                    <p class="entity-meta">📍 <?= htmlspecialchars($association['ville_nom_reel'] ?? 'Ville') ?></p>
-                    <p class="entity-description"><?= htmlspecialchars(substr($association['description'], 0, 80)) ?>...</p>
-                    <a href="<?= HOME_URL ?>associations/<?= $association['slug'] ?>" class="entity-link">Découvrir →</a>
-                </div>
+    <section class="content-section alt-bg">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Associations actives</h2>
+                <a href="<?= HOME_URL ?>associations" class="section-link">Voir toutes les associations →</a>
             </div>
-            <?php endforeach; ?>
+            <div class="cards-grid">
+                <?php foreach ($associations as $association): ?>
+                    <div class="entity-card">
+                        <div class="entity-logo">
+                            <img src="<?= BASE_URL . HOME_URL . ($association['logoPath'] ?? 'assets/images/uploads/logos/default_logo.png') ?>"
+                                alt="<?= htmlspecialchars($association['name']) ?>">
+                        </div>
+                        <div class="entity-content">
+                            <h3 class="entity-title"><?= htmlspecialchars($association['name']) ?></h3>
+                            <p class="entity-meta">📍 <?= htmlspecialchars($association['ville_nom_reel'] ?? 'Ville') ?></p>
+                            <p class="entity-description"><?= htmlspecialchars(substr($association['description'], 0, 80)) ?>...</p>
+                            <a href="<?= HOME_URL ?>associations/<?= $association['slug'] ?>" class="entity-link">Découvrir →</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php endif; ?>
 
 <script>
-// Initialize search for hero section
-$(document).ready(function() {
-    setupSearch('search-input-hero', 'search-results-hero');
-});
+    // Initialize search for hero section
+    $(document).ready(function() {
+        setupSearch('search-input-hero', 'search-results-hero');
+    });
 </script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

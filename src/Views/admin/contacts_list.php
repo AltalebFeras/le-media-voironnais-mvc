@@ -112,10 +112,10 @@
                                     </form>
                                 <?php endif; ?>
 
-                                <?php 
+                                <?php
                                 // Can reply only if no response exists yet
                                 $hasResponse = !empty($contact->getResponse()) && !empty($contact->getRepliedAt());
-                                if (!$hasResponse): 
+                                if (!$hasResponse):
                                 ?>
                                     <button onclick="showReplyModal('<?= $contact->getUiid() ?>', '<?= htmlspecialchars($contact->getEmail()) ?>', '<?= htmlspecialchars($contact->getFirstName() . ' ' . $contact->getLastName()) ?>')" class="btn btn-primary">
                                         <span class="material-icons">reply</span>
@@ -123,9 +123,9 @@
                                     </button>
                                 <?php endif; ?>
 
-                                <?php 
+                                <?php
                                 // Status change logic based on response existence
-                                if ($hasResponse): 
+                                if ($hasResponse):
                                     // If has response, can only move between 'traite' and 'archive'
                                     if ($contact->getStatus() === 'traite'): ?>
                                         <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form">
@@ -146,7 +146,7 @@
                                             </button>
                                         </form>
                                     <?php endif;
-                                else: 
+                                else:
                                     // If no response, flexible movement between 'lu' and 'archive'
                                     if ($contact->getStatus() === 'lu'): ?>
                                         <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form">
@@ -166,7 +166,7 @@
                                                 Marquer lu
                                             </button>
                                         </form>
-                                    <?php endif;
+                                <?php endif;
                                 endif; ?>
 
                                 <form method="POST" action="<?= HOME_URL ?>admin/contacts" class="inline-form">
@@ -230,7 +230,7 @@
         <form method="POST" action="<?= HOME_URL ?>admin/contacts" id="replyForm">
             <input type="hidden" name="uiid" id="replyUiid">
             <input type="hidden" name="action" value="reply">
-            
+
             <div class="form-group">
                 <label>Destinataire :</label>
                 <p id="replyToDisplay" class="reply-info"></p>
@@ -279,7 +279,7 @@
         <form method="POST" action="<?= HOME_URL ?>admin/contacts" id="deleteForm">
             <input type="hidden" name="uiid" id="deleteUiid">
             <input type="hidden" name="action" value="delete">
-            
+
             <div class="flex-row justify-between">
                 <button type="button" onclick="closeDeleteModal()" class="btn btn-secondary">
                     Annuler
@@ -292,6 +292,6 @@
         </form>
     </div>
 </div>
-<script src="<?= HOME_URL .'assets/javascript/contacts-list.js' ?>"></script>
+<script src="<?= HOME_URL . 'assets/javascript/contacts-list.js' ?>"></script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

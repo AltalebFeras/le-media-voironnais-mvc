@@ -29,7 +29,7 @@ class FriendRepository
 
             $sql = "INSERT INTO user_friend (idUser, idFriend, status, requestedAt) 
                     VALUES (:idUser, :idFriend, 'en_attente', NOW())";
-            
+
             $stmt = $this->db->prepare($sql);
             return $stmt->execute([
                 'idUser' => $idUser,
@@ -52,14 +52,14 @@ class FriendRepository
             $sql = "UPDATE user_friend 
                     SET status = 'accepte', respondedAt = NOW() 
                     WHERE idUser = :idFriend AND idFriend = :idUser AND status = 'en_attente'";
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['idUser' => $idUser, 'idFriend' => $idFriend]);
 
             // Create reciprocal friendship
             $sql2 = "INSERT INTO user_friend (idUser, idFriend, status, requestedAt, respondedAt) 
                      VALUES (:idUser, :idFriend, 'accepte', NOW(), NOW())";
-            
+
             $stmt2 = $this->db->prepare($sql2);
             $stmt2->execute(['idUser' => $idUser, 'idFriend' => $idFriend]);
 
@@ -80,7 +80,7 @@ class FriendRepository
             $sql = "UPDATE user_friend 
                     SET status = 'refuse', respondedAt = NOW() 
                     WHERE idUser = :idFriend AND idFriend = :idUser AND status = 'en_attente'";
-            
+
             $stmt = $this->db->prepare($sql);
             return $stmt->execute(['idUser' => $idUser, 'idFriend' => $idFriend]);
         } catch (Exception $e) {
@@ -100,14 +100,14 @@ class FriendRepository
             $sql = "INSERT INTO user_friend (idUser, idFriend, status, requestedAt) 
                     VALUES (:idUser, :idFriend, 'bloque', NOW())
                     ON DUPLICATE KEY UPDATE status = 'bloque', respondedAt = NOW()";
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['idUser' => $idUser, 'idFriend' => $idFriend]);
 
             // Remove any existing friendship from the other side
             $sql2 = "DELETE FROM user_friend 
                      WHERE idUser = :idFriend AND idFriend = :idUser";
-            
+
             $stmt2 = $this->db->prepare($sql2);
             $stmt2->execute(['idUser' => $idUser, 'idFriend' => $idFriend]);
 
@@ -131,7 +131,7 @@ class FriendRepository
             $sql = "DELETE FROM user_friend 
                     WHERE (idUser = :idUser AND idFriend = :idFriend) 
                     OR (idUser = :idFriend AND idFriend = :idUser)";
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['idUser' => $idUser, 'idFriend' => $idFriend]);
 
@@ -150,7 +150,7 @@ class FriendRepository
     {
         try {
             $offset = ($page - 1) * $limit;
-            
+
             $sql = "SELECT u.idUser, u.uiid, u.slug, u.firstName, u.lastName, 
                            u.avatarPath, u.bio, u.isOnline, u.lastSeen,
                            uf.requestedAt as friendSince
@@ -160,7 +160,7 @@ class FriendRepository
                     AND u.isActivated = 1 AND u.isDeleted = 0 AND u.isBanned = 0
                     ORDER BY u.firstName, u.lastName
                     LIMIT :limit OFFSET :offset";
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
@@ -186,7 +186,7 @@ class FriendRepository
                     WHERE uf.idFriend = :idUser AND uf.status = 'en_attente'
                     AND u.isActivated = 1 AND u.isDeleted = 0 AND u.isBanned = 0
                     ORDER BY uf.requestedAt DESC";
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['idUser' => $idUser]);
 
@@ -209,7 +209,7 @@ class FriendRepository
                     WHERE uf.idUser = :idUser AND uf.status IN ('en_attente', 'refuse')
                     AND u.isActivated = 1 AND u.isDeleted = 0 AND u.isBanned = 0
                     ORDER BY uf.requestedAt DESC";
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['idUser' => $idUser]);
 
@@ -227,7 +227,7 @@ class FriendRepository
         try {
             $sql = "SELECT status FROM user_friend 
                     WHERE idUser = :idUser AND idFriend = :idFriend";
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['idUser' => $idUser, 'idFriend' => $idFriend]);
 
@@ -247,7 +247,7 @@ class FriendRepository
             $sql = "SELECT COUNT(*) FROM user_friend 
                     WHERE (idUser = :idUser AND idFriend = :idFriend) 
                     OR (idUser = :idFriend AND idFriend = :idUser)";
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['idUser' => $idUser, 'idFriend' => $idFriend]);
 
@@ -267,7 +267,7 @@ class FriendRepository
                     JOIN user u ON u.idUser = uf.idFriend
                     WHERE uf.idUser = :idUser AND uf.status = 'accepte'
                     AND u.isActivated = 1 AND u.isDeleted = 0 AND u.isBanned = 0";
-            
+
             $stmt = $this->db->prepare($sql);
             $stmt->execute(['idUser' => $idUser]);
 
@@ -301,7 +301,7 @@ class FriendRepository
                     )
                     ORDER BY u.firstName, u.lastName
                     LIMIT :limit";
-            
+
             $stmt = $this->db->prepare($sql);
             $searchTerm = '%' . $query . '%';
             $stmt->bindParam(':currentUserId', $currentUserId, PDO::PARAM_INT);

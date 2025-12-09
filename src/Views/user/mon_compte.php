@@ -19,7 +19,7 @@ if (isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin']
             <img id="bannerPreview" style="display:none;">
             <span id="toggleBannerActions" class="material-icons more_vert bg-linear-primary">photo_camera</span>
         </div>
-        
+
         <!-- Profile picture overlaps banner -->
         <div class="account-profile-picture ">
             <img id="currentProfilePicture" src="<?= $_SESSION['avatarPath'] ?>" alt="user profile image">
@@ -36,7 +36,7 @@ if (isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin']
                     <span class="material-icons">close</span>
                 </button>
             </div>
-            
+
             <div class="banner-preview-container" style="text-align: center; margin: 1rem 0;">
                 <?php if (!empty($_SESSION['bannerPath'])): ?>
                     <img id="bannerPreviewModal" src="<?= $_SESSION['bannerPath'] ?>" alt="Banner preview" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 0 auto;">
@@ -83,7 +83,7 @@ if (isset($_SESSION['connectedAdmin']) || isset($_SESSION['connectedSuperAdmin']
                     <span class="material-icons">close</span>
                 </button>
             </div>
-            
+
             <div class="profile-preview-container" style="text-align: center; margin: 1rem 0;">
                 <img id="profilePicturePreviewModal" src="<?= $_SESSION['avatarPath'] ?>" alt="Profile preview" style="max-width: 180px; max-height: 180px; border-radius: 50%; margin: 0 auto;">
             </div>

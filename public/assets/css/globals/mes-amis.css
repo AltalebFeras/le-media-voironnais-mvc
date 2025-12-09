@@ -273,7 +273,8 @@
     gap: 0.5rem;
 }
 
-.accept-btn, .refuse-btn {
+.accept-btn,
+.refuse-btn {
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
@@ -583,31 +584,31 @@
     .friends-container {
         padding: 1rem;
     }
-    
+
     .friends-header {
         flex-direction: column;
         gap: 1rem;
         align-items: stretch;
     }
-    
+
     .friends-title {
         font-size: 1.5rem;
     }
-    
+
     .tabs-nav {
         gap: 1rem;
     }
-    
+
     .friends-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .request-card {
         flex-direction: column;
         gap: 1rem;
         align-items: stretch;
     }
-    
+
     .request-actions {
         justify-content: center;
     }

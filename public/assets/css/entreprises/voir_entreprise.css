@@ -201,8 +201,15 @@
     letter-spacing: 0.5px;
 }
 
-.badge-success { background: var(--bg-success); color: var(--color-success-dark); }
-.badge-secondary { background: var(--bg-danger); color: var(--color-danger-dark); }
+.badge-success {
+    background: var(--bg-success);
+    color: var(--color-success-dark);
+}
+
+.badge-secondary {
+    background: var(--bg-danger);
+    color: var(--color-danger-dark);
+}
 
 .card .bg-light {
     background: var(--bg-main);
@@ -257,12 +264,24 @@
     color: var(--color-text);
 }
 
-.text-muted { color: var(--color-muted); }
+.text-muted {
+    color: var(--color-muted);
+}
 
 @media (max-width: 992px) {
-    .entreprise-main-content { margin-top: var(--spacing-lg); padding: 0 var(--spacing-md) var(--spacing-xl); }
-    .max-width-66, .max-width-33 { width: 100%; }
-    .card { padding: var(--spacing-lg); }
+    .entreprise-main-content {
+        margin-top: var(--spacing-lg);
+        padding: 0 var(--spacing-md) var(--spacing-xl);
+    }
+
+    .max-width-66,
+    .max-width-33 {
+        width: 100%;
+    }
+
+    .card {
+        padding: var(--spacing-lg);
+    }
 }
 
 @media (max-width: 768px) {

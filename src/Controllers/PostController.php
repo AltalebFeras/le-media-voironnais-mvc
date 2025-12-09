@@ -26,8 +26,7 @@ class PostController extends AbstractController
 
     private function getIdPostByUiid(): ?int
     {
-        $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : 
-                (isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null);
+        $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : (isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null);
         return $this->repo->getIdPostByUiid($uiid);
     }
 
@@ -88,7 +87,7 @@ class PostController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            
+
             $associations = $this->associationRepo->getUserAssociations($idUser, 1, 100);
             $entreprises = $this->entrepriseRepo->getUserEntreprises($idUser, 1, 100);
 
@@ -129,7 +128,7 @@ class PostController extends AbstractController
                     $errors['association'] = "Veuillez sélectionner une association valide";
                 }
             }
-            
+
             if ($authorType === 'entreprise' && $entreprise_uiid) {
                 $idEntreprise = $this->entrepriseRepo->getIdEntrepriseByUiid($entreprise_uiid);
                 if (!$idEntreprise) {
@@ -143,14 +142,14 @@ class PostController extends AbstractController
 
             $helper = new Helper();
             $imagePath = null;
-            
+
             if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
                 $imagePath = $helper->handleImageUpload('image', 'posts');
             }
 
             $post = new Post();
             $uiid = $helper->generateUiid();
-            
+
             $post->setUiid($uiid)
                 ->setTitle($title)
                 ->setContent($content)
@@ -213,7 +212,7 @@ class PostController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $idPost = $this->getIdPostByUiid();
             $uiid = isset($_GET['uiid']) ? htmlspecialchars(trim($_GET['uiid'])) : null;
-            
+
             $post = $this->repo->getPostByUiid($uiid);
 
             if (!$post || $post['idUser'] != $idUser) {
@@ -244,7 +243,7 @@ class PostController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             $idPost = $this->getIdPostByUiid();
-            
+
             $postData = $this->repo->getPostByUiid($uiid);
 
             if (!$postData || $postData['idUser'] != $idUser) {
@@ -267,7 +266,7 @@ class PostController extends AbstractController
             if ($authorType === 'association' && $association_uiid) {
                 $idAssociation = $this->associationRepo->getIdAssociationByUiid($association_uiid);
             }
-            
+
             if ($authorType === 'entreprise' && $entreprise_uiid) {
                 $idEntreprise = $this->entrepriseRepo->getIdEntrepriseByUiid($entreprise_uiid);
             }
@@ -312,7 +311,7 @@ class PostController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             $idPost = $this->getIdPostByUiid();
-            
+
             $postData = $this->repo->getPostByUiid($uiid);
 
             if (!$postData || $postData['idUser'] != $idUser) {
@@ -357,7 +356,7 @@ class PostController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             $idPost = $this->getIdPostByUiid();
-            
+
             $postData = $this->repo->getPostByUiid($uiid);
 
             if (!$postData || $postData['idUser'] != $idUser) {
@@ -400,7 +399,7 @@ class PostController extends AbstractController
             $idUser = $_SESSION['idUser'];
             $uiid = isset($_POST['uiid']) ? htmlspecialchars(trim($_POST['uiid'])) : null;
             $idPost = $this->getIdPostByUiid();
-            
+
             $postData = $this->repo->getPostByUiid($uiid);
 
             if (!$postData || $postData['idUser'] != $idUser) {

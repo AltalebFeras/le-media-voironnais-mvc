@@ -290,7 +290,7 @@
         grid-template-columns: 1fr;
         gap: 2rem;
     }
-    
+
     .contact-hero-content h1 {
         font-size: 2.5rem;
     }
@@ -300,20 +300,20 @@
     .contact-hero {
         padding: 2rem 0;
     }
-    
+
     .contact-hero-content h1 {
         font-size: 2rem;
     }
-    
+
     .contact-hero-content p {
         font-size: 1rem;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
         gap: 0;
     }
-    
+
     .contact-form-section,
     .contact-info-card,
     .contact-faq-card,
@@ -326,14 +326,14 @@
     .contact-hero-content h1 {
         font-size: 1.75rem;
     }
-    
+
     .contact-form-section,
     .contact-info-card,
     .contact-faq-card,
     .contact-social-card {
         padding: 1rem;
     }
-    
+
     .form-actions .btn {
         width: 100%;
         justify-content: center;

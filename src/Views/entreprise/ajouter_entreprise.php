@@ -18,18 +18,18 @@
                 <div class="card">
                     <div class="form-section">
                         <h3 class="form-section-title">Informations générales</h3>
-                        
+
                         <div class="form-group">
                             <label for="name">Nom de l'entreprise <span class="text-danger">*</span></label>
                             <input type="text" id="name" name="name"
-                                value="<?= isset($_SESSION['form_data']['name']) ? htmlspecialchars($_SESSION['form_data']['name']) : '' ?>" 
+                                value="<?= isset($_SESSION['form_data']['name']) ? htmlspecialchars($_SESSION['form_data']['name']) : '' ?>"
                                 placeholder="Ex: Ma Super Entreprise"
                                 required>
                         </div>
 
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea id="description" name="description" rows="4" 
+                            <textarea id="description" name="description" rows="4"
                                 placeholder="Décrivez votre entreprise, ses activités et ses valeurs..."><?= isset($_SESSION['form_data']['description']) ? htmlspecialchars($_SESSION['form_data']['description']) : '' ?></textarea>
                         </div>
 
@@ -47,7 +47,7 @@
 
                     <div class="form-section">
                         <h3 class="form-section-title">Localisation</h3>
-                        
+
                         <div class="form-group">
                             <label for="address">Adresse</label>
                             <input type="text" id="address" name="address"
@@ -79,7 +79,7 @@
 
                     <div class="form-section">
                         <h3 class="form-section-title">Contact</h3>
-                        
+
                         <div class="flex-row">
                             <div class="max-width-50">
                                 <div class="form-group">

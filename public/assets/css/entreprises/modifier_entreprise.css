@@ -3,7 +3,7 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: var(--spacing-2xl) var(--spacing-lg);
-    background: radial-gradient(circle at 20% 20%, rgba(110,211,207,0.06), transparent 35%), var(--bg-main);
+    background: radial-gradient(circle at 20% 20%, rgba(110, 211, 207, 0.06), transparent 35%), var(--bg-main);
 }
 
 .modifier-entreprise-header {
@@ -123,9 +123,14 @@
     outline: none;
 }
 
-textarea { min-height: 140px; resize: vertical; }
+textarea {
+    min-height: 140px;
+    resize: vertical;
+}
 
-.flex-row .max-width-50 { width: 100%; }
+.flex-row .max-width-50 {
+    width: 100%;
+}
 
 .btn {
     border-radius: var(--radius-lg);
@@ -134,7 +139,10 @@ textarea { min-height: 140px; resize: vertical; }
     transition: all var(--transition-fast);
 }
 
-.btn:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.btn:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
 
 .info-sidebar {
     background: linear-gradient(135deg, var(--bg-light) 0%, #fff 100%);
@@ -144,9 +152,14 @@ textarea { min-height: 140px; resize: vertical; }
     box-shadow: var(--shadow-md);
 }
 
-.info-sidebar h3 { color: var(--color-primary); font-weight: 800; }
+.info-sidebar h3 {
+    color: var(--color-primary);
+    font-weight: 800;
+}
 
-.info-sidebar p { color: var(--color-text-light); }
+.info-sidebar p {
+    color: var(--color-text-light);
+}
 
 @media (max-width: 768px) {
     .modifier-entreprise-header {
@@ -157,7 +170,16 @@ textarea { min-height: 140px; resize: vertical; }
 }
 
 @media (max-width: 992px) {
-    .modifier-entreprise-container { padding: var(--spacing-xl) var(--spacing-md); }
-    .flex-row { flex-direction: column; gap: var(--spacing-xl); }
-    .card { padding: var(--spacing-xl); }
+    .modifier-entreprise-container {
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .flex-row {
+        flex-direction: column;
+        gap: var(--spacing-xl);
+    }
+
+    .card {
+        padding: var(--spacing-xl);
+    }
 }

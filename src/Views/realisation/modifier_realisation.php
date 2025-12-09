@@ -25,26 +25,26 @@
                     <div>
                         <div>
                             <label for="title">Titre de la réalisation *</label>
-                            <input type="text" name="title" id="title" required 
-                                   value="<?= isset($_SESSION['form_data']['title']) ? $_SESSION['form_data']['title'] : $realisation->getTitle() ?>">
+                            <input type="text" name="title" id="title" required
+                                value="<?= isset($_SESSION['form_data']['title']) ? $_SESSION['form_data']['title'] : $realisation->getTitle() ?>">
                         </div>
 
                         <div>
                             <label for="dateRealized">Date de réalisation</label>
-                            <input type="date" name="dateRealized" id="dateRealized" 
-                                   value="<?= isset($_SESSION['form_data']['dateRealized']) ? $_SESSION['form_data']['dateRealized'] : $realisation->getDateRealized() ?? '' ?>">
+                            <input type="date" name="dateRealized" id="dateRealized"
+                                value="<?= isset($_SESSION['form_data']['dateRealized']) ? $_SESSION['form_data']['dateRealized'] : $realisation->getDateRealized() ?? '' ?>">
                         </div>
 
                         <div>
                             <label for="description">Description</label>
-                            <textarea name="description" id="description" rows="8" 
-                                      placeholder="Description détaillée de la réalisation, objectifs, technologies utilisées..."><?= isset($_SESSION['form_data']['description']) ? $_SESSION['form_data']['description'] : $realisation->getDescription() ?? '' ?></textarea>
+                            <textarea name="description" id="description" rows="8"
+                                placeholder="Description détaillée de la réalisation, objectifs, technologies utilisées..."><?= isset($_SESSION['form_data']['description']) ? $_SESSION['form_data']['description'] : $realisation->getDescription() ?? '' ?></textarea>
                         </div>
 
                         <div>
                             <div class="flex-row align-items-center">
                                 <input type="checkbox" name="isPublic" value="1" id="isPublic"
-                                       <?= (isset($_SESSION['form_data']['isPublic']) ? $_SESSION['form_data']['isPublic'] : $realisation->getIsPublic()) ? 'checked' : '' ?>>
+                                    <?= (isset($_SESSION['form_data']['isPublic']) ? $_SESSION['form_data']['isPublic'] : $realisation->getIsPublic()) ? 'checked' : '' ?>>
                                 <label for="isPublic">Réalisation publique (visible par tous)</label>
                             </div>
                         </div>
@@ -52,7 +52,7 @@
                         <div>
                             <div class="flex-row align-items-center">
                                 <input type="checkbox" name="isFeatured" value="1" id="isFeatured"
-                                       <?= (isset($_SESSION['form_data']['isFeatured']) ? $_SESSION['form_data']['isFeatured'] : $realisation->getIsFeatured()) ? 'checked' : '' ?>>
+                                    <?= (isset($_SESSION['form_data']['isFeatured']) ? $_SESSION['form_data']['isFeatured'] : $realisation->getIsFeatured()) ? 'checked' : '' ?>>
                                 <label for="isFeatured">Mettre en avant cette réalisation</label>
                             </div>
                         </div>

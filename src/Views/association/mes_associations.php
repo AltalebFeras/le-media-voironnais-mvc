@@ -37,9 +37,9 @@
                 <div class="association-card-wrapper">
                     <div class="association-card">
                         <?php if ($association->getBannerPath()): ?>
-                            <img src="<?= $association->getBannerPath() ?>" 
-                                 alt="Bannière de <?= htmlspecialchars($association->getName()) ?>"
-                                 class="association-card-banner">
+                            <img src="<?= $association->getBannerPath() ?>"
+                                alt="Bannière de <?= htmlspecialchars($association->getName()) ?>"
+                                class="association-card-banner">
                         <?php else: ?>
                             <div class="association-card-banner" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);"></div>
                         <?php endif; ?>
@@ -47,9 +47,9 @@
                         <div class="association-card-content">
                             <div class="association-card-header">
                                 <?php if ($association->getLogoPath()): ?>
-                                    <img src="<?= $association->getLogoPath() ?>" 
-                                         class="association-card-logo"
-                                         alt="Logo de <?= htmlspecialchars($association->getName()) ?>">
+                                    <img src="<?= $association->getLogoPath() ?>"
+                                        class="association-card-logo"
+                                        alt="Logo de <?= htmlspecialchars($association->getName()) ?>">
                                 <?php else: ?>
                                     <div class="association-card-logo" style="background: var(--bg-light); display: flex; align-items: center; justify-content: center;">
                                         <span class="material-icons" style="color: var(--color-primary);">groups</span>
@@ -79,13 +79,13 @@
                             </div>
 
                             <div class="association-card-actions">
-                                <a href="<?= HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getUiid() ?>" 
-                                   class="btn btn-primary linkNotDecorated">
+                                <a href="<?= HOME_URL . 'mes_associations?action=voir&uiid=' . $association->getUiid() ?>"
+                                    class="btn btn-primary linkNotDecorated">
                                     <span class="material-icons" style="font-size: 18px; vertical-align: middle;">visibility</span>
                                     Voir
                                 </a>
-                                <a href="<?= HOME_URL . 'association/modifier?uiid=' . $association->getUiid() ?>" 
-                                   class="btn btn-light linkNotDecorated">
+                                <a href="<?= HOME_URL . 'association/modifier?uiid=' . $association->getUiid() ?>"
+                                    class="btn btn-light linkNotDecorated">
                                     <span class="material-icons" style="font-size: 18px; vertical-align: middle;">edit</span>
                                     Modifier
                                 </a>

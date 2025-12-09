@@ -36,9 +36,9 @@
                     <div class="card">
                         <?php if ($post['imagePath']): ?>
                             <div style="height: 220px; overflow: hidden; border-radius: 12px; margin-bottom: 1rem;">
-                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['imagePath']) ?>" 
-                                     alt="<?= htmlspecialchars($post['title']) ?>" 
-                                     style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['imagePath']) ?>"
+                                    alt="<?= htmlspecialchars($post['title']) ?>"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                         <?php else: ?>
                             <div style="height: 220px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
@@ -50,23 +50,23 @@
 
                         <div class="flex-row align-items-center mb">
                             <?php if ($post['authorType'] === 'user'): ?>
-                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['user_avatar'] ?? 'assets/images/uploads/avatars/default_avatar.png') ?>" 
-                                     alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 0.5rem;">
+                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['user_avatar'] ?? 'assets/images/uploads/avatars/default_avatar.png') ?>"
+                                    alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 0.5rem;">
                                 <small><?= htmlspecialchars($post['user_firstName'] . ' ' . $post['user_lastName']) ?></small>
                             <?php elseif ($post['authorType'] === 'association'): ?>
-                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['association_logo']) ?>" 
-                                     alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 0.5rem;">
+                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['association_logo']) ?>"
+                                    alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 0.5rem;">
                                 <small><?= htmlspecialchars($post['association_name']) ?></small>
                             <?php else: ?>
-                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['entreprise_logo']) ?>" 
-                                     alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 0.5rem;">
+                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['entreprise_logo']) ?>"
+                                    alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 0.5rem;">
                                 <small><?= htmlspecialchars($post['entreprise_name']) ?></small>
                             <?php endif; ?>
                         </div>
 
                         <h5><?= htmlspecialchars($post['title']) ?></h5>
                         <p><?= htmlspecialchars(substr($post['content'], 0, 150)) ?>...</p>
-                        
+
                         <p><small class="text-muted">Publié le : <?= date('d/m/Y', strtotime($post['createdAt'])) ?></small></p>
 
                         <div class="flex-row justify-content-between mt">

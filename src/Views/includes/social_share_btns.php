@@ -2,7 +2,7 @@
        <span class="share-label">Partager:</span>
        <div class="d-flex flex-wrap" style="gap: 0.5rem;">
            <a href="<?= $shareTable['facebook'] ?>" target="_blank" title="Partager sur Facebook" class="share-btn facebook linkNotDecorated">
-             <i class="icon-facebook" style="font-size: 32px;"></i>
+               <i class="icon-facebook" style="font-size: 32px;"></i>
            </a>
            <a href="<?= $shareTable['twitter'] ?>" target="_blank" title="Partager sur Twitter" class="share-btn twitter">
                <svg width="24" height="24" viewBox="0 0 24 24" fill="white" aria-hidden="true">

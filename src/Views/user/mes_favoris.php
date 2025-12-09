@@ -30,9 +30,9 @@
                 <?php foreach ($favouriteEvents as $evenement): ?>
                     <div class="event-card">
                         <div class="event-image">
-                            <img src="<?= BASE_URL . HOME_URL . $evenement['bannerPath'] ?>" 
-                                 alt="<?= htmlspecialchars($evenement['title']) ?>" 
-                                 loading="lazy">
+                            <img src="<?= BASE_URL . HOME_URL . $evenement['bannerPath'] ?>"
+                                alt="<?= htmlspecialchars($evenement['title']) ?>"
+                                loading="lazy">
                             <div class="event-category">
                                 <?= htmlspecialchars($evenement['category_name']) ?>
                             </div>
@@ -44,7 +44,7 @@
                                 </button>
                             </form>
                         </div>
-                        
+
                         <div class="event-content">
                             <div class="event-meta">
                                 <span class="event-date">
@@ -55,32 +55,32 @@
                                     <?= date('H:i', strtotime($evenement['startDate'])) ?>
                                 </span>
                             </div>
-                            
+
                             <h3 class="event-title">
                                 <a href="<?= HOME_URL ?>evenements/<?= $evenement['ville_slug'] ?>/<?= $evenement['category_slug'] ?>/<?= $evenement['slug'] ?>">
                                     <?= htmlspecialchars($evenement['title']) ?>
                                 </a>
                             </h3>
-                            
+
                             <p class="event-description">
                                 <?= htmlspecialchars(substr($evenement['shortDescription'] ?? $evenement['description'], 0, 120)) ?>...
                             </p>
-                            
+
                             <div class="event-location">
                                 <span class="material-icons">location_on</span>
                                 <?= htmlspecialchars($evenement['ville_nom_reel']) ?>
                             </div>
-                            
+
                             <?php if ($evenement['association_name']): ?>
                                 <div class="event-organizer">
                                     <span class="material-icons">groups</span>
                                     <?= htmlspecialchars($evenement['association_name']) ?>
                                 </div>
                             <?php endif; ?>
-                            
+
                             <div class="event-actions">
-                                <a href="<?= HOME_URL ?>evenements/<?= $evenement['ville_slug'] ?>/<?= $evenement['category_slug'] ?>/<?= $evenement['slug'] ?>" 
-                                   class="btn btn-primary">
+                                <a href="<?= HOME_URL ?>evenements/<?= $evenement['ville_slug'] ?>/<?= $evenement['category_slug'] ?>/<?= $evenement['slug'] ?>"
+                                    class="btn btn-primary">
                                     Voir détails
                                 </a>
                             </div>

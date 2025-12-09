@@ -4,7 +4,7 @@
 <main>
     <div class="flex-row justify-content-between">
         <h1><?= htmlspecialchars($title ?? 'Ajouter une réalisation') ?></h1>
-        <a href="<?= isset($_GET['back_to']) && $_GET['back_to'] ? HOME_URL . 'mes_entreprises?action=voir&uiid=' . htmlspecialchars($entreprise->getUiid()) : HOME_URL . 'entreprise/mes_realisations?entreprise_uiid=' . htmlspecialchars($entreprise->getUiid())?>" class="">
+        <a href="<?= isset($_GET['back_to']) && $_GET['back_to'] ? HOME_URL . 'mes_entreprises?action=voir&uiid=' . htmlspecialchars($entreprise->getUiid()) : HOME_URL . 'entreprise/mes_realisations?entreprise_uiid=' . htmlspecialchars($entreprise->getUiid()) ?>" class="">
             <span class="material-icons btn" style="color:white;">arrow_back</span>
         </a>
     </div>
@@ -24,26 +24,26 @@
                     <div>
                         <div>
                             <label for="title">Titre de la réalisation *</label>
-                            <input type="text" name="title" id="title" required 
-                                   value="<?= isset($_SESSION['form_data']['title']) ? htmlspecialchars($_SESSION['form_data']['title']) : '' ?>">
+                            <input type="text" name="title" id="title" required
+                                value="<?= isset($_SESSION['form_data']['title']) ? htmlspecialchars($_SESSION['form_data']['title']) : '' ?>">
                         </div>
 
                         <div>
                             <label for="dateRealized">Date de réalisation</label>
-                            <input type="date" name="dateRealized" id="dateRealized" 
-                                   value="<?= isset($_SESSION['form_data']['dateRealized']) ? htmlspecialchars($_SESSION['form_data']['dateRealized']) : '' ?>">
+                            <input type="date" name="dateRealized" id="dateRealized"
+                                value="<?= isset($_SESSION['form_data']['dateRealized']) ? htmlspecialchars($_SESSION['form_data']['dateRealized']) : '' ?>">
                         </div>
 
                         <div>
                             <label for="description">Description</label>
-                            <textarea name="description" id="description" rows="8" 
-                                      placeholder="Description détaillée de la réalisation, objectifs, technologies utilisées..."><?= isset($_SESSION['form_data']['description']) ? htmlspecialchars($_SESSION['form_data']['description']) : '' ?></textarea>
+                            <textarea name="description" id="description" rows="8"
+                                placeholder="Description détaillée de la réalisation, objectifs, technologies utilisées..."><?= isset($_SESSION['form_data']['description']) ? htmlspecialchars($_SESSION['form_data']['description']) : '' ?></textarea>
                         </div>
 
                         <div>
                             <div class="flex-row align-items-center">
                                 <input type="checkbox" name="isPublic" value="1" id="isPublic"
-                                       <?= (isset($_SESSION['form_data']['isPublic']) && $_SESSION['form_data']['isPublic']) ? 'checked' : 'checked' ?>>
+                                    <?= (isset($_SESSION['form_data']['isPublic']) && $_SESSION['form_data']['isPublic']) ? 'checked' : 'checked' ?>>
                                 <label for="isPublic">Réalisation publique (visible par tous)</label>
                             </div>
                         </div>
@@ -51,7 +51,7 @@
                         <div>
                             <div class="flex-row align-items-center">
                                 <input type="checkbox" name="isFeatured" value="1" id="isFeatured"
-                                       <?= (isset($_SESSION['form_data']['isFeatured']) && $_SESSION['form_data']['isFeatured']) ? 'checked' : '' ?>>
+                                    <?= (isset($_SESSION['form_data']['isFeatured']) && $_SESSION['form_data']['isFeatured']) ? 'checked' : '' ?>>
                                 <label for="isFeatured">Mettre en avant cette réalisation</label>
                             </div>
                         </div>

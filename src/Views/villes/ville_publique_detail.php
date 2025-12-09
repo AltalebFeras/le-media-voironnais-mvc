@@ -16,7 +16,7 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                             <div class="col-md-8">
                                 <h1 class="h2 mb-2">
                                     <i class="material-icons text-primary me-2" style="font-size: 2rem;">location_city</i>
-                                    <?= htmlspecialchars($ville['ville_nom']) ?> 
+                                    <?= htmlspecialchars($ville['ville_nom']) ?>
                                     <small class="text-muted">(<?= htmlspecialchars($ville['ville_code_postal']) ?>)</small>
                                 </h1>
                                 <div class="row">
@@ -38,9 +38,9 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                             </div>
                             <div class="col-md-4 text-end">
                                 <?php if ($ville['ville_longitude_deg'] && $ville['ville_latitude_deg']): ?>
-                                    <a href="https://www.google.com/maps/search/?api=1&query=<?= $ville['ville_latitude_deg'] ?>,<?= $ville['ville_longitude_deg'] ?>" 
-                                       target="_blank" 
-                                       class="btn btn-outline-primary">
+                                    <a href="https://www.google.com/maps/search/?api=1&query=<?= $ville['ville_latitude_deg'] ?>,<?= $ville['ville_longitude_deg'] ?>"
+                                        target="_blank"
+                                        class="btn btn-outline-primary">
                                         <i class="material-icons me-2">map</i>
                                         Voir sur la carte
                                     </a>
@@ -71,10 +71,10 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                                         <div class="col-md-4 mb-3">
                                             <div class="card h-100">
                                                 <?php if ($event['bannerPath']): ?>
-                                                    <img src="<?= htmlspecialchars($event['bannerPath']) ?>" 
-                                                         class="card-img-top" 
-                                                         alt="<?= htmlspecialchars($event['title']) ?>"
-                                                         style="height: 150px; object-fit: cover;">
+                                                    <img src="<?= htmlspecialchars($event['bannerPath']) ?>"
+                                                        class="card-img-top"
+                                                        alt="<?= htmlspecialchars($event['title']) ?>"
+                                                        style="height: 150px; object-fit: cover;">
                                                 <?php endif; ?>
                                                 <div class="card-body">
                                                     <h6 class="card-title">
@@ -121,10 +121,10 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                             <div class="card-body">
                                 <?php foreach (array_slice($entreprises, 0, 5) as $entreprise): ?>
                                     <div class="d-flex align-items-center mb-3">
-                                        <img src="<?= $entreprise['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-company.png' ?>" 
-                                             alt="<?= htmlspecialchars($entreprise['name']) ?>" 
-                                             class="rounded me-3" 
-                                             style="width: 50px; height: 50px; object-fit: cover;">
+                                        <img src="<?= $entreprise['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-company.png' ?>"
+                                            alt="<?= htmlspecialchars($entreprise['name']) ?>"
+                                            class="rounded me-3"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
                                         <div class="flex-grow-1">
                                             <h6 class="mb-1">
                                                 <a href="<?= HOME_URL . 'entreprises/' . $entreprise['slug'] ?>" class="text-decoration-none">
@@ -158,10 +158,10 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                             <div class="card-body">
                                 <?php foreach (array_slice($associations, 0, 5) as $association): ?>
                                     <div class="d-flex align-items-center mb-3">
-                                        <img src="<?= $association['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-association.png' ?>" 
-                                             alt="<?= htmlspecialchars($association['name']) ?>" 
-                                             class="rounded me-3" 
-                                             style="width: 50px; height: 50px; object-fit: cover;">
+                                        <img src="<?= $association['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-association.png' ?>"
+                                            alt="<?= htmlspecialchars($association['name']) ?>"
+                                            class="rounded me-3"
+                                            style="width: 50px; height: 50px; object-fit: cover;">
                                         <div class="flex-grow-1">
                                             <h6 class="mb-1">
                                                 <a href="<?= HOME_URL . 'associations/' . $association['slug'] ?>" class="text-decoration-none">

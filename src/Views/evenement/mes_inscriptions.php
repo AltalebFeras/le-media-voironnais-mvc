@@ -10,7 +10,7 @@
             </h1>
         </div>
 
-      <?php include_once __DIR__ . '/../includes/messages.php'; ?>
+        <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
         <!-- Statistics -->
         <div class="stats-container mb">

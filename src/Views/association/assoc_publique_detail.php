@@ -11,18 +11,18 @@ $description = $association['description'] ? substr(strip_tags($association['des
     <!-- Association Hero Banner -->
     <div class="association-hero">
         <?php if ($association['bannerPath']): ?>
-            <img src="<?= BASE_URL . HOME_URL .  htmlspecialchars($association['bannerPath']) ?>" 
-                 alt="Bannière <?= htmlspecialchars($association['name']) ?>" 
-                 class="association-hero-image">
+            <img src="<?= BASE_URL . HOME_URL .  htmlspecialchars($association['bannerPath']) ?>"
+                alt="Bannière <?= htmlspecialchars($association['name']) ?>"
+                class="association-hero-image">
         <?php endif; ?>
-        
+
         <div class="association-hero-overlay">
             <div class="association-hero-content">
                 <div class="association-header-info">
-                    <img src="<?= BASE_URL . HOME_URL .  htmlspecialchars($association['logoPath'] ?? 'assets/images/default-association.png') ?>" 
-                         alt="Logo <?= htmlspecialchars($association['name']) ?>" 
-                         class="association-logo-large">
-                    
+                    <img src="<?= BASE_URL . HOME_URL .  htmlspecialchars($association['logoPath'] ?? 'assets/images/default-association.png') ?>"
+                        alt="Logo <?= htmlspecialchars($association['name']) ?>"
+                        class="association-logo-large">
+
                     <div class="association-title-section">
                         <h1><?= htmlspecialchars($association['name']) ?></h1>
                         <span class="association-badge">
@@ -121,9 +121,9 @@ $description = $association['description'] ? substr(strip_tags($association['des
                             <div class="members-grid">
                                 <?php foreach (array_slice($association['members'], 0, 6) as $member): ?>
                                     <div class="member-card">
-                                        <img src="<?= $member['avatarPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-avatar.png' ?>" 
-                                             alt="<?= htmlspecialchars($member['firstName']) ?>" 
-                                             class="member-avatar">
+                                        <img src="<?= $member['avatarPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-avatar.png' ?>"
+                                            alt="<?= htmlspecialchars($member['firstName']) ?>"
+                                            class="member-avatar">
                                         <div class="member-info">
                                             <h6>
                                                 <a href="<?= HOME_URL . 'profil/' . $member['slug'] ?>">
@@ -159,9 +159,9 @@ $description = $association['description'] ? substr(strip_tags($association['des
                             <?php foreach (array_slice($association['associationEvents'], 0, 4) as $event): ?>
                                 <div class="related-item-card">
                                     <?php if ($event['bannerPath']): ?>
-                                        <img src="<?= htmlspecialchars($event['bannerPath']) ?>" 
-                                             class="related-item-image" 
-                                             alt="<?= htmlspecialchars($event['title']) ?>">
+                                        <img src="<?= htmlspecialchars($event['bannerPath']) ?>"
+                                            class="related-item-image"
+                                            alt="<?= htmlspecialchars($event['title']) ?>">
                                     <?php endif; ?>
                                     <div class="related-item-content">
                                         <div class="related-item-title">
@@ -192,7 +192,7 @@ $description = $association['description'] ? substr(strip_tags($association['des
                         <p class="text-muted mb-3">
                             Participez aux activités et projets de l'association !
                         </p>
-                        
+
                         <button class="btn btn-primary linkNotDecorated" onclick="joinAssociation()">
                             <span class="material-icons">group_add</span>
                             Demander à rejoindre
@@ -200,17 +200,17 @@ $description = $association['description'] ? substr(strip_tags($association['des
 
                         <div class="quick-actions">
                             <?php if ($association['phone']): ?>
-                                <a href="tel:<?= htmlspecialchars($association['phone']) ?>" 
-                                   class="quick-action-btn" 
-                                   title="Appeler">
+                                <a href="tel:<?= htmlspecialchars($association['phone']) ?>"
+                                    class="quick-action-btn"
+                                    title="Appeler">
                                     <span class="material-icons">phone</span>
                                 </a>
                             <?php endif; ?>
 
                             <?php if ($association['email']): ?>
-                                <a href="mailto:<?= htmlspecialchars($association['email']) ?>" 
-                                   class="quick-action-btn" 
-                                   title="Email">
+                                <a href="mailto:<?= htmlspecialchars($association['email']) ?>"
+                                    class="quick-action-btn"
+                                    title="Email">
                                     <span class="material-icons">email</span>
                                 </a>
                             <?php endif; ?>
@@ -227,20 +227,20 @@ $description = $association['description'] ? substr(strip_tags($association['des
 </main>
 
 <script>
-function joinAssociation() {
-    // Implementation for joining association
-    console.log('Join association');
-}
-
-function shareAssociation() {
-    // Implementation for sharing
-    if (navigator.share) {
-        navigator.share({
-            title: '<?= addslashes($association['name']) ?>',
-            url: window.location.href
-        });
+    function joinAssociation() {
+        // Implementation for joining association
+        console.log('Join association');
     }
-}
+
+    function shareAssociation() {
+        // Implementation for sharing
+        if (navigator.share) {
+            navigator.share({
+                title: '<?= addslashes($association['name']) ?>',
+                url: window.location.href
+            });
+        }
+    }
 </script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

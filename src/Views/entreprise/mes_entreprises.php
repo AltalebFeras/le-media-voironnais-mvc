@@ -13,7 +13,7 @@
                 <span class="material-icons" style="font-size: 18px; vertical-align: middle;">add_business</span>
                 Ajouter une entreprise
             </a>
-            <a href="<?= HOME_URL . 'dashboard' ?>" >
+            <a href="<?= HOME_URL . 'dashboard' ?>">
                 <span class="material-icons btn" style="color:white;">arrow_back</span>
             </a>
         </div>
@@ -37,9 +37,9 @@
                 <div class="entreprise-card-wrapper">
                     <div class="entreprise-card">
                         <?php if ($entreprise->getBannerPath()): ?>
-                            <img src="<?= $entreprise->getBannerPath() ?>" 
-                                 alt="Bannière de <?= htmlspecialchars($entreprise->getName()) ?>"
-                                 class="entreprise-card-banner">
+                            <img src="<?= $entreprise->getBannerPath() ?>"
+                                alt="Bannière de <?= htmlspecialchars($entreprise->getName()) ?>"
+                                class="entreprise-card-banner">
                         <?php else: ?>
                             <div class="entreprise-card-banner" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);"></div>
                         <?php endif; ?>
@@ -47,9 +47,9 @@
                         <div class="entreprise-card-content">
                             <div class="entreprise-card-header">
                                 <?php if ($entreprise->getLogoPath()): ?>
-                                    <img src="<?= $entreprise->getLogoPath() ?>" 
-                                         class="entreprise-card-logo"
-                                         alt="Logo de <?= htmlspecialchars($entreprise->getName()) ?>">
+                                    <img src="<?= $entreprise->getLogoPath() ?>"
+                                        class="entreprise-card-logo"
+                                        alt="Logo de <?= htmlspecialchars($entreprise->getName()) ?>">
                                 <?php else: ?>
                                     <div class="entreprise-card-logo" style="background: var(--bg-light); display: flex; align-items: center; justify-content: center;">
                                         <span class="material-icons" style="color: var(--color-primary);">business</span>
@@ -81,13 +81,13 @@
                             </div>
 
                             <div class="entreprise-card-actions">
-                                <a href="<?= HOME_URL . 'mes_entreprises?action=voir&uiid=' . $entreprise->getUiid() ?>" 
-                                   class="btn btn-primary linkNotDecorated">
+                                <a href="<?= HOME_URL . 'mes_entreprises?action=voir&uiid=' . $entreprise->getUiid() ?>"
+                                    class="btn btn-primary linkNotDecorated">
                                     <span class="material-icons" style="font-size: 18px; vertical-align: middle;">visibility</span>
                                     Voir
                                 </a>
-                                <a href="<?= HOME_URL . 'entreprise/modifier?uiid=' . $entreprise->getUiid() ?>" 
-                                   class="btn btn-light linkNotDecorated">
+                                <a href="<?= HOME_URL . 'entreprise/modifier?uiid=' . $entreprise->getUiid() ?>"
+                                    class="btn btn-light linkNotDecorated">
                                     <span class="material-icons" style="font-size: 18px; vertical-align: middle;">edit</span>
                                     Modifier
                                 </a>

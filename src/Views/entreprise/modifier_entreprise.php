@@ -44,13 +44,13 @@
                                 value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['address'])) ? htmlspecialchars($_SESSION['form_data']['address']) : htmlspecialchars($entreprise->getAddress() ?? '') ?>">
                         </div>
                         <!-- New postal code and city fields -->
-                          <!-- Postal code and city fields -->
+                        <!-- Postal code and city fields -->
                         <div class="flex-row">
                             <div class="max-width-50">
                                 <div>
                                     <label for="codePostal">Code postal</label>
-                                    <input type="text" id="codePostal" name="codePostal" maxlength="5" 
-                                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['codePostal'])) ? htmlspecialchars($_SESSION['form_data']['codePostal']) : ($ville ? htmlspecialchars($ville['ville_code_postal']) : '') ?>">
+                                    <input type="text" id="codePostal" name="codePostal" maxlength="5"
+                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['codePostal'])) ? htmlspecialchars($_SESSION['form_data']['codePostal']) : ($ville ? htmlspecialchars($ville['ville_code_postal']) : '') ?>">
                                     <small class="text-muted">Saisissez 5 chiffres pour voir les villes</small>
                                 </div>
                             </div>
@@ -64,8 +64,8 @@
                                             <option value="">Sélectionnez une ville</option>
                                         <?php endif; ?>
                                     </select>
-                                    <input type="hidden" id="idVille" name="idVille" 
-                                           value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['idVille'])) ? htmlspecialchars($_SESSION['form_data']['idVille']) : htmlspecialchars($entreprise->getIdVille()) ?>">
+                                    <input type="hidden" id="idVille" name="idVille"
+                                        value="<?= (isset($_GET['error']) && isset($_SESSION['form_data']['idVille'])) ? htmlspecialchars($_SESSION['form_data']['idVille']) : htmlspecialchars($entreprise->getIdVille()) ?>">
                                 </div>
                             </div>
                         </div>

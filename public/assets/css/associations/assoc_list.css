@@ -354,16 +354,28 @@
     animation-fill-mode: both;
 }
 
-.association-public-card:nth-child(1) { animation-delay: 0.1s; }
-.association-public-card:nth-child(2) { animation-delay: 0.2s; }
-.association-public-card:nth-child(3) { animation-delay: 0.3s; }
-.association-public-card:nth-child(4) { animation-delay: 0.4s; }
+.association-public-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.association-public-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.association-public-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.association-public-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
 
 @keyframes fadeInUp {
     from {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -382,15 +394,15 @@
         padding: 3rem 1rem;
         min-height: 35vh;
     }
-    
+
     .associations-hero-title {
         font-size: 2rem;
     }
-    
+
     .associations-hero-subtitle {
         font-size: 1rem;
     }
-    
+
     .association-public-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;
@@ -408,7 +420,7 @@
     .association-quick-actions {
         justify-content: center;
     }
-    
+
     .search-box {
         margin: -2rem 1rem 2rem;
     }
@@ -418,11 +430,11 @@
     .associations-hero-title {
         font-size: 1.75rem;
     }
-    
+
     .association-logo-wrapper {
         margin-top: -2.5rem;
     }
-    
+
     .association-logo-image {
         width: 60px;
         height: 60px;

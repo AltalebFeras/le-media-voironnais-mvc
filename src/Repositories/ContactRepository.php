@@ -25,9 +25,9 @@ class ContactRepository
         try {
             $sql = "INSERT INTO contact (firstName, lastName, email, phone, subject, message, status, createdAt, uiid) 
                     VALUES (:firstName, :lastName, :email, :phone, :subject, :message, :status, :createdAt, :uiid)";
-            
+
             $stmt = $this->DB->prepare($sql);
-            
+
             return $stmt->execute([
                 ':firstName' => $contact->getFirstName(),
                 ':lastName' => $contact->getLastName(),
@@ -53,13 +53,13 @@ class ContactRepository
             $sql = "SELECT * FROM contact WHERE idContact = :idContact";
             $stmt = $this->DB->prepare($sql);
             $stmt->execute([':idContact' => $idContact]);
-            
+
             $data = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             if (!$data) {
                 return null;
             }
-            
+
             return $this->hydrateContact($data);
         } catch (Exception $e) {
             throw new Exception("Erreur lors de la récupération du contact : " . $e->getMessage());
@@ -75,13 +75,13 @@ class ContactRepository
             $sql = "SELECT * FROM contact WHERE uiid = :uiid";
             $stmt = $this->DB->prepare($sql);
             $stmt->execute([':uiid' => $uiid]);
-            
+
             $data = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+
             if (!$data) {
                 return null;
             }
-            
+
             return $this->hydrateContact($data);
         } catch (Exception $e) {
             throw new Exception("Erreur lors de la récupération du contact : " . $e->getMessage());
@@ -94,12 +94,12 @@ class ContactRepository
     public function getIdContactByUiid(?string $uiid): ?int
     {
         if (!$uiid) return null;
-        
+
         try {
             $sql = "SELECT idContact FROM contact WHERE uiid = :uiid";
             $stmt = $this->DB->prepare($sql);
             $stmt->execute([':uiid' => $uiid]);
-            
+
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             return $result ? (int)$result['idContact'] : null;
         } catch (Exception $e) {
@@ -114,15 +114,15 @@ class ContactRepository
     {
         try {
             $offset = ($page - 1) * $limit;
-            
+
             $sql = "SELECT * FROM contact";
             $params = [];
-            
+
             if ($status) {
                 $sql .= " WHERE status = :status";
                 $params[':status'] = $status;
             }
-            
+
             $sql .= " ORDER BY createdAt DESC LIMIT :limit OFFSET :offset";
 
             $stmt = $this->DB->prepare($sql);
@@ -132,15 +132,15 @@ class ContactRepository
             }
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            
+
             $stmt->execute();
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+
             $contacts = [];
             foreach ($data as $row) {
                 $contacts[] = $this->hydrateContact($row);
             }
-            
+
             return $contacts;
         } catch (Exception $e) {
             throw new Exception("Erreur lors de la récupération des contacts : " . $e->getMessage());
@@ -155,7 +155,7 @@ class ContactRepository
         try {
             $sql = "SELECT COUNT(*) as total FROM contact";
             $params = [];
-            
+
             if ($status) {
                 $sql .= " WHERE status = :status";
                 $params[':status'] = $status;
@@ -163,7 +163,7 @@ class ContactRepository
 
             $stmt = $this->DB->prepare($sql);
             $stmt->execute($params);
-            
+
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             return (int)$result['total'];
         } catch (Exception $e) {
@@ -186,7 +186,7 @@ class ContactRepository
             // Don't update repliedAt when just changing status (not adding response)
             $sql = "UPDATE contact SET status = :status WHERE idContact = :idContact";
             $stmt = $this->DB->prepare($sql);
-            
+
             return $stmt->execute([
                 ':status' => $status,
                 ':idContact' => $idContact
@@ -204,7 +204,7 @@ class ContactRepository
         try {
             $sql = "UPDATE contact SET response = :response, status = 'traite', repliedAt = :repliedAt WHERE idContact = :idContact";
             $stmt = $this->DB->prepare($sql);
-            
+
             return $stmt->execute([
                 ':response' => $response,
                 ':repliedAt' => (new \DateTime())->format('Y-m-d H:i:s'),
@@ -247,7 +247,7 @@ class ContactRepository
 
             $stmt = $this->DB->prepare($sql);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             throw new Exception("Erreur lors de la récupération des statistiques : " . $e->getMessage());
@@ -261,7 +261,7 @@ class ContactRepository
     {
         try {
             $offset = ($page - 1) * $limit;
-            
+
             $sql = "SELECT * FROM contact 
                     WHERE firstName LIKE :query 
                     OR lastName LIKE :query 
@@ -275,15 +275,15 @@ class ContactRepository
             $stmt->bindValue(':query', "%$query%");
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            
+
             $stmt->execute();
             $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+
             $contacts = [];
             foreach ($data as $row) {
                 $contacts[] = $this->hydrateContact($row);
             }
-            
+
             return $contacts;
         } catch (Exception $e) {
             throw new Exception("Erreur lors de la recherche : " . $e->getMessage());
@@ -296,18 +296,18 @@ class ContactRepository
     private function hydrateContact(array $data): Contact
     {
         $contact = new Contact();
-        
+
         return $contact->setIdContact($data['idContact'] ?? null)
-                      ->setFirstName($data['firstName'] ?? null)
-                      ->setLastName($data['lastName'] ?? null)
-                      ->setEmail($data['email'] ?? null)
-                      ->setPhone($data['phone'] ?? null)
-                      ->setSubject($data['subject'] ?? null)
-                      ->setMessage($data['message'] ?? null)
-                      ->setStatus($data['status'] ?? 'nouveau')
-                      ->setResponse($data['response'] ?? null)
-                      ->setCreatedAt($data['createdAt'] ?? null)
-                      ->setRepliedAt($data['repliedAt'] ?? null)
-                      ->setUiid($data['uiid'] ?? null);
+            ->setFirstName($data['firstName'] ?? null)
+            ->setLastName($data['lastName'] ?? null)
+            ->setEmail($data['email'] ?? null)
+            ->setPhone($data['phone'] ?? null)
+            ->setSubject($data['subject'] ?? null)
+            ->setMessage($data['message'] ?? null)
+            ->setStatus($data['status'] ?? 'nouveau')
+            ->setResponse($data['response'] ?? null)
+            ->setCreatedAt($data['createdAt'] ?? null)
+            ->setRepliedAt($data['repliedAt'] ?? null)
+            ->setUiid($data['uiid'] ?? null);
     }
 }

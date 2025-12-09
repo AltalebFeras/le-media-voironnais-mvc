@@ -16,7 +16,7 @@ class UserController extends AbstractController
 {
     protected $repo;
     private $friendRepo;
-    
+
     public function __construct()
     {
         $this->repo = new UserRepository();
@@ -948,7 +948,7 @@ class UserController extends AbstractController
     {
         try {
             $user = $this->repo->getUserBySlug($userSlug);
-            
+
             if (!$user || $user->getIsDeleted() || $user->getIsBanned() || !$user->getIsActivated()) {
                 throw new Exception("Le profil demandé n'existe pas");
             }
@@ -956,17 +956,17 @@ class UserController extends AbstractController
             // Check friendship status if user is connected
             $friendshipStatus = null;
             $isOwnProfile = false;
-            
+
             if (isset($_SESSION['idUser'])) {
                 $currentUserId = $_SESSION['idUser'];
                 $isOwnProfile = ($currentUserId === $user->getIdUser());
-                
+
                 if (!$isOwnProfile) {
                     // Check if current user sent request to this user
                     $sentStatus = $this->friendRepo->getFriendshipStatus($currentUserId, $user->getIdUser());
                     // Check if this user sent request to current user
                     $receivedStatus = $this->friendRepo->getFriendshipStatus($user->getIdUser(), $currentUserId);
-                    
+
                     if ($sentStatus === 'accepte' || $receivedStatus === 'accepte') {
                         $friendshipStatus = 'friends';
                     } elseif ($sentStatus === 'en_attente') {

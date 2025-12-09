@@ -50,7 +50,7 @@
                             <span class="material-icons">close</span>
                         </button>
                     </div>
-                    
+
                     <div class="banner-preview-container" style="text-align: center; margin: 1rem 0;">
                         <?php if ($association->getBannerPath()): ?>
                             <img id="bannerPreviewModal" src="<?= BASE_URL . HOME_URL . $association->getBannerPath() ?>" alt="Banner preview" style="max-width: 100%; max-height: 300px; border-radius: 12px; margin: 0 auto;">
@@ -99,7 +99,7 @@
                             <span class="material-icons">close</span>
                         </button>
                     </div>
-                    
+
                     <div class="logo-preview-container" style="text-align: center; margin: 1rem 0;">
                         <img id="logoPreviewModal" src="<?= $association->getLogoPath() ?: HOME_URL . 'assets/images/uploads/logos/default_logo.png' ?>" alt="Logo preview" style="max-width: 180px; max-height: 180px; border-radius: 50%; margin: 0 auto;">
                     </div>

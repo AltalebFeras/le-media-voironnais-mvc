@@ -22,32 +22,116 @@ class Post
     private ?string $updatedAt = null;
 
     // Getters
-    public function getIdPost(): ?int { return $this->idPost; }
-    public function getUiid(): ?string { return $this->uiid; }
-    public function getTitle(): ?string { return $this->title; }
-    public function getContent(): ?string { return $this->content; }
-    public function getImagePath(): ?string { return $this->imagePath; }
-    public function getIdUser(): ?int { return $this->idUser; }
-    public function getIdAssociation(): ?int { return $this->idAssociation; }
-    public function getIdEntreprise(): ?int { return $this->idEntreprise; }
-    public function getAuthorType(): ?string { return $this->authorType; }
-    public function getIsPublished(): ?bool { return $this->isPublished; }
-    public function getCreatedAt(): ?string { return $this->createdAt; }
-    public function getUpdatedAt(): ?string { return $this->updatedAt; }
+    public function getIdPost(): ?int
+    {
+        return $this->idPost;
+    }
+    public function getUiid(): ?string
+    {
+        return $this->uiid;
+    }
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+    public function getImagePath(): ?string
+    {
+        return $this->imagePath;
+    }
+    public function getIdUser(): ?int
+    {
+        return $this->idUser;
+    }
+    public function getIdAssociation(): ?int
+    {
+        return $this->idAssociation;
+    }
+    public function getIdEntreprise(): ?int
+    {
+        return $this->idEntreprise;
+    }
+    public function getAuthorType(): ?string
+    {
+        return $this->authorType;
+    }
+    public function getIsPublished(): ?bool
+    {
+        return $this->isPublished;
+    }
+    public function getCreatedAt(): ?string
+    {
+        return $this->createdAt;
+    }
+    public function getUpdatedAt(): ?string
+    {
+        return $this->updatedAt;
+    }
 
     // Setters
-    public function setIdPost(?int $idPost): self { $this->idPost = $idPost; return $this; }
-    public function setUiid(?string $uiid): self { $this->uiid = $uiid; return $this; }
-    public function setTitle(?string $title): self { $this->title = $title; return $this; }
-    public function setContent(?string $content): self { $this->content = $content; return $this; }
-    public function setImagePath(?string $imagePath): self { $this->imagePath = $imagePath; return $this; }
-    public function setIdUser(?int $idUser): self { $this->idUser = $idUser; return $this; }
-    public function setIdAssociation(?int $idAssociation): self { $this->idAssociation = $idAssociation; return $this; }
-    public function setIdEntreprise(?int $idEntreprise): self { $this->idEntreprise = $idEntreprise; return $this; }
-    public function setAuthorType(?string $authorType): self { $this->authorType = $authorType; return $this; }
-    public function setIsPublished(?bool $isPublished): self { $this->isPublished = $isPublished; return $this; }
-    public function setCreatedAt(?string $createdAt): self { $this->createdAt = $createdAt; return $this; }
-    public function setUpdatedAt(?string $updatedAt): self { $this->updatedAt = $updatedAt; return $this; }
+    public function setIdPost(?int $idPost): self
+    {
+        $this->idPost = $idPost;
+        return $this;
+    }
+    public function setUiid(?string $uiid): self
+    {
+        $this->uiid = $uiid;
+        return $this;
+    }
+    public function setTitle(?string $title): self
+    {
+        $this->title = $title;
+        return $this;
+    }
+    public function setContent(?string $content): self
+    {
+        $this->content = $content;
+        return $this;
+    }
+    public function setImagePath(?string $imagePath): self
+    {
+        $this->imagePath = $imagePath;
+        return $this;
+    }
+    public function setIdUser(?int $idUser): self
+    {
+        $this->idUser = $idUser;
+        return $this;
+    }
+    public function setIdAssociation(?int $idAssociation): self
+    {
+        $this->idAssociation = $idAssociation;
+        return $this;
+    }
+    public function setIdEntreprise(?int $idEntreprise): self
+    {
+        $this->idEntreprise = $idEntreprise;
+        return $this;
+    }
+    public function setAuthorType(?string $authorType): self
+    {
+        $this->authorType = $authorType;
+        return $this;
+    }
+    public function setIsPublished(?bool $isPublished): self
+    {
+        $this->isPublished = $isPublished;
+        return $this;
+    }
+    public function setCreatedAt(?string $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+    public function setUpdatedAt(?string $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        return $this;
+    }
 
     public function validate(): array
     {

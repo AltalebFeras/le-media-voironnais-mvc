@@ -727,7 +727,7 @@ class EvenementController extends AbstractController
                 'telegram' => "https://t.me/share/url?url={$shareUrl}&text=%F0%9F%8E%89%20{$shareTitle}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%E2%9C%A8%20{$shareDesc}",
                 'email' => "mailto:?subject={$shareTitle}&body=%F0%9F%8E%89%20Bonjour%2C%0A%0A{$shareDesc}%0A%F0%9F%93%85%20Date%20:%20{$shareDate}%0A%F0%9F%93%8D%20Lieu%20:%20{$shareLieu}%0A%0A👉%20{$shareUrl}"
             ];
-            
+
             $this->render('evenement/evenement_publique_detail', [
                 'evenement' => $evenement,
                 'ville' => $ville,
@@ -1242,7 +1242,7 @@ class EvenementController extends AbstractController
     {
         try {
             $idUser = $_SESSION['idUser'];
-            
+
             $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
             $itemsPerPage = 12;
 

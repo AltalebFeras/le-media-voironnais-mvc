@@ -18,14 +18,14 @@
                     <div>
                         <div>
                             <label for="title">Titre *</label>
-                            <input type="text" name="title" id="title" required 
-                                   value="<?= isset($_SESSION['form_data']['title']) ? htmlspecialchars($_SESSION['form_data']['title']) : '' ?>">
+                            <input type="text" name="title" id="title" required
+                                value="<?= isset($_SESSION['form_data']['title']) ? htmlspecialchars($_SESSION['form_data']['title']) : '' ?>">
                         </div>
 
                         <div>
                             <label for="content">Contenu *</label>
-                            <textarea name="content" id="content" rows="10" required 
-                                      placeholder="Écrivez le contenu de votre actualité..."><?= isset($_SESSION['form_data']['content']) ? htmlspecialchars($_SESSION['form_data']['content']) : '' ?></textarea>
+                            <textarea name="content" id="content" rows="10" required
+                                placeholder="Écrivez le contenu de votre actualité..."><?= isset($_SESSION['form_data']['content']) ? htmlspecialchars($_SESSION['form_data']['content']) : '' ?></textarea>
                         </div>
 
                         <div>
@@ -98,11 +98,11 @@
 </main>
 
 <script>
-function toggleAuthorFields() {
-    const type = document.getElementById('authorType').value;
-    document.getElementById('associationField').style.display = type === 'association' ? 'block' : 'none';
-    document.getElementById('entrepriseField').style.display = type === 'entreprise' ? 'block' : 'none';
-}
+    function toggleAuthorFields() {
+        const type = document.getElementById('authorType').value;
+        document.getElementById('associationField').style.display = type === 'association' ? 'block' : 'none';
+        document.getElementById('entrepriseField').style.display = type === 'entreprise' ? 'block' : 'none';
+    }
 </script>
 
 <?php unset($_SESSION['form_data']); ?>

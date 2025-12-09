@@ -55,14 +55,14 @@
 					</div>
 				</div>
 			</div>
-	</div>
+		</div>
 </main>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
 <script>
-$(document).ready(function() {
-	$('#goBack').on('click', function(e) {
-		e.preventDefault();
-		window.history.back();
+	$(document).ready(function() {
+		$('#goBack').on('click', function(e) {
+			e.preventDefault();
+			window.history.back();
+		});
 	});
-});
 </script>

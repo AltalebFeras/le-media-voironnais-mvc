@@ -26,9 +26,9 @@
                     <div class="card">
                         <?php if ($post['imagePath']): ?>
                             <div style="height: 220px; overflow: hidden; border-radius: 12px; margin-bottom: 1rem;">
-                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['imagePath']) ?>" 
-                                     alt="<?= htmlspecialchars($post['title']) ?>" 
-                                     style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['imagePath']) ?>"
+                                    alt="<?= htmlspecialchars($post['title']) ?>"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                         <?php else: ?>
                             <div style="height: 220px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
@@ -62,8 +62,8 @@
                         </div>
 
                         <div class="flex-row justify-content-between mt">
-                            <a href="<?= HOME_URL ?>post/modifier?uiid=<?= htmlspecialchars($post['uiid']) ?>" 
-                               class="btn linkNotDecorated">
+                            <a href="<?= HOME_URL ?>post/modifier?uiid=<?= htmlspecialchars($post['uiid']) ?>"
+                                class="btn linkNotDecorated">
                                 Modifier
                             </a>
                             <form method="POST" action="<?= HOME_URL ?>post/supprimer" style="display: inline;">

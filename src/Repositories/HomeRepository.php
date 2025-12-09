@@ -31,11 +31,11 @@ class HomeRepository
                 AND e.startDate >= NOW()
                 ORDER BY e.startDate ASC
                 LIMIT :limit";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -53,11 +53,11 @@ class HomeRepository
                 AND e.endDate < NOW()
                 ORDER BY e.endDate DESC
                 LIMIT :limit";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -73,11 +73,11 @@ class HomeRepository
                 AND e.isDeleted = 0
                 ORDER BY e.createdAt DESC
                 LIMIT :limit";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -93,11 +93,11 @@ class HomeRepository
                 AND a.isDeleted = 0
                 ORDER BY a.createdAt DESC
                 LIMIT :limit";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -115,11 +115,11 @@ class HomeRepository
                 HAVING events_count > 0
                 ORDER BY events_count DESC, v.ville_nom_reel ASC
                 LIMIT :limit";
-        
+
         $stmt = $this->DB->prepare($sql);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -176,12 +176,12 @@ class HomeRepository
                     AND isDeleted = 0
                     AND isBanned = 0
                     LIMIT :limit";
-            
+
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [];
@@ -202,12 +202,12 @@ class HomeRepository
                     AND e.isPublic = 1
                     AND e.isDeleted = 0
                     LIMIT :limit";
-            
+
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [];
@@ -226,12 +226,12 @@ class HomeRepository
                     AND isActive = 1
                     AND isDeleted = 0
                     LIMIT :limit";
-            
+
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [];
@@ -250,12 +250,12 @@ class HomeRepository
                     AND isActive = 1
                     AND isDeleted = 0
                     LIMIT :limit";
-            
+
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [];
@@ -273,12 +273,12 @@ class HomeRepository
                     WHERE ville_nom_reel LIKE :query
                     OR ville_code_postal LIKE :query
                     LIMIT :limit";
-            
+
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':query', '%' . $query . '%', PDO::PARAM_STR);
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [];
@@ -295,7 +295,7 @@ class HomeRepository
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':slug', $slug, PDO::PARAM_STR);
             $stmt->execute();
-            
+
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             return $result ?: null;
         } catch (PDOException $e) {
@@ -317,12 +317,12 @@ class HomeRepository
                     AND e.isDeleted = 0
                     ORDER BY e.startDate DESC
                     LIMIT :limit";
-            
+
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':idVille', $idVille, PDO::PARAM_INT);
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [];
@@ -341,12 +341,12 @@ class HomeRepository
                     AND isDeleted = 0
                     ORDER BY name ASC
                     LIMIT :limit";
-            
+
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':idVille', $idVille, PDO::PARAM_INT);
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [];
@@ -365,12 +365,12 @@ class HomeRepository
                     AND isDeleted = 0
                     ORDER BY name ASC
                     LIMIT :limit";
-            
+
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':idVille', $idVille, PDO::PARAM_INT);
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [];
@@ -386,12 +386,12 @@ class HomeRepository
             $sql = "SELECT * FROM ville
                     ORDER BY ville_nom_reel ASC
                     LIMIT :limit OFFSET :offset";
-            
+
             $stmt = $this->DB->prepare($sql);
             $stmt->bindValue(':limit', $itemsPerPage, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return [];

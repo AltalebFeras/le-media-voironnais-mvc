@@ -170,9 +170,19 @@
 }
 
 @media (max-width: 992px) {
-    .ajouter-association-container { padding: var(--spacing-xl) var(--spacing-md); }
-    .flex-row { flex-direction: column; gap: var(--spacing-xl); }
-    .ajouter-association-form .card { padding: var(--spacing-xl); }
+    .ajouter-association-container {
+        padding: var(--spacing-xl) var(--spacing-md);
+    }
+
+    .flex-row {
+        flex-direction: column;
+        gap: var(--spacing-xl);
+    }
+
+    .ajouter-association-form .card {
+        padding: var(--spacing-xl);
+    }
+
     .info-sidebar {
         position: static;
         margin-top: var(--spacing-xl);

@@ -19,9 +19,9 @@
                     <div class="p-3">
                         <h3>Image actuelle</h3>
                         <div style="margin: 1rem 0;">
-                            <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['imagePath']) ?>" 
-                                 alt="Image" 
-                                 style="max-width: 100%; height: auto; border-radius: 8px;">
+                            <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['imagePath']) ?>"
+                                alt="Image"
+                                style="max-width: 100%; height: auto; border-radius: 8px;">
                         </div>
                         <div class="flex-row justify-content-between">
                             <form method="POST" action="<?= HOME_URL ?>post/modifier" enctype="multipart/form-data" style="display: inline;">
@@ -50,8 +50,8 @@
                     <div>
                         <div>
                             <label for="title">Titre *</label>
-                            <input type="text" name="title" id="title" required 
-                                   value="<?= htmlspecialchars($post['title']) ?>">
+                            <input type="text" name="title" id="title" required
+                                value="<?= htmlspecialchars($post['title']) ?>">
                         </div>
 
                         <div>
@@ -77,8 +77,8 @@
                             <select name="association_uiid" id="association_uiid">
                                 <option value="">Sélectionner une association</option>
                                 <?php foreach ($associations as $assoc): ?>
-                                    <option value="<?= htmlspecialchars($assoc->getUiid()) ?>" 
-                                            <?= $post['idAssociation'] == $assoc->getIdAssociation() ? 'selected' : '' ?>>
+                                    <option value="<?= htmlspecialchars($assoc->getUiid()) ?>"
+                                        <?= $post['idAssociation'] == $assoc->getIdAssociation() ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($assoc->getName()) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -90,8 +90,8 @@
                             <select name="entreprise_uiid" id="entreprise_uiid">
                                 <option value="">Sélectionner une entreprise</option>
                                 <?php foreach ($entreprises as $entr): ?>
-                                    <option value="<?= htmlspecialchars($entr->getUiid()) ?>" 
-                                            <?= $post['idEntreprise'] == $entr->getIdEntreprise() ? 'selected' : '' ?>>
+                                    <option value="<?= htmlspecialchars($entr->getUiid()) ?>"
+                                        <?= $post['idEntreprise'] == $entr->getIdEntreprise() ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($entr->getName()) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -100,8 +100,8 @@
 
                         <div>
                             <div class="flex-row align-items-center">
-                                <input type="checkbox" name="isPublished" value="1" id="isPublished" 
-                                       <?= $post['isPublished'] ? 'checked' : '' ?>>
+                                <input type="checkbox" name="isPublished" value="1" id="isPublished"
+                                    <?= $post['isPublished'] ? 'checked' : '' ?>>
                                 <label for="isPublished">Publié</label>
                             </div>
                         </div>
@@ -127,11 +127,11 @@
 </main>
 
 <script>
-function toggleAuthorFields() {
-    const type = document.getElementById('authorType').value;
-    document.getElementById('associationField').style.display = type === 'association' ? 'block' : 'none';
-    document.getElementById('entrepriseField').style.display = type === 'entreprise' ? 'block' : 'none';
-}
+    function toggleAuthorFields() {
+        const type = document.getElementById('authorType').value;
+        document.getElementById('associationField').style.display = type === 'association' ? 'block' : 'none';
+        document.getElementById('entrepriseField').style.display = type === 'entreprise' ? 'block' : 'none';
+    }
 </script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

@@ -48,5 +48,5 @@
 <?php endif; ?>
 
 <style>
-    
+
 </style>

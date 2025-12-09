@@ -81,7 +81,7 @@ class EvenementRepository
     {
         $idEvenement = $this->getIdEvenementByUiid($eventUiid);
         if (!$idEvenement) return false;
-        
+
         $stmt = $this->pdo->prepare("SELECT idEventLike FROM event_like WHERE idUser = ? AND idEvenement = ?");
         $stmt->execute([$idUser, $idEvenement]);
         if ($stmt->fetch()) {
@@ -98,7 +98,7 @@ class EvenementRepository
     {
         $idEvenement = $this->getIdEvenementByUiid($eventUiid);
         if (!$idEvenement) return false;
-        
+
         $stmt = $this->pdo->prepare("SELECT idEventFavourite FROM event_favourite WHERE idUser = ? AND idEvenement = ?");
         $stmt->execute([$idUser, $idEvenement]);
         if ($stmt->fetch()) {
@@ -115,18 +115,18 @@ class EvenementRepository
     {
         $idEvenement = $this->getIdEvenementByUiid($eventUiid);
         if (!$idEvenement) return false;
-        
+
         // Check for bad words
         $badWordsFilter = new BadWordsFilter();
         if ($badWordsFilter::containsBadWords($content)) {
             throw new Exception("Votre commentaire contient des mots inappropriés.");
         }
-        
+
         $parentId = $parentUiid ? $this->getCommentIdByUiid($parentUiid) : null;
-        
+
         $helper = new Helper();
         $commentUiid = $helper->generateUiid();
-        
+
         $stmt = $this->pdo->prepare("INSERT INTO event_comment (uiid, idEvenement, idUser, content, parentId, createdAt) VALUES (?, ?, ?, ?, ?, NOW())");
         $stmt->execute([$commentUiid, $idEvenement, $idUser, $content, $parentId]);
         return $commentUiid;
@@ -137,7 +137,7 @@ class EvenementRepository
     {
         $idEventComment = $this->getCommentIdByUiid($commentUiid);
         if (!$idEventComment) return false;
-        
+
         $stmt = $this->pdo->prepare("SELECT idEventCommentLike FROM event_comment_like WHERE idUser = ? AND idEventComment = ?");
         $stmt->execute([$idUser, $idEventComment]);
         if ($stmt->fetch()) {
@@ -154,7 +154,7 @@ class EvenementRepository
     {
         $idEventComment = $this->getCommentIdByUiid($commentUiid);
         if (!$idEventComment) return false;
-        
+
         $stmt = $this->pdo->prepare("INSERT IGNORE INTO event_comment_report (idUser, idEventComment, reason, createdAt) VALUES (?, ?, ?, NOW())");
         return $stmt->execute([$idUser, $idEventComment, $reason]);
     }
@@ -172,7 +172,7 @@ class EvenementRepository
     {
         $idEventComment = $this->getCommentIdByUiid($commentUiid);
         if (!$idEventComment) return false;
-        
+
         $this->pdo->prepare("UPDATE event_comment SET isDeleted = 1 WHERE idEventComment = ?")->execute([$idEventComment]);
         $this->pdo->prepare("UPDATE event_comment SET isDeleted = 1 WHERE parentId = ?")->execute([$idEventComment]);
         return true;
@@ -419,7 +419,7 @@ class EvenementRepository
 
         return $stmt->fetchColumn() > 0;
     }
-   
+
 
     public function isEventCategoryExists(int $idEventCategory): mixed
     {
@@ -654,7 +654,7 @@ class EvenementRepository
         $stmt->execute();
 
         $subscription = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $subscription ?: null;  
+        return $subscription ?: null;
     }
     public function registerUserForEventAndIncrementEventParticipants($idUser, $idEvenement, $status): bool
     {
@@ -903,7 +903,7 @@ class EvenementRepository
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } 
+    }
     public function countUserFavouriteEvents($idUser): int
     {
         $sql = "SELECT COUNT(*) FROM event_favourite ef
@@ -914,7 +914,7 @@ class EvenementRepository
         $stmt->execute();
 
         return (int)$stmt->fetchColumn();
-    }  
+    }
 
     /**
      * Get all events user is inscribed for with pagination
@@ -923,7 +923,7 @@ class EvenementRepository
     {
         try {
             $offset = max(0, ($currentPage - 1) * $itemsPerPage);
-            
+
             $query = "SELECT e.*, v.ville_nom_reel, v.ville_slug, 
                       ec.name as category_name, ec.slug as category_slug,
                       ep.status, ep.joinedAt, ep.approvedAt,
@@ -938,13 +938,13 @@ class EvenementRepository
                       AND ep.status IN ('inscrit', 'liste_attente')
                       ORDER BY e.startDate DESC
                       LIMIT :offset, :itemsPerPage";
-            
+
             $stmt = $this->pdo->prepare($query);
             $stmt->bindValue(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->bindValue(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             throw new Exception("Error fetching user registrations: " . $e->getMessage());
@@ -966,7 +966,7 @@ class EvenementRepository
 
             $stmt = $this->pdo->prepare($query);
             $stmt->execute(['idUser' => $idUser]);
-            
+
             return (int)$stmt->fetchColumn();
         } catch (Exception $e) {
             throw new Exception("Error counting user inscriptions: " . $e->getMessage());

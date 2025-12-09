@@ -14,7 +14,7 @@
 
     <div class="container">
         <?php include_once __DIR__ . '/../includes/messages.php'; ?>
-        
+
         <div class="contact-container">
             <!-- Contact Form -->
             <div class="contact-form-section">
@@ -28,38 +28,38 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="firstName">Prénom *</label>
-                            <input type="text" 
-                                   id="firstName" 
-                                   name="firstName" 
-                                   value="<?= htmlspecialchars($_SESSION['form_data']['firstName'] ?? '') ?>" 
-                                   required>
+                            <input type="text"
+                                id="firstName"
+                                name="firstName"
+                                value="<?= htmlspecialchars($_SESSION['form_data']['firstName'] ?? '') ?>"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="lastName">Nom *</label>
-                            <input type="text" 
-                                   id="lastName" 
-                                   name="lastName" 
-                                   value="<?= htmlspecialchars($_SESSION['form_data']['lastName'] ?? '') ?>" 
-                                   required>
+                            <input type="text"
+                                id="lastName"
+                                name="lastName"
+                                value="<?= htmlspecialchars($_SESSION['form_data']['lastName'] ?? '') ?>"
+                                required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label for="email">Email *</label>
-                            <input type="email" 
-                                   id="email" 
-                                   name="email" 
-                                   value="<?= htmlspecialchars($_SESSION['form_data']['email'] ?? '') ?>" 
-                                   required>
+                            <input type="email"
+                                id="email"
+                                name="email"
+                                value="<?= htmlspecialchars($_SESSION['form_data']['email'] ?? '') ?>"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="phone">Téléphone</label>
-                            <input type="tel" 
-                                   id="phone" 
-                                   name="phone" 
-                                   value="<?= htmlspecialchars($_SESSION['form_data']['phone'] ?? '') ?>" 
-                                   placeholder="06 12 34 56 78">
+                            <input type="tel"
+                                id="phone"
+                                name="phone"
+                                value="<?= htmlspecialchars($_SESSION['form_data']['phone'] ?? '') ?>"
+                                placeholder="06 12 34 56 78">
                         </div>
                     </div>
 
@@ -79,11 +79,11 @@
 
                     <div class="form-group">
                         <label for="message">Message *</label>
-                        <textarea id="message" 
-                                  name="message" 
-                                  rows="6" 
-                                  placeholder="Décrivez votre demande en détail..." 
-                                  required><?= htmlspecialchars($_SESSION['form_data']['message'] ?? '') ?></textarea>
+                        <textarea id="message"
+                            name="message"
+                            rows="6"
+                            placeholder="Décrivez votre demande en détail..."
+                            required><?= htmlspecialchars($_SESSION['form_data']['message'] ?? '') ?></textarea>
                         <small class="form-help">Minimum 10 caractères, maximum 2000 caractères</small>
                     </div>
 
@@ -100,7 +100,7 @@
             <div class="contact-info-section">
                 <div class="contact-info-card">
                     <h3>Informations de contact</h3>
-                    
+
                     <div class="contact-item">
                         <div class="contact-icon">
                             <span class="material-icons">location_on</span>
@@ -138,14 +138,14 @@
                         <div class="contact-details">
                             <h4>Horaires</h4>
                             <p>Lundi - Vendredi : 9h00 - 18h00<br>
-                               Weekend : Sur rendez-vous</p>
+                                Weekend : Sur rendez-vous</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="contact-faq-card">
                     <h3>Questions fréquentes</h3>
-                    
+
                     <div class="faq-item">
                         <h4>Comment créer un compte ?</h4>
                         <p>Cliquez sur "Inscription" dans le menu et remplissez le formulaire. Vous recevrez un email de confirmation.</p>
@@ -170,7 +170,7 @@
                 <div class="contact-social-card">
                     <h3>Suivez-nous</h3>
                     <p>Restez connecté avec nous sur les réseaux sociaux</p>
-                    
+
                     <div class="social-links">
                         <a href="#" class="social-link facebook">
                             <i class="fab fa-facebook-f"></i>

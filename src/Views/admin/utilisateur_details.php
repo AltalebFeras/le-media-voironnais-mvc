@@ -6,7 +6,7 @@
     <div class="container py-4">
 
         <h1>Détails de l'utilisateur</h1>
-        
+
         <?php if (isset($user) && is_array($user)): ?>
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
             <?php
@@ -21,7 +21,7 @@
             $bio = $bioRaw;
 
             // Helper to safely format dates (avoids warnings on invalid/empty values)
-            $formatDate = function($value, $format = 'd/m/Y à H:i', $default = 'Jamais') {
+            $formatDate = function ($value, $format = 'd/m/Y à H:i', $default = 'Jamais') {
                 if (empty($value)) return $default;
                 try {
                     $dt = new DateTime($value);

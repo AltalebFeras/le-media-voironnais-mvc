@@ -3,6 +3,7 @@
     align-items: center;
     justify-content: center;
 }
+
 .container_403 {
     background: #fff;
     padding: 40px 30px 30px 30px;
@@ -12,6 +13,7 @@
     max-width: 420px;
     width: 100%;
 }
+
 .forbidden_bg {
     background: linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%);
     border-radius: 50%;
@@ -23,6 +25,7 @@
     justify-content: center;
     box-shadow: 0 4px 24px rgba(252, 92, 125, 0.15);
 }
+
 .forbidden_bg h1 {
     color: #fff;
     font-size: 4.5rem;
@@ -30,17 +33,20 @@
     margin: 0;
     letter-spacing: 2px;
 }
+
 .content_box_403 h2 {
     font-size: 1.7rem;
     color: #333;
     margin-bottom: 10px;
     font-weight: 700;
 }
+
 .content_box_403 p {
     color: #666;
     margin-bottom: 18px;
     font-size: 1.05rem;
 }
+
 .link_403 {
     display: inline-block;
     margin-top: 10px;
@@ -54,18 +60,22 @@
     box-shadow: 0 2px 8px rgba(252, 92, 125, 0.10);
     transition: background 0.2s, box-shadow 0.2s;
 }
+
 .link_403:hover {
     background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%);
     box-shadow: 0 4px 16px rgba(106, 130, 251, 0.15);
 }
+
 @media (max-width: 600px) {
     .container_403 {
         padding: 24px 8px 18px 8px;
     }
+
     .forbidden_bg {
         width: 100px;
         height: 100px;
     }
+
     .forbidden_bg h1 {
         font-size: 2.8rem;
     }

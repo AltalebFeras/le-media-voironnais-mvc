@@ -3,7 +3,7 @@
 <main>
   <h1>Connexion</h1>
   <p>Connectez-vous pour accéder à votre espace personnel sur Le Media Voironnais.<br>
-  Créez, gérez vos événements, associations, entreprises et discutez avec la communauté locale !</p>
+    Créez, gérez vos événements, associations, entreprises et discutez avec la communauté locale !</p>
   <!-- Alert Messages -->
   <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
@@ -11,7 +11,7 @@
     <div>
       <label for="email">Adresse e-mail:</label>
       <input type="email" id="email" name="email" placeholder="Entrez votre e-mail"
-        <?= isset($_SESSION['form_data']['email']) ? 'value="' . $_SESSION['form_data']['email'] . '"' : '' ?> required autocomplete="email"/>
+        <?= isset($_SESSION['form_data']['email']) ? 'value="' . $_SESSION['form_data']['email'] . '"' : '' ?> required autocomplete="email" />
     </div>
     <div>
       <label for="password">Mot de passe:</label>

@@ -78,7 +78,7 @@ class BadWordsFilter
     {
         $text = strtolower($text);
         $text = self::normalizeText($text);
-        
+
         foreach (self::$badWords as $badWord) {
             $badWord = strtolower($badWord);
             // Check for exact word match with word boundaries
@@ -86,7 +86,7 @@ class BadWordsFilter
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -98,15 +98,15 @@ class BadWordsFilter
         $filtered = $text;
         $textLower = strtolower($text);
         $textNormalized = self::normalizeText($textLower);
-        
+
         foreach (self::$badWords as $badWord) {
             $badWord = strtolower($badWord);
             $replacement = str_repeat('*', mb_strlen($badWord));
-            
+
             // Replace with case-insensitive match
             $filtered = preg_replace('/\b' . preg_quote($badWord, '/') . '\b/iu', $replacement, $filtered);
         }
-        
+
         return $filtered;
     }
 
@@ -118,14 +118,14 @@ class BadWordsFilter
         $found = [];
         $text = strtolower($text);
         $text = self::normalizeText($text);
-        
+
         foreach (self::$badWords as $badWord) {
             $badWord = strtolower($badWord);
             if (preg_match('/\b' . preg_quote($badWord, '/') . '\b/iu', $text)) {
                 $found[] = $badWord;
             }
         }
-        
+
         return array_unique($found);
     }
 
@@ -136,13 +136,13 @@ class BadWordsFilter
     {
         // Remove special characters used to bypass filters
         $text = str_replace(['@', '4', '3', '1', '0', '$', '€'], ['a', 'a', 'e', 'i', 'o', 's', 'e'], $text);
-        
+
         // Remove spaces between letters (k o n a r d -> konard)
         $text = preg_replace('/(\w)\s+(?=\w)/u', '$1', $text);
-        
+
         // Normalize accents
         $text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
-        
+
         return $text;
     }
 

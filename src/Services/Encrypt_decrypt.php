@@ -58,9 +58,9 @@ class Encrypt_decrypt
 
 
 
- 
- 
-   // public function encryptId($id): string
+
+
+    // public function encryptId($id): string
     // {
     //     // $key = bin2hex(random_bytes(16));
     //     $key = 'd93vNg48Bqv7ZpxlA3YtP1mWcK0rJx9h';

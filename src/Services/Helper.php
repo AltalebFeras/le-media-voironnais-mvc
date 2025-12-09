@@ -12,7 +12,7 @@ class Helper
     private const JPEG_QUALITY = 85;
     private const WEBP_QUALITY = 80;
     private const PNG_COMPRESSION = 6;
-    
+
     // Memory management constants
     private const MAX_PIXELS = 50000000; // 50 megapixels limit
     private const MEMORY_LIMIT_INCREASE = '512M';
@@ -142,7 +142,7 @@ class Helper
         // Calculate approximate memory needed (width * height * 4 bytes * 3 for safety)
         $memoryNeeded = $totalPixels * 4 * 3;
         $currentMemoryLimit = $this->return_bytes(ini_get('memory_limit'));
-        
+
         if ($memoryNeeded > $currentMemoryLimit * 0.8) {
             // Temporarily increase memory limit
             $oldMemoryLimit = ini_get('memory_limit');
@@ -169,11 +169,12 @@ class Helper
     /**
      * Convert human readable file size to bytes
      */
-    private function return_bytes($val) {
+    private function return_bytes($val)
+    {
         $val = trim($val);
-        $last = strtolower($val[strlen($val)-1]);
+        $last = strtolower($val[strlen($val) - 1]);
         $val = (int)$val;
-        switch($last) {
+        switch ($last) {
             case 'g':
                 $val *= 1024;
             case 'm':
@@ -248,12 +249,12 @@ class Helper
         } else {
             // Use original dimensions
             $optimizedImage = imagecreatetruecolor($width, $height);
-            
+
             if (!$optimizedImage) {
                 imagedestroy($sourceImage);
                 throw new Exception('Impossible de créer l\'image optimisée.');
             }
-            
+
             // Preserve transparency for PNG
             if ($mimeType === 'image/png' || $mimeType === 'image/gif') {
                 imagealphablending($optimizedImage, false);
@@ -261,7 +262,7 @@ class Helper
                 $transparent = imagecolorallocatealpha($optimizedImage, 255, 255, 255, 127);
                 imagefill($optimizedImage, 0, 0, $transparent);
             }
-            
+
             imagecopy($optimizedImage, $sourceImage, 0, 0, 0, 0, $width, $height);
         }
 
@@ -290,7 +291,7 @@ class Helper
     {
         // Set error reporting to catch GD errors
         $oldErrorReporting = error_reporting(E_ALL);
-        
+
         try {
             switch ($mimeType) {
                 case 'image/jpeg':
@@ -308,11 +309,11 @@ class Helper
                 default:
                     return false;
             }
-            
+
             if ($image === false) {
                 throw new Exception('Impossible de charger l\'image. Le fichier pourrait être corrompu ou trop volumineux.');
             }
-            
+
             return $image;
         } finally {
             error_reporting($oldErrorReporting);
@@ -382,9 +383,14 @@ class Helper
         if (!imagecopyresampled(
             $resizedImage,
             $sourceImage,
-            0, 0, 0, 0,
-            $targetWidth, $targetHeight,
-            $sourceWidth, $sourceHeight
+            0,
+            0,
+            0,
+            0,
+            $targetWidth,
+            $targetHeight,
+            $sourceWidth,
+            $sourceHeight
         )) {
             imagedestroy($resizedImage);
             throw new Exception('Erreur lors du redimensionnement de l\'image.');
@@ -430,9 +436,14 @@ class Helper
             if (!imagecopyresampled(
                 $thumbnail,
                 $sourceImage,
-                0, 0, $x, $y,
-                $thumbWidth, $thumbHeight,
-                $size, $size
+                0,
+                0,
+                $x,
+                $y,
+                $thumbWidth,
+                $thumbHeight,
+                $size,
+                $size
             )) {
                 imagedestroy($thumbnail);
                 imagedestroy($sourceImage);
@@ -477,7 +488,7 @@ class Helper
 
             if (file_exists($fullPath)) {
                 unlink($fullPath);
-                
+
                 // Also try to delete potential thumbnail
                 $pathInfo = pathinfo($fullPath);
                 $thumbPath = $pathInfo['dirname'] . '/thumbs/' . $pathInfo['filename'] . '_thumb.' . $pathInfo['extension'];
@@ -519,13 +530,13 @@ class Helper
     public function getImageFileSize($imagePath)
     {
         $fullPath = __DIR__ . "/../../public/" . $imagePath;
-        
+
         if (!file_exists($fullPath)) {
             return null;
         }
 
         $bytes = filesize($fullPath);
-        
+
         if ($bytes >= 1048576) {
             return round($bytes / 1048576, 2) . ' MB';
         } elseif ($bytes >= 1024) {
