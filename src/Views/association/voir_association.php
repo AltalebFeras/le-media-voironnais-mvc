@@ -237,7 +237,7 @@
                             </div>
 
                             <?php if ($isOwner): ?>
-                                <div class="flex-row justify-content-between mt-4">
+                                <div class="flex-row justify-content-between mt">
                                     <a href="<?= HOME_URL . 'association/modifier?uiid=' . $association->getUiid() ?>" class="btn linkNotDecorated">
                                         Modifier l'association
                                     </a>
