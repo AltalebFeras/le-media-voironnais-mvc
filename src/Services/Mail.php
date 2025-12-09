@@ -72,58 +72,92 @@ final class Mail
         $salutation = $this->getSalutation();
         $souhait = $this->getSouhait();
         $currentYear = date('Y');
-        $logoPath = BASE_URL . HOME_URL . 'assets/images/logo/logo.png';
+        $homeUrl = BASE_URL . HOME_URL;
 
         return <<<HTML
 <!DOCTYPE html>
-<html lang="fr">
+<html lang='fr'>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>$subject</title>
-    <style>
-        body { margin: 0; padding: 0; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
-        .header { background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding: 40px 20px; text-align: center; }
-        .content { padding: 40px 30px;border-left: 5px solid #3B82F6; border-right: 5px solid #3B82F6; }
-        .footer { background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%); padding: 30px 20px; text-align: center; }
-        .logo-container { display: inline-flex; align-items: center; }
-        .logo-text { font-size: 24px; font-weight: bold; color: #ffffff; margin: 0; }
-        .greeting { color: #333333; font-size: 18px; font-weight: 600; margin: 0 0 25px 0; }
-        .content-body { color: #555555; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0; }
-        .closing { color: #333333; font-size: 16px; font-weight: 500; margin: 25px 0 0 0; }
-        .team-name { color: #ffffff; font-size: 20px; font-weight: 700; margin: 0; }
-        .team-tagline { color: #ffffff; font-size: 14px; margin: 8px 0 0 0; opacity: 0.9; }
-        .copyright { color: #ffffff; font-size: 12px; margin: 20px 0 0 0; opacity: 0.8; }
-    </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Header Section -->
-        <div class="header">
-            <a href="/" style="text-decoration: none;">
-                <div class="logo-container">
-                    <p class="logo-text">
-                        <span style="color: #EF4444;">Le </span><span style="color: #10B981;">Média</span><span style="color: #3B82F6;">Voironnais</span>
-                    </p>
-                </div>
-            </a>
-        </div>
-        <!-- Main Content Section -->
-        <div class="content">
-            <p class="greeting">$salutation $recipientName,</p>
-            <div class="content-body">
-                $body
-            </div>
-            <p class="closing">$souhait !</p>
-        </div>
-        <!-- Footer Section -->
-        <div class="footer">
-            <p class="team-name">L'équipe du Média Voironnais</p>
-            <p class="team-tagline">Bougez, partagez, progressez !</p>
-            <p class="copyright">&copy; $currentYear Le Média Voironnais. Tous droits réservés.</p>
-        </div>
-    </div>
+<body style='font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 5px; background-color: #f4f4f4;'>
+    <table width='100%' cellpadding='0' cellspacing='0' style='max-width: 600px; margin: 0 auto; background-color: #ffffff;'>
+        
+        <!-- Header -->
+        <tr>
+            <td style='background-color: #182848; padding: 40px 20px; text-align: center;'>
+                <table width='100%' cellpadding='0' cellspacing='0'>
+                    <tr>
+                        <td style='text-align: center;'>
+                            <a href='$homeUrl' style='text-decoration: none;'>
+                                <p style='margin: 0; font-size: 24px; font-weight: bold;'>
+                                    <span style='color: #EF4444;'>Le </span><span style='color: #10B981;'>Média </span><span style='color: #3B82F6;'>Voironnais</span>
+                                </p>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <!-- Main Content -->
+        <tr>
+            <td style='padding: 40px 30px; border-left: 5px solid #3B82F6; border-right: 5px solid #3B82F6;'>
+                <table width='100%' cellpadding='0' cellspacing='0'>
+                    <tr>
+                        <td>
+                            <p style='color: #333333; font-size: 18px; font-weight: 600; margin: 0 0 25px 0;'>
+                                $salutation $recipientName,
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='color: #555555; font-size: 16px; line-height: 1.6;'>
+                            $body
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p style='color: #333333; font-size: 16px; font-weight: 500; margin: 25px 0 0 0;'>
+                                $souhait !
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td style='background-color: #182848; padding: 30px 20px; text-align: center;'>
+                <table width='100%' cellpadding='0' cellspacing='0'>
+                    <tr>
+                        <td style='text-align: center;'>
+                            <p style='color: #ffffff; margin: 0; font-weight: 700; font-size: 20px;'>
+                                L'équipe du Média Voironnais
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='text-align: center; padding-top: 8px;'>
+                            <p style='color: #ffffff; margin: 0; font-size: 14px; opacity: 0.9;'>
+                                Bougez, partagez, progressez !
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style='text-align: center; padding-top: 20px;'>
+                            <p style='color: #ffffff; margin: 0; font-size: 12px; opacity: 0.8;'>
+                                &copy; $currentYear Le Média Voironnais. Tous droits réservés.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
 HTML;
