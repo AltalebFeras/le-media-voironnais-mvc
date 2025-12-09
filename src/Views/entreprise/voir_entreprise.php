@@ -242,7 +242,7 @@
                             <?php if ($isOwner): ?>
                                 <div class="flex-row justify-content-between mt-4">
                                     <a href="<?= HOME_URL . 'entreprise/modifier?uiid=' . $entreprise->getUiid() ?>" class="btn linkNotDecorated">
-                                        Modifier l'entreprise
+                                        <span class="text-white">Modifier l'entreprise</span>
                                     </a>
                                     <button type="button" class="btn btn-danger"
                                         onclick="document.getElementById('popup').style.display='flex'">

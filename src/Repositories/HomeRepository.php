@@ -309,9 +309,10 @@ class HomeRepository
     public function getEventsByVille(int $idVille, int $limit = 10): array
     {
         try {
-            $sql = "SELECT e.*, ec.name as category_name, ec.slug as category_slug
+            $sql = "SELECT e.*, ec.name as category_name, ec.slug as category_slug ,v.ville_nom_reel, v.ville_slug
                     FROM evenement e
                     LEFT JOIN event_category ec ON e.idEventCategory = ec.idEventCategory
+                    LEFT JOIN ville v ON e.idVille = v.idVille
                     WHERE e.idVille = :idVille
                     AND e.isPublic = 1
                     AND e.isDeleted = 0

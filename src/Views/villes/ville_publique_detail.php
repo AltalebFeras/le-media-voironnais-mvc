@@ -68,7 +68,7 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                         <?php foreach (array_slice($events, 0, 6) as $event): ?>
                             <div class="event-card">
                                 <?php if ($event['bannerPath']): ?>
-                                    <img src="<?= htmlspecialchars($event['bannerPath']) ?>"
+                                    <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($event['bannerPath']) ?>"
                                         class="event-card-img"
                                         alt="<?= htmlspecialchars($event['title']) ?>">
                                 <?php endif; ?>
@@ -113,7 +113,7 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                         <div class="section-card-body">
                             <?php foreach (array_slice($entreprises, 0, 5) as $entreprise): ?>
                                 <div class="entity-card">
-                                    <img src="<?= $entreprise['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-company.png' ?>"
+                                    <img src="<?=BASE_URL . HOME_URL .  ($entreprise['logoPath'] ?? 'assets/images/default-company.png') ?>"
                                         alt="<?= htmlspecialchars($entreprise['name']) ?>"
                                         class="entity-logo">
                                     <div class="entity-info">
@@ -149,7 +149,7 @@ $description = 'Découvrez ' . $ville['ville_nom'] . ' (' . $ville['ville_code_p
                         <div class="section-card-body">
                             <?php foreach (array_slice($associations, 0, 5) as $association): ?>
                                 <div class="entity-card">
-                                    <img src="<?= $association['logoPath'] ?? BASE_URL . HOME_URL . 'assets/images/default-association.png' ?>"
+                                    <img src="<?= BASE_URL . HOME_URL . ($association['logoPath'] ?? 'assets/images/default-association.png') ?>"
                                         alt="<?= htmlspecialchars($association['name']) ?>"
                                         class="entity-logo">
                                     <div class="entity-info">
