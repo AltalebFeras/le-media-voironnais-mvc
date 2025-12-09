@@ -81,25 +81,25 @@
         <!-- Main Content -->
         <div class="evenement-main-content">
             <!-- Header with back button and title -->
-            <div class="flex-row justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 style="margin: 0;"><?= $evenement['title'] ?></h1>
-                    <div class="flex-row mt-2">
-                        <span class="badge <?= $evenement['isPublic'] ? 'badge-success' : 'badge-secondary' ?> mr-2">
+            <div class="event-header-responsive">
+                <div class="event-header-content">
+                    <h1><?= $evenement['title'] ?></h1>
+                    <div class="event-badges">
+                        <span class="badge <?= $evenement['isPublic'] ? 'badge-success' : 'badge-secondary' ?>">
                             <?= $evenement['isPublic'] ? 'Public' : 'Privé' ?>
                         </span>
                     </div>
                 </div>
-                <div>
-                    <a href="<?= HOME_URL . 'mes_evenements' ?>" class="">
+                <div class="event-header-back">
+                    <a href="<?= HOME_URL . 'mes_evenements' ?>">
                         <span class="material-icons btn" style="color:white;">arrow_back</span>
                     </a>
                 </div>
             </div>
 
-            <div class="flex-row align-items-start" style="gap: 20px;">
+            <div class="event-layout">
                 <!-- Main Details Section - LEFT COLUMN -->
-                <div class="max-width-66">
+                <div class="event-column-main">
                     <!-- Event Details -->
                     <div class="card mb-4">
                         <div class="p-3">
@@ -150,7 +150,7 @@
                 </div>
 
                 <!-- Info Sidebar - RIGHT COLUMN -->
-                <div class="max-width-33">
+                <div class="event-column-sidebar">
                     <!-- Event Images Carousel -->
                     <div class="card mb-4">
                         <div class="p-3">
@@ -209,19 +209,21 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Statistics -->
-                    <div class="card mb-4">
-                        <div class="p-3">
-                            <h4>Statistiques</h4>
-                            <dl>
-                                <dt>Créé le</dt>
-                                <dd><?= date('d/m/Y', strtotime($evenement['createdAt'])) ?></dd>
+            <!-- Statistics Section - Full Width -->
+            <div class="statistics-full-width">
+                <div class="card mb-4">
+                    <div class="p-3">
+                        <h4>Statistiques</h4>
+                        <dl>
+                            <dt>Créé le</dt>
+                            <dd><?= date('d/m/Y', strtotime($evenement['createdAt'])) ?></dd>
 
-                                <dt>Dernière modification</dt>
-                                <dd><?= $evenement['updatedAt'] ? date('d/m/Y', strtotime($evenement['updatedAt'])) : 'Jamais' ?></dd>
-                            </dl>
-                        </div>
+                            <dt>Dernière modification</dt>
+                            <dd><?= $evenement['updatedAt'] ? date('d/m/Y', strtotime($evenement['updatedAt'])) : 'Jamais' ?></dd>
+                        </dl>
                     </div>
                 </div>
             </div>

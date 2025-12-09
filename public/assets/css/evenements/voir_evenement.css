@@ -118,6 +118,36 @@ main {
     padding: var(--spacing-xl);
     border-radius: var(--radius-xl);
 }
+/* Statistics Full Width Section */
+.statistics-full-width {
+    width: 100%;
+    max-width: 100%;
+    margin: var(--spacing-xl) auto;
+}
+
+.statistics-full-width .card {
+    width: 100%;
+}
+
+.statistics-full-width dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.statistics-full-width dt {
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--spacing-xs);
+}
+
+.statistics-full-width dd {
+    margin: 0;
+    color: var(--color-text-light);
+    padding-left: var(--spacing-lg);
+    border-left: 3px solid var(--color-accent);
+}
+
 /* Participants Sections */
 .participants-sections {
     display: grid;
@@ -164,6 +194,56 @@ main {
     margin-bottom: 0;
 }
 
+/* Event Header Responsive */
+.event-header-responsive {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.event-header-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.event-header-content h1 {
+    margin: 0;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    word-wrap: break-word;
+}
+
+.event-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.event-header-back {
+    flex-shrink: 0;
+}
+
+/* Event Layout */
+.event-layout {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.event-column-main {
+    flex: 1 1 600px;
+    min-width: 0;
+}
+
+.event-column-sidebar {
+    flex: 1 1 300px;
+    min-width: 0;
+}
+
+/* Responsive Adjustments */
 @media (max-width: 992px) {
     .evenement-main-content { 
         margin-top: var(--spacing-lg); 
@@ -216,6 +296,7 @@ main {
     .participants-sections {
         padding: 0 var(--spacing-sm);
         gap: var(--spacing-md);
+        flex-direction: column;
     }
     
     .list-group-item {
@@ -224,6 +305,34 @@ main {
     
     .participant-actions .btn {
         width: 100%;
+    }
+    
+    /* Event Header Responsive */
+    .event-header-responsive {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .event-header-back {
+        align-self: flex-end;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .event-layout {
+        flex-direction: column;
+    }
+
+    .event-column-main,
+    .event-column-sidebar {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .participants-section-wrapper {
+        flex: 1 1 100%;
+        max-width: 100%;
     }
 }
 
@@ -242,5 +351,9 @@ main {
     
     h4 {
         font-size: 1.1rem;
+    }
+    
+    .event-header-content h1 {
+        font-size: 1.5rem;
     }
 }
