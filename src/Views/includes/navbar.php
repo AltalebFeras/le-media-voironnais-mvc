@@ -31,19 +31,15 @@
           </div>
         </li>
 
-        <li><a class="link nav-item" href="<?= HOME_URL . 'actus' ?>">
+        <li><a class="link nav-item" href="<?= HOME_URL . 'actu' ?>">
             <span class="material-icons">article</span>
-            <span class="nav-text">Actus</span>
+            <span class="nav-text">Actualités</span>
           </a></li>
         <li><a class="link nav-item" href="<?= HOME_URL . 'evenements' ?>">
             <span class="material-icons">event</span>
             <span class="nav-text">Événements</span>
           </a></li>
-          <li><a class="link nav-item" href="<?= HOME_URL . 'actu' ?>">
-            <span class="material-icons">article</span>
-            <span class="nav-text">Actualités</span>
-          </a></li>
-          
+
 
         <!-- Structures Dropdown -->
         <li class="nav-item-dropdown">
@@ -80,6 +76,15 @@
               <a class="nav-dropdown-item" href="<?= HOME_URL . 'mon_compte' ?>">
                 <span class="material-icons">account_circle</span>
                 <span><?= $_SESSION['firstName'] ?> <?= $_SESSION['lastName'] ?></span>
+              </a>
+              <div class="nav-dropdown-divider"></div>
+              <a class="nav-dropdown-item" href="<?= HOME_URL . 'dashboard' ?>">
+                <span class="material-icons">dashboard</span>
+                <span class="nav-text">Mon tableau de bord</span>
+              </a>
+              <a class="nav-dropdown-item" href="<?= HOME_URL . 'mes_posts' ?>">
+                <span class="material-icons">article</span>
+                <span class="nav-text">Mes actualités</span>
               </a>
               <a class="nav-dropdown-item" href="<?= HOME_URL . 'mes_entreprises' ?>">
                 <span class="material-icons">business</span>

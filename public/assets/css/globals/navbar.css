@@ -363,6 +363,8 @@
         transition: all var(--transition-normal) cubic-bezier(.4, 2, .6, 1);
         z-index: var(--z-index-dropdown);
         overflow-x: hidden;
+        max-height: calc(100vh - 70px);
+        overflow-y: auto;
     }
 
     .nav-links.open {
@@ -446,6 +448,8 @@
         border-radius: 0;
         padding: 0;
         margin: 0;
+        max-height: 60vh;
+        overflow-y: auto;
     }
 
     .nav-dropdown-menu.show {
@@ -515,6 +519,8 @@
         background: var(--bg-light);
         margin: 0;
         padding: 0;
+        max-height: 60vh;
+        overflow-y: auto;
     }
 
     .nav-dropdown-item {
@@ -573,6 +579,8 @@
         transition: all 0.3s cubic-bezier(.4, 2, .6, 1);
         z-index: 1000;
         overflow-x: hidden;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
     }
 
     .nav-links.open {
