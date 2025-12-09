@@ -9,7 +9,7 @@
         </a>
     </div>
 
-    <div class="flex-row">
+    <div class="flex-row align-items-start">
         <div class="max-width-50">
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
