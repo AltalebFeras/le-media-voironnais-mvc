@@ -16,7 +16,7 @@
     </div>
 
     <div class="post-form-container">
-        <div class="max-width-50">
+        <div style="flex: 2; min-width: 0;">
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
             <?php if ($post['imagePath']): ?>
@@ -112,7 +112,7 @@
             </form>
         </div>
 
-        <div class="max-width-33">
+        <div style="flex: 1; min-width: 280px;">
             <div class="post-info-sidebar">
                 <h3>Informations</h3>
                 <p>Les champs marqués d'un * sont obligatoires.</p>

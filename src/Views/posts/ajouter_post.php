@@ -10,7 +10,7 @@
     </div>
 
     <div class="post-form-container">
-        <div class="max-width-50">
+        <div style="flex: 2; min-width: 0;">
             <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
             <form method="POST" action="<?= HOME_URL ?>post/ajouter" enctype="multipart/form-data">
@@ -83,7 +83,7 @@
             </form>
         </div>
 
-        <div class="max-width-33">
+        <div style="flex: 1; min-width: 280px;">
             <div class="post-info-sidebar">
                 <h3>Informations</h3>
                 <p>Les champs marqués d'un * sont obligatoires.</p>
