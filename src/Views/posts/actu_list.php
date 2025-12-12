@@ -2,75 +2,76 @@
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <main>
-    <div class="flex-row justify-content-between mb">
+    <div class="page-header">
         <h1><?= htmlspecialchars($title ?? 'Actualités') ?></h1>
     </div>
 
     <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
-    <!-- Filter buttons -->
-    <div class="flex-row mb">
-        <a href="<?= HOME_URL ?>actu" class="btn <?= !$filter ? '' : 'btn-outline' ?>">
+    <div class="filter-buttons">
+        <a href="<?= HOME_URL ?>actu" class="btn-filter <?= !$filter ? 'active' : '' ?> linkNotDecorated">
             Toutes
         </a>
-        <a href="<?= HOME_URL ?>actu?filter=user" class="btn <?= $filter === 'user' ? '' : 'btn-outline' ?>">
+        <a href="<?= HOME_URL ?>actu?filter=user" class="btn-filter <?= $filter === 'user' ? 'active' : '' ?> linkNotDecorated">
             Utilisateurs
         </a>
-        <a href="<?= HOME_URL ?>actu?filter=association" class="btn <?= $filter === 'association' ? '' : 'btn-outline' ?>">
+        <a href="<?= HOME_URL ?>actu?filter=association" class="btn-filter <?= $filter === 'association' ? 'active' : '' ?> linkNotDecorated">
             Associations
         </a>
-        <a href="<?= HOME_URL ?>actu?filter=entreprise" class="btn <?= $filter === 'entreprise' ? '' : 'btn-outline' ?>">
+        <a href="<?= HOME_URL ?>actu?filter=entreprise" class="btn-filter <?= $filter === 'entreprise' ? 'active' : '' ?> linkNotDecorated">
             Entreprises
         </a>
     </div>
 
     <?php if (empty($posts)): ?>
-        <div class="custom-alert custom-alert-info">
+        <div class="posts-empty-state">
+            <span class="material-icons">newspaper</span>
             <p>Aucune actualité disponible pour le moment.</p>
         </div>
     <?php else: ?>
-        <!-- Posts grid -->
-        <div class="flex-row flex-wrap">
+        <div class="posts-grid">
             <?php foreach ($posts as $post): ?>
-                <div class="max-width-33">
-                    <div class="card">
+                <div class="post-card">
+                    <div class="post-image-container">
                         <?php if ($post['imagePath']): ?>
-                            <div style="height: 220px; overflow: hidden; border-radius: 12px; margin-bottom: 1rem;">
-                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['imagePath']) ?>"
-                                    alt="<?= htmlspecialchars($post['title']) ?>"
-                                    style="width: 100%; height: 100%; object-fit: cover;">
-                            </div>
+                            <img class="post-image"
+                                src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['imagePath']) ?>"
+                                alt="<?= htmlspecialchars($post['title']) ?>">
                         <?php else: ?>
-                            <div style="height: 220px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                                        border-radius: 12px; display: flex; align-items: center; justify-content: center; 
-                                        color: white; font-size: 1.5rem; margin-bottom: 1rem;">
+                            <div class="post-placeholder">
                                 <?= htmlspecialchars(substr($post['title'], 0, 2)) ?>
                             </div>
                         <?php endif; ?>
+                    </div>
 
-                        <div class="flex-row align-items-center mb">
+                    <div class="post-content">
+                        <div class="post-author">
                             <?php if ($post['authorType'] === 'user'): ?>
-                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['user_avatar'] ?? 'assets/images/uploads/avatars/default_avatar.png') ?>"
-                                    alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 0.5rem;">
-                                <small><?= htmlspecialchars($post['user_firstName'] . ' ' . $post['user_lastName']) ?></small>
+                                <img class="post-author-avatar" 
+                                    src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['user_avatar'] ?? 'assets/images/uploads/avatars/default_avatar.png') ?>"
+                                    alt="Avatar">
+                                <span class="post-author-name"><?= htmlspecialchars($post['user_firstName'] . ' ' . $post['user_lastName']) ?></span>
                             <?php elseif ($post['authorType'] === 'association'): ?>
-                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['association_logo']) ?>"
-                                    alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 0.5rem;">
-                                <small><?= htmlspecialchars($post['association_name']) ?></small>
+                                <img class="post-author-avatar"
+                                    src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['association_logo']) ?>"
+                                    alt="Logo">
+                                <span class="post-author-name"><?= htmlspecialchars($post['association_name']) ?></span>
                             <?php else: ?>
-                                <img src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['entreprise_logo']) ?>"
-                                    alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 0.5rem;">
-                                <small><?= htmlspecialchars($post['entreprise_name']) ?></small>
+                                <img class="post-author-avatar"
+                                    src="<?= BASE_URL . HOME_URL . htmlspecialchars($post['entreprise_logo']) ?>"
+                                    alt="Logo">
+                                <span class="post-author-name"><?= htmlspecialchars($post['entreprise_name']) ?></span>
                             <?php endif; ?>
                         </div>
 
-                        <h5><?= htmlspecialchars($post['title']) ?></h5>
-                        <p><?= htmlspecialchars(substr($post['content'], 0, 150)) ?>...</p>
+                        <h5 class="post-title"><?= htmlspecialchars($post['title']) ?></h5>
+                        <p class="post-excerpt"><?= htmlspecialchars(substr($post['content'], 0, 150)) ?>...</p>
 
-                        <p><small class="text-muted">Publié le : <?= date('d/m/Y', strtotime($post['createdAt'])) ?></small></p>
+                        <p class="post-date">Publié le : <?= date('d/m/Y', strtotime($post['createdAt'])) ?></p>
 
-                        <div class="flex-row justify-content-between mt">
-                            <a href="<?= HOME_URL ?>actu/<?= htmlspecialchars($post['uiid']) ?>" class="btn linkNotDecorated">
+                        <div class="post-actions">
+                            <a href="<?= HOME_URL ?>actu/<?= htmlspecialchars($post['uiid']) ?>?back=actu" 
+                                class="btn linkNotDecorated">
                                 Lire la suite
                             </a>
                         </div>
@@ -79,7 +80,6 @@
             <?php endforeach; ?>
         </div>
 
-        <!-- Pagination -->
         <?php if ($totalPages > 1): ?>
             <?php include_once __DIR__ . '/../includes/pagination.php'; ?>
         <?php endif; ?>

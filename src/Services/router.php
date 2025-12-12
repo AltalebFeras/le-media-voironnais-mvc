@@ -259,6 +259,19 @@ switch ($route) {
         }
         break;
 
+    // Public posts/actualités routes
+    case $part0 === 'actu':
+        if ($part1 && !$part2) {
+            // View single post by uiid
+            $postController->displayPost($part1);
+        } elseif ($part2) {
+            $homeController->page404();
+        } else {
+            // List all published posts (with optional filter)
+            $postController->listPublicPosts();
+        }
+        break;
+
     // Public routes End
 
     // User connected routes Start
