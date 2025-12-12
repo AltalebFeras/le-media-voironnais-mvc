@@ -62,7 +62,7 @@
 
                         <div class="post-actions">
                             <a href="<?= HOME_URL ?>actu/<?= htmlspecialchars($post['uiid']) ?>?back=mes_posts"
-                                class="btn btn-info linkNotDecorated" target="_blank">
+                                class="btn btn-info linkNotDecorated">
                                 Voir
                             </a>
                             <a href="<?= HOME_URL ?>post/modifier?uiid=<?= htmlspecialchars($post['uiid']) ?>&back=mes_posts"
