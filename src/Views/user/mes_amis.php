@@ -237,5 +237,6 @@
         </div>
     </div>
 </main>
+<script src="<?= HOME_URL . 'assets/javascript/mes_amis.js' ?>"></script>
 
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>
