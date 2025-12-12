@@ -69,16 +69,39 @@
                                 class="btn linkNotDecorated">
                                 Modifier
                             </a>
-                            <form method="POST" action="<?= HOME_URL ?>post/supprimer">
+                            <button type="button" class="btn bg-danger" 
+                                onclick="document.getElementById('deletePopup-<?= htmlspecialchars($post['uiid']) ?>').style.display='flex'">
+                                Supprimer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Confirmation Popup for this post -->
+                <div id="deletePopup-<?= htmlspecialchars($post['uiid']) ?>" class="popup" style="display: none;">
+                    <div class="card" style="max-width:500px;">
+                        <h3>Confirmer la suppression</h3>
+                        <button type="button" onclick="document.getElementById('deletePopup-<?= htmlspecialchars($post['uiid']) ?>').style.display='none'" 
+                            style="position:absolute; right:10px; top:10px; background:none; border:none; font-size:24px; cursor:pointer; color: #999;">×</button>
+                        <div class="mt mb">
+                            <p>Êtes-vous sûr de vouloir supprimer l'actualité "<strong><?= htmlspecialchars($post['title']) ?></strong>" ?</p>
+                            <p class="text-danger"><strong>Attention :</strong> Cette action est irréversible.</p>
+                        </div>
+                        <div class="flex-row justify-content-between">
+                            <button type="button" class="btn btn-light" 
+                                onclick="document.getElementById('deletePopup-<?= htmlspecialchars($post['uiid']) ?>').style.display='none'">
+                                Annuler
+                            </button>
+                            <form method="POST" action="<?= HOME_URL ?>post/supprimer" style="margin: 0;">
                                 <input type="hidden" name="uiid" value="<?= htmlspecialchars($post['uiid']) ?>">
-                                <button type="submit" class="btn bg-danger" 
-                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette actualité ?')">
+                                <button type="submit" class="btn bg-danger">
                                     Supprimer
                                 </button>
                             </form>
                         </div>
                     </div>
                 </div>
+
             <?php endforeach; ?>
         </div>
 
