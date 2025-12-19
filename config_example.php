@@ -28,23 +28,26 @@ if ($isLocal) {
     define('SEL', 'replace_with_dev_pepper_string');
 
     // BASE_URL & base URL for links
-    define('BASE_URL', 'http://localhost');
+    define('BASE_URL', 'http://localhost or your_dev_domain name');
     define('HOME_URL', '/');
 
     // reCAPTCHA keys (optional)
     define('PUBLIC_KEY', '');
     define('SECRET_KEY', '');
 
-    // SMTP (development/test)
-    define('HOST', 'smtp.example.dev');
+    // Maildev connection (active)
+    // Note: MailDev doesn't require SMTP authentication
+    define('HOST', 'localhost');
     define('PORT', '1025');
-    define('USERNAME', 'smtp_user');
-    define('PASSWORD', 'smtp_password');
+    define('USERNAME', ''); // Not used for MailDev
+    define('PASSWORD', ''); // Not used for MailDev
+    define('SMTP_AUTH', false); // Disable SMTP auth for MailDev
 
-    define('MAIL_DESTINATAIRE', 'contact@example.dev');
-    define('SENDER', 'Le Media Voironnais (dev)');
-    define('ADMIN_EMAIL', 'admin@example.dev');
-    define('ADMIN_SENDER_NAME', 'Administrateur (dev)');
+    define('MAIL_DESTINATAIRE', "contact@le-media-voironnais.fr");
+    define('SENDER', 'Le Media Voironnais');
+    define('ADMIN_EMAIL', 'admin@le-media-voironnais.fr');
+    define('NO_REPLY_EMAIL', 'no-reply@le-media-voironnais.fr');
+    define('ADMIN_SENDER_NAME', 'Administrateur');
 } else {
     define('IS_PROD', true);
 
@@ -70,6 +73,7 @@ if ($isLocal) {
     define('PORT', '465'); // or 587
     define('USERNAME', 'smtp_user');
     define('PASSWORD', 'smtp_password');
+    define('SMTP_AUTH', true);
 
     define('MAIL_DESTINATAIRE', 'contact@your-production-BASE_URL.tld');
     define('SENDER', 'Le Media Voironnais');
