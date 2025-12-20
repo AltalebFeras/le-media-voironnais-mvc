@@ -52,12 +52,13 @@ jobs:
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./
-        server-dir: /
+        server-dir: /httpdocs/le-media-voironnais/
         state-name: .ftp-deploy-sync-state.json
         dry-run: false
         log-level: verbose
         dangerous-clean-slate: false
-        security: loose
+        security: strict
+        port: 21
         exclude: |
           **/.git*
           **/.git*/**
