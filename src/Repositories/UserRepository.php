@@ -392,4 +392,32 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
+    public function getEventCategoryBySlug($categorySlug)
+    {
+        try {
+            $query = 'SELECT * FROM event_category WHERE category_slug = :categorySlug';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['categorySlug' => $categorySlug]);
+            $category = $req->fetch(PDO::FETCH_ASSOC);
+            return $category !== false ? $category : null;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+    public function addUserPreferences($idUser, $idVille,$idEventCategory): bool
+    {
+        try {
+            $query = 'INSERT INTO preference (idUser, idVille, idEventCategory, createdAt) VALUES (:idUser, :idVille, :idEventCategory, :createdAt)';
+            $req = $this->DBuser->prepare($query);
+            $req->execute([
+                'idUser' => $idUser,
+                'idVille' => $idVille,
+                'idEventCategory' => $idEventCategory,
+                'createdAt' => date('Y-m-d H:i:s')
+            ]);
+            return true;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 }

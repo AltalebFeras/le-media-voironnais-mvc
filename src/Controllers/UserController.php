@@ -1016,4 +1016,50 @@ class UserController extends AbstractController
         // $villes = $this->villeRepo->getAllCities();  
         $this->render('user/mes_preferences', ['categories' => $categories]);
     }
+    public function AddMyPreferences(): void
+    {
+        $idUser = $_SESSION['idUser'];
+        $selectedCategories = isset($_POST['categories']) ? $_POST['categories'] : [];
+        $selectedVilles = isset($_POST['villes']) ? $_POST['villes'] : [];
+        $_SESSION['form_data'] = $_POST;
+        $errors = [];
+
+        // Validate categories
+        if (empty($selectedCategories) || !is_array($selectedCategories)) {
+            $errors['categories'] = 'Veuillez sélectionner au moins une catégorie.';
+        } else {
+            // Verify that all selected categories exist in the database
+            foreach ($selectedCategories as $categorySlug) {
+                if (!$this->repo->getEventCategoryBySlug($categorySlug)) {
+                    $errors['categories'] = 'Une ou plusieurs catégories sélectionnées sont invalides.';
+                    break;
+                }
+            }
+        }
+        // Validate villes
+        if (empty($selectedVilles) || !is_array($selectedVilles)) {
+            $errors['villes'] = 'Veuillez sélectionner au moins une ville.';
+        } else {
+            // Verify that all selected villes exist in the database
+            foreach ($selectedVilles as $villeSlug) {
+                if (!$this->villeRepo->getCityBySlug($villeSlug)) {
+                    $errors['villes'] = 'Une ou plusieurs villes sélectionnées sont invalides.';
+                    break;
+                }
+            }
+        }
+
+        // If there are any validation errors, throw one Error with all errors
+        $this->returnAllErrors($errors, 'mes_preferences', ['error' => 'true']);
+
+        // Update user preferences in the database
+        $updatePreferences = $this->repo->addUserPreferences($idUser, $idVille,$idEventCategory);
+
+        if ($updatePreferences) {
+            $_SESSION['success'] = 'Vos préférences ont été mises à jour avec succès!';
+            $this->redirect('mes_preferences');
+        } else {
+            $_SESSION['error'] = 'Une erreur s\'est produite lors de la mise à jour de vos préférences. Veuillez réessayer plus tard.';
+            $this->redirect('mes_preferences', ['error' => 'true']);
+        }
 }

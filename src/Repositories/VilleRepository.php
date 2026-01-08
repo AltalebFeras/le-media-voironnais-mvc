@@ -79,4 +79,17 @@ class VilleRepository
             throw new Exception("Error checking if ville exists: " . $e->getMessage());
         }
     }
+    public function getCityBySlug($villeSlug)
+    {
+        try {
+            $query = "SELECT idVille, ville_slug, ville_nom_reel, ville_code_postal FROM ville WHERE ville_slug = :villeSlug";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['villeSlug' => $villeSlug]);
+
+            $ville = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $ville !== false ? $ville : null;
+        } catch (PDOException $e) {
+            throw new Exception("Error fetching ville by slug: " . $e->getMessage());
+        }
+    }
 }
