@@ -291,9 +291,10 @@ class UserController extends AbstractController
                 $this->redirect('admin/dashboard_super_admin');
             } elseif ($_SESSION['role'] === 'user') {
 
-                if ($_SESSION['lastSeen'] === null && $prefsCount === 0) {
-                    $_SESSION['isFirstConnection'] = true;
-                    $_SESSION['success'] = 'Bienvenue sur votre tableau de bord! Commencez par définir vos préférences pour une expérience personnalisée.';
+                if ($prefsCount === 0) {
+                    $_SESSION['connected'] = true;
+                    $_SESSION['success'] = 'Vous êtes connecté avec succès!';
+                    $_SESSION['toAddPreferences'] = true;
                     $this->redirect('mes_preferences');
                 }
                 if (isset($_SESSION['redirect_after_login'])) {
@@ -318,8 +319,8 @@ class UserController extends AbstractController
     }
     public function deconnexion(): void
     {
+        $idUser = $_SESSION['idUser'];
         if (isset($_SESSION['newEmail'])) {
-            $idUser = $_SESSION['idUser'];
             $this->repo->clearAuthCode($idUser);
         }
         if (isset($_SESSION['isOnline'])) {
