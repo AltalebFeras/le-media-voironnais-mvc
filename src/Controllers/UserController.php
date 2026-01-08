@@ -6,8 +6,10 @@ use DateTime;
 use Exception;
 use src\Abstracts\AbstractController;
 use src\Models\User;
+use src\Repositories\EvenementRepository;
 use src\Repositories\UserRepository;
 use src\Repositories\FriendRepository;
+use src\Repositories\VilleRepository;
 use src\Services\Encrypt_decrypt;
 use src\Services\Mail;
 use src\Services\Helper;
@@ -16,11 +18,15 @@ class UserController extends AbstractController
 {
     protected $repo;
     private $friendRepo;
+    private $categoryRepo;
+    private $villeRepo;
 
     public function __construct()
     {
         $this->repo = new UserRepository();
         $this->friendRepo = new FriendRepository();
+        $this->categoryRepo = new EvenementRepository();
+        $this->villeRepo = new VilleRepository();
     }
     /**
      * Generate a unique fingerprint for the machine connected to the server.
@@ -250,6 +256,8 @@ class UserController extends AbstractController
         $idUser = $user->getIdUser();
 
         if ($user) {
+            //get count preferences
+            $prefsCount = $this->repo->countUserPreferences($idUser);
             //   datetime string
             $_SESSION['idUser'] = $idUser;
             $_SESSION['userUiid'] = $user->getUiid(); // Store UIID instead of exposing ID
@@ -282,8 +290,11 @@ class UserController extends AbstractController
                 $_SESSION['success'] = 'Vous êtes connecté en tant que super administrateur!';
                 $this->redirect('admin/dashboard_super_admin');
             } elseif ($_SESSION['role'] === 'user') {
-                if ($_SESSION['lastSeen'] === null) {
+
+                if ($_SESSION['lastSeen'] === null && $prefsCount === 0) {
                     $_SESSION['isFirstConnection'] = true;
+                    $_SESSION['success'] = 'Bienvenue sur votre tableau de bord! Commencez par définir vos préférences pour une expérience personnalisée.';
+                    $this->redirect('mes_preferences');
                 }
                 if (isset($_SESSION['redirect_after_login'])) {
                     $_SESSION['connected'] = true;
@@ -995,5 +1006,13 @@ class UserController extends AbstractController
             $_SESSION['error'] = $e->getMessage();
             $this->redirect('404');
         }
+    }
+    public function displayMyPreferencesForm(): void
+    {
+        $categories = $this->categoryRepo->getEventCategories();
+        // var_dump($categories);
+        // die;
+        // $villes = $this->villeRepo->getAllCities();  
+        $this->render('user/mes_preferences', ['categories' => $categories]);
     }
 }

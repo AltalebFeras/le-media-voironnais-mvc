@@ -28,6 +28,10 @@
             <h2>Mon compte</h2>
             <p>Voir et modifier mon profil, gérer mes événements, associations, entreprises, et accéder à la messagerie.</p>
         </a>
+        <a href="<?= HOME_URL . "mes_preferences" ?>" class="cardDashboard">
+            <h2>Mes Préférences</h2>
+            <p>Gérer mes préférences de villes et catégories d'événements.</p>
+        </a>
 
     </div>
 

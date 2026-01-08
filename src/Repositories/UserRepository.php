@@ -380,4 +380,16 @@ class UserRepository
             'idUser' => $idUser
         ]);
     }
+    public function countUserPreferences($idUser): int
+    {
+        try {
+            $query = 'SELECT COUNT(*) FROM preference WHERE idUser = :idUser';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['idUser' => $idUser]);
+            $count = $req->fetchColumn();
+            return (int)$count;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 }
