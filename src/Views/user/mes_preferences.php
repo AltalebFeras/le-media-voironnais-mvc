@@ -1,4 +1,6 @@
 <?php include_once __DIR__ . '/../includes/header.php'; ?>
+<link rel="stylesheet" href="<?= HOME_URL . 'assets/css/users/mes_preferences.css' ?>">
+
 <?php include_once __DIR__ . '/../includes/navbar.php'; ?>
 
 <main class="preferences-container">
@@ -11,26 +13,29 @@
             <input type="text" id="codePostalInput" maxlength="5" pattern="\d{3,5}" class="form-control" placeholder="Entrez un code postal">
         </div>
         <div class="form-group">
-            <label for="villeResults">Villes trouvées :</label>
-            <ul id="villeResults"></ul>
+            <label id="villeResultsLabel">Villes trouvées :</label>
+            <ul id="villeResults" aria-labelledby="villeResultsLabel"></ul>
         </div>
         <div class="form-group">
-            <label for="selectedVillesList">Villes sélectionnées :</label>
-            <ul id="selectedVillesList"></ul>
+            <label id="selectedVillesListLabel">Villes sélectionnées :</label>
+            <ul id="selectedVillesList" aria-labelledby="selectedVillesListLabel"></ul>
         </div>
         <input type="hidden" name="villes[]" id="selectedVillesInput">
         <div class="form-group">
             <label for="categories">Sélectionnez vos catégories d'événements préférées :</label>
+            <div class="categories-flex">
             <?php foreach ($categories as $category): ?>
-                <div class="checkbox-group" style="display: flex;">
+                <div class="checkbox-group">
                     <input id="category<?= $category['slug'] ?>" type="checkbox" name="categories[]" value="<?= $category['slug'] ?>">
                     <label for="category<?= $category['slug'] ?>"> <?= $category['name'] ?></label>
                 </div>
             <?php endforeach; ?>
+            </div>
         </div>
         <button type="submit" class="btn btn-primary">Enregistrer mes préférences</button>
     </form>
 </main>
+
 <script>
     // --- Ville selection logic ---
     const BASE_URL = "<?= BASE_URL ?>";
@@ -41,7 +46,6 @@
     const $selectedVillesInput = document.getElementById('selectedVillesInput');
 
     let selectedVilles = [];
-
     let fetchTimeout = null;
 
     $codePostalInput.addEventListener('input', function () {
@@ -68,9 +72,7 @@
                             addBtn.dataset.slug = ville.ville_slug;
                             addBtn.dataset.nomReel = ville.ville_nom_reel;
                             // Disable button if already selected
-                            if (selectedVilles.some(v => v.slug === ville.ville_slug)) {
-                                addBtn.disabled = true;
-                            }
+                            addBtn.disabled = selectedVilles.some(v => v.slug === ville.ville_slug);
                             li.appendChild(addBtn);
                             $villeResults.appendChild(li);
                         });
@@ -95,8 +97,8 @@
             if (!selectedVilles.some(v => v.slug === slug)) {
                 selectedVilles.push({ slug, nom_reel: nomReel });
                 renderSelectedVilles();
-                // Disable the button after adding
-                e.target.disabled = true;
+                // After adding, re-render villeResults to update button states
+                renderVilleResultsButtons();
             }
         }
     });
@@ -107,10 +109,8 @@
             const slug = e.target.dataset.slug;
             selectedVilles = selectedVilles.filter(v => v.slug !== slug);
             renderSelectedVilles();
-            // Re-enable add button in villeResults
-            Array.from($villeResults.querySelectorAll('.add-ville')).forEach(btn => {
-                if (btn.dataset.slug === slug) btn.disabled = false;
-            });
+            // After removing, re-render villeResults to update button states
+            renderVilleResultsButtons();
         }
     });
 
@@ -129,6 +129,13 @@
         });
         // Update hidden input with array of slugs
         $selectedVillesInput.value = selectedVilles.map(v => v.slug);
+    }
+
+    // Update villeResults buttons after add/remove
+    function renderVilleResultsButtons() {
+        Array.from($villeResults.querySelectorAll('.add-ville')).forEach(btn => {
+            btn.disabled = selectedVilles.some(v => v.slug === btn.dataset.slug);
+        });
     }
 
     // On form submit, ensure villes[] is sent as array
