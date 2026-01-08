@@ -92,4 +92,21 @@ class VilleRepository
             throw new Exception("Error fetching ville by slug: " . $e->getMessage());
         }
     }
+
+    /**
+     * Get ville by slug
+     */
+    public function getVilleBySlug($slug): ?array
+    {
+        try {
+            $query = "SELECT idVille, ville_slug, ville_nom_reel, ville_code_postal FROM ville WHERE ville_slug = :slug";
+            $stmt = $this->DB->prepare($query);
+            $stmt->execute(['slug' => $slug]);
+
+            $ville = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $ville !== false ? $ville : null;
+        } catch (Exception $e) {
+            throw new Exception("Error fetching ville by slug: " . $e->getMessage());
+        }
+    }
 }

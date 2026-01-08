@@ -1018,48 +1018,79 @@ class UserController extends AbstractController
     }
     public function AddMyPreferences(): void
     {
-        $idUser = $_SESSION['idUser'];
-        $selectedCategories = isset($_POST['categories']) ? $_POST['categories'] : [];
-        $selectedVilles = isset($_POST['villes']) ? $_POST['villes'] : [];
-        $_SESSION['form_data'] = $_POST;
-        $errors = [];
+        try {
+            // Validate CSRF token
+            // $this->validateCsrfToken('mes_preferences');
 
-        // Validate categories
-        if (empty($selectedCategories) || !is_array($selectedCategories)) {
-            $errors['categories'] = 'Veuillez sélectionner au moins une catégorie.';
-        } else {
-            // Verify that all selected categories exist in the database
+            $idUser = $_SESSION['idUser'];
+            $selectedCategories = isset($_POST['categories']) ? $_POST['categories'] : [];
+            $selectedVilles = isset($_POST['villes']) ? $_POST['villes'] : [];
+            $_SESSION['form_data'] = $_POST;
+            $errors = [];
+
+            // Validate categories
+            if (empty($selectedCategories) || !is_array($selectedCategories)) {
+                $errors['categories'] = 'Veuillez sélectionner au moins une catégorie.';
+            }
+
+            // Validate villes
+            if (empty($selectedVilles) || !is_array($selectedVilles)) {
+                $errors['villes'] = 'Veuillez sélectionner au moins une ville.';
+            }
+
+            // If there are validation errors, return early
+            $this->returnAllErrors($errors, 'mes_preferences', ['error' => 'true']);
+
+            // Get IDs for categories
+            $categoryIds = [];
             foreach ($selectedCategories as $categorySlug) {
-                if (!$this->repo->getEventCategoryBySlug($categorySlug)) {
+                $category = $this->categoryRepo->getEventCategoryBySlug($categorySlug);
+                if (!$category) {
                     $errors['categories'] = 'Une ou plusieurs catégories sélectionnées sont invalides.';
                     break;
                 }
+                $categoryIds[] = $category['idEventCategory'];
             }
-        }
-        // Validate villes
-        if (empty($selectedVilles) || !is_array($selectedVilles)) {
-            $errors['villes'] = 'Veuillez sélectionner au moins une ville.';
-        } else {
-            // Verify that all selected villes exist in the database
+
+            // Get IDs for villes
+            $villeIds = [];
             foreach ($selectedVilles as $villeSlug) {
-                if (!$this->villeRepo->getCityBySlug($villeSlug)) {
+                $ville = $this->villeRepo->getVilleBySlug($villeSlug);
+                if (!$ville) {
                     $errors['villes'] = 'Une ou plusieurs villes sélectionnées sont invalides.';
                     break;
                 }
+                $villeIds[] = $ville['idVille'];
             }
-        }
 
-        // If there are any validation errors, throw one Error with all errors
-        $this->returnAllErrors($errors, 'mes_preferences', ['error' => 'true']);
+            // If there are any validation errors after checking IDs
+            $this->returnAllErrors($errors, 'mes_preferences', ['error' => 'true']);
 
-        // Update user preferences in the database
-        $updatePreferences = $this->repo->addUserPreferences($idUser, $idVille,$idEventCategory);
+            // Delete old preferences first
+            $this->repo->deleteUserPreferences($idUser);
 
-        if ($updatePreferences) {
-            $_SESSION['success'] = 'Vos préférences ont été mises à jour avec succès!';
-            $this->redirect('mes_preferences');
-        } else {
-            $_SESSION['error'] = 'Une erreur s\'est produite lors de la mise à jour de vos préférences. Veuillez réessayer plus tard.';
+            // Insert new preferences (all combinations of villes and categories)
+            $successCount = 0;
+            foreach ($villeIds as $idVille) {
+                foreach ($categoryIds as $idEventCategory) {
+                    $added = $this->repo->addUserPreferences($idUser, $idVille, $idEventCategory);
+                    if ($added) {
+                        $successCount++;
+                    }
+                }
+            }
+
+            if ($successCount > 0) {
+                unset($_SESSION['toAddPreferences']);
+                unset($_SESSION['form_data']);
+                $_SESSION['success'] = "Vos préférences ont été enregistrées avec succès! ($successCount préférence(s) sauvegardée(s))";
+                $this->redirect('dashboard');
+            } else {
+                throw new Exception('Aucune préférence n\'a pu être sauvegardée.');
+            }
+        } catch (Exception $e) {
+            $_SESSION['error'] = 'Une erreur s\'est produite: ' . $e->getMessage();
             $this->redirect('mes_preferences', ['error' => 'true']);
         }
+    }
 }

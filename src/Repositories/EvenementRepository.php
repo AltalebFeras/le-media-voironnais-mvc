@@ -972,4 +972,20 @@ class EvenementRepository
             throw new Exception("Error counting user inscriptions: " . $e->getMessage());
         }
     }
+
+    /**
+     * Get event category by slug
+     */
+    public function getEventCategoryBySlug($slug): ?array
+    {
+        try {
+            $query = 'SELECT idEventCategory, slug, name FROM event_category WHERE slug = :slug AND isActive = 1';
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['slug' => $slug]);
+            $category = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $category !== false ? $category : null;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 }

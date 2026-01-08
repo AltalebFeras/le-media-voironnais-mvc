@@ -7,7 +7,9 @@
     <h1 class="preferences-title">Mes Préférences</h1>
     <?php include_once __DIR__ . '/../includes/messages.php'; ?>
 
-    <form action="<?= HOME_URL . 'mes_preferences' ?>" method="POST" class="preferences-form">
+    <form action="<?= HOME_URL . 'mes_preferences' ?>" method="POST" class="preferences-form" id="preferencesForm">
+        <?php include_once __DIR__ . '/../includes/csrf_token.php'; ?>
+        
         <!-- Code Postal Input -->
         <div class="form-group">
             <label for="codePostalInput" class="form-label">Code postal :</label>
@@ -225,6 +227,28 @@
     // Debug form submission
     document.querySelector('.preferences-form').addEventListener('submit', function (e) {
         console.log('📤 Hidden inputs:', Array.from(document.querySelectorAll('input[name="villes[]"]')).map(i => i.value));
+    });
+
+    // Form validation before submission
+    document.querySelector('#preferencesForm').addEventListener('submit', function (e) {
+        const selectedVillesCount = selectedVilles.length;
+        const selectedCategoriesCount = document.querySelectorAll('input[name="categories[]"]:checked').length;
+        
+        if (selectedVillesCount === 0) {
+            e.preventDefault();
+            alert('Veuillez sélectionner au moins une ville.');
+            return false;
+        }
+        
+        if (selectedCategoriesCount === 0) {
+            e.preventDefault();
+            alert('Veuillez sélectionner au moins une catégorie.');
+            return false;
+        }
+        
+        console.log('📤 Form submitting with:');
+        console.log('  - Villes:', selectedVillesCount, Array.from(document.querySelectorAll('input[name="villes[]"]')).map(i => i.value));
+        console.log('  - Categories:', selectedCategoriesCount, Array.from(document.querySelectorAll('input[name="categories[]"]:checked')).map(i => i.value));
     });
 </script>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

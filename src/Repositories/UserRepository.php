@@ -392,22 +392,37 @@ class UserRepository
             throw new Exception($e->getMessage());
         }
     }
-    public function getEventCategoryBySlug($categorySlug)
+    public function getEventCategoryBySlug($categorySlug): ?array
     {
         try {
-            $query = 'SELECT * FROM event_category WHERE category_slug = :categorySlug';
+            $query = 'SELECT idEventCategory, slug, name FROM event_category WHERE slug = :slug AND isActive = 1';
             $req = $this->DBuser->prepare($query);
-            $req->execute(['categorySlug' => $categorySlug]);
+            $req->execute(['slug' => $categorySlug]);
             $category = $req->fetch(PDO::FETCH_ASSOC);
             return $category !== false ? $category : null;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
-    public function addUserPreferences($idUser, $idVille,$idEventCategory): bool
+
+    public function deleteUserPreferences($idUser): bool
     {
         try {
-            $query = 'INSERT INTO preference (idUser, idVille, idEventCategory, createdAt) VALUES (:idUser, :idVille, :idEventCategory, :createdAt)';
+            $query = 'DELETE FROM preference WHERE idUser = :idUser';
+            $req = $this->DBuser->prepare($query);
+            $req->execute(['idUser' => $idUser]);
+            return true;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function addUserPreferences($idUser, $idVille, $idEventCategory): bool
+    {
+        try {
+            $query = 'INSERT INTO preference (idUser, idVille, idEventCategory, createdAt) 
+                      VALUES (:idUser, :idVille, :idEventCategory, :createdAt)
+                      ON DUPLICATE KEY UPDATE idUser = idUser';
             $req = $this->DBuser->prepare($query);
             $req->execute([
                 'idUser' => $idUser,
