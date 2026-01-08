@@ -25,5 +25,9 @@
 
     </form>
 </main>
+<script>
 
+    //here --
+    
+</script>
 <?php include_once __DIR__ . '/../includes/footer.php'; ?>

@@ -2,6 +2,7 @@ $(function () {
   const $codePostalInput = $("#codePostal");
   const $villeSelect = $("#ville");
   const $idVilleInput = $("#idVille");
+  const $url = BASE_URL + HOME_URL;
 
   // Check if postal code already has 5 digits on page load
   const initialCodePostal = $codePostalInput.val().trim();
@@ -33,7 +34,7 @@ $(function () {
     $villeSelect.prop("disabled", true);
 
     try {
-      const response = await fetch("http://le-media-voironnais/villes", {
+      const response = await fetch($url + "villes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
