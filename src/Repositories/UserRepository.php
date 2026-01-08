@@ -383,9 +383,13 @@ class UserRepository
     public function countUserPreferences($idUser): int
     {
         try {
-            $query = 'SELECT COUNT(*) FROM preference WHERE idUser = :idUser';
+            // Count if user has BOTH ville AND category preferences
+            $query = 'SELECT (
+                        (SELECT COUNT(*) FROM user_ville_preference WHERE idUser = :idUser1) +
+                        (SELECT COUNT(*) FROM user_category_preference WHERE idUser = :idUser2)
+                      ) AS total';
             $req = $this->DBuser->prepare($query);
-            $req->execute(['idUser' => $idUser]);
+            $req->execute(['idUser1' => $idUser, 'idUser2' => $idUser]);
             $count = $req->fetchColumn();
             return (int)$count;
         } catch (Exception $e) {
@@ -405,10 +409,10 @@ class UserRepository
         }
     }
 
-    public function deleteUserPreferences($idUser): bool
+    public function deleteUserVillePreferences($idUser): bool
     {
         try {
-            $query = 'DELETE FROM preference WHERE idUser = :idUser';
+            $query = 'DELETE FROM user_ville_preference WHERE idUser = :idUser';
             $req = $this->DBuser->prepare($query);
             $req->execute(['idUser' => $idUser]);
             return true;
@@ -417,20 +421,47 @@ class UserRepository
         }
     }
 
-    public function addUserPreferences($idUser, $idVille, $idEventCategory): bool
+    public function deleteUserCategoryPreferences($idUser): bool
     {
         try {
-            $query = 'INSERT INTO preference (idUser, idVille, idEventCategory, createdAt) 
-                      VALUES (:idUser, :idVille, :idEventCategory, :createdAt)
-                      ON DUPLICATE KEY UPDATE idUser = idUser';
+            $query = 'DELETE FROM user_category_preference WHERE idUser = :idUser';
             $req = $this->DBuser->prepare($query);
-            $req->execute([
+            $req->execute(['idUser' => $idUser]);
+            return true;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function addUserVillePreference($idUser, $idVille): bool
+    {
+        try {
+            $query = 'INSERT IGNORE INTO user_ville_preference (idUser, idVille, createdAt) 
+                      VALUES (:idUser, :idVille, :createdAt)';
+            $req = $this->DBuser->prepare($query);
+            $result = $req->execute([
                 'idUser' => $idUser,
                 'idVille' => $idVille,
+                'createdAt' => date('Y-m-d H:i:s')
+            ]);
+            return $result;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public function addUserCategoryPreference($idUser, $idEventCategory): bool
+    {
+        try {
+            $query = 'INSERT IGNORE INTO user_category_preference (idUser, idEventCategory, createdAt) 
+                      VALUES (:idUser, :idEventCategory, :createdAt)';
+            $req = $this->DBuser->prepare($query);
+            $result = $req->execute([
+                'idUser' => $idUser,
                 'idEventCategory' => $idEventCategory,
                 'createdAt' => date('Y-m-d H:i:s')
             ]);
-            return true;
+            return $result;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }

@@ -427,22 +427,43 @@ CREATE TABLE IF NOT EXISTS `event_participant` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `preference`
+-- Table structure for table `user_ville_preference`
 --
 
-DROP TABLE IF EXISTS `preference`;
-CREATE TABLE IF NOT EXISTS `preference` (
-  `idPreference` int NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `user_ville_preference`;
+
+CREATE TABLE IF NOT EXISTS `user_ville_preference` (
+  `idUserVillePreference` int NOT NULL AUTO_INCREMENT,
   `idUser` int NOT NULL,
   `idVille` mediumint UNSIGNED NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idUserVillePreference`),
+  UNIQUE KEY `unique_user_ville` (`idUser`, `idVille`),
+  KEY `idx_user_ville_pref_user` (`idUser`),
+  KEY `idx_user_ville_pref_ville` (`idVille`),
+  CONSTRAINT `FK_user_TO_user_ville_preference` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_ville_TO_user_ville_preference` FOREIGN KEY (`idVille`) REFERENCES `ville` (`idVille`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='User ville preferences - which cities they want to follow';
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `user_category_preference`
+--
+DROP TABLE IF EXISTS `user_category_preference`;
+-- Create user_category_preference table
+CREATE TABLE IF NOT EXISTS `user_category_preference` (
+  `idUserCategoryPreference` int NOT NULL AUTO_INCREMENT,
+  `idUser` int NOT NULL,
   `idEventCategory` int NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idPreference`),
-  UNIQUE KEY `unique_user_ville_category` (`idUser`,`idVille`,`idEventCategory`),
-  KEY `idx_preference_user` (`idUser`),
-  KEY `idx_preference_ville` (`idVille`),
-  KEY `idx_preference_category` (`idEventCategory`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`idUserCategoryPreference`),
+  UNIQUE KEY `unique_user_category` (`idUser`, `idEventCategory`),
+  KEY `idx_user_cat_pref_user` (`idUser`),
+  KEY `idx_user_cat_pref_category` (`idEventCategory`),
+  CONSTRAINT `FK_user_TO_user_category_preference` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_category_TO_user_category_preference` FOREIGN KEY (`idEventCategory`) REFERENCES `event_category` (`idEventCategory`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='User category preferences - which event categories they are interested in';
+
 
 -- --------------------------------------------------------
 
@@ -915,6 +936,20 @@ ALTER TABLE `user_association`
 ALTER TABLE `user_friend`
   ADD CONSTRAINT `FK_user_TO_user_friend_user` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_user_TO_user_friend_friend` FOREIGN KEY (`idFriend`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_ville_preference`
+--
+ALTER TABLE `user_ville_preference`
+  ADD CONSTRAINT `FK_user_TO_user_ville_preference` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_ville_TO_user_ville_preference` FOREIGN KEY (`idVille`) REFERENCES `ville` (`idVille`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_category_preference`
+--
+ALTER TABLE `user_category_preference`
+  ADD CONSTRAINT `FK_user_TO_user_category_preference` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_category_TO_user_category_preference` FOREIGN KEY (`idEventCategory`) REFERENCES `event_category` (`idEventCategory`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 COMMIT;
 

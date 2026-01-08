@@ -1041,9 +1041,10 @@ class UserController extends AbstractController
             // If there are validation errors, return early
             $this->returnAllErrors($errors, 'mes_preferences', ['error' => 'true']);
 
-            // Get IDs for categories
+            // Get IDs for categories (deduplicate slugs)
             $categoryIds = [];
-            foreach ($selectedCategories as $categorySlug) {
+            $uniqueCategorySlugs = array_unique($selectedCategories);
+            foreach ($uniqueCategorySlugs as $categorySlug) {
                 $category = $this->categoryRepo->getEventCategoryBySlug($categorySlug);
                 if (!$category) {
                     $errors['categories'] = 'Une ou plusieurs catégories sélectionnées sont invalides.';
@@ -1052,9 +1053,10 @@ class UserController extends AbstractController
                 $categoryIds[] = $category['idEventCategory'];
             }
 
-            // Get IDs for villes
+            // Get IDs for villes (deduplicate slugs)
             $villeIds = [];
-            foreach ($selectedVilles as $villeSlug) {
+            $uniqueVilleSlugs = array_unique($selectedVilles);
+            foreach ($uniqueVilleSlugs as $villeSlug) {
                 $ville = $this->villeRepo->getVilleBySlug($villeSlug);
                 if (!$ville) {
                     $errors['villes'] = 'Une ou plusieurs villes sélectionnées sont invalides.';
@@ -1063,27 +1065,43 @@ class UserController extends AbstractController
                 $villeIds[] = $ville['idVille'];
             }
 
+            // Deduplicate IDs
+            $categoryIds = array_unique($categoryIds);
+            $villeIds = array_unique($villeIds);
+
             // If there are any validation errors after checking IDs
             $this->returnAllErrors($errors, 'mes_preferences', ['error' => 'true']);
 
-            // Delete old preferences first
-            $this->repo->deleteUserPreferences($idUser);
+            // Delete old preferences
+            $this->repo->deleteUserVillePreferences($idUser);
+            $this->repo->deleteUserCategoryPreferences($idUser);
 
-            // Insert new preferences (all combinations of villes and categories)
-            $successCount = 0;
+            // Insert ville preferences
+            $villeSuccessCount = 0;
             foreach ($villeIds as $idVille) {
-                foreach ($categoryIds as $idEventCategory) {
-                    $added = $this->repo->addUserPreferences($idUser, $idVille, $idEventCategory);
-                    if ($added) {
-                        $successCount++;
-                    }
+                $added = $this->repo->addUserVillePreference($idUser, $idVille);
+                if ($added) {
+                    $villeSuccessCount++;
                 }
             }
 
-            if ($successCount > 0) {
+            // Insert category preferences
+            $categorySuccessCount = 0;
+            foreach ($categoryIds as $idEventCategory) {
+                $added = $this->repo->addUserCategoryPreference($idUser, $idEventCategory);
+                if ($added) {
+                    $categorySuccessCount++;
+                }
+            }
+
+            if ($villeSuccessCount > 0 && $categorySuccessCount > 0) {
                 unset($_SESSION['toAddPreferences']);
                 unset($_SESSION['form_data']);
-                $_SESSION['success'] = "Vos préférences ont été enregistrées avec succès! ($successCount préférence(s) sauvegardée(s))";
+                $_SESSION['success'] = sprintf(
+                    "Vos préférences ont été enregistrées avec succès! (%d ville(s) et %d catégorie(s))",
+                    $villeSuccessCount,
+                    $categorySuccessCount
+                );
                 $this->redirect('dashboard');
             } else {
                 throw new Exception('Aucune préférence n\'a pu être sauvegardée.');
