@@ -284,7 +284,7 @@ switch ($route) {
         break;
     case HOME_URL . 'mes_preferences':
         if ($connectionSecured && $method === 'POST') {
-            // $userController->AddMyPreferences();
+            $userController->AddMyPreferences();
         } elseif ($connectionSecured && $method === 'GET') {
             $userController->displayMyPreferencesForm();
         } else {

@@ -61,47 +61,310 @@
     color: #333;
 }
 
+.preferences-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.preferences-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.preferences-form {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.05rem;
+}
+
+.form-label i {
+    color: #43b26c;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #43b26c;
+    box-shadow: 0 0 0 3px rgba(67, 178, 108, 0.1);
+}
+
+/* Ville Selection Row - Horizontal Layout */
+.ville-selection-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.ville-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.ville-count {
+    background: #43b26c;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+/* Ville List Container */
+.ville-list-container {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 16px;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    transition: border-color 0.3s ease;
+}
+
+.ville-list-container:hover {
+    border-color: #43b26c;
+}
+
+.selected-container {
+    background: #f0f9f4;
+    border-color: #43b26c;
+}
+
+/* Custom Scrollbar */
+.ville-list-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.ville-list-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.ville-list-container::-webkit-scrollbar-thumb {
+    background: #43b26c;
+    border-radius: 10px;
+}
+
+.ville-list-container::-webkit-scrollbar-thumb:hover {
+    background: #3a9e5f;
+}
+
+/* Ville Lists */
 #villeResults,
 #selectedVillesList {
     list-style: none;
     padding: 0;
-    margin: 8px 0;
+    margin: 0;
 }
 
-#villeResults li,
-#selectedVillesList li {
-    padding: 8px;
-    margin-bottom: 4px;
-    background: #f8f9fa;
-    border-radius: 6px;
+/* Ville Items */
+.ville-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    background: #ffffff;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    border: 1px solid #e9ecef;
 }
 
-.add-ville:disabled {
-    background-color: #6c757d !important;
-    border-color: #6c757d !important;
-    cursor: not-allowed;
-    opacity: 0.65;
+.ville-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.selected-item {
+    background: #ffffff;
+    border-color: #43b26c;
+}
+
+.ville-name {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ville-name i {
+    color: #43b26c;
+    font-size: 0.85rem;
+}
+
+/* State Messages */
+.empty-state,
+.loading-state,
+.error-state {
+    text-align: center;
+    padding: 32px 16px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.empty-state i,
+.loading-state i,
+.error-state i {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.loading-state {
+    color: #43b26c;
+}
+
+.error-state {
+    color: #dc3545;
+}
+
+/* Buttons */
+.btn {
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85rem;
 }
 
 .btn-success {
     background-color: #43b26c;
-    border-color: #43b26c;
     color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background-color: #3a9e5f;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(67, 178, 108, 0.3);
 }
 
 .btn-danger {
     background-color: #dc3545;
-    border-color: #dc3545;
     color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    transform: scale(1.1);
+}
+
+.btn:disabled,
+.disabled-btn {
+    background-color: #6c757d !important;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.btn:disabled:hover,
+.disabled-btn:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Categories Section */
+.categories-section {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 2px solid #e9ecef;
+}
+
+/* Submit Button */
+.btn-submit {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, #43b26c 0%, #3a9e5f 100%);
+    color: white;
+    margin-top: 32px;
+    justify-content: center;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(67, 178, 108, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ville-selection-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .ville-list-container {
+        max-height: 250px;
+    }
+    
+    .preferences-form {
+        padding: 20px;
+    }
+    
+    .preferences-title {
+        font-size: 1.5rem;
+    }
 }
 
 @media (max-width: 600px) {
+    .preferences-container {
+        padding: 16px;
+    }
+    
+    .ville-item {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+    
+    .ville-name {
+        font-size: 0.85rem;
+    }
+    
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+    
     .categories-flex {
         gap: 8px;
     }
