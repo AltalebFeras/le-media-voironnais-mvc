@@ -1,291 +1,684 @@
 # Le Média Voironnais
 
-Plateforme web communautaire pour la région de Voiron, permettant la gestion d'événements, d'entreprises, d'associations, de réalisations et d'utilisateurs.
+Une plateforme collaborative pour les événements, associations et entreprises de la région Voironnaise.
 
----
+## 📋 Table des matières
 
-## Sommaire
+- [Vue d'ensemble](#-vue-densemble)
+- [Fonctionnalités principales](#-fonctionnalités-principales)
+- [Architecture](#-architecture)
+- [Installation](#-installation)
+- [Configuration](#-configuration)
+- [Structure du projet](#-structure-du-projet)
+- [Fonctionnalités détaillées](#-fonctionnalités-détaillées)
+- [API et Routes](#-api-et-routes)
+- [Sécurité](#-sécurité)
+- [Technologies utilisées](#-technologies-utilisées)
+- [Contribution](#-contribution)
 
-- [Fonctionnalités principales](#fonctionnalités-principales)
-- [Architecture du projet](#architecture-du-projet)
-- [Routes principales](#routes-principales)
-- [Logique métier & Contrôleurs](#logique-métier--contrôleurs)
-- [Vues](#vues)
-- [Modèles & Repositories](#modèles--repositories)
-- [Sécurité](#sécurité)
-- [Installation & Configuration](#installation--configuration)
-- [Base de données](#base-de-données)
-- [Lancer l'application](#lancer-lapplication)
-- [Tests unitaires](#tests-unitaires)
-- [Annexes](#annexes)
+## 🎯 Vue d'ensemble
 
----
+Le Média Voironnais est une plateforme web moderne permettant aux citoyens, associations et entreprises de la région de Voiron de partager des événements, de collaborer et de rester connectés.
 
-## Fonctionnalités principales
+### Objectifs principaux
 
-- **Gestion des utilisateurs** : inscription, connexion, activation par email, édition du profil, changement d'email, réinitialisation du mot de passe, suppression de compte, notifications.
-- **Entreprises** : création, modification, suppression, gestion des logos/bannières, demande d'activation (avec envoi de Kbis), réalisations associées.
-- **Associations** : création, modification, suppression, gestion des membres, logos/bannières, invitations.
-- **Événements** : création, modification, suppression, images, catégories, gestion des participants, invitations, pagination.
-- **Réalisation** : ajout, modification, suppression, images, rattachement à une entreprise.
-- **Administration** : gestion des utilisateurs (bannir/débannir, email), validation/refus d'entreprises, notifications système.
-- **Notifications** : badge, liste, lecture, marquer comme lu, API JSON.
-- **Sécurité** : CSRF, validation serveur, gestion des sessions, reCAPTCHA (optionnel), gestion des droits.
-- **Pagination** : sur toutes les listes (utilisateurs, entreprises, associations, événements, réalisations).
-- **Gestion des fichiers** : upload sécurisé (images, PDF), suppression, renommage, validation MIME/type/taille.
+- Centraliser les événements locaux
+- Faciliter la communication entre associations et citoyens
+- Promouvoir les entreprises locales
+- Créer une communauté engagée
 
----
+## ✨ Fonctionnalités principales
 
-## Architecture du projet
+### Pour les utilisateurs
 
-- **MVC** (Modèle-Vue-Contrôleur) en PHP natif.
-- **src/** : code source principal
-  - **Controllers/** : logique métier et gestion des routes
-  - **Models/** : entités métiers (User, Entreprise, Association, Evenement, Realisation)
-  - **Repositories/** : accès aux données (requêtes SQL, pagination, etc.)
-  - **Services/** : utilitaires (mail, helper, sécurité, etc.)
-  - **Views/** : templates PHP pour l'affichage
-  - **Migrations/** : scripts SQL pour la base de données
-- **config.php** : configuration principale (DB, email, etc.)
-- **public/** ou racine : point d'entrée, .htaccess, assets
+- **Gestion de profil** : Création et personnalisation de profil avec avatar et bannière
+- **Système d'amis** : Ajout, recherche et gestion d'amis
+- **Événements** : Création, inscription et participation aux événements
+- **Interactions sociales** : Likes, commentaires, favoris sur les événements
+- **Notifications en temps réel** : Système de notifications avec badge et popup
+- **Préférences** : Configuration des villes et catégories d'intérêt
 
----
+### Pour les associations
 
-## Routes principales
+- **Gestion d'associations** : Création et administration d'associations
+- **Événements associatifs** : Organisation d'événements au nom de l'association
+- **Visibilité publique** : Page publique avec logo et bannière personnalisés
+- **Gestion des membres** : Administration des membres de l'association
 
-| Route                                    | Méthode | Description                                      |
-|-------------------------------------------|---------|--------------------------------------------------|
-| `/`                                      | GET     | Accueil                                          |
-| `/connexion`                             | GET/POST| Connexion utilisateur                            |
-| `/inscription`                           | GET/POST| Inscription utilisateur                          |
-| `/mon_compte`                            | GET     | Profil utilisateur                               |
-| `/dashboard`                             | GET     | Tableau de bord utilisateur                      |
-| `/notifications`                         | GET     | Page notifications                               |
-| `/notifications/count`                   | GET     | API JSON : nombre de notifications non lues      |
-| `/notifications/list`                    | GET     | API JSON : liste paginée des notifications       |
-| `/notifications/mark_read`               | POST    | API JSON : marquer une notification comme lue    |
-| `/notifications/mark_all_read`           | POST    | API JSON : marquer toutes comme lues             |
-| `/mes_entreprises`                       | GET     | Liste des entreprises de l'utilisateur           |
-| `/entreprise/ajouter`                    | GET/POST| Ajouter une entreprise                           |
-| `/entreprise/modifier`                   | GET/POST| Modifier une entreprise                          |
-| `/entreprise/voir`                       | GET     | Détail d'une entreprise                          |
-| `/entreprise/mes_realisations`           | GET     | Liste des réalisations d'une entreprise          |
-| `/realisation/ajouter`                   | GET/POST| Ajouter une réalisation                          |
-| `/realisation/modifier`                  | GET/POST| Modifier une réalisation                         |
-| `/realisation/voir`                      | GET     | Détail d'une réalisation                         |
-| `/mes_associations`                      | GET     | Liste des associations de l'utilisateur          |
-| `/association/ajouter`                   | GET/POST| Ajouter une association                          |
-| `/association/modifier`                  | GET/POST| Modifier une association                         |
-| `/association/voir`                      | GET     | Détail d'une association                         |
-| `/mes_evenements`                        | GET     | Liste des événements de l'utilisateur            |
-| `/evenement/ajouter`                     | GET/POST| Ajouter un événement                             |
-| `/evenement/modifier`                    | GET/POST| Modifier un événement                            |
-| `/evenement/voir`                        | GET     | Détail d'un événement                            |
-| `/evenements`                            | GET     | Liste publique des événements                    |
-| `/admin/dashboard_admin`                 | GET     | Tableau de bord admin                            |
-| `/admin/tous_les_utilisateurs`           | GET     | Liste des utilisateurs (admin)                   |
-| `/admin/utilisateur_details`             | GET     | Détail utilisateur (admin)                       |
-| `/admin/toutes_demandes_dactivation_entreprise` | GET | Liste des demandes d'activation d'entreprise     |
+### Pour les entreprises
 
-> **Remarque** : la plupart des routes POST sont protégées par CSRF et nécessitent une session utilisateur.
+- **Profil entreprise** : Création de profil avec informations SIRET
+- **Demande d'activation** : Processus de validation par l'administrateur
+- **Événements professionnels** : Organisation d'événements au nom de l'entreprise
+- **Réalisations** : Showcase de projets et réalisations
+- **Annuaire professionnel** : Visibilité dans l'annuaire des entreprises
 
----
+### Administration
 
-## Logique métier & Contrôleurs
+- **Gestion des utilisateurs** : Vue d'ensemble, bannissement, envoi d'emails
+- **Validation d'entreprises** : Approbation/refus des demandes d'activation
+- **Gestion des contacts** : Traitement des messages de contact
+- **Statistiques** : Dashboard avec métriques clés
 
-- **Controllers/** : chaque entité a son contrôleur dédié (UserController, EntrepriseController, AssociationController, EvenementController, RealisationController, AdminController, NotificationController, HomeController).
-- **AbstractController** : fournit les méthodes utilitaires (`render`, `redirect`, gestion des erreurs, CSRF, etc.).
-- **Validation** : chaque action POST valide les entrées, gère les erreurs via la session, et redirige vers la vue concernée.
-- **Sécurité** : vérification des droits (ownership), validation des fichiers, gestion des sessions, etc.
-- **Notifications** : ajoutées via NotificationRepository, affichées en temps réel (badge, liste AJAX).
+## 🏗 Architecture
 
----
+### Architecture MVC
 
-## Vues
-
-- **Views/** : organisation par entité et usage (home, user, entreprise, association, evenement, realisation, admin, includes).
-- **Templates** : header, footer, navbar, messages, pagination, notification_badge.
-- **Formulaires** : tous les formulaires incluent un token CSRF.
-- **Affichage conditionnel** : selon le rôle, l'état de l'entité, la propriété, etc.
-- **Pagination** : incluse sur toutes les listes longues.
-
----
-
-## Modèles & Repositories
-
-- **Models/** : classes métiers (User, Entreprise, Association, Evenement, Realisation) avec getters/setters, validation, formatage.
-- **Repositories/** : accès aux données (CRUD, pagination, recherche, vérifications d'unicité, etc.), une classe par entité.
-- **Hydration** : conversion des résultats SQL en objets métiers.
-- **Services/** : utilitaires (Mail, Helper pour upload/suppression fichiers, Encrypt_decrypt, etc.).
-
----
-
-## Sécurité
-
-- **CSRF** : tous les formulaires POST sont protégés.
-- **Validation serveur** : toutes les entrées sont validées côté serveur.
-- **Gestion des sessions** : session fixation, fingerprint, logout sécurisé.
-- **Gestion des droits** : vérification de la propriété avant modification/suppression.
-- **Upload fichiers** : validation MIME/type/taille, suppression sécurisée.
-- **reCAPTCHA** : optionnel, prêt à être activé en production.
-- **Hashage des mots de passe** : `password_hash` avec pepper (SEL).
-
----
-
-## Installation & Configuration
-
-### Installation rapide
-
-1. Cloner le dépôt dans votre environnement de développement.
-2. Installer les dépendances PHP :
-
-   ```sh
-   composer install
-   ```
-
-3. Créer un fichier de configuration à partir de l'exemple :
-   - Copier `config_example.php` → `config.php` et adapter les constantes (DB_HOST, DB_NAME, DB_USER, DB_PWD, BASE_URL, HOME_URL, SEL, ADMIN_EMAIL, etc.).
-4. Importer la base de données :
-   - Utiliser `src/Migrations/db.sql` ou `src/Migrations/erd.sql` selon vos besoins pour créer les tables et insérer des données factices.
-   - Exemple : `mysql -u user -p le-media-voironnais < src/Migrations/db.sql`
-
-### Configuration
-
-- `config.php` doit définir au minimum :
-  - DB_HOST, DB_NAME, DB_USER, DB_PWD
-  - BASE_URL (ex : <http://localhost>)
-  - HOME_URL (chemin racine de l'app, ex : /)
-  - SEL (chaîne utilisée comme "pepper" pour le hash des mots de passe)
-  - ADMIN_EMAIL, ADMIN_SENDER_NAME
-  - SECRET_KEY (reCAPTCHA) si activé
-  - IS_PROD (true/false) pour activer les vérifications reCAPTCHA et comportements de prod
-
-Remarque : ne pas committer `config.php` contenant des secrets.
-
-### Lancer l'application en local
-
-Option 1 — serveur PHP intégré (développement) :
-
-- Depuis la racine `public/` :
-
-  ```sh
-  php -S 127.0.0.1:8000
-  ```
-
-Option 2 — Apache/Nginx :
-
-- Pointer la racine web sur le dossier `public/`.
-- `.htaccess` présent pour la réécriture vers `index.php`.
-
----
-
-## Base de données
-
-- Les fichiers SQL utiles :
-  - `src/Migrations/db.sql` — dump DB complet
-  - `src/Migrations/erd.sql` — schéma amélioré + données d'exemple
-- Vérifier le charset / engine lors de l'import si nécessaire.
-
-La connexion à la base de données se fait automatiquement via les paramètres définis dans `config.php`.  
-Assurez-vous que :
-
-- Le serveur MySQL/MariaDB est démarré.
-- Les identifiants et le nom de la base sont corrects.
-- L'utilisateur a les droits nécessaires sur la base.
-
-**Exemple de configuration locale dans `config.php` :**
-
-```php
-define("DB_HOST", "localhost");
-define("DB_PORT", "3306");
-define("DB_USER", "test_user");
-define("DB_PWD", "test_password");
-define("DB_NAME", "test_db");
-define("ENCRYPTION_KEY", "YOUR_ENCRYPTION_KEY");
-define("MAIL_HOST", "smtp.example.com");
-define("MAIL_PORT", "587");
-define("MAIL_USERNAME", "your_email@example.com");
-define("MAIL_PASSWORD", "your_email_password");
-define("MAIL_FROM", "your_email@example.com");  
+```
+┌─────────────┐
+│   Router    │ ← Point d'entrée (public/index.php)
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Controllers │ ← Logique métier
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│   Models    │ ← Entités métier
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│Repositories │ ← Accès aux données
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│  Database   │ ← MySQL
+└─────────────┘
 ```
 
+### Composants principaux
+
+#### Services
+
+- **Router** : Gestion des routes et dispatching
+- **Database** : Connexion PDO et requêtes
+- **Mail** : Envoi d'emails avec PHPMailer
+- **Helper** : Fonctions utilitaires (slug, UIID, upload)
+- **Encrypt_decrypt** : Chiffrement des données sensibles
+- **BadWordsFilter** : Filtrage de contenu inapproprié
+- **Hydration** : Mapping objet-relationnel
+
+#### Controllers
+
+- **UserController** : Gestion des utilisateurs
+- **EvenementController** : CRUD événements + interactions
+- **AssociationController** : Gestion associations
+- **EntrepriseController** : Gestion entreprises
+- **FriendController** : Système d'amitié
+- **NotificationController** : Notifications
+- **ContactController** : Formulaire de contact
+- **AdminController** : Administration
+- **HomeController** : Page d'accueil
+
+## 📦 Installation
+
+### Prérequis
+
+- PHP 8.1 ou supérieur
+- MySQL 5.7 ou supérieur
+- Composer
+- Node.js et npm (pour les assets)
+- Serveur web (Apache/Nginx)
+
+### Étapes d'installation
+
+1. **Cloner le repository**
+
+```bash
+git clone <https://github.com/AltalebFeras/le-media-voironnais-mvc.git>
+cd le-media-voironnais-mvc
+```
+
+1. **Installer les dépendances PHP**
+
+```bash
+composer install
+```
+
+1. **Installer les dépendances JavaScript**
+
+```bash
+npm install
+```
+
+1. **Configuration de la base de données**
+
+```bash
+# Créer la base de données
+mysql -u root -p
+CREATE DATABASE le_media_voironnais CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+EXIT;
+
+# Importer le schéma
+mysql -u root -p le_media_voironnais < src/Migrations/empty_database.sql
+
+# (Optionnel) Importer les données de test
+mysql -u root -p le_media_voironnais < src/Migrations/data.sql
+```
+
+1. **Configuration de l'application**
+
+```bash
+# Copier le fichier de configuration exemple
+cp config_example.php config.php
+
+# Éditer config.php avec vos paramètres
+```
+
+1. **Configurer les permissions**
+
+```bash
+# Dossiers d'upload
+chmod -R 755 public/assets/images/uploads
+chown -R www-data:www-data public/assets/images/uploads
+```
+
+## ⚙️ Configuration
+
+### Fichier config.php
+
+```php
+<?php
+// Base de données
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'le_media_voironnais');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+
+// URLs
+define('BASE_URL', 'http://localhost');
+define('HOME_URL', '/');
+
+// Email
+define('ADMIN_EMAIL', 'admin@example.com');
+define('ADMIN_SENDER_NAME', 'Le Média Voironnais');
+define('NO_REPLY_EMAIL', 'noreply@example.com');
+
+// SMTP (PHPMailer)
+define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_PORT', 587);
+define('SMTP_USERNAME', 'your-email@gmail.com');
+define('SMTP_PASSWORD', 'your-app-password');
+
+// reCAPTCHA
+define('SITE_KEY', 'your-site-key');
+define('SECRET_KEY', 'your-secret-key');
+
+// Sécurité
+define('ENCRYPTION_KEY', 'your-32-char-encryption-key');
+
+// Uploads
+define('MAX_FILE_SIZE', 5 * 1024 * 1024); // 5MB
+define('ALLOWED_IMAGE_TYPES', ['image/jpeg', 'image/png', 'image/webp']);
+```
+
+## 📁 Structure du projet
+
+```
+le-media-voironnais/
+├── public/                          # Fichiers publics
+│   ├── assets/
+│   │   ├── css/                     # Feuilles de style
+│   │   │   ├── root.css             # Variables CSS
+│   │   │   ├── style.css            # Styles principaux
+│   │   │   └── users/               # Styles utilisateurs
+│   │   ├── javascript/              # Scripts JavaScript
+│   │   │   ├── script.js            # Script principal
+│   │   │   ├── event-interactions.js # Interactions événements
+│   │   │   ├── mes_amis.js          # Gestion amis
+│   │   │   ├── villes.js            # Sélection villes
+│   │   │   └── ...
+│   │   ├── images/
+│   │   │   └── uploads/             # Uploads utilisateurs
+│   │   │       ├── avatars/
+│   │   │       ├── banners/
+│   │   │       ├── logos/
+│   │   │       └── events/
+│   │   └── favicon/
+│   ├── index.php                    # Point d'entrée
+│   ├── .htaccess                    # Configuration Apache
+│   └── robots.txt
+├── src/
+│   ├── Abstracts/
+│   │   └── AbstractController.php   # Contrôleur de base
+│   ├── Controllers/                 # Contrôleurs
+│   │   ├── UserController.php
+│   │   ├── EvenementController.php
+│   │   ├── AssociationController.php
+│   │   ├── EntrepriseController.php
+│   │   ├── FriendController.php
+│   │   ├── NotificationController.php
+│   │   ├── ContactController.php
+│   │   ├── AdminController.php
+│   │   └── HomeController.php
+│   ├── Models/                      # Modèles métier
+│   │   ├── User.php
+│   │   ├── Evenement.php
+│   │   ├── Association.php
+│   │   ├── Entreprise.php
+│   │   ├── Post.php
+│   │   ├── Realisation.php
+│   │   └── Contact.php
+│   ├── Repositories/                # Accès données
+│   │   ├── UserRepository.php
+│   │   ├── EvenementRepository.php
+│   │   ├── AssociationRepository.php
+│   │   ├── EntrepriseRepository.php
+│   │   ├── FriendRepository.php
+│   │   ├── NotificationRepository.php
+│   │   ├── ContactRepository.php
+│   │   └── ...
+│   ├── Services/                    # Services
+│   │   ├── router.php
+│   │   ├── ConfigRouter.php
+│   │   ├── Database.php
+│   │   ├── Mail.php
+│   │   ├── Helper.php
+│   │   ├── Encrypt_decrypt.php
+│   │   ├── Hydration.php
+│   │   ├── BadWordsFilter.php
+│   │   └── autoload.php
+│   ├── Views/                       # Vues
+│   │   ├── user/
+│   │   ├── evenement/
+│   │   ├── association/
+│   │   ├── entreprise/
+│   │   ├── admin/
+│   │   ├── contact/
+│   │   └── includes/
+│   ├── Migrations/                  # Migrations SQL
+│   │   ├── empty_database.sql
+│   │   ├── villes_france.sql
+│   │   └── data.sql
+│   └── init.php                     # Initialisation
+├── vendor/                          # Dépendances Composer
+├── node_modules/                    # Dépendances npm
+├── config.php                       # Configuration
+├── config_example.php               # Exemple configuration
+├── composer.json
+├── composer.lock
+├── package.json
+├── package-lock.json
+├── .htaccess
+├── .gitignore
+└── readme.md
+```
+
+## 🔧 Fonctionnalités détaillées
+
+### Système d'événements
+
+#### Création d'événements
+
+- Titre, description courte et complète
+- Dates de début, fin et date limite d'inscription
+- Lieu avec sélection ville (code postal)
+- Nombre maximum de participants
+- Prix et devise
+- Catégorie d'événement
+- Association/Entreprise organisatrice (optionnel)
+- Bannière et galerie d'images
+- Public/Privé
+- Approbation requise pour inscription
+
+#### Interactions utilisateurs
+
+- **Like** : Aimer un événement
+- **Favoris** : Mettre en favoris
+- **Commentaires** : Système de commentaires hiérarchiques
+- **Réponses** : Répondre aux commentaires avec mentions
+- **Signalement** : Signaler des commentaires inappropriés
+- **Partage social** : WhatsApp, Facebook, LinkedIn, Twitter, etc.
+
+#### Inscriptions
+
+- Inscription directe ou sur liste d'attente
+- Validation par l'organisateur si requis
+- Notifications aux participants
+- Gestion des participants (accepter/refuser)
+- Envoi d'emails de confirmation
+
+### Système de notifications
+
+#### Types de notifications
+
+- `activation` : Activation d'entreprise
+- `inscription` : Inscription à un événement
+- `preinscription` : Pré-inscription en attente
+- `invitation` : Demande d'amitié
+- `mention` : Mention dans un commentaire
+- `mise_a_jour` : Mise à jour d'événement
+- `rappel` : Rappel d'événement
+- `systeme` : Notifications système
+- `alert` : Alertes importantes
+- `message` : Messages divers
+
+#### Fonctionnalités
+
+- Badge avec compteur non lues
+- Popup avec liste déroulante
+- Polling automatique (60s)
+- Marquer comme lu (individuel)
+- Marquer tout comme lu
+- Page dédiée avec pagination
+- Priorités (0: normale, 1: importante)
+
+### Système d'amitié
+
+#### Fonctionnalités
+
+- Recherche d'utilisateurs (AJAX)
+- Envoi de demande d'amitié
+- Accepter/Refuser les demandes
+- Supprimer un ami
+- Bloquer un utilisateur
+- Liste d'amis avec pagination
+- Demandes en attente (reçues/envoyées)
+
+#### Interface
+
+- Modal de recherche
+- Onglets (Amis, Demandes reçues, Demandes envoyées)
+- Options par ami (Supprimer, Bloquer)
+
+### Gestion des entreprises
+
+#### Processus d'activation
+
+1. Création profil entreprise
+2. Upload SIRET (Kbis PDF)
+3. Demande d'activation avec message
+4. Validation administrateur
+5. Notification utilisateur
+6. Activation compte
+
+#### Restrictions
+
+- Limiter demandes (1 tous les 3 jours)
+- SIRET non modifiable après activation
+- Validation manuelle obligatoire
+
+### Système de contact
+
+#### Workflow
+
+1. Formulaire avec CSRF protection
+2. Validation anti-spam (60 min entre messages)
+3. Stockage en base de données
+4. Email à l'administrateur
+5. Confirmation utilisateur (email ou notification)
+6. Gestion des statuts : nouveau, lu, traité, archivé
+
+#### Interface admin
+
+- Liste avec filtres par statut
+- Répondre par email
+- Marquer comme lu/traité
+- Archiver/Supprimer
+- Statistiques par statut
+
+### Recherche globale
+
+#### Entités recherchées
+
+- Utilisateurs (nom, prénom, bio)
+- Événements (titre, description)
+- Entreprises (nom, description)
+- Associations (nom, description)
+- Villes (nom, code postal)
+
+#### Fonctionnalités
+
+- Recherche AJAX en temps réel
+- Résultats avec images
+- Navigation directe
+- Protection CSRF
+- Validation caractères
+
+## 🔌 API et Routes
+
+### Routes publiques
+
+```
+GET  /                              # Page d'accueil
+GET  /connexion                     # Page de connexion
+POST /connexion                     # Authentification
+GET  /inscription                   # Page d'inscription
+POST /inscription                   # Création compte
+GET  /nous_contacter                # Formulaire contact
+POST /nous_contacter                # Envoi message
+
+GET  /evenements                    # Liste événements
+GET  /evenements/{ville}/{cat}/{slug} # Détail événement
+POST /evenement/like                # Liker événement
+POST /evenement/favourite           # Favoriser événement
+POST /evenement/comment             # Commenter
+POST /evenement/comment/reply       # Répondre commentaire
+POST /evenement/comment/like        # Liker commentaire
+POST /evenement/comment/report      # Signaler commentaire
+POST /evenement/comment/delete      # Supprimer commentaire
+
+GET  /associations                  # Liste associations
+GET  /associations/{slug}           # Détail association
+
+GET  /entreprises                   # Liste entreprises
+GET  /entreprises/{slug}            # Détail entreprise
+
+POST /recherche                     # Recherche globale
+POST /villes                        # Recherche villes (AJAX)
+```
+
+### Routes authentifiées
+
+```
+# Profil utilisateur
+GET  /dashboard                     # Dashboard utilisateur
+GET  /mon_compte                    # Gestion compte
+POST /mon_compte/modifier           # Modifier profil
+POST /profil/avatar                 # Changer avatar
+POST /profil/banniere               # Changer bannière
+GET  /mes_preferences               # Préférences
+POST /mes_preferences               # Sauvegarder préférences
+GET  /mes_favoris                   # Événements favoris
+GET  /profil/{slug}                 # Profil public
+
+# Amis
+GET  /mes_amis                      # Liste amis
+POST /amis/ajouter                  # Ajouter ami
+POST /amis/accepter                 # Accepter demande
+POST /amis/refuser                  # Refuser demande
+POST /amis/supprimer                # Supprimer ami
+POST /amis/bloquer                  # Bloquer utilisateur
+POST /amis/rechercher               # Rechercher (AJAX)
+
+# Événements
+GET  /mes_evenements                # Mes événements
+GET  /mes_evenements?action=voir    # Voir événement
+GET  /evenement/ajouter             # Formulaire création
+POST /evenement/ajouter             # Créer événement
+GET  /evenement/modifier            # Formulaire édition
+POST /evenement/modifier            # Modifier événement
+POST /evenement/supprimer           # Supprimer événement
+POST /evenement/banniere            # Changer bannière
+POST /evenement/banniere/supprimer  # Supprimer bannière
+POST /evenement/image/ajouter       # Ajouter image
+POST /evenement/image/supprimer     # Supprimer image
+POST /evenement/inscription         # S'inscrire
+POST /evenement/accepter            # Accepter participant
+POST /evenement/refuser             # Refuser participant
+GET  /mes_inscriptions              # Mes inscriptions
+
+# Associations
+GET  /mes_associations              # Mes associations
+GET  /mes_associations?action=voir  # Voir association
+GET  /association/ajouter           # Formulaire création
+POST /association/ajouter           # Créer association
+GET  /association/modifier          # Formulaire édition
+POST /association/modifier          # Modifier association
+POST /association/supprimer         # Supprimer association
+POST /association/logo              # Changer logo
+POST /association/banniere          # Changer bannière
+
+# Entreprises
+GET  /mes_entreprises               # Mes entreprises
+GET  /mes_entreprises?action=voir   # Voir entreprise
+GET  /entreprise/ajouter            # Formulaire création
+POST /entreprise/ajouter            # Créer entreprise
+GET  /entreprise/modifier           # Formulaire édition
+POST /entreprise/modifier           # Modifier entreprise
+POST /entreprise/supprimer          # Supprimer entreprise
+POST /entreprise/logo               # Changer logo
+POST /entreprise/banniere           # Changer banniere
+POST /entreprise/activer            # Demander activation
+
+# Notifications
+GET  /notifications                 # Page notifications
+GET  /notifications/count           # Compteur (AJAX)
+GET  /notifications/list            # Liste (AJAX)
+POST /notifications/mark-read       # Marquer lue
+POST /notifications/mark-all-read   # Tout marquer lu
+```
+
+### Routes administration
+
+```
+GET  /admin                         # Dashboard admin
+GET  /admin/utilisateurs            # Liste utilisateurs
+GET  /admin/utilisateur_details     # Détails utilisateur
+POST /admin/utilisateur/bannir      # Bannir utilisateur
+POST /admin/utilisateur/debannir    # Débannir utilisateur
+POST /admin/utilisateur/email       # Envoyer email
+
+GET  /admin/entreprises             # Demandes activation
+POST /admin/entreprise/accepter     # Accepter demande
+POST /admin/entreprise/refuser      # Refuser demande
+
+GET  /admin/contacts                # Liste messages
+POST /admin/contact/lire            # Marquer lu
+POST /admin/contact/traiter         # Marquer traité
+POST /admin/contact/archiver        # Archiver
+POST /admin/contact/repondre        # Répondre
+POST /admin/contact/supprimer       # Supprimer
+```
+
+## 🔒 Sécurité
+
+### Mesures implémentées
+
+#### Protection des formulaires
+
+- **CSRF Tokens** : Tous les formulaires protégés
+- **reCAPTCHA v2** : Sur inscription et contact
+- **Validation serveur** : Toutes les entrées validées
+- **Sanitization** : `htmlspecialchars()` systématique
+
+#### Authentification
+
+- **Mots de passe** : Hashage avec `password_hash()` (bcrypt)
+- **Sessions** : Régénération ID après connexion
+- **Remember me** : Tokens sécurisés
+- **Tentatives** : Limitation des tentatives de connexion
+
+#### Upload de fichiers
+
+- **Validation type MIME** : `finfo_file()`
+- **Extension** : Whitelist d'extensions autorisées
+- **Taille** : Limite à 5MB
+- **Noms** : Randomisation avec UIID
+- **Dossiers** : Permissions 755
+
+#### Base de données
+
+- **PDO** : Requêtes préparées uniquement
+- **Paramètres bindés** : Pas de concaténation SQL
+- **Transactions** : Pour opérations critiques
+
+#### Autres
+
+- **Rate limiting** : Anti-spam sur contact (60 min)
+- **Filtrage** : BadWordsFilter pour contenu
+- **Chiffrement** : Données sensibles avec OpenSSL
+- **Headers** : X-Robots-Tag en développement
+
+## 🛠 Technologies utilisées
+
+### Backend
+
+- **PHP 8.1+** : Langage serveur
+- **MySQL 5.7+** : Base de données
+- **PDO** : Abstraction base de données
+- **Composer** : Gestionnaire de dépendances
+
+### Frontend
+
+- **HTML5** : Structure
+- **CSS3** : Styles avec variables CSS
+- **JavaScript ES6+** : Interactivité
+- **jQuery 3.6** : Manipulation DOM et AJAX
+- **Material Icons** : Iconographie
+
+### Bibliothèques
+
+- **PHPMailer** : Envoi d'emails
+- **Google reCAPTCHA** : Protection anti-bot
+
+### Outils
+
+- **Git** : Contrôle de version
+- **npm** : Gestionnaire de packages JS
+
+## 🤝 Contribution
+
+### Workflow Git
+
+```bash
+# Créer une branche
+git checkout -b feature/nouvelle-fonctionnalite
+
+# Développer et commiter
+git add .
+git commit -m "feat: ajout nouvelle fonctionnalité"
+
+# Pousser
+git push origin feature/nouvelle-fonctionnalite
+
+# Créer Pull Request
+```
+
+### Conventions de code
+
+#### PHP
+
+- PSR-12 pour le style
+- Namespaces obligatoires
+- Type hints et return types
+- Documentation PHPDoc
+
+#### JavaScript
+
+- ES6+ syntaxe moderne
+- Commentaires JSDoc
+- Nommage camelCase
+
+#### SQL
+
+- UPPERCASE pour mots-clés
+- snake_case pour tables/colonnes
+- Migrations versionnées
+
+### Tests
+
+```bash
+# À implémenter
+# phpunit tests/
+```
+
+## 📝 License
+
+Propriétaire - Tous droits réservés
+
 ---
-
-## Lancer l'application
-
-1. **Importer la base de données**
-   - Importez les fichiers SQL présents dans `src/Migrations/` dans votre base MySQL/MariaDB.
-
-2. **Configurer avec WampServer (ou autre serveur local)**
-   - Démarrez WampServer.
-   - Créez un hôte virtuel pointant vers le dossier `public/` de votre projet.
-   - Redémarrez les DNS si nécessaire.
-
-3. **Accéder à l'application**
-   - Ouvrez [http://localhost/nom_du_projet](http://localhost/nom_du_projet) dans votre navigateur (remplacez `nom_du_projet` par le nom du dossier de votre projet).
-
----
-
-## Tests unitaires
-
-1. **Vérifier que PHPUnit est installé**
-
-   ```sh
-   composer require --dev phpunit/phpunit
-   ```
-
-2. **Exécuter les tests**
-
-   ```sh
-   vendor/bin/phpunit
-   ```
-
-   ou pour n'exécuter que les tests unitaires :
-
-   ```sh
-   vendor/bin/phpunit --testsuite "Application Test Suite"
-   ```
-
----
-
-## Points importants & Sécurité
-
-- **Ne pas committer config.php contenant des secrets.**
-- Utiliser SEL (pepper) et les bonnes pratiques de hachage de mot de passe (déjà présents dans le code).
-- Vérifier et remplacer les clés reCAPTCHA / SMTP avant déploiement.
-- Le SEL utilisé pour le hachage des mots de passe **ne doit jamais être vide** et **doit rester fixe pendant toute la vie de l’application**.
-- Il **ne doit pas être généré aléatoirement à chaque démarrage**.
-- Il **ne doit pas être exposé dans le code source ni dans les fichiers de configuration**.
-- **Il est interdit de le changer** une fois l’application en production, sous peine d’invalider tous les mots de passe existants.
-- Stockez-le de façon sécurisée (ex : gestionnaire de secrets, variable d’environnement protégée).
-
----
-
-## Structure du projet (repères rapides)
-
-- public/ — point d'entrée (index.php), assets (css, js, images)
-- src/
-  - Controllers/ — logique des actions (HomeController, UserController, ...)
-  - Models/ — entités (User, ...)
-  - Repositories/ — accès DB
-  - Services/ — Database, Mail, Helpers
-  - Views/ — vues (includes, pages)
-  - Migrations/ — schémas et dumps SQL
-- config_example.php — exemple de configuration à copier en config.php
-- composer.json — dépendances (PHPMailer, ...)
-
----
-
-## Annexes
-
-- **Dépendances** : PHPMailer, Composer autoload, etc.
-- **Personnalisation** : couleurs, logos, bannières, catégories d'événements.
-- **Évolutions possibles** : API REST, gestion avancée des droits, recherche avancée, etc.
-
----
-
-**Pour toute question ou contribution, contactez l'équipe du projet.**
-
-⚠️ **Important :**
-
-Des protections contre l'indexation par les moteurs de recherche sont activées dans ce projet (balise `<meta name="robots" content="noindex, nofollow">` dans le header, directive `X-Robots-Tag` dans le `.htaccess`, et fichier `robots.txt`).
