@@ -247,10 +247,7 @@ class UserController extends AbstractController
         }
         $this->returnAllErrors($errors, 'connexion', ['error' => 'true']);
 
-        // $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
         $idUser = $user->getIdUser();
-
-        // $this->repo->updateLastSeenAndSetUserOnline($idUser, $lastSeen);
 
         if ($user) {
             //   datetime string
