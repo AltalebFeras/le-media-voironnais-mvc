@@ -282,7 +282,15 @@ switch ($route) {
             $homeController->displayAuth();
         }
         break;
-
+    case HOME_URL . 'mes_preferences':
+        if ($connectionSecured && $method === 'POST') {
+            $userController->AddMyPreferences();
+        } elseif ($connectionSecured && $method === 'GET') {
+            $userController->displayMyPreferencesForm();
+        } else {
+            $homeController->page404();
+        }
+        break;
     // User posts routes (connected users only)
     case HOME_URL . 'mes_posts':
         if ($connectionSecured) {

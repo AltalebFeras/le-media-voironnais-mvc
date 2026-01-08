@@ -427,6 +427,26 @@ CREATE TABLE IF NOT EXISTS `event_participant` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `preference`
+--
+
+DROP TABLE IF EXISTS `preference`;
+CREATE TABLE IF NOT EXISTS `preference` (
+  `idPreference` int NOT NULL AUTO_INCREMENT,
+  `idUser` int NOT NULL,
+  `idVille` mediumint UNSIGNED NOT NULL,
+  `idEventCategory` int NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idPreference`),
+  UNIQUE KEY `unique_user_ville_category` (`idUser`,`idVille`,`idEventCategory`),
+  KEY `idx_preference_user` (`idUser`),
+  KEY `idx_preference_ville` (`idVille`),
+  KEY `idx_preference_category` (`idEventCategory`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `message`
 --
 
@@ -832,6 +852,15 @@ ALTER TABLE `event_like`
 ALTER TABLE `event_participant`
   ADD CONSTRAINT `FK_evenement_TO_event_participant` FOREIGN KEY (`idEvenement`) REFERENCES `evenement` (`idEvenement`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_user_TO_event_participant` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+--
+-- Constraints for table `preference`
+--
+ALTER TABLE `preference`
+  ADD CONSTRAINT `FK_user_TO_preference` FOREIGN KEY (`idUser`) REFERENCES `user` (`idUser`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_ville_TO_preference` FOREIGN KEY (`idVille`) REFERENCES `ville` (`idVille`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_event_category_TO_preference` FOREIGN KEY (`idEventCategory`) REFERENCES `event_category` (`idEventCategory`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `message`

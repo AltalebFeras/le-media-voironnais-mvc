@@ -247,10 +247,10 @@ class UserController extends AbstractController
         }
         $this->returnAllErrors($errors, 'connexion', ['error' => 'true']);
 
-        $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
+        // $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
         $idUser = $user->getIdUser();
 
-        $this->repo->updateLastSeenAndSetUserOnline($idUser, $lastSeen);
+        // $this->repo->updateLastSeenAndSetUserOnline($idUser, $lastSeen);
 
         if ($user) {
             //   datetime string
@@ -266,7 +266,7 @@ class UserController extends AbstractController
             $_SESSION['dateOfBirth'] = $user->getDateOfBirthFormatted();
             $_SESSION['isActivated'] = $user->getIsActivated();
             $_SESSION['isOnline'] = true;
-            $_SESSION['lastSeen'] = $lastSeen;
+            $_SESSION['lastSeen'] = $user->getLastSeen();
             $_SESSION['createdAt'] = $user->getCreatedAtFormatted();
             $_SESSION['updatedAt'] = $user->getUpdatedAtFormatted();
 
@@ -285,6 +285,9 @@ class UserController extends AbstractController
                 $_SESSION['success'] = 'Vous êtes connecté en tant que super administrateur!';
                 $this->redirect('admin/dashboard_super_admin');
             } elseif ($_SESSION['role'] === 'user') {
+                if ($_SESSION['lastSeen'] === null) {
+                    $_SESSION['isFirstConnection'] = true;
+                }
                 if (isset($_SESSION['redirect_after_login'])) {
                     $_SESSION['connected'] = true;
                     $_SESSION['success'] = 'Vous êtes connecté avec succès!';
@@ -314,6 +317,8 @@ class UserController extends AbstractController
         if (isset($_SESSION['isOnline'])) {
             $this->repo->makeUserOffline($_SESSION['idUser']);
         }
+        $lastSeen = (new DateTime())->format('Y-m-d H:i:s');
+        $this->repo->updateLastSeenAndSetUserOnline($idUser, $lastSeen);
         session_destroy();
         session_start();
 
