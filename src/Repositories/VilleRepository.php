@@ -55,7 +55,7 @@ class VilleRepository
     public function getVillesByCp($cp)
     {
         try {
-            $query = "SELECT idVille, ville_nom_reel, ville_code_postal FROM ville WHERE ville_code_postal = :cp";
+            $query = "SELECT idVille, ville_slug, ville_nom_reel, ville_code_postal FROM ville WHERE ville_code_postal = :cp";
             $stmt = $this->DB->prepare($query);
             $stmt->execute(['cp' => $cp]);
 
